@@ -1,0 +1,16 @@
+mat-toolbar {
+  background-color: #000000;
+  color: #86f863;
+}
+
+::ng-deep .mat-mdc-button .mdc-button__label{
+  color: #86f863 !important;
+}
+::ng-deep .mat-mdc-button:hover .mdc-button__label{
+  color: #000000 !important;
+  background-color: #00ff0dde;
+  border-radius: 5px;
+  padding: 5px 5px 5px;
+  margin: auto;
+}
+

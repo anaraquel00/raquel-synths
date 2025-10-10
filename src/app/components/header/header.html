@@ -1,0 +1,29 @@
+<mat-toolbar>
+  <span>RAQUEL SYNTHS</span>
+
+  <span class="spacer"></span>
+
+  <button mat-button [matMenuTriggerFor]="sobreMenu">SOBRE</button>
+  <mat-menu #sobreMenu="matMenu" yPosition="above" panelClass="rqs-menu-panel">
+    <button mat-menu-item>Item 1</button>
+    <button mat-menu-item>Item 2</button>
+  </mat-menu>
+
+  <button mat-button [matMenuTriggerFor]="storytellerMenu">STORYTELLER</button>
+  <mat-menu #storytellerMenu="matMenu" yPosition="below" panelClass="rqs-menu-panel">
+    <button mat-menu-item>Item 1</button>
+    <button mat-menu-item>Item 2</button>
+  </mat-menu>
+
+  <button mat-button [matMenuTriggerFor]="discografiaMenu">DISCOGRAFIA</button>
+  <mat-menu #discografiaMenu="matMenu" xPosition="after" panelClass="rqs-menu-panel">
+    <button mat-menu-item>Item 1</button>
+    <button mat-menu-item>Item 2</button>
+  </mat-menu>
+
+  <button mat-button [matMenuTriggerFor]="playlistMenu">PLAYLIST</button>
+  <mat-menu #playlistMenu="matMenu" xPosition="after" panelClass="rqs-menu-panel">
+    <button mat-menu-item>Item 3</button>
+    <button mat-menu-item>Item 4</button>
+  </mat-menu>
+</mat-toolbar>

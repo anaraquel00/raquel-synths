@@ -1,0 +1,87 @@
+.home-container {
+  position: relative; // Essencial para o posicionamento da imagem de fundo
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; // Ocupa a altura total da tela
+  text-align: center;
+  overflow: hidden; // Garante que a imagem não ultrapasse os limites
+}
+
+.hero-section {
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: white; // Garante que o texto seja legível sobre a imagem
+  height: 100%;
+  z-index: 1; // Garante que o conteúdo fique na frente da imagem
+}
+
+.hero-title {
+  font-size: 4rem;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  text-shadow: 0 0 10px #080808, 0px -3px 20px #000000;
+}
+
+.hero-subtitle {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  font-style: italic;
+  color: #000000;
+  text-shadow: 3px -2px 3px #e0fffc;
+
+}
+
+.hero-cta {
+  padding: 10px 30px;
+  font-size: 1rem;
+  font-weight: bolder;
+  border-color: #06fd12;
+  color: #06fd12;
+  --mdc-outlined-button-label-text-color: #06fd12; // Garante a cor do texto no botão
+  --mat-mdc-button-persistent-ripple-color: #06fd12;
+  background-color: #00000094;
+}
+.hero-cta:hover {
+  background-color: #00fc0db4;
+  color: black;
+  border-color: #000000;
+  --mdc-outlined-button-label-text-color: black; // Garante a cor do texto no botão
+  --mat-mdc-button-persistent-ripple-color: black;
+}
+
+.hero-background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; // Faz a imagem cobrir toda a área
+  z-index: -1; // Coloca a imagem atrás de todo o outro conteúdo
+   // Opcional: deixa a imagem um pouco transparente para o texto ficar mais legível
+
+   &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.603);
+  }
+
+}
+img.hero-background-image {
+  width: 100%;
+  height: 100%;
+  // Garante que o vídeo cubra todo o container sem distorcer
+  object-fit: cover;
+  object-position: center;
+  opacity: 0.8;
+}
