@@ -6,7 +6,7 @@
   height: 100vh;
   text-align: center;
   overflow: hidden;
-  background-color: var(--bg-color); /* Fundo reage ao tema */
+   //background-color: var(--bg-color); /* Fundo reage ao tema */
 }
 
 .hero-section {
@@ -48,7 +48,7 @@
   /* Cores dinâmicas */
   border-color: var(--accent-color);
   color: var(--accent-color);
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0);
 
   /* Angular Material overrides com variáveis */
   --mdc-outlined-button-label-text-color: var(--accent-color);
@@ -59,15 +59,15 @@
 
 .hero-cta:hover {
   background-color: var(--accent-color);
-  color: black;
-  border-color: black;
-  --mdc-outlined-button-label-text-color: black;
+  color: rgba(0, 0, 0, 0);
+  border-color: rgba(0, 0, 0, 0);
+  --mdc-outlined-button-label-text-color: rgba(0, 0, 0, 0);
   box-shadow: 0 0 15px var(--accent-color); /* Brilho no hover */
 }
 
 /* --- A IMAGEM DE FUNDO E O TRUQUE DO MODO JONAH --- */
 .hero-background-image {
-  position: absolute;
+  position: relative;
   top: 0;
   left: 0;
   width: 100%;
