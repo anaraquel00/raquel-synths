@@ -1,11 +1,12 @@
 .home-container {
-  position: relative; // Essencial para o posicionamento da imagem de fundo
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh; // Ocupa a altura total da tela
+  height: 100vh;
   text-align: center;
-  overflow: hidden; // Garante que a imagem não ultrapasse os limites
+  overflow: hidden;
+  background-color: var(--bg-color); /* Fundo reage ao tema */
 }
 
 .hero-section {
@@ -15,73 +16,79 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  color: white; // Garante que o texto seja legível sobre a imagem
+  color: var(--text-color); /* Texto dinâmico */
   height: 100%;
-  z-index: 1; // Garante que o conteúdo fique na frente da imagem
+  z-index: 1;
 }
 
 .hero-title {
+  font-family: var(--font-heading); /* Fonte muda no modo Jonah */
   font-size: 4rem;
   font-weight: bold;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   margin-bottom: 1rem;
-  text-shadow: 0 0 10px #080808, 0px -3px 20px #000000;
+  /* Sombra dinâmica: Roxo no Broklin, Laranja no Jonah */
+  text-shadow: 0 0 10px var(--primary-color), 0px -3px 20px #000000;
 }
 
 .hero-subtitle {
   font-size: 1.5rem;
   margin-bottom: 2rem;
   font-style: italic;
-  color: #000000;
-  text-shadow: 3px -2px 3px #e0fffc;
-
+  color: var(--text-color);
+  text-shadow: 3px -2px 3px var(--primary-color);
 }
 
 .hero-cta {
   padding: 10px 30px;
   font-size: 1rem;
   font-weight: bolder;
-  border-color: #06fd12;
-  color: #06fd12;
-  --mdc-outlined-button-label-text-color: #06fd12; // Garante a cor do texto no botão
-  --mat-mdc-button-persistent-ripple-color: #06fd12;
-  background-color: #00000094;
-}
-.hero-cta:hover {
-  background-color: #00fc0db4;
-  color: black;
-  border-color: #000000;
-  --mdc-outlined-button-label-text-color: black; // Garante a cor do texto no botão
-  --mat-mdc-button-persistent-ripple-color: black;
+
+  /* Cores dinâmicas */
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  background-color: rgba(0, 0, 0, 0.8);
+
+  /* Angular Material overrides com variáveis */
+  --mdc-outlined-button-label-text-color: var(--accent-color);
+  --mat-mdc-button-persistent-ripple-color: var(--accent-color);
+
+  transition: all 0.3s ease;
 }
 
+.hero-cta:hover {
+  background-color: var(--accent-color);
+  color: black;
+  border-color: black;
+  --mdc-outlined-button-label-text-color: black;
+  box-shadow: 0 0 15px var(--accent-color); /* Brilho no hover */
+}
+
+/* --- A IMAGEM DE FUNDO E O TRUQUE DO MODO JONAH --- */
 .hero-background-image {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover; // Faz a imagem cobrir toda a área
-  z-index: -1; // Coloca a imagem atrás de todo o outro conteúdo
-   // Opcional: deixa a imagem um pouco transparente para o texto ficar mais legível
+  object-fit: cover;
+  z-index: -1;
+  transition: filter 0.5s ease; /* Transição suave */
+}
 
-   &::after {
+/* Quando o Modo Jonah está ativo, a imagem fica "estragada" */
+:host-context(body.mode-jonah) .hero-background-image {
+    filter: sepia(100%) contrast(150%) hue-rotate(-30deg) grayscale(50%);
+}
+
+/* Overlay Escuro */
+.hero-background-image::after {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.603);
-  }
-
-}
-img.hero-background-image {
-  width: 100%;
-  height: 100%;
-  // Garante que o vídeo cubra todo o container sem distorcer
-  object-fit: cover;
-  object-position: center;
-  opacity: 0.8;
+    background-color: var(--hero-overlay); /* Cor da "poeira" muda */
 }
