@@ -19,6 +19,9 @@
   color: var(--text-color); /* Texto dinâmico */
   height: 100%;
   z-index: 1;
+  background-color: rgba(0, 0, 0, 0.5); /* Fundo preto 50% transparente só atrás do texto */
+  backdrop-filter: blur(5px); /* Desfoca o universo atrás do texto (efeito vidro) */
+  border-radius: 15px;
 }
 
 .hero-title {
@@ -65,30 +68,3 @@
   box-shadow: 0 0 15px var(--accent-color); /* Brilho no hover */
 }
 
-/* --- A IMAGEM DE FUNDO E O TRUQUE DO MODO JONAH --- */
-.hero-background-image {
-  position: relative;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: -1;
-  transition: filter 0.5s ease; /* Transição suave */
-}
-
-/* Quando o Modo Jonah está ativo, a imagem fica "estragada" */
-:host-context(body.mode-jonah) .hero-background-image {
-    filter: sepia(100%) contrast(150%) hue-rotate(-30deg) grayscale(50%);
-}
-
-/* Overlay Escuro */
-.hero-background-image::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: var(--hero-overlay); /* Cor da "poeira" muda */
-}

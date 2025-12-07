@@ -55,32 +55,44 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   --transition-speed: 0.5s;
 }
 
-/* --- DEFINIÇÃO DOS TEMAS ---
+/* --- DEFINIÇÃO DOS TEMAS --- */
 
 /* MODO BROKLIN (Default - Neon/Ordem) */
 body.mode-broklin {
-    --primary-color: #6200ea;     /* Roxo */
-    --accent-color: #06fd12;      /* Aquele Verde Neon da sua Home */
+    --primary-color: #6200ea;
+    --accent-color: #06fd12;
     --text-color: #ffffff;
-    --bg-color: #0a0a12;          /* Preto Frio */
+    --bg-color: #0a0a12;
     --footer-bg: #000000;
     --footer-text: #86f863;
-    --hero-overlay: rgba(0, 0, 0, 0.6); /* Sombra suave */
-    --font-heading: 'Roboto', sans-serif; /* Ou Orbitron se tiver */
-     background-image: url('/images/broklin_universe.png');
+    --hero-overlay: rgba(0, 0, 0, 0.4); /* Sombra mais leve para ver o universo */
+    --font-heading: 'Roboto', sans-serif;
+
+    /* CONFIGURAÇÃO DA IMAGEM */
+    background-image: url('/images/broklin_universe.png');
+    background-size: cover;           /* Estica a imagem para cobrir tudo */
+    background-position: center;      /* Centraliza a imagem */
+    background-repeat: no-repeat;     /* Não deixa repetir */
+    background-attachment: fixed;     /* O fundo fica parado quando você rola a página (Efeito Parallax) */
 }
 
 /* MODO JONAH (Caos - Industrial/Ferrugem) */
 body.mode-jonah {
-    --primary-color: #bf360c;     /* Laranja Queimado */
-    --accent-color: #ff5722;      /* Vermelho Alerta */
-    --text-color: #e0e0e0;        /* Cinza Sujo */
-    --bg-color: #1a1815;          /* Preto Óleo */
+    --primary-color: #bf360c;
+    --accent-color: #ff5722;
+    --text-color: #e0e0e0;
+    --bg-color: #1a1815;
     --footer-bg: #1a1815;
     --footer-text: #bf360c;
-    --hero-overlay: rgba(50, 20, 0, 0.8); /* Filtro de poeira/ferrugem */
-    --font-heading: 'Courier Prime', monospace; /* Fonte Typewriter */
+    --hero-overlay: rgba(50, 20, 0, 0.7);
+    --font-heading: 'Courier Prime', monospace;
+
+    /* CONFIGURAÇÃO DA IMAGEM */
     background-image: url('/images/cyberpunk_industrial.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 /* Default (ou Modo Broklin implicito) */
