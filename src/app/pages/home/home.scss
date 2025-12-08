@@ -68,3 +68,31 @@
   box-shadow: 0 0 15px var(--accent-color); /* Brilho no hover */
 }
 
+/* ANIMAÇÕES DE GLITCH PARA O MODO JONAH */
+@keyframes glitch-skew {
+  0% { transform: skew(0deg); }
+  20% { transform: skew(-2deg); }
+  40% { transform: skew(2deg); }
+  60% { transform: skew(-1deg); }
+  80% { transform: skew(1deg); }
+  100% { transform: skew(0deg); }
+}
+
+@keyframes glitch-flash {
+  0% { opacity: 1; }
+  50% { opacity: 0.8; text-shadow: 2px 2px #ff0000; }
+  51% { opacity: 1; text-shadow: -2px -2px #00ff00; }
+  100% { opacity: 1; }
+}
+
+/* QUANDO O MODO JONAH ESTIVER ATIVADO NO BODY */
+:host-context(body.mode-jonah) .hero-title {
+  /* Fonte monoespaçada já definida no global, mas vamos reforçar o caos */
+  animation: glitch-skew 0.3s infinite linear alternate-reverse,
+             glitch-flash 2s infinite steps(1);
+
+  color: var(--accent-color); /* Fica Laranja/Vermelho */
+  border-bottom: 3px solid var(--accent-color);
+  background: rgba(0,0,0,0.8);
+  padding: 0 10px;
+}
