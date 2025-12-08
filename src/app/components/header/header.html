@@ -1,15 +1,29 @@
-<mat-toolbar color="primary"> <span>RAQUEL SYNTHS</span>
+<mat-toolbar color="primary">
+  <span style="cursor: pointer;" (click)="scrollTo('inicio')">RAQUEL SYNTHS</span>
 
   <span class="spacer"></span>
 
   <button mat-button (click)="activateBroklinMode()">
-    <mat-icon>diamond</mat-icon> BROKLIN MODE
+    <mat-icon>diamond</mat-icon> BROKLIN
+  </button>
+  <button mat-button (click)="activateJonahMode()">
+    <mat-icon>warning</mat-icon> JONAH
   </button>
 
-  <button mat-button (click)="activateJonahMode()" color="warn">
-    <mat-icon>warning</mat-icon> JONAH MODE
-  </button>
+  <button mat-button (click)="scrollTo('sobre')">SOBRE</button>
 
-  <button mat-button [matMenuTriggerFor]="sobreMenu">SOBRE</button>
+  <button mat-button (click)="scrollTo('storytelling')">STORYTELLER</button>
+
   <button mat-button [matMenuTriggerFor]="discografiaMenu">DISCOGRAFIA</button>
-  </mat-toolbar>
+  <mat-menu #discografiaMenu="matMenu" panelClass="rqs-menu-panel">
+    <button mat-menu-item>Singles</button>
+    <button mat-menu-item>Álbuns</button>
+  </mat-menu>
+
+  <button mat-button [matMenuTriggerFor]="playlistMenu">PLAYLIST</button>
+  <mat-menu #playlistMenu="matMenu" panelClass="rqs-menu-panel">
+    <button mat-menu-item>Spotify</button>
+    <button mat-menu-item>SoundCloud</button>
+  </mat-menu>
+
+</mat-toolbar>

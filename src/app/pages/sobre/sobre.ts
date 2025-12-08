@@ -36,13 +36,13 @@ export class SobreComponent {
       bioJonah: 'A única que manda aqui. Se ela der "rm -rf /", a gente desaparece. Respeito máximo (e medo).'
     },
     {
-      name: 'Nicole Nyx',
-      role: 'A General, Dev Full Stack e Witch',
-      imageBroklin: '/images/nyx_profil.png',
-      imageJonah: '/images/nyx_evil.png',
-      bioNormal: 'A visionária. Uniu o código à música e lidera a revolução com mão firme e coração de ouro.',
-      bioJonah: 'A única que manda aqui. Se ela der "rm -rf /", a gente desaparece. Respeito máximo (e medo).'
-    }
+  name: 'Nicole Nyx',
+  role: 'Vocalista Industrial, DJ & Cyber-Witch',
+  imageBroklin: '/images/nyx_profil.png',
+  imageJonah: '/images/nyx_evil.png',
+  bioNormal: 'A força da natureza. Com vocais que vão do lírico ao gutural, ela traz a magia ancestral para o mundo digital. A alma da festa gótica.',
+  bioJonah: 'A única pessoa que o Jonah tem medo. Dizem que ela controla os sintetizadores com a mente. Não aceite bebidas dela.'
+}
 
   ];
 }

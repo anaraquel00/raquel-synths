@@ -1,108 +1,69 @@
-// Include theming for Angular Material with `mat.theme()`.
-// This Sass mixin will define CSS variables that are used for styling Angular Material
-// components according to the Material 3 design spec.
-// Learn more about theming and how to use it for your application's
-// custom components at https://material.angular.dev/guide/theming
+/* --- IMPORTAÇÕES DO ANGULAR MATERIAL --- */
 @use '@angular/material' as mat;
-/*
+
 html {
-
-@include mat.theme((
-
-color: (
-primary: mat.$magenta-palette,
-tertiary: mat.$violet-palette,
-
-),
-typography: Roboto,
-density: 0,
-
-));
-
+  @include mat.theme((
+    color: (
+      primary: mat.$magenta-palette,
+      tertiary: mat.$violet-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+  scroll-behavior: smooth; /* Scroll suave para a One Page */
 }
 
-
-
-body {
-// Default the application to a light color theme. This can be changed to
-// `dark` to enable the dark color theme, or to `light dark` to defer to the
-// user's system settings.
-
-color-scheme: light;
-
-// Set a default background, font and text colors for the application using
-// Angular Material's system-level CSS variables. Learn more about these
-// variables at https://material.angular.dev/guide/system-variables
-
-background-color: var(--mat-sys-surface);
-color: var(--mat-sys-on-surface);
-font: var(--mat-sys-body-medium);
-
-// Reset the user agent margin.
-margin: 0;
-
-}
-
-/* You can add global styles to this file, and also import other style files */
-
-/* html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
-.spacer { flex: 1 1 auto; } */
-
-/* --- BASE VARIABLES (O esqueleto) --- */
-
+/* --- VARIÁVEIS BASE --- */
 :root {
   --transition-speed: 0.5s;
 }
-html {
-  scroll-behavior: smooth;
-}
 
-/* --- DEFINIÇÃO DOS TEMAS --- */
-
-/* MODO BROKLIN (Default - Neon/Ordem) */
-body.mode-broklin {
-    --primary-color: #6200ea;
-    --accent-color: #06fd12;
-    --text-color: #ffffff;
-    --bg-color: #0a0a12;
-    --footer-bg: #000000;
-    --footer-text: #86f863;
-    --hero-overlay: rgba(0, 0, 0, 0.4); /* Sombra mais leve para ver o universo */
-    --font-heading: 'Roboto', sans-serif;
-
-    /* CONFIGURAÇÃO DA IMAGEM */
-    background-image: url('/images/broklin_universe.png');
-    background-size: cover;           /* Estica a imagem para cobrir tudo */
-    background-position: center;      /* Centraliza a imagem */
-    background-repeat: no-repeat;     /* Não deixa repetir */
-    background-attachment: fixed;     /* O fundo fica parado quando você rola a página (Efeito Parallax) */
-}
-
-/* MODO JONAH (Caos - Industrial/Ferrugem) */
-body.mode-jonah {
-    --primary-color: #bf360c;
-    --accent-color: #ff5722;
-    --text-color: #e0e0e0;
-    --bg-color: #1a1815;
-    --footer-bg: #1a1815;
-    --footer-text: #bf360c;
-    --hero-overlay: rgba(50, 20, 0, 0.7);
-    --font-heading: 'Courier Prime', monospace;
-
-    /* CONFIGURAÇÃO DA IMAGEM */
-    background-image: url('/images/cyberpunk_industrial.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-}
-
-/* Default (ou Modo Broklin implicito) */
+/* --- CONFIGURAÇÃO PADRÃO DO BODY (MODO BROKLIN - PADRÃO) --- */
+/* Aqui definimos que o site JÁ NASCE no modo Broklin */
 body {
-    transition: background-color 0.5s ease, filter 0.5s ease;
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  transition: background-color 0.5s ease, filter 0.5s ease;
+
+  /* VARIÁVEIS DO BROKLIN (Agora são o padrão!) */
+  --primary-color: #6200ea;     /* Roxo */
+  --accent-color: #06fd12;      /* Verde Neon */
+  --text-color: #ffffff;        /* Texto Branco */
+  --bg-color: #0a0a12;          /* Fundo Preto */
+  --footer-bg: #000000;
+  --footer-text: #86f863;
+  --hero-overlay: rgba(0, 0, 0, 0.4);
+  --font-heading: 'Roboto', sans-serif;
+
+  /* Aplica as cores imediatamente */
+  background-color: var(--bg-color);
+  color: var(--text-color);
+
+  /* IMAGEM DE FUNDO DO BROKLIN */
+  background-image: url('/images/broklin_universe.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
+/* --- MODO JONAH (A Exceção / O Caos) --- */
+/* Só aplicamos isso quando a classe for adicionada via botão */
+body.mode-jonah {
+  --primary-color: #bf360c;     /* Laranja Queimado */
+  --accent-color: #ff5722;      /* Vermelho Alerta */
+  --text-color: #e0e0e0;        /* Cinza Sujo */
+  --bg-color: #1a1815;          /* Preto Óleo */
+  --footer-bg: #1a1815;
+  --footer-text: #bf360c;
+  --hero-overlay: rgba(50, 20, 0, 0.7);
+  --font-heading: 'Courier Prime', monospace;
 
+  /* IMAGEM DE FUNDO DO JONAH */
+  background-image: url('/images/cyberpunk_industrial.png');
+
+  /* Filtro de "Filme Velho" */
+  filter: contrast(110%) sepia(20%);
+}
 
 
