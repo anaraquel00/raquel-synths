@@ -54,6 +54,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 :root {
   --transition-speed: 0.5s;
 }
+html {
+  scroll-behavior: smooth;
+}
 
 /* --- DEFINIÇÃO DOS TEMAS --- */
 

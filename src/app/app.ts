@@ -3,13 +3,15 @@ import { Header } from "./components/header/header";
 import { Footer } from "./components/footer/footer";
 import { Home } from "./pages/home/home";
 import { AppThemeSwitcher } from './app-theme-switcher/app-theme-switcher';
+import { StorytellingComponent } from "./app-storytelling/app-storytelling";
+import { SobreComponent } from "./pages/sobre/sobre";
 
 @Component({
   selector: 'app-root',
-  imports: [Header, Footer, Home],
+  imports: [Header, Footer, Home, StorytellingComponent, SobreComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
 export class App {
-
+title = 'raquel-synths';
 }

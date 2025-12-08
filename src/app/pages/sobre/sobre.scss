@@ -1,0 +1,61 @@
+.bios-container {
+  padding: 4rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.members-grid {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.member-card {
+  width: 300px;
+  background: rgba(0,0,0,0.6);
+  border: 1px solid var(--primary-color);
+  border-radius: 15px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+/* --- TROCA DE IMAGEM --- */
+.image-frame {
+  position: relative;
+  height: 300px;
+  width: 100%;
+}
+
+.image-frame img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.5s ease;
+}
+
+/* Padrão: Mostra Broklin, Esconde Jonah */
+.img-jonah { opacity: 0; }
+.img-broklin { opacity: 1; }
+
+/* --- TROCA DE TEXTO --- */
+.jonah-text { display: none; color: #ff5722; font-family: 'Courier New'; }
+
+/* === MODO JONAH ATIVADO === */
+:host-context(body.mode-jonah) {
+  .member-card {
+    border-color: #bf360c;
+    transform: rotate(1deg); /* Levemente torto */
+  }
+
+  /* Inverte as imagens */
+  .img-broklin { opacity: 0; }
+  .img-jonah { opacity: 1; }
+
+  /* Troca o texto */
+  .normal-text { display: none; }
+  .jonah-text { display: block; font-weight: bold; }
+}

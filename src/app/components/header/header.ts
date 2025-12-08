@@ -18,6 +18,7 @@ export class Header {
   beforeMenu!: MatMenuPanel<any> | null;
   belowMenu!: MatMenuPanel<any> | null;
   discografiaMenu!: MatMenuPanel<any> | null;
+  sobreMenu!: MatMenuPanel<any> | null;
 
   constructor(@Inject(DOCUMENT) private document: Document) {}
 

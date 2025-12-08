@@ -1,0 +1,134 @@
+/* --- CONTAINER GERAL --- */
+.story-container {
+  padding: 4rem 1rem;
+  background-color: transparent; /* Deixa ver o universo atrás */
+  color: var(--text-color);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-title {
+  text-align: center;
+  font-family: var(--font-heading);
+  font-size: 3rem;
+  margin-bottom: 3rem;
+  text-shadow: 0 0 10px var(--primary-color);
+  letter-spacing: 5px;
+}
+
+/* --- LINHA DO TEMPO (A espinha dorsal) --- */
+.timeline {
+  position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* A linha vertical central */
+.timeline::after {
+  content: '';
+  position: absolute;
+  width: 4px;
+  background-color: var(--primary-color);
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  margin-left: -2px;
+  box-shadow: 0 0 10px var(--primary-color);
+}
+
+/* --- OS CARDS (Itens) --- */
+.timeline-item {
+  padding: 10px 40px;
+  position: relative;
+  background-color: inherit;
+  width: 50%;
+  box-sizing: border-box;
+}
+
+/* Lado Esquerdo */
+.timeline-item.left { left: 0; }
+/* Lado Direito */
+.timeline-item.right { left: 50%; }
+
+/* A "Bolinha" na linha central */
+.timeline-item::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  right: -10px; /* Ajuste para esquerda */
+  background-color: var(--bg-color);
+  border: 3px solid var(--accent-color);
+  top: 25px;
+  border-radius: 50%;
+  z-index: 1;
+  box-shadow: 0 0 10px var(--accent-color);
+}
+
+.timeline-item.right::after {
+  left: -10px; /* Ajuste para direita */
+}
+
+/* --- CAIXA DE CONTEÚDO --- */
+.content-box {
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.7); /* Fundo vidro escuro */
+  border: 1px solid var(--primary-color);
+  border-radius: var(--border-radius, 15px); /* Arredondado no Broklin, Quadrado no Jonah */
+  position: relative;
+  backdrop-filter: blur(5px);
+  transition: transform 0.3s ease;
+}
+
+.content-box:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 20px rgba(98, 0, 234, 0.3);
+}
+
+.date {
+  color: var(--accent-color);
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.img-wrapper img {
+  width: 100%;
+  border-radius: 8px;
+  margin: 10px 0;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* --- O SEGREDO DO MODO JONAH (CAOS) --- */
+
+/* As notas do Jonah ficam invisíveis por padrão */
+.jonah-note {
+  display: none;
+}
+
+/* Quando o BODY tem a classe .mode-jonah... O CAOS REINA! */
+:host-context(body.mode-jonah) {
+
+  .content-box {
+    border-color: #bf360c; /* Laranja Ferrugem */
+    transform: rotate(-1deg); /* Tudo fica torto */
+    background-color: rgba(20, 0, 0, 0.9);
+  }
+
+  /* Mostra os comentários sarcásticos */
+  .jonah-note {
+    display: block;
+    margin-top: 15px;
+    padding: 10px;
+    border: 1px dashed #ff5722;
+    color: #ff5722;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    background: rgba(0,0,0,0.8);
+  }
+
+  /* Risco na descrição "oficial" (Opcional - Efeito de censura) */
+  .description {
+    text-decoration: line-through;
+    opacity: 0.6;
+  }
+}
