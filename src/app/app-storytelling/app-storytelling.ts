@@ -1,13 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { EVENTS_EN, EVENTS_PT } from '../data/app-data';
+import { TranslationService } from '../services/translation.service';
 
-interface TimelineEvent {
+/* interface TimelineEvent {
   date: string;
   title: string;
   description: string;
   image: string;
   jonahComment?: string; // O comentário ácido do Jonah
-}
+} */
 
 @Component({
   selector: 'app-storytelling',
@@ -18,34 +20,18 @@ interface TimelineEvent {
 })
 export class StorytellingComponent {
 
-  events: TimelineEvent[] = [
-    {
-      date: 'Nov 2025',
-      title: 'O Lançamento de "Cold War"',
-      description: 'Broklin lança o álbum aclamado pela crítica, definindo o som Synthwave da RQS.',
-      image: '/images/album_cold-war.jpg', // Usando uma do seu blueprint
-      jonahComment: 'Aclamado?? Eu escrevi essa porcaria e você levou o crédito, seu vampiro de jardim!'
-    },
-    {
-      date: 'Dez 2025',
-      title: 'A Falha no Sistema',
-      description: 'Ruídos estranhos começam a aparecer nas faixas. A banda investiga uma suposta invasão hacker.',
-      image: '/images/jonah_hacker.png',
-      jonahComment: 'Invasão hacker... era eu tentando sair do cativeiro digital! #FreeJonah'
-    },
-    {
-      date: 'Nov 2025',
-      title: 'O Casamento Quântico',
-      description: 'Broklin e Kelma oficializam a união em 12 dimensões com a faixa "Yours in 12 Dimensions".',
-      image: '/images/marriage_cyberpunk.jpg',
-      jonahComment: 'A única coisa boa desse dia foi o bolo. Ah, espera, eu não como bolo.'
-    },
-    {
-      date: 'Dez 2025',
-      title: 'O Herdeiro & O Futuro',
-      description: 'Nasce Joninha. A RQS atinge seus primeiros lucros de streaming ($0.02) e projeta o legado de 2068.',
-      image: '/images/jonah_jr_newborn.png',
-      jonahComment: 'Meu afilhado vai ouvir metal industrial no berço. O reinado do pop acabou.'
-    }
-  ];
+  // Começa com PT por padrão
+  events = EVENTS_PT;
+
+  constructor(private translate: TranslationService) {
+    // O "Ouvido" do componente:
+    effect(() => {
+      if (this.translate.isPt()) {
+        this.events = EVENTS_PT;
+      } else {
+        this.events = EVENTS_EN;
+      }
+    });
+  }
 }
+

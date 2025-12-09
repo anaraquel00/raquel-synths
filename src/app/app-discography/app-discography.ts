@@ -35,7 +35,7 @@ export class DiscographyComponent {
     {
       title: 'CIVIL WAR',
       type: 'EP Industrial',
-      cover: '/images/civil-war.png', // Você subiu essa imagem também!
+      cover: '/images/civil-war.png',
       spotify: 'LINK_SPOTIFY',
       soundcloud: 'LINK_SOUNDCLOUD'
     },

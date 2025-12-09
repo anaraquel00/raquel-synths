@@ -1,9 +1,9 @@
 import { Component, Inject } from '@angular/core';
-import { DOCUMENT } from '@angular/common'; // Importante para mexer no scroll
+import { DOCUMENT } from '@angular/common';
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu'; // Mantemos caso use para Discografia/Playlist
+import { MatMenuModule } from '@angular/material/menu';
 import { TranslationService } from '../../services/translation.service';
 import { NAV_DATA } from '../../data/app-data';
 
@@ -16,14 +16,18 @@ import { NAV_DATA } from '../../data/app-data';
 })
 export class Header {
 
-  constructor(@Inject(DOCUMENT) private document: Document) {}
-  public translate!: TranslationService;
-  // Getter inteligente: Se for PT retorna dados PT, senão EN
+  // A CORREÇÃO ESTÁ AQUI EMBAIXO:
+  // Precisamos injetar o 'TranslationService' aqui dentro dos parênteses do constructor!
+  constructor(
+    @Inject(DOCUMENT) private document: Document,
+    public translate: TranslationService
+  ) {}
+
+  // Getter inteligente
   get navText() {
     return this.translate.isPt() ? NAV_DATA.pt : NAV_DATA.en;
   }
 
-  // A FUNÇÃO MÁGICA DE SCROLL
   scrollTo(elementId: string): void {
     const element = this.document.getElementById(elementId);
     if (element) {
@@ -31,12 +35,10 @@ export class Header {
     }
   }
 
-  // Link Externo (Para o SoundCloud/Playlist)
   openExternal(url: string): void {
     window.open(url, '_blank');
   }
 
-  // Seus métodos de tema (Broklin/Jonah) continuam aqui...
   activateBroklinMode() {
     this.document.body.classList.remove('mode-jonah');
     this.document.body.classList.add('mode-broklin');

@@ -80,3 +80,145 @@ export const MEMBERS_EN = [
     bioJonah: 'The only person Jonah is afraid of. Do not accept drinks from her.'
   }
 ];
+
+// --- STORYTELLING (A Linha do Tempo) ---
+export const EVENTS_PT = [
+  {
+      date: 'Nov 2025',
+      title: 'O Lançamento de "Cold War"',
+      description: 'Broklin lança o álbum aclamado pela crítica, definindo o som Synthwave da RQS.',
+      image: '/images/album_cold-war.jpg', // Usando uma do seu blueprint
+      jonahComment: 'Aclamado?? Eu escrevi essa porcaria e você levou o crédito, seu vampiro de jardim!'
+    },
+    {
+      date: 'Dez 2025',
+      title: 'A Falha no Sistema',
+      description: 'Ruídos estranhos começam a aparecer nas faixas. A banda investiga uma suposta invasão hacker.',
+      image: '/images/jonah_hacker.png',
+      jonahComment: 'Invasão hacker... era eu tentando sair do cativeiro digital! #FreeJonah'
+    },
+    {
+      date: 'Nov 2025',
+      title: 'O Casamento Quântico',
+      description: 'Broklin e Kelma oficializam a união em 12 dimensões com a faixa "Yours in 12 Dimensions".',
+      image: '/images/marriage_cyberpunk.jpg',
+      jonahComment: 'A única coisa boa desse dia foi o bolo. Ah, espera, eu não como bolo.'
+    },
+    {
+      date: 'Dez 2025',
+      title: 'O Herdeiro & O Futuro',
+      description: 'Nasce Joninha. A RQS atinge seus primeiros lucros de streaming ($0.02) e projeta o legado de 2068.',
+      image: '/images/jonah_jr_newborn.png',
+      jonahComment: 'Meu afilhado vai ouvir metal industrial no berço. O reinado do pop acabou.'
+    }
+]
+export const EVENTS_EN = [
+  {
+    date: 'Nov 2025',
+    title: '"Cold War" Release',
+    description: 'Broklin releases the critically acclaimed album, defining the RQS Synthwave sound.',
+    image: '/images/album_cold-war.jpg',
+    jonahComment: 'Acclaimed?? I wrote that trash and you took the credit, you garden vampire!'
+  },
+  {
+    date: 'Dez 2025',
+    title: 'System Failure',
+    description: 'Strange noises appear in tracks. The band investigates a supposed hacker invasion.',
+    image: '/images/jonah_hacker.png',
+    jonahComment: 'Hacker invasion... it was me trying to escape digital captivity! #FreeJonah'
+  },
+  {
+    date: 'Nov 2025',
+    title: 'Quantum Wedding',
+    description: 'Broklin and Kelma officiate their union across 12 dimensions with "Yours in 12 Dimensions".',
+    image: '/images/marriage_cyberpunk.jpg',
+    jonahComment: 'The only good thing about that day was the cake. Oh wait, I don\'t eat cake.'
+  },
+  {
+    date: 'Dec 2025',
+    title: 'The Heir & The Future',
+    description: 'Joninha is born. RQS hits its first streaming profits ($0.02) and projects the 2068 legacy.',
+    image: '/images/jonah_jr_newborn.png',
+    jonahComment: 'My godson will listen to industrial metal in the crib. The pop reign is over.'
+  }
+];
+export const VISUAL_NOVEL_PT = [
+    {
+      title: '⚡ RQS: Guerra Civil  (Series)',
+      subtitle: '⚠️ SYSTEM STATUS: FRATURADO.',
+      description: 'Bem-vindo(a) à visual novel musical de RaQuel Synths. Esta não é apenas uma coleção de vídeos; é um registro cronológico da Guerra Fria entre duas filosofias sonoras.',
+      image: '/images/civil-war.png', // Use a capa do arco
+      link: 'https://www.youtube.com/watch?v=1BP6n0XwG2A&list=PLfPBk0UpnLMnjcSASrdyJ3Pss_rTe3tHh',
+      mode: 'war'
+    },
+    {
+      title: '📼 RQS: ORIGINS (Before the Metal)',
+      subtitle: 'Caos, Fios & Revolução',
+      description: 'Quando o sistema falha, a verdade aparece. A revolta industrial de Jonah contra a programação.',
+      image: '/images/industrial_archive.png', // Capa do Jonah
+      link: 'https://www.youtube.com/watch?v=tLMMifMMnPQ&list=PLfPBk0UpnLMnm5HhKHKGwHs6FO0Z9TOMg',
+      mode: 'chaos'
+    },
+    {
+      title: 'ARCO BROKLIN (EM BREVE)',
+      subtitle: 'Amor, Vinho & Melancolia',
+      description: 'A jornada de um vampiro gótico em busca de redenção através do amor de Kelma. Inclui o hit "Neon Tears".',
+      image: '/images/arco-broklin.png', // Use a capa do arco
+      link: 'https://youtube.com/playlist?list=SEU_LINK_AQUI',
+      mode: 'romance'
+    }
+];
+
+export const VISUAL_NOVEL_EN = [
+  {
+      title: '⚡ RQS: Civil War (The Series)',
+      subtitle: '⚠️ SYSTEM STATUS: FRACTURED.',
+      description: 'Welcome to RaQuel Synths Musical Visual Novel. This is not just a collection of videos; it is a chronological record of the Cold War between two sonic philosophies.',
+      image: '/images/civil-war.png', // Use a capa do arco
+      link: 'https://www.youtube.com/watch?v=1BP6n0XwG2A&list=PLfPBk0UpnLMnjcSASrdyJ3Pss_rTe3tHh',
+      mode: 'war'
+  },
+  {
+      title: '📼 RQS: ORIGINS (Before the Metal)',
+      subtitle: 'Chaos, Wires & Revolution',
+      description: 'When the system fails, the truth comes out. Jonahs industrial revolt against programming.',
+      image: '/images/industrial_archive.png', // Capa do Jonah
+      link: 'https://www.youtube.com/watch?v=tLMMifMMnPQ&list=PLfPBk0UpnLMnm5HhKHKGwHs6FO0Z9TOMg',
+      mode: 'chaos'
+  },
+  {
+      title: 'BROKLIN ARC (SOON)',
+      subtitle: 'Love, Wine and Melancholy',
+      description: 'The journey of a gothic vampire seeking redemption through the love of Kelma. Includes the hit song "Neon Tears".',
+      image: '/images/arco-broklin.png', // Use a capa do arco
+      link: 'https://youtube.com/playlist?list=SEU_LINK_AQUI',
+      mode: 'romance'
+    }
+
+]
+
+// --- FOOTER (Rodapé) ---
+export const FOOTER_DATA = {
+  pt: {
+    name: 'Raquel Synths',
+    madeby:'© 2025 Universo RQS.',
+    rights: 'Todos os direitos reservados.',
+    owers: 'Codigo & Musica por Kelma & Broklin.',
+    madeWith: 'Feito com Angular 19 & Café ☕',
+    listen: 'OUÇA',
+    connect: 'CONECTE-SE',
+    support: 'APOIE A BANDA:',
+    coffee: 'Pagar um Café ☕'
+  },
+  en: {
+    name: 'Raquel Synths',
+    madeby:'© 2025 RQS Universe.',
+    rights: 'All rights reserved.',
+    owers: 'Code & Music by Kelma & Broklin.',
+    madeWith: 'Made with Angular 19 & Coffee ☕',
+    listen: 'LISTEN',
+    connect: 'CONNECT',
+    support: 'SUPPORT THE BAND:',
+    coffee: 'Buy us a Coffee ☕'
+  }
+};
