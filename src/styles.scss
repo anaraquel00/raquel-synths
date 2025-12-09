@@ -40,7 +40,7 @@ body {
   color: var(--text-color);
 
   /* IMAGEM DE FUNDO DO BROKLIN */
-  background-image: url('/images/broklin_universe.png');
+
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -60,10 +60,19 @@ body.mode-jonah {
   --font-heading: 'Courier Prime', monospace;
 
   /* IMAGEM DE FUNDO DO JONAH */
-  background-image: url('/images/cyberpunk_industrial.png');
+
 
   /* Filtro de "Filme Velho" */
   filter: contrast(110%) sepia(20%);
+
+  body {
+  /* O endereço completo do GitHub Pages */
+  background-image: url('https://anaraquel00.github.io/raquel-synths/images/broklin_universe.png');
+}
+
+body.mode-jonah {
+  background-image: url('https://anaraquel00.github.io/raquel-synths/images/cyberpunk_industrial.png');
+}
 }
 
 
