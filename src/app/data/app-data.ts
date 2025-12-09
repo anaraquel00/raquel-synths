@@ -10,6 +10,18 @@ export const HOME_DATA = {
   en: { title: 'RAQUEL SYNTHS', subtitle: 'Sonic journeys through landscapes of neon and nostalgia.', cta: 'LEARN MORE' }
 };
 
+// TEXTOS DA SEÇÃO VISUAL NOVEL
+export const VN_TEXT = {
+  pt: {
+    title: 'A SAGA VISUAL (YouTube)',
+    subtitle: 'Escolha seu arco e assista aos episódios.'
+  },
+  en: {
+    title: 'THE VISUAL SAGA (YouTube)',
+    subtitle: 'Choose your arc and watch the episodes.'
+  }
+};
+
 // DADOS DO "SOBRE" (BIOS)
 export const MEMBERS_PT = [
   {

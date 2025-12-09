@@ -15,12 +15,13 @@ import { NAV_DATA } from '../../data/app-data';
   styleUrl: './header.scss'
 })
 export class Header {
+  translate: any;
 
   // A CORREÇÃO ESTÁ AQUI EMBAIXO:
   // Precisamos injetar o 'TranslationService' aqui dentro dos parênteses do constructor!
   constructor(
     @Inject(DOCUMENT) private document: Document,
-    public translate: TranslationService
+    public TranslationService: TranslationService
   ) {}
 
   // Getter inteligente

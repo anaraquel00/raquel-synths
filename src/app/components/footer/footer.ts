@@ -9,7 +9,8 @@ import { TranslationService } from '../../services/translation.service';
   styleUrl: './footer.scss'
 })
 export class Footer {
-  constructor(public translate: TranslationService) {}
+  translate: any;
+  constructor(public TranslationService: TranslationService) {}
 
   get t() { // "t" de text
     return this.translate.isPt() ? FOOTER_DATA.pt : FOOTER_DATA.en;
