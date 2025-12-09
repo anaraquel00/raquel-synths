@@ -7,37 +7,21 @@ import { MatIconModule } from "@angular/material/icon";
   styleUrl: './footer.scss'
 })
 export class Footer {
-// O "Link Mágico" do PayPal (agora mascarado de "Buy me a Coffee")
-  // Dica: No 'item_name' coloquei 'Coffee_for_RQS' para ficar estiloso na fatura do gringo.
-  private myEmail = 'anaraquel00@gmail.com';
-  private magicLink = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${this.myEmail}&currency_code=USD&item_name=Coffee_for_RQS_Devs`;
+// SEUS DADOS REAIS
+  paypalLink = 'https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=anaraquel00@gmail.com&currency_code=USD&item_name=Support_RQS'; // Coloque seu link aqui
+  pixKey = '727721b9-52c4-421b-a232-63e1c4cab57b'; // Coloque sua chave aqui
 
-  // Sua chave Aleatória do Pix
-  private pixKey = '727721b9-52c4-421b-a232-63e1c4cab57b';
+  openPaypal() {
+    window.open(this.paypalLink, '_blank');
+  }
 
-  openDonation() {
-    // O Menu de Escolha Global
-    const choice = confirm(
-      "🌍 CHOOSE YOUR WEAPON / ESCOLHA SEU APOIO 🇧🇷\n\n" +
-      "☕ INTERNATIONAL: Click [OK] to 'Buy us a Coffee' via PayPal (USD).\n\n" +
-      "💠 BRASIL: Clique em [CANCELAR] para copiar a chave PIX."
-    );
-
-    if (choice) {
-      // Rota Internacional (PayPal/Café)
-      window.open(this.magicLink, '_blank');
-    } else {
-      // Rota Nacional (Pix Aleatório)
-      navigator.clipboard.writeText(this.pixKey).then(() => {
-        alert(
-          `✅ Chave PIX (Aleatória) copiada!\n\n` +
-          `Cole no seu app do banco.\n\n` +
-          `A Resistência BR agradece! 🤘🇧🇷`
-        );
-      }).catch(() => {
-        // Fallback caso a cópia falhe
-        prompt("Copie a chave PIX manualmente:", this.pixKey);
-      });
-    }
+  copyPix() {
+    // A API do navegador para copiar texto
+    navigator.clipboard.writeText(this.pixKey).then(() => {
+      alert(`🇧🇷 Chave PIX copiada: ${this.pixKey}\nObrigado pelo café! ☕`);
+    }).catch(err => {
+      console.error('Erro ao copiar', err);
+      alert('Anota aí a chave: ' + this.pixKey);
+    });
   }
 }

@@ -28,8 +28,21 @@
         <li><a href="https://www.instagram.com/rqs_synths" target="_blank">Instagram</a></li>
         <li><a href="https://www.tiktok.com/@raquel_holanda_" target="_blank">TikTok</a></li>
         <li><a href="https://x.com/anaraquel00" target="_blank">X / Twitter</a></li>
-        <li><a style="cursor: pointer;" (click)="openDonation()">Buy me a Coffee/ Café para os Devs (Paypal/Pix)</a></li>
+        <li style="margin-top: 15px; margin-bottom: 5px;">
+          <strong style="color: var(--accent-color); font-size: 0.9rem;">APOIE A BANDA:</strong>
+        </li>
 
+        <li>
+          <a style="cursor: pointer;" (click)="openPaypal()" class="donate-btn paypal">
+            <mat-icon>public</mat-icon> PayPal (Intl.)
+          </a>
+        </li>
+
+        <li>
+          <a style="cursor: pointer;" (click)="copyPix()" class="donate-btn pix">
+            <mat-icon>pix</mat-icon> PIX (Brasil)
+          </a>
+        </li>
       </ul>
     </div>
 
