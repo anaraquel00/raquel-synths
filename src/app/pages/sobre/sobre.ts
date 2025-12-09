@@ -14,16 +14,16 @@ export class SobreComponent {
 
   // Começa com PT
   members = MEMBERS_PT;
-  translate: any;
 
-  constructor(private TranslationService: TranslationService) {
-    // A MÁGICA: Sempre que o idioma mudar, ele troca o array inteiro!
+  constructor(public translate: TranslationService) {
     effect(() => {
       if (this.translate.isPt()) {
         this.members = MEMBERS_PT;
       } else {
         this.members = MEMBERS_EN;
       }
-    });
+    });}
+    // A MÁGICA: Sempre que o idioma mudar, ele troca o array inteiro!
+
   }
-}
+

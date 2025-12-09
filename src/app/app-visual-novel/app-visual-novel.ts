@@ -15,10 +15,9 @@ import { VISUAL_NOVEL_EN, VISUAL_NOVEL_PT } from '../data/app-data';
 export class VisualNovelComponent {
 
   arcs = VISUAL_NOVEL_PT;
-  translate: any;
-text: any;
+  text: any;
 
-  constructor(private TranslationService: TranslationService) {
+  constructor(public translate: TranslationService) {
     effect(() => {
       if (this.translate.isPt()) {
         this.arcs = VISUAL_NOVEL_PT;

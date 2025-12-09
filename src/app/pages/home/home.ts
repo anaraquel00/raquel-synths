@@ -10,8 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrl: './home.scss'
 })
 export class Home {
-  translate: any;
-  constructor(public TranslationService: TranslationService) { }
+   constructor(public translate: TranslationService) { }
   get navText() {
     return this.translate.isPt() ? HOME_DATA.pt : HOME_DATA.en;
   }

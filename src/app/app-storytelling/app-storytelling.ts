@@ -22,9 +22,8 @@ export class StorytellingComponent {
 
   // Começa com PT por padrão
   events = EVENTS_PT;
-  translate: any;
 
-  constructor(private TranslationService: TranslationService) {
+  constructor(public translate: TranslationService) {
     // O "Ouvido" do componente:
     effect(() => {
       if (this.translate.isPt()) {
