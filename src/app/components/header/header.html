@@ -3,6 +3,10 @@
 
   <span class="spacer"></span>
 
+  <button mat-button (click)="translate.toggle()">
+  {{ translate.isPt() ? '🇺🇸 EN' : '🇧🇷 PT' }}
+  </button>
+
   <button mat-button (click)="activateBroklinMode()">
     <mat-icon>diamond</mat-icon> BROKLIN
   </button>
@@ -10,8 +14,8 @@
     <mat-icon>warning</mat-icon> JONAH
   </button>
 
-  <button mat-button (click)="scrollTo('sobre')">SOBRE</button>
-  <button mat-button (click)="scrollTo('visual-novel')">VISUAL NOVEL</button>
+  <button mat-button (click)="scrollTo('sobre')">{{ navText.sobre }}</button>
+  <button mat-button (click)="scrollTo('visual-novel')">{{ navText.visualNovel }}</button>
   <button mat-button (click)="scrollTo('discografia')">DISCOGRAFIA</button>
 
   <button mat-button (click)="openExternal('https://soundcloud.com/rqs_official/albums')">

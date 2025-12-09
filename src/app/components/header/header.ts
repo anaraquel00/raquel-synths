@@ -4,6 +4,8 @@ import { MatToolbar } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu'; // Mantemos caso use para Discografia/Playlist
+import { TranslationService } from '../../services/translation.service';
+import { NAV_DATA } from '../../data/app-data';
 
 @Component({
   selector: 'app-header',
@@ -15,6 +17,11 @@ import { MatMenuModule } from '@angular/material/menu'; // Mantemos caso use par
 export class Header {
 
   constructor(@Inject(DOCUMENT) private document: Document) {}
+  public translate!: TranslationService;
+  // Getter inteligente: Se for PT retorna dados PT, senão EN
+  get navText() {
+    return this.translate.isPt() ? NAV_DATA.pt : NAV_DATA.en;
+  }
 
   // A FUNÇÃO MÁGICA DE SCROLL
   scrollTo(elementId: string): void {
