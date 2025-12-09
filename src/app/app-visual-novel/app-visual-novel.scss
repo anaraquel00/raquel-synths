@@ -1,0 +1,113 @@
+.vn-container {
+  padding: 4rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.section-title {
+  font-family: var(--font-heading);
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 10px var(--primary-color);
+}
+
+.section-subtitle {
+  color: var(--text-color);
+  opacity: 0.8;
+  margin-bottom: 3rem;
+  font-style: italic;
+}
+
+.arcs-grid {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.arc-card {
+  width: 350px;
+  background: rgba(0,0,0,0.8);
+  border: 1px solid var(--primary-color);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.arc-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 30px rgba(98, 0, 234, 0.4);
+}
+
+/* O Pôster */
+.poster {
+  height: 200px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.poster:hover .overlay {
+  opacity: 1;
+}
+
+.play-btn {
+  transform: scale(1.5);
+}
+
+/* Info Text */
+.arc-info {
+  padding: 20px;
+  text-align: left;
+}
+
+.arc-info h3 {
+  color: var(--accent-color);
+  margin: 0;
+  font-family: var(--font-heading);
+}
+
+.subtitle {
+  display: block;
+  font-size: 0.9rem;
+  color: #aaa;
+  margin-bottom: 10px;
+}
+
+.watch-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 15px;
+  color: var(--text-color);
+  text-decoration: none;
+  font-weight: bold;
+  border-bottom: 2px solid var(--accent-color);
+}
+
+.watch-link:hover {
+  color: var(--accent-color);
+}
+
+/* MODO JONAH - EFEITO GLITCH NOS CARDS */
+:host-context(body.mode-jonah) {
+  .arc-card {
+    border-color: #bf360c;
+    border-radius: 0; /* Quadrado */
+  }
+  .poster {
+    filter: grayscale(100%) contrast(150%);
+  }
+}

@@ -1,0 +1,28 @@
+<section class="vn-container">
+  <h2 class="section-title">A SAGA VISUAL (YouTube)</h2>
+  <p class="section-subtitle">Escolha seu arco e assista aos episódios.</p>
+
+  <div class="arcs-grid">
+    <div class="arc-card" *ngFor="let arc of arcs" [ngClass]="arc.mode">
+
+      <div class="poster" [style.backgroundImage]="'url(' + arc.image + ')'">
+        <div class="overlay">
+          <button mat-fab color="accent" class="play-btn" (click)="window.open(arc.link, '_blank')">
+            <mat-icon>play_arrow</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="arc-info">
+        <h3>{{ arc.title }}</h3>
+        <span class="subtitle">{{ arc.subtitle }}</span>
+        <p>{{ arc.description }}</p>
+
+        <a [href]="arc.link" target="_blank" class="watch-link">
+          ASSISTIR AGORA <mat-icon>open_in_new</mat-icon>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
