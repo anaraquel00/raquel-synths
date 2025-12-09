@@ -10,7 +10,6 @@ import { TranslationService } from '../../services/translation.service';
 })
 export class Footer {
   constructor(public translate: TranslationService) {
-
     }
 
   get t() { // "t" de text

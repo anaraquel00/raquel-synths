@@ -209,6 +209,29 @@ export const VISUAL_NOVEL_EN = [
 
 ]
 
+// --- DADOS DA DISCOGRAFIA ---
+export const DISCOGRAPHY_PT = {
+  broklin: [
+    { title: 'COLD WAR', type: 'Álbum (2025)', cover: '/images/album_cold-war.jpg', spotify: '', soundcloud: 'https://soundcloud.com/you/albums' },
+    { title: 'NEON TEARS', type: 'Single', cover: '/images/discografia.png', spotify: '', soundcloud: '' }
+  ],
+  jonah: [
+    { title: 'CIVIL WAR', type: 'EP Industrial', cover: '/images/civil-war.png', spotify: '', soundcloud: '' },
+    { title: 'SYSTEM FAILURE', type: 'Single (ft. Nyx)', cover: '/images/industrial_archive.png', spotify: '', soundcloud: '' }
+  ]
+};
+
+export const DISCOGRAPHY_EN = {
+  broklin: [
+    { title: 'COLD WAR', type: 'Album (2025)', cover: '/images/album_cold-war.jpg', spotify: '', soundcloud: 'https://soundcloud.com/you/albums' },
+    { title: 'NEON TEARS', type: 'Single', cover: '/images/discografia.png', spotify: '', soundcloud: '' }
+  ],
+  jonah: [
+    { title: 'CIVIL WAR', type: 'Industrial EP', cover: '/images/civil-war.png', spotify: '', soundcloud: '' },
+    { title: 'SYSTEM FAILURE', type: 'Single (ft. Nyx)', cover: '/images/industrial_archive.png', spotify: '', soundcloud: '' }
+  ]
+};
+
 // --- FOOTER (Rodapé) ---
 export const FOOTER_DATA = {
   pt: {

@@ -1,9 +1,9 @@
 import { Component, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon'; // Removi MatIcon solto
+import { MatIconModule } from '@angular/material/icon';
 import { TranslationService } from '../services/translation.service';
-import { VISUAL_NOVEL_EN, VISUAL_NOVEL_PT } from '../data/app-data';
+import { VISUAL_NOVEL_EN, VISUAL_NOVEL_PT, VN_TEXT } from '../data/app-data';
 
 @Component({
   selector: 'app-visual-novel',
@@ -15,10 +15,10 @@ import { VISUAL_NOVEL_EN, VISUAL_NOVEL_PT } from '../data/app-data';
 export class VisualNovelComponent {
 
   arcs = VISUAL_NOVEL_PT;
-  text: any;
 
   constructor(public translate: TranslationService) {
     effect(() => {
+      // Atualiza os cards (Arcos)
       if (this.translate.isPt()) {
         this.arcs = VISUAL_NOVEL_PT;
       } else {
@@ -27,7 +27,12 @@ export class VisualNovelComponent {
     });
   }
 
-  // --- AQUI ESTÁ A TRADUÇÃO DO BOTÃO ---
+  // 2. AQUI ESTÁ A CURA DO ERRO (O GETTER MÁGICO):
+  get text() {
+    return this.translate.isPt() ? VN_TEXT.pt : VN_TEXT.en;
+  }
+
+  // Getter do botão
   get buttonText() {
     return this.translate.isPt() ? 'ASSISTIR AGORA' : 'WATCH NOW';
   }

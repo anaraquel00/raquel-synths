@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { TranslationService } from '../services/translation.service';
+import { DISCOGRAPHY_EN, DISCOGRAPHY_PT } from '../data/app-data';
 
 @Component({
   selector: 'app-discography',
@@ -12,41 +14,18 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class DiscographyComponent {
 
-  // Lançamentos do Universo Broklin (Ordem)
-  broklinReleases = [
-    {
-      title: 'COLD WAR',
-      type: 'Álbum (2025)',
-      cover: '/images/album_cold-war.jpg', // Use a imagem que você subiu!
-      spotify: 'LINK_SPOTIFY',
-      soundcloud: 'LINK_SOUNDCLOUD'
-    },
-    {
-      title: 'NEON TEARS',
-      type: 'Single',
-      cover: '/images/discografia.png',
-      spotify: 'LINK_SPOTIFY',
-      soundcloud: 'LINK_SOUNDCLOUD'
-    }
-  ];
+  // Variáveis para o HTML
+  broklinReleases = DISCOGRAPHY_PT.broklin;
+  jonahReleases = DISCOGRAPHY_PT.jonah;
 
-  // Lançamentos do Universo Jonah (Caos)
-  jonahReleases = [
-    {
-      title: 'CIVIL WAR',
-      type: 'EP Industrial',
-      cover: '/images/civil-war.png',
-      spotify: 'LINK_SPOTIFY',
-      soundcloud: 'LINK_SOUNDCLOUD'
-    },
-    {
-      title: 'SYSTEM FAILURE',
-      type: 'Single (ft. Nyx)',
-      cover: '/images/industrial_archive.png',
-      spotify: 'LINK_SPOTIFY',
-      soundcloud: 'LINK_SOUNDCLOUD'
-    }
-  ];
+  constructor(private translate: TranslationService) {
+    effect(() => {
+      // Atualiza as listas quando troca o idioma
+      const data = this.translate.isPt() ? DISCOGRAPHY_PT : DISCOGRAPHY_EN;
+      this.broklinReleases = data.broklin;
+      this.jonahReleases = data.jonah;
+    });
+  }
 
   openLink(url: string) {
     if(url && url !== 'LINK_SPOTIFY' && url !== 'LINK_SOUNDCLOUD') {
