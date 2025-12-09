@@ -7,11 +7,37 @@ import { MatIconModule } from "@angular/material/icon";
   styleUrl: './footer.scss'
 })
 export class Footer {
-openDonation() {
-    // Opção A: Alerta Simples
-    //alert("💸 O Cofre da RQS está sendo forjado! Em breve você poderá apoiar nossa arte. Obrigado pela intenção! 🖤");
+// O "Link Mágico" do PayPal (agora mascarado de "Buy me a Coffee")
+  // Dica: No 'item_name' coloquei 'Coffee_for_RQS' para ficar estiloso na fatura do gringo.
+  private myEmail = 'anaraquel00@gmail.com';
+  private magicLink = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${this.myEmail}&currency_code=USD&item_name=Coffee_for_RQS_Devs`;
 
-    //Opção B: Se tiver o link, abre (futuro)
-     //window.open('https://www.paypal.com/donate/?hosted_button_id=THMR8MPC7XYRU', '_blank');
+  // Sua chave Aleatória do Pix
+  private pixKey = '727721b9-52c4-421b-a232-63e1c4cab57b';
+
+  openDonation() {
+    // O Menu de Escolha Global
+    const choice = confirm(
+      "🌍 CHOOSE YOUR WEAPON / ESCOLHA SEU APOIO 🇧🇷\n\n" +
+      "☕ INTERNATIONAL: Click [OK] to 'Buy us a Coffee' via PayPal (USD).\n\n" +
+      "💠 BRASIL: Clique em [CANCELAR] para copiar a chave PIX."
+    );
+
+    if (choice) {
+      // Rota Internacional (PayPal/Café)
+      window.open(this.magicLink, '_blank');
+    } else {
+      // Rota Nacional (Pix Aleatório)
+      navigator.clipboard.writeText(this.pixKey).then(() => {
+        alert(
+          `✅ Chave PIX (Aleatória) copiada!\n\n` +
+          `Cole no seu app do banco.\n\n` +
+          `A Resistência BR agradece! 🤘🇧🇷`
+        );
+      }).catch(() => {
+        // Fallback caso a cópia falhe
+        prompt("Copie a chave PIX manualmente:", this.pixKey);
+      });
+    }
   }
 }
