@@ -11,19 +11,11 @@
   </button>
 
   <button mat-button (click)="scrollTo('sobre')">SOBRE</button>
+  <button mat-button (click)="scrollTo('visual-novel')">VISUAL NOVEL</button>
+  <button mat-button (click)="scrollTo('discografia')">DISCOGRAFIA</button>
 
-  <button mat-button (click)="scrollTo('storytelling')">STORYTELLER</button>
-
-  <button mat-button [matMenuTriggerFor]="discografiaMenu">DISCOGRAFIA</button>
-  <mat-menu #discografiaMenu="matMenu" panelClass="rqs-menu-panel">
-    <button mat-menu-item>Singles</button>
-    <button mat-menu-item>Álbuns</button>
-  </mat-menu>
-
-  <button mat-button [matMenuTriggerFor]="playlistMenu">PLAYLIST</button>
-  <mat-menu #playlistMenu="matMenu" panelClass="rqs-menu-panel">
-    <button mat-menu-item>Spotify</button>
-    <button mat-menu-item>SoundCloud</button>
-  </mat-menu>
+  <button mat-button (click)="openExternal('https://soundcloud.com/rqs_official/albums')">
+    PLAYLIST <mat-icon iconPositionEnd>open_in_new</mat-icon>
+  </button>
 
 </mat-toolbar>

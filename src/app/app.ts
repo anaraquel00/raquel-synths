@@ -6,10 +6,17 @@ import { AppThemeSwitcher } from './app-theme-switcher/app-theme-switcher';
 import { StorytellingComponent } from "./app-storytelling/app-storytelling";
 import { SobreComponent } from "./pages/sobre/sobre";
 import { VisualNovelComponent } from "./app-visual-novel/app-visual-novel";
+import { DiscographyComponent } from "./app-discography/app-discography";
 
 @Component({
   selector: 'app-root',
-  imports: [Header, Footer, Home, StorytellingComponent, SobreComponent, VisualNovelComponent],
+  imports: [Header,
+    Footer,
+    Home,
+    StorytellingComponent,
+    SobreComponent,
+    VisualNovelComponent,
+    DiscographyComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })

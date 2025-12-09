@@ -24,6 +24,11 @@ export class Header {
     }
   }
 
+  // Link Externo (Para o SoundCloud/Playlist)
+  openExternal(url: string): void {
+    window.open(url, '_blank');
+  }
+
   // Seus métodos de tema (Broklin/Jonah) continuam aqui...
   activateBroklinMode() {
     this.document.body.classList.remove('mode-jonah');

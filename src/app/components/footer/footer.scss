@@ -1,168 +1,91 @@
-/* .rqs-footer {
+.rqs-footer {
   display: flex;
-  flex-direction: row;
-  background-color: #000000 !important;
-  color: #86f863 !important;
-  display:flex;
   flex-direction: column;
+  background-color: var(--footer-bg);
+  color: var(--footer-text);
+  transition: background-color 0.5s ease, color 0.5s ease;
+  border-top: 4px solid var(--primary-color); /* Engrossei a borda para dar peso */
+  padding-bottom: 2rem;
 }
+
 .footer-container {
   display: flex;
   flex-direction: row;
-  flex-wrap: nowrap;
+  flex-wrap: wrap; /* Garante que não quebre no celular */
   justify-content: space-between;
   max-width: 1000px;
   margin: 0 auto;
-  }
-
- .footer-divider {
-  border: none;
-  border-top: 1px solid #444; // Cor sutil para a linha
   width: 100%;
-  max-width: 1200px; // Para alinhar com o container
-  margin: 34px auto 2rem auto; // Centraliza e adiciona espaço abaixo
+}
+
+.footer-divider {
+  border: none;
+  /* Efeito de brilho na linha separadora */
+  background: radial-gradient(circle, var(--primary-color) 0%, transparent 100%);
+  height: 1px;
+  width: 80%;
+  margin: 0 auto 2rem auto;
+  opacity: 0.5;
 }
 
 .footer-column {
   flex: 1;
-  padding: 25px 1rem;
+  padding: 1rem;
   min-width: 200px;
+  text-align: center; /* Centralizado fica mais elegante */
 }
 
-
-.social-links a {
-  color: #86f863;
-  margin: 0 8px;
-  text-decoration: none;
-}
-
-.social-links a:hover {
-  color: #86f863;
-}
-
-.footer-column links-column{
-  display: flex;
-  flex-direction: row;
-  text-decoration: none;
-  margin: 0 15px;
-}
-
+/* Títulos das Colunas */
 .footer-column h3 {
-  margin-bottom: 20px;
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-family: var(--font-heading);
+  color: var(--accent-color);
+  font-size: 1.2rem;
+  letter-spacing: 2px;
 }
 
 .nav-list {
   list-style: none;
   padding: 0;
-}
-.copyright-column {
-  // Remove ou comenta as propriedades flex se não precisar delas aqui.
-  // display: flex;
-  // align-items: center;
-
-  // Adiciona um pouco de preenchimento se necessário.
-  padding-top: 3.5rem;
-}
-
-.copyright-line {
-  margin: 0; // Remove a margem padrão dos parágrafos
-  padding: 0;
-  font-size: 0.9rem; // Ajuste o tamanho da fonte como desejar
-  color: #86f863; // Cor do texto
-  line-height: 1.5; // Espaçamento entre as linhas
-  font-weight: bold;
-}
-
-
-.footer-column a {
-  color: #86f863;
-  text-decoration: none;
-  display: block;
-  margin-bottom: 5px;
-  font-size: 0.9em;
-  font-weight: bold;
-  text-transform: uppercase;
-  align-items: baseline;
-  justify-content: center;
-  text-align: center;
-  transition: color 0.3s;
-  padding: 5px;
-  border-radius: 5px;
-
-}
-
-.footer-column a:hover {
-  color: #86f863;
-  background-color: #3afa0073;
-}
-
-.footer-bottom {
-  text-align: center;
-  margin-top: 20px;
-  font-size: 0.9em;
-}
-
-.footer-bottom a {
-  color: #86f863;
-  text-decoration: none;
-}
-
-.footer-bottom a:hover {
-  color: #000000;
-
-} */
-
-.rqs-footer {
-  display: flex;
-  flex-direction: column;
-  /* Adeus !important, olá variáveis */
-  background-color: var(--footer-bg);
-  color: var(--footer-text);
-  transition: background-color 0.5s ease, color 0.5s ease;
-  border-top: 2px solid var(--primary-color); /* Linha divisória temática */
-}
-
-.footer-container {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  justify-content: space-between;
-  max-width: 1000px;
-  margin: 0 auto;
-}
-
-.footer-divider {
-  border: none;
-  border-top: 1px solid var(--primary-color); /* Linha muda de cor */
-  width: 100%;
-  max-width: 1200px;
-  margin: 34px auto 2rem auto;
-}
-
-.copyright-line {
   margin: 0;
-  padding: 0;
-  font-size: 0.9rem;
-  color: var(--footer-text);
-  line-height: 1.5;
-  font-weight: bold;
 }
 
+.nav-list li {
+  margin-bottom: 8px;
+}
+
+/* Links */
 .footer-column a {
-  color: var(--footer-text); /* Cor do link dinâmica */
+  color: var(--footer-text);
   text-decoration: none;
-  display: block;
-  margin-bottom: 5px;
-  font-size: 0.9em;
   font-weight: bold;
-  text-transform: uppercase;
+  font-size: 0.95rem;
   transition: all 0.3s;
-  padding: 5px;
-  border-radius: 5px;
+  opacity: 0.8;
 }
 
 .footer-column a:hover {
-  /* Efeito Hover: Inverte as cores do tema atual */
-  color: var(--bg-color);
-  background-color: var(--accent-color);
+  color: var(--accent-color);
+  opacity: 1;
+  text-shadow: 0 0 8px var(--accent-color); /* Brilho neon no hover */
+  letter-spacing: 1px; /* Efeito sutil de expansão */
+}
+
+.copyright-line {
+  margin: 5px 0;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+/* MODO JONAH - Rodapé Industrial */
+:host-context(body.mode-jonah) {
+  .rqs-footer {
+    border-top-style: dashed; /* Linha tracejada industrial */
+  }
+  .footer-column h3 {
+    text-transform: uppercase;
+    border-bottom: 2px solid #bf360c;
+    display: inline-block;
+  }
 }

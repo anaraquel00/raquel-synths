@@ -1,0 +1,48 @@
+<section class="disco-container">
+  <h2 class="section-title">DISCOGRAFIA & STREAMS</h2>
+
+  <div class="disco-section broklin-side">
+    <h3 class="side-title"><mat-icon>diamond</mat-icon> UNIVERSO RQS (Synthwave)</h3>
+    <div class="album-grid">
+      <div class="album-card" *ngFor="let item of broklinReleases">
+        <img [src]="item.cover" class="cover-img">
+        <div class="album-info">
+          <h4>{{ item.title }}</h4>
+          <span>{{ item.type }}</span>
+          <div class="actions">
+            <button mat-icon-button class="spotify-btn" (click)="openLink(item.spotify)">
+              <i class="fa-brands fa-spotify"></i> <mat-icon>music_note</mat-icon>
+            </button>
+            <button mat-icon-button class="soundcloud-btn" (click)="openLink(item.soundcloud)">
+              <mat-icon>cloud</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="disco-section jonah-side">
+    <h3 class="side-title"><mat-icon>warning</mat-icon> JONAH'S REBELLION (Industrial)</h3>
+    <div class="album-grid">
+      <div class="album-card" *ngFor="let item of jonahReleases">
+        <img [src]="item.cover" class="cover-img">
+        <div class="album-info">
+          <h4>{{ item.title }}</h4>
+          <span>{{ item.type }}</span>
+          <div class="actions">
+            <button mat-icon-button class="spotify-btn" (click)="openLink(item.spotify)">
+              <mat-icon>music_note</mat-icon>
+            </button>
+            <button mat-icon-button class="soundcloud-btn" (click)="openLink(item.soundcloud)">
+              <mat-icon>cloud</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
