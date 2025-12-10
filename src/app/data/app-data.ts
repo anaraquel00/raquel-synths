@@ -243,7 +243,12 @@ export const FOOTER_DATA = {
     listen: 'OUÇA',
     connect: 'CONECTE-SE',
     support: 'APOIE A BANDA:',
-    coffee: 'Pagar um Café ☕'
+    coffee: 'Pagar um Café ☕',
+    // NOVOS DADOS DA NEWSLETTER:
+    newsTitle: '🔥 RECEBA O CAOS & A GLÓRIA',
+    newsDesc: 'Novos lançamentos, Lore secreta e fofocas do Jonah direto na sua caixa de entrada.',
+    emailPlace: 'seu@email.com',
+    subBtn: 'INSCREVER-SE'
   },
   en: {
     name: 'Raquel Synths',
@@ -254,6 +259,11 @@ export const FOOTER_DATA = {
     listen: 'LISTEN',
     connect: 'CONNECT',
     support: 'SUPPORT THE BAND:',
-    coffee: 'Buy us a Coffee ☕'
+    coffee: 'Buy us a Coffee ☕',
+    // NEW NEWSLETTER DATA:
+    newsTitle: '🔥 RECEIVE THE CHAOS & GLORY',
+    newsDesc: 'New releases, secret Lore, and Jonah\'s gossip straight to your inbox.',
+    emailPlace: 'your@email.com',
+    subBtn: 'SUBSCRIBE'
   }
 };

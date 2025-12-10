@@ -90,6 +90,64 @@
   }
 }
 
+/* --- NEWSLETTER --- */
+.newsletter-section {
+  text-align: center;
+  padding: 2rem 1rem;
+  background: rgba(255, 255, 255, 0.05); /* Leve destaque */
+  margin-bottom: 1rem;
+}
+
+.newsletter-section h4 {
+  color: var(--accent-color);
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: 1px;
+}
+
+.newsletter-section p {
+  opacity: 0.8;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.input-group {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap; /* Para mobile */
+}
+
+.input-group input {
+  padding: 10px 15px;
+  border-radius: 4px;
+  border: 1px solid var(--primary-color);
+  background: rgba(0,0,0,0.5);
+  color: #fff;
+  width: 250px;
+  outline: none;
+  font-family: 'Roboto', sans-serif;
+}
+
+.input-group input:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 10px var(--accent-color);
+}
+
+/* Ajuste no botão do Angular Material dentro da newsletter */
+.newsletter-section button {
+  height: 40px !important; /* Alinha com o input */
+  background-color: var(--primary-color) !important;
+  color: #fff !important;
+}
+
+/* Modo Jonah para a Newsletter */
+:host-context(body.mode-jonah) .newsletter-section {
+  border-bottom: 2px dashed #bf360c;
+  background: rgba(20, 0, 0, 0.8);
+}
+
 /* --- RESPONSIVIDADE MOBILE --- */
 @media (max-width: 768px) {
   .footer-container {

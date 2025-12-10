@@ -1,4 +1,14 @@
 <footer class="rqs-footer">
+  <div class="newsletter-section">
+    <h4>{{ t.newsTitle }}</h4>
+    <p>{{ t.newsDesc }}</p>
+    <div class="input-group">
+      <input type="email" [placeholder]="t.emailPlace">
+      <button mat-flat-button color="accent" (click)="subscribe()">
+        {{ t.subBtn }} <mat-icon>send</mat-icon>
+      </button>
+    </div>
+  </div>
   <hr class="footer-divider" />
 
   <div class="footer-container">

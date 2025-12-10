@@ -32,4 +32,11 @@ export class Footer {
       alert('Anota aí a chave: ' + this.pixKey);
     });
   }
+  // --- NOVA FUNÇÃO DA NEWSLETTER ---
+  subscribe() {
+    const msg = this.translate.isPt()
+      ? '🤘 Bem-vindo(a) à Resistência RQS! (Simulação: E-mail capturado!)'
+      : '🤘 Welcome to the RQS Resistance! (Simulation: Email captured!)';
+    alert(msg);
+  }
 }
