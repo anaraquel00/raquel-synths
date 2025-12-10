@@ -59,3 +59,28 @@
   .normal-text { display: none; }
   .jonah-text { display: block; font-weight: bold; }
 }
+
+/* --- RESPONSIVIDADE MOBILE --- */
+@media (max-width: 768px) {
+  .bios-container {
+    padding: 2rem 1rem; /* Menos borda */
+  }
+
+  .section-title {
+    font-size: 2.5rem;
+  }
+
+  .member-card {
+    width: 100%; /* Ocupa a largura disponível */
+    max-width: 350px; /* Mas não cresce demais */
+  }
+
+  /* Ajuste da imagem para não cortar em telas estranhas */
+  .image-frame {
+    height: 250px; /* Um pouco menor no mobile */
+  }
+
+  .info-box {
+    padding: 15px;
+  }
+}

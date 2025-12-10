@@ -14,3 +14,22 @@ mat-toolbar {
   margin: auto;
 }
 
+/* --- RESPONSIVIDADE MOBILE --- */
+@media (max-width: 900px) {
+  mat-toolbar {
+    height: auto !important; /* Permite crescer para baixo */
+    flex-wrap: wrap; /* Botões caem para a próxima linha */
+    justify-content: center;
+    padding: 10px 0;
+  }
+
+  /* Ajusta os botões para caberem melhor */
+  button {
+    font-size: 0.8rem;
+    margin: 2px 0;
+  }
+
+  .spacer {
+    display: none; /* Esconde o espaço vazio para compactar */
+  }
+}

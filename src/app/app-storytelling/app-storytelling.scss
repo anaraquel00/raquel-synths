@@ -132,3 +132,34 @@
     opacity: 0.6;
   }
 }
+
+/* --- RESPONSIVIDADE MOBILE (TIMELINE VERTICAL) --- */
+@media (max-width: 768px) {
+  /* A linha vertical vai para o canto esquerdo */
+  .timeline::after {
+    left: 31px;
+  }
+
+  /* Os cards ocupam a largura toda e dão espaço para a bolinha */
+  .timeline-item {
+    width: 100%;
+    padding-left: 70px; /* Espaço para a linha/bolinha */
+    padding-right: 25px;
+  }
+
+  /* Zera a posição do lado direito */
+  .timeline-item.right {
+    left: 0;
+  }
+
+  /* Ajusta a bolinha para ficar sempre na esquerda */
+  .timeline-item::after {
+    left: 21px; /* Alinha com a nova linha vertical */
+    right: auto; /* Remove configuração anterior */
+  }
+
+  /* O box do conteúdo */
+  .content-box {
+    font-size: 0.9rem;
+  }
+}

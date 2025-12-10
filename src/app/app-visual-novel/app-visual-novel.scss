@@ -111,3 +111,13 @@
     filter: grayscale(100%) contrast(150%);
   }
 }
+
+@media (max-width: 768px) {
+  .vn-container, .disco-container {
+    padding: 2rem 1rem; /* Reduz o padding vertical e horizontal */
+  }
+
+  .section-title {
+    font-size: 2rem; /* Título menor */
+  }
+}

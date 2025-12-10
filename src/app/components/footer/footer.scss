@@ -89,3 +89,28 @@
     display: inline-block;
   }
 }
+
+/* --- RESPONSIVIDADE MOBILE --- */
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column; /* Empilha as colunas */
+    align-items: center; /* Centraliza tudo */
+    gap: 2rem; /* Espaço entre os blocos */
+  }
+
+  .footer-column {
+    text-align: center; /* Texto centralizado */
+    min-width: 100%; /* Ocupa a largura toda */
+    padding: 0;
+  }
+
+  .nav-list li {
+    margin-bottom: 12px; /* Mais espaço para o dedo clicar */
+  }
+
+  /* Ajuste dos botões de doação para não ficarem grudados */
+  .donate-btn {
+    width: 80%;
+    margin: 5px auto;
+  }
+}
