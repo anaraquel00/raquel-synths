@@ -1,16 +1,24 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { MatIconModule } from "@angular/material/icon";
 import { FOOTER_DATA } from '../../data/app-data';
 import { TranslationService } from '../../services/translation.service';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { FormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+
 @Component({
   selector: 'app-footer',
-  imports: [MatIconModule],
+  imports: [CommonModule, FormsModule, MatIconModule, MatButtonModule],
   templateUrl: './footer.html',
   styleUrl: './footer.scss'
 })
 export class Footer {
-  constructor(public translate: TranslationService) {
-    }
+  constructor(
+    public translate: TranslationService,
+    private http: HttpClient // Injete o HttpClient
+  ) {}
+
 
   get t() { // "t" de text
     return this.translate.isPt() ? FOOTER_DATA.pt : FOOTER_DATA.en;
@@ -32,11 +40,33 @@ export class Footer {
       alert('Anota aí a chave: ' + this.pixKey);
     });
   }
-  // --- NOVA FUNÇÃO DA NEWSLETTER ---
+
+    // Variáveis reativas para controlar o formulário
+  email = signal('');
+  loading = signal(false);
+
+  // --- LÓGICA REAL DA NEWSLETTER ---
   subscribe() {
-    const msg = this.translate.isPt()
-      ? '🤘 Bem-vindo(a) à Resistência RQS! (Simulação: E-mail capturado!)'
-      : '🤘 Welcome to the RQS Resistance! (Simulation: Email captured!)';
-    alert(msg);
+    if (!this.email() || !this.email().includes('@')) {
+      alert('⚠️ Digite um e-mail válido!');
+      return;
+    }
+
+    this.loading.set(true); // Ativa estado de carregamento
+
+    // Chama sua API na Vercel
+    this.http.post('/api/subscribe', { email: this.email() }).subscribe({
+      next: () => {
+        this.loading.set(false);
+        this.email.set(''); // Limpa o campo
+        alert(this.translate.isPt() ? '✅ Inscrito com sucesso! Bem-vindo à Resistência.' : '✅ Subscribed successfully! Welcome to the Resistance.');
+      },
+      error: (err) => {
+        this.loading.set(false);
+        console.error(err);
+        alert('❌ Erro ao inscrever. Tente novamente mais tarde.');
+      }
+    });
   }
+
 }

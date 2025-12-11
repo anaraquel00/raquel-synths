@@ -2,12 +2,23 @@
   <div class="newsletter-section">
     <h4>{{ t.newsTitle }}</h4>
     <p>{{ t.newsDesc }}</p>
+
     <div class="input-group">
-      <input type="email" [placeholder]="t.emailPlace">
-      <button mat-flat-button color="accent" (click)="subscribe()">
-        {{ t.subBtn }} <mat-icon>send</mat-icon>
+      <input
+        type="email"
+        [placeholder]="t.emailPlace"
+        [ngModel]="email()"
+        (ngModelChange)="email.set($event)"
+        [disabled]="loading()"
+      >
+
+      <button mat-flat-button color="accent" (click)="subscribe()" [disabled]="loading()">
+        <span *ngIf="!loading()">{{ t.subBtn }}</span>
+        <span *ngIf="loading()">...</span>
+        <mat-icon *ngIf="!loading()">send</mat-icon>
       </button>
     </div>
+
   </div>
   <hr class="footer-divider" />
 
