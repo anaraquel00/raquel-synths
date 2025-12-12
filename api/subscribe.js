@@ -11,7 +11,7 @@ export default async function handler(req, res) {
   }
 
   const BREVO_KEY = process.env.BREVO_API_KEY;
-  const LIST_ID = 1; // <--- TROQUE PELO ID DA SUA LISTA NO BREVO (Geralmente 2 ou 3)
+  const LIST_ID = 2; // <--- TROQUE PELO ID DA SUA LISTA NO BREVO (Geralmente 2 ou 3)
 
   try {
     const response = await fetch('https://api.brevo.com/v3/contacts', {
