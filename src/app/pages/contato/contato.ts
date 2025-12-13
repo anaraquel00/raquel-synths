@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common'; // Importante para o *ngIf
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms'; // O Arsenal de Formulários
+import { CONTACT_DATA } from '../../data/app-data';
+import { TranslationService } from '../../services/translation.service';
 
 @Component({
   selector: 'app-contato',
@@ -12,12 +14,13 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
   templateUrl: './contato.html', // Ou o nome que você deu
   styleUrls: ['./contato.scss']
 })
-export class ContatoComponent implements OnInit {
+export class ContatoComponent {
   uplinkForm: FormGroup;
   isSending: boolean = false;
   successMessage: boolean = false;
 
-  constructor(private fb: FormBuilder) {
+
+  constructor(private fb: FormBuilder, public translate: TranslationService) {
     this.uplinkForm = this.fb.group({
       agentName: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
@@ -27,6 +30,10 @@ export class ContatoComponent implements OnInit {
     });
   }
 
+  // 👇 Getter Mágico para o HTML ler os textos
+  get text() {
+    return this.translate.isPt() ? CONTACT_DATA.pt : CONTACT_DATA.en;
+  }
   ngOnInit(): void {
   }
 

@@ -232,6 +232,49 @@ export const DISCOGRAPHY_EN = {
   ]
 };
 
+export const CONTACT_DATA = {
+  pt: {
+    heroButton: "📡 INICIAR UPLINK", // O botão da Home
+    title: "📡 UPLINK // PROTOCOLO DE COLABORAÇÃO",
+    subtitle: "Envie seu sinal. Buscamos frequências compatíveis.",
+    success: "✅ SINAL RECEBIDO. CÂMBIO E DESLIGO.",
+    form: {
+      name: "CODENAME (Nome):",
+      namePlaceholder: "Ex: Max Cavalera",
+      email: "FREQUÊNCIA (E-mail):",
+      emailPlaceholder: "contato@metal.com",
+      daw: "ARMA DE ESCOLHA (DAW):",
+      link: "PROVA DE ÁUDIO (Link):",
+      message: "MISSÃO (Mensagem):",
+      submit: "ENVIAR DADOS",
+      sending: "TRANSMITINDO..."
+    },
+    errors: {
+      required: "Dado obrigatório, Agente."
+    }
+  },
+  en: {
+    heroButton: "📡 INITIATE UPLINK", // O botão da Home
+    title: "📡 UPLINK // COLLABORATION PROTOCOL",
+    subtitle: "Send your signal. We search for compatible frequencies.",
+    success: "✅ SIGNAL RECEIVED. OVER AND OUT.",
+    form: {
+      name: "CODENAME (Name):",
+      namePlaceholder: "Ex: Trent Reznor",
+      email: "FREQUENCY (E-mail):",
+      emailPlaceholder: "contact@industrial.com",
+      daw: "WEAPON OF CHOICE (DAW):",
+      link: "AUDIO PROOF (Link):",
+      message: "MISSION BRIEF (Message):",
+      submit: "SEND DATA",
+      sending: "TRANSMITTING..."
+    },
+    errors: {
+      required: "Required data, Agent."
+    }
+  }
+};
+
 // --- FOOTER (Rodapé) ---
 export const FOOTER_DATA = {
   pt: {
@@ -266,4 +309,4 @@ export const FOOTER_DATA = {
     emailPlace: 'your@email.com',
     subBtn: 'SUBSCRIBE'
   }
-};
+ };

@@ -3,6 +3,9 @@
   <div class="hero-section">
     <h1 class="hero-title">{{ navText.title }}</h1>
     <p class="hero-subtitle">{{ navText.subtitle }}</p>
-    <button mat-stroked-button class="hero-cta">{{ navText.cta }}</button>
+
+    <button mat-button (click)="scrollTo('uplink-container')">
+      {{ contactText.heroButton }}
+    </button>
   </div>
 </div>

@@ -1,0 +1,9 @@
+.uplink-container {
+    // Usa a cor da borda definida pelo tema atual
+    border: 2px solid var(--primary-color);
+
+    button {
+        background: var(--accent-color);
+        color: var(--text-contrast);
+    }
+}
