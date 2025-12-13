@@ -1,71 +1,121 @@
-.home-container {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  text-align: center;
-  overflow: hidden;
-   //background-color: var(--bg-color); /* Fundo reage ao tema */
-}
+/* Importando os mixins do Material (se precisar) */
+@use '@angular/material' as mat;
 
-.hero-section {
-  max-width: 900px;
+.home-container {
+  /* Ocupa a tela toda (menos o header) */
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  position: relative; /* Para o z-index funcionar */
+}
+
+/* --- HERO SECTION (A Capa) --- */
+.hero-section {
+  flex: 1; /* Ocupa o espaço disponível */
+  display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
+  text-align: center;
   padding: 2rem;
-  color: var(--text-color); /* Texto dinâmico */
-  height: 100%;
-  z-index: 1;
-  background-color: rgba(0, 0, 0, 0.5); /* Fundo preto 50% transparente só atrás do texto */
-  backdrop-filter: blur(5px); /* Desfoca o universo atrás do texto (efeito vidro) */
-  border-radius: 15px;
-}
 
-.hero-title {
-  font-family: var(--font-heading); /* Fonte muda no modo Jonah */
-  font-size: 4rem;
-  font-weight: bold;
-  letter-spacing: 0.1em;
+  /* Fundo escuro semi-transparente para o texto brilhar */
+  background: var(--hero-overlay);
+  backdrop-filter: blur(2px); /* Um leve blur na imagem de fundo do body */
+
+  .hero-title {
+    font-size: 4rem;
+    font-weight: 900;
+    margin-bottom: 1rem;
+    font-family: var(--font-heading); /* Roboto ou Courier */
+
+    /* Gradiente no Texto (Opcional, mas fica chique) */
+    background: linear-gradient(90deg, #fff, var(--primary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    text-transform: uppercase;
+    letter-spacing: 4px;
+
+    /* Sombra Neon */
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+
+    @media (max-width: 768px) {
+      font-size: 2.5rem; /* Menor no celular */
+    }
+  }
+
+  .hero-subtitle {
+    font-size: 1.5rem;
+    max-width: 600px;
+    margin-bottom: 3rem;
+    color: var(--text-color);
+    opacity: 0.9;
+    font-weight: 300;
+    letter-spacing: 1px;
+
+    @media (max-width: 768px) {
+      font-size: 1.1rem;
+    }
+  }
+
+  .hero-cta {
+  /* TAMANHO & FONTE */
+  font-size: 1.2rem !important; /* Força o tamanho */
+  letter-spacing: 3px;
   text-transform: uppercase;
-  margin-bottom: 1rem;
-  /* Sombra dinâmica: Roxo no Broklin, Laranja no Jonah */
-  text-shadow: 0 0 10px var(--primary-color), 0px -3px 20px #000000;
-}
+  font-weight: 900;
+  padding: 15px 40px !important;
+  border-width: 2px !important;
+  border-radius: 0px !important; /* Quadrado = Mais Cyberpunk */
 
-.hero-subtitle {
-  font-size: 1.5rem;
-  margin-bottom: 2rem;
-  font-style: italic;
-  color: var(--text-color);
-  text-shadow: 3px -2px 3px var(--primary-color);
-}
-
-.hero-cta {
-  padding: 10px 30px;
-  font-size: 1rem;
-  font-weight: bolder;
-
-  /* Cores dinâmicas */
-  border-color: var(--accent-color);
+  /* A MÁGICA DAS CORES (VARIAVEIS GLOBAIS) */
+  /* Isso aqui muda sozinho quando entra o modo Jonah! */
   color: var(--accent-color);
-  background-color: rgba(0, 0, 0, 0);
+  border-color: var(--accent-color) !important;
+  background: transparent;
 
-  /* Angular Material overrides com variáveis */
-  --mdc-outlined-button-label-text-color: var(--accent-color);
-  --mat-mdc-button-persistent-ripple-color: var(--accent-color);
+  /* BRILHO INICIAL (Sutil) */
+  box-shadow: 0 0 5px var(--accent-color), inset 0 0 5px rgba(0,0,0,0.5);
 
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Pulo elástico */
+
+  /* Ícone ou detalhe antes do texto (Opcional, mas fica pro) */
+  &::before {
+    content: '[ ';
+    margin-right: 5px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  &::after {
+    content: ' ]';
+    margin-left: 5px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  /* QUANDO O MOUSE PASSA (HOVER) */
+  &:hover {
+    background-color: var(--accent-color); /* Preenche com a cor */
+    color: #000; /* Texto fica preto */
+    box-shadow: 0 0 25px var(--accent-color); /* Brilho forte */
+    transform: scale(1.1); /* Cresce */
+
+    &::before, &::after {
+      opacity: 1; /* Mostra os colchetes */
+    }
+  }
+}
 }
 
-.hero-cta:hover {
-  background-color: var(--accent-color);
-  color: rgba(0, 0, 0, 0);
-  border-color: rgba(0, 0, 0, 0);
-  --mdc-outlined-button-label-text-color: rgba(0, 0, 0, 0);
-  box-shadow: 0 0 15px var(--accent-color); /* Brilho no hover */
+/* --- SEÇÃO UPLINK (Onde fica o formulário) --- */
+.uplink-wrapper {
+  padding: 4rem 1rem;
+  background: linear-gradient(to top, var(--bg-color), transparent);
+  min-height: 500px; /* Garante espaço pro formulário */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* ANIMAÇÕES DE GLITCH PARA O MODO JONAH */
