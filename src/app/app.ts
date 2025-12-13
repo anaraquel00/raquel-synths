@@ -7,6 +7,7 @@ import { StorytellingComponent } from "./app-storytelling/app-storytelling";
 import { SobreComponent } from "./pages/sobre/sobre";
 import { VisualNovelComponent } from "./app-visual-novel/app-visual-novel";
 import { DiscographyComponent } from "./app-discography/app-discography";
+import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +17,8 @@ import { DiscographyComponent } from "./app-discography/app-discography";
     StorytellingComponent,
     SobreComponent,
     VisualNovelComponent,
-    DiscographyComponent],
+    DiscographyComponent,
+      ReactiveFormsModule],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })

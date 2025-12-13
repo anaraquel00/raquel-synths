@@ -1,0 +1,51 @@
+<div class="uplink-container">
+  <h2>📡 UPLINK // COLLABORATION PROTOCOL</h2>
+  <p>Envie seu sinal. Buscamos frequências compatíveis.</p>
+
+  <div *ngIf="successMessage" class="success-box">
+    ✅ SINAL RECEBIDO! Entraremos em contato, Agente.
+  </div>
+
+  <form [formGroup]="uplinkForm" (ngSubmit)="onSubmit()" *ngIf="!successMessage">
+
+    <div class="form-group">
+      <label>CODENAME (Nome):</label>
+      <input type="text" formControlName="agentName" placeholder="Ex: Max Cavalera">
+      <small *ngIf="uplinkForm.get('agentName')?.invalid && uplinkForm.get('agentName')?.touched">
+        Identificação obrigatória.
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label>FREQUENCY (E-mail):</label>
+      <input type="email" formControlName="email" placeholder="contato@metal.com">
+    </div>
+
+    <div class="form-group">
+      <label>WEAPON OF CHOICE (Sua DAW):</label>
+      <select formControlName="daw">
+        <option value="Ableton">Ableton Live</option>
+        <option value="FL Studio">FL Studio</option>
+        <option value="Logic Pro">Logic Pro</option>
+        <option value="Pro Tools">Pro Tools</option>
+        <option value="Reaper">Reaper</option>
+        <option value="Other">Outra</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>AUDIO PROOF (Link SoundCloud/Spotify):</label>
+      <input type="text" formControlName="demoLink" placeholder="https://soundcloud.com/...">
+    </div>
+
+    <div class="form-group">
+      <label>MISSION BRIEF (Mensagem):</label>
+      <textarea formControlName="message" rows="4"></textarea>
+    </div>
+
+    <button type="submit" [disabled]="uplinkForm.invalid || isSending">
+      {{ isSending ? 'TRANSMITINDO...' : 'ENVIAR DADOS' }}
+    </button>
+
+  </form>
+</div>
