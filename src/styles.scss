@@ -11,6 +11,8 @@ html {
     density: 0,
   ));
   scroll-behavior: smooth; /* Scroll suave para a One Page */
+  overflow-x: hidden; /* Evita scroll lateral indesejado */
+  overflow-y: auto;   /* Garante que o scroll vertical funciona */
 }
 
 /* --- VARIÁVEIS BASE --- */
