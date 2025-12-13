@@ -8,6 +8,7 @@ import { SobreComponent } from "./pages/sobre/sobre";
 import { VisualNovelComponent } from "./app-visual-novel/app-visual-novel";
 import { DiscographyComponent } from "./app-discography/app-discography";
 import { ReactiveFormsModule } from '@angular/forms';
+import { ContatoComponent } from "./pages/contato/contato";
 
 @Component({
   selector: 'app-root',
@@ -18,7 +19,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     SobreComponent,
     VisualNovelComponent,
     DiscographyComponent,
-      ReactiveFormsModule],
+    ContatoComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })

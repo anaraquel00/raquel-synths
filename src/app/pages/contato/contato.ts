@@ -1,24 +1,29 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common'; // Importante para o *ngIf
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms'; // O Arsenal de Formulários
 
 @Component({
-  selector: 'app-contact',
-  templateUrl: './contato.html',
-  styleUrls: ['./contato.css']
+  selector: 'app-contato',
+  standalone: true, // <--- A MÁGICA ESTÁ AQUI. Diz que ele é independente.
+  imports: [
+    CommonModule,        // Traz o *ngIf, *ngFor
+    ReactiveFormsModule  // Traz o formGroup, formControlName
+  ],
+  templateUrl: './contato.html', // Ou o nome que você deu
+  styleUrls: ['./contato.scss']
 })
-export class ContactComponent implements OnInit {
-  uplinkForm: FormGroup; // O nosso formulário
-  isSending: boolean = false; // Para mostrar "Enviando..."
-  successMessage: boolean = false; // Para mostrar "Sucesso!"
+export class ContatoComponent implements OnInit {
+  uplinkForm: FormGroup;
+  isSending: boolean = false;
+  successMessage: boolean = false;
 
-  // Injetando o Construtor de Formulários
   constructor(private fb: FormBuilder) {
     this.uplinkForm = this.fb.group({
-      agentName: ['', [Validators.required, Validators.minLength(3)]], // Nome obrigatório
-      email: ['', [Validators.required, Validators.email]], // E-mail válido
-      daw: ['Ableton', Validators.required], // DAW favorita (já vem com Ableton marcado)
-      demoLink: ['', Validators.required], // Link do SoundCloud/Spotify
-      message: ['', [Validators.required, Validators.maxLength(500)]] // A mensagem
+      agentName: ['', [Validators.required, Validators.minLength(3)]],
+      email: ['', [Validators.required, Validators.email]],
+      daw: ['Ableton', Validators.required],
+      demoLink: ['', Validators.required],
+      message: ['', [Validators.required, Validators.maxLength(500)]]
     });
   }
 
@@ -28,18 +33,16 @@ export class ContactComponent implements OnInit {
   onSubmit() {
     if (this.uplinkForm.valid) {
       this.isSending = true;
-      console.log('Dados do Agente:', this.uplinkForm.value);
+      console.log('📡 DADOS CRIPTOGRAFADOS RECEBIDOS:', this.uplinkForm.value);
 
-      // AQUI ENTRA A MÁGICA DE ENVIO (Podemos usar Formspree depois)
-      // Por enquanto, vamos simular que enviou:
+      // Simulação de envio para o QG
       setTimeout(() => {
         this.isSending = false;
         this.successMessage = true;
-        this.uplinkForm.reset(); // Limpa o formulário
+        this.uplinkForm.reset();
       }, 2000);
     } else {
-      // Se tiver erro, marca tudo como "tocado" pro vermelho aparecer
-      this.uplinkForm.markAllAsTouched();
+      this.uplinkForm.markAllAsTouched(); // Acende os alertas vermelhos
     }
   }
 }
