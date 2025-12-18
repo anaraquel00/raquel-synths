@@ -1,43 +1,40 @@
-import { Component, effect } from '@angular/core';
+import { Component, inject } from '@angular/core'; // Adicione inject
 import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { TranslationService } from '../services/translation.service';
-import { VISUAL_NOVEL_EN, VISUAL_NOVEL_PT, VN_TEXT } from '../data/app-data';
+import { VISUAL_NOVEL_PT, VISUAL_NOVEL_EN } from '../data/app-data';
+import { Router } from '@angular/router';
+import { MatIcon } from "@angular/material/icon"; // <--- IMPORTANTE: Importe o Router!
 
 @Component({
   selector: 'app-visual-novel',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule],
+  imports: [CommonModule, MatIcon],
   templateUrl: './app-visual-novel.html',
-  styleUrl: './app-visual-novel.scss'
+  styleUrls: ['./app-visual-novel.scss']
 })
-export class VisualNovelComponent {
+export class AppVisualNovel {
+  translate = inject(TranslationService);
+  private router = inject(Router); // <--- Injeta o GPS
 
-  arcs = VISUAL_NOVEL_PT;
-
-  constructor(public translate: TranslationService) {
-    effect(() => {
-      // Atualiza os cards (Arcos)
-      if (this.translate.isPt()) {
-        this.arcs = VISUAL_NOVEL_PT;
-      } else {
-        this.arcs = VISUAL_NOVEL_EN;
-      }
-    });
-  }
-
-  // 2. AQUI ESTÁ A CURA DO ERRO (O GETTER MÁGICO):
   get text() {
-    return this.translate.isPt() ? VN_TEXT.pt : VN_TEXT.en;
+    return this.translate.isPt() ?
+      { title: 'VISUAL NOVEL', subtitle: 'Acompanhe as nossas histórias animadas.' } :
+      { title: 'VISUAL NOVEL', subtitle: 'Follow our animated stories.' };
   }
 
-  // Getter do botão
-  get buttonText() {
-    return this.translate.isPt() ? 'ASSISTIR AGORA' : 'WATCH NOW';
+  get arcs() {
+    return this.translate.isPt() ? VISUAL_NOVEL_PT : VISUAL_NOVEL_EN;
   }
 
-  openLink(url: string) {
-    window.open(url, '_blank');
+  // A Função Mágica de Navegação
+  navigate(link: string) {
+    if (link.startsWith('/')) {
+      // Se começa com barra, é interno (Lore)
+      window.scrollTo(0, 0);
+      this.router.navigate([link]);
+    } else {
+      // Se não, é externo (YouTube)
+      window.open(link, '_blank');
+    }
   }
 }

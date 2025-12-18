@@ -1,7 +1,7 @@
 // DADOS DO HEADER/NAV
 export const NAV_DATA = {
-  pt: { inicio: 'INÍCIO', sobre: 'QUEM SOMOS', visualNovel: 'VISUAL NOVEL', discografia: 'DISCOGRAFIA', playlist: 'PLAYLIST' },
-  en: { inicio: 'HOME', sobre: 'WHO WE ARE', visualNovel: 'VISUAL NOVEL', discografia: 'DISCOGRAPHY', playlist: 'PLAYLIST' }
+  pt: { inicio: 'INÍCIO', sobre: 'QUEM SOMOS', visualNovel: 'VISUAL NOVEL', discografia: 'DISCOGRAFIA', playlist: 'PLAYLIST', lore: 'LORE (HISTÓRIA)' },
+  en: { inicio: 'HOME', sobre: 'WHO WE ARE', visualNovel: 'VISUAL NOVEL', discografia: 'DISCOGRAPHY', playlist: 'PLAYLIST', lore: 'LORE (STORIES)' }
 };
 
 // DADOS DA HOME
@@ -183,7 +183,7 @@ export const VISUAL_NOVEL_PT = [
       subtitle: 'Amor, Vinho & Melancolia',
       description: 'A jornada de um vampiro gótico em busca de redenção através do amor de Kelma. Inclui o hit "Neon Tears".',
       image: 'images/arco-broklin.png', // Use a capa do arco
-      link: 'https://youtube.com/playlist?list=SEU_LINK_AQUI',
+      link: '/lore/broklin',
       mode: 'romance'
     }
 ];
@@ -210,7 +210,7 @@ export const VISUAL_NOVEL_EN = [
       subtitle: 'Love, Wine and Melancholy',
       description: 'The journey of a gothic vampire seeking redemption through the love of Kelma. Includes the hit song "Neon Tears".',
       image: 'images/arco-broklin.png', // Use a capa do arco
-      link: 'https://youtube.com/playlist?list=SEU_LINK_AQUI',
+      link: '/lore/broklin',
       mode: 'romance'
     }
 

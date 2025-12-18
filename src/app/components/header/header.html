@@ -16,6 +16,11 @@
 
   <button mat-button (click)="scrollTo('sobre')">{{ navText.sobre }}</button>
   <button mat-button (click)="scrollTo('visual-novel')">{{ navText.visualNovel }}</button>
+
+  <button mat-button [routerLink]="['/lore/broklin']" style="color: var(--accent-color);">
+    <mat-icon>auto_stories</mat-icon> {{ navText.lore }}
+  </button>
+
   <button mat-button (click)="scrollTo('discografia')">DISCOGRAFIA</button>
 
   <button mat-button (click)="openExternal('https://soundcloud.com/rqs_official/albums')">

@@ -100,6 +100,36 @@
 .watch-link:hover {
   color: var(--accent-color);
 }
+/* ADICIONE ISSO NO FINAL PARA O BOTÃO FICAR BONITO: */
+.btn-watch {
+  background: transparent;
+  color: var(--accent-color);
+  border: 1px solid var(--accent-color);
+  padding: 10px 20px;
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: all 0.3s ease;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px; /* Espaço entre texto e ícone se tiver */
+
+  &:hover {
+    background: var(--accent-color);
+    color: var(--bg-color); /* Inverte a cor: texto preto no fundo neon */
+    box-shadow: 0 0 15px var(--accent-color);
+    transform: scale(1.05);
+  }
+}
+
+/* Ajuste específico para o Modo Jonah (opcional, mas recomendado) */
+:host-context(body.mode-jonah) .btn-watch {
+  border-style: dashed;
+}
 
 /* MODO JONAH - EFEITO GLITCH NOS CARDS */
 :host-context(body.mode-jonah) {

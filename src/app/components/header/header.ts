@@ -6,11 +6,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { TranslationService } from '../../services/translation.service';
 import { NAV_DATA } from '../../data/app-data';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [MatToolbar, MatButtonModule, MatIconModule, MatMenuModule],
+  imports: [MatToolbar, MatButtonModule, MatIconModule, MatMenuModule, RouterModule],
   templateUrl: './header.html',
   styleUrl: './header.scss'
 })
@@ -19,7 +20,8 @@ export class Header {
   constructor(
     @Inject(DOCUMENT) private document: Document,
     // 2. NOME DA CLASSE CERTO:
-    public translate: TranslationService
+    public translate: TranslationService,
+    private router: Router
   ) {}
 
   // Getter inteligente
@@ -27,8 +29,26 @@ export class Header {
     return this.translate.isPt() ? NAV_DATA.pt : NAV_DATA.en;
   }
 
+  // 3. ATUALIZE ESTA FUNÇÃO:
   scrollTo(elementId: string): void {
-    const element = this.document.getElementById(elementId);
+    // Verifica se estamos na página principal ('/')
+    if (this.router.url === '/') {
+      // Se já estamos na Home, só rola
+      this.doScroll(elementId);
+    } else {
+      // Se estamos na Lore, navega pra Home primeiro!
+      this.router.navigate(['/']).then(() => {
+        // Espera um pouquinho (100ms) pro site carregar e então rola
+        setTimeout(() => {
+          this.doScroll(elementId);
+        }, 100);
+      });
+    }
+  }
+
+  // Função auxiliar pra não repetir código
+  private doScroll(id: string) {
+    const element = this.document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }

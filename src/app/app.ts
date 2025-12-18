@@ -6,7 +6,7 @@ import { Home } from "./pages/home/home";
 import { AppThemeSwitcher } from './app-theme-switcher/app-theme-switcher';
 import { StorytellingComponent } from "./app-storytelling/app-storytelling";
 import { SobreComponent } from "./pages/sobre/sobre";
-import { VisualNovelComponent } from "./app-visual-novel/app-visual-novel";
+
 import { DiscographyComponent } from "./app-discography/app-discography";
 import { ReactiveFormsModule } from '@angular/forms';
 import { ContatoComponent } from "./pages/contato/contato";
@@ -16,12 +16,7 @@ import { AdBannerComponent } from "./components/ad-banner/ad-banner";
   selector: 'app-root',
   imports: [Header,
     Footer,
-    Home,
-    StorytellingComponent,
-    SobreComponent,
-    VisualNovelComponent,
-    DiscographyComponent,
-    ContatoComponent, AdBannerComponent],
+    AdBannerComponent, RouterOutlet],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })

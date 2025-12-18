@@ -1,0 +1,107 @@
+.lore-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  background-color: var(--bg-color); /* Respeita o tema Broklin/Jonah */
+  color: var(--text-color);
+  font-family: 'Roboto', sans-serif;
+}
+
+.lore-header {
+  text-align: center;
+  margin-bottom: 50px;
+  border-bottom: 1px solid var(--primary-color);
+  padding-bottom: 20px;
+
+  h1 {
+    font-size: 2.5rem;
+    margin: 10px 0;
+    color: var(--accent-color);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .season-tag {
+    background: var(--primary-color);
+    color: white;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+
+  .meta-data {
+    font-size: 0.9rem;
+    color: #888;
+    margin-top: 10px;
+
+    span { margin: 0 10px; }
+  }
+}
+
+.lore-content {
+  font-size: 1.1rem;
+  line-height: 1.8; /* Espaçamento bom para leitura */
+
+  p {
+    margin-bottom: 20px;
+    opacity: 0.9;
+  }
+
+  /* Estiliza os nomes dos personagens no texto */
+  strong {
+    color: var(--accent-color);
+  }
+
+  em {
+    color: #bbb;
+    font-style: italic;
+  }
+}
+
+.cta-button {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 15px 30px;
+  background: var(--primary-color);
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 50px;
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: scale(1.05);
+    background: var(--accent-color);
+    color: black;
+  }
+}
+/* Botão de Voltar */
+.nav-back {
+  margin-bottom: 20px;
+}
+
+.btn-back {
+  background: transparent;
+  border: none;
+  color: var(--text-color);
+  font-family: 'Courier New', monospace; /* Fonte Hacker */
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 0.6;
+  transition: all 0.3s ease;
+  padding: 0;
+
+  i {
+    font-size: 1.2rem;
+  }
+
+  &:hover {
+    opacity: 1;
+    color: var(--accent-color); /* Fica Verde ou Laranja dependendo do modo */
+    transform: translateX(-5px); /* Efeito de "puxar" para esquerda */
+  }
+}
