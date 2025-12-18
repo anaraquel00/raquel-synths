@@ -154,6 +154,13 @@ export const EVENTS_EN = [
     jonahComment: 'My godson will listen to industrial metal in the crib. The pop reign is over.'
   }
 ];
+
+// DADOS DO BANNER DE ANÚNCIOS
+export const ADS_DATA = {
+  pt: { label: '/// FLUXO DE DADOS PATROCINADO ///' },
+  en: { label: '/// SPONSORED DATA STREAM ///' }
+};
+
 export const VISUAL_NOVEL_PT = [
     {
       title: '⚡ RQS: Guerra Civil  (Series)',

@@ -10,6 +10,7 @@ import { VisualNovelComponent } from "./app-visual-novel/app-visual-novel";
 import { DiscographyComponent } from "./app-discography/app-discography";
 import { ReactiveFormsModule } from '@angular/forms';
 import { ContatoComponent } from "./pages/contato/contato";
+import { AdBannerComponent } from "./components/ad-banner/ad-banner";
 
 @Component({
   selector: 'app-root',
@@ -20,7 +21,7 @@ import { ContatoComponent } from "./pages/contato/contato";
     SobreComponent,
     VisualNovelComponent,
     DiscographyComponent,
-    ContatoComponent],
+    ContatoComponent, AdBannerComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
