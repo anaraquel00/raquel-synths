@@ -2,10 +2,11 @@ import { Component, DOCUMENT, Inject } from '@angular/core';
 import { TranslationService } from '../../services/translation.service';
 import { CONTACT_DATA, HOME_DATA } from '../../data/app-data';
 import { MatButtonModule } from '@angular/material/button';
+import { LastReleasesComponent } from '../../components/last-releases/last-releases';
 
 @Component({
   selector: 'app-home',
-  imports: [MatButtonModule],
+  imports: [MatButtonModule, LastReleasesComponent],
   templateUrl: './home.html',
   styleUrl: './home.scss'
 })

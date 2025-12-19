@@ -1,7 +1,13 @@
 <div class="home-container">
 
   <div class="hero-section">
-    <h1 class="hero-title">{{ navText.title }}</h1>
+
+    <div class="title-wrapper">
+      <h1 class="hero-title">{{ navText.title }}</h1>
+
+      <app-last-releases class="widget-position"></app-last-releases>
+    </div>
+
     <p class="hero-subtitle">{{ navText.subtitle }}</p>
 
     <button mat-stroked-button class="hero-cta" (click)="scrollTo('contato')">
