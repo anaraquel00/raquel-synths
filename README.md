@@ -56,18 +56,17 @@ O universo RQS é composto por mentes reais e virtuais:
 1. **Clone o repositório:**
    ```bash
    git clone [https://github.com/anaraquel00/raquel-synths.git](https://github.com/anaraquel00/raquel-synths.git)
-  ```
+   ```
+
 
 2. **Instale as dependências:**
-
-```bash
-npm install
-```
-3. **Inicie a revolução:**
-
-```bash
-ng serve
-```
-Acesse `http://localhost:4200/`.
+   ```bash
+   npm install
+   ```
+3. **Inicie a revolução:**   
+   ```bash
+   ng serve
+   ```
+Acesse `http://localhost:4200/`.   
 
 Developed with ❤️, Metal & Code in Camaragibe, PE - Brazil.
