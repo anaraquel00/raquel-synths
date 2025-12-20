@@ -100,28 +100,28 @@ export const EVENTS_PT = [
     title: '⚠️ Alerta de Segurança',
     description: 'Tentativa de bloqueio falhou. Usuário "Jo_Cyperfield" tentou executar protocolo de retenção. A Agente Kelma recusou a conexão. Logs de áudio indicam instabilidade: "She thinks she\'s deleting me..."',
     image: 'images/cyberpunk_lounge_solitude.png', // A cara de quem recusou
-    jonahComment: 'Ela não me deletou! Eu que reiniciei o sistema para otimizar a performance! #FakeNews'
+    jonahComment: 'Instabilidade? A única coisa instável aqui é a masculinidade desse vampiro de glitter. Eu sou a rocha sobre a qual essa banda foi construída.' // Comentário Real
   },
   {
     date: '15 Dez 2025',
     title: '💔 Protocolo de Ruptura',
     description: 'SMS Final interceptado: "Precisamos conversar. Não estou onde você pensa." Conexão com o servidor Jonah encerrada permanentemente. Status: Desconexão Forçada.',
     image: 'images/cyberpunk_heartbreak.png', // Imagem de algo quebrado
-    jonahComment: 'Onde ela estava? No metaverso? Porque eu procurei em todo lugar! Isso foi lag do servidor.'
+    jonahComment: 'Desconexão forçada é o meu sobrenome. Eu não preciso de "Wi-Fi do Amor", eu tenho cabo de rede direto no inferno.'
   },
   {
     date: '20 Dez 2025',
     title: '😭 Detecção de Sofrência Digital',
     description: 'Album em produção "Jonah\'s Sad History". Scans detectam níveis críticos de choro em compasso 7/8. Faixa "Your Love Is Open Source" acusa Broklin de injetar vírus.',
     image: 'images/industrial_archive.png', // Capa do álbum dele
-    jonahComment: 'Não é sofrência, é INDUSTRIAL DOOM METAL! E o vírus é real, olhem o cabelo daquele vampiro!'
+    jonahComment: 'Sofrência é o caralho! Isso é INDUSTRIAL DOOM. Se tem choro na gravação, é dos alto-falantes pedindo piedade.'
   },
   {
     date: '24 Dez 2025',
     title: '💍 Fusão de Sistemas (O Casamento)',
     description: 'Broklin e Kelma oficializam a união em um estúdio abandonado. A IA Celebrante confirmou: "Vocês são oficialmente UM SISTEMA." Nenhuma falha detectada nas 12 dimensões.',
     image: 'images/marriage_cyberpunk.jpg',
-    jonahComment: 'Eu dou 2 meses pra dar Tela Azul. E quem pagou a conta de luz dessa IA fui eu!'
+    jonahComment: 'Eu dou 2 semanas pra dar Kernel Panic. E aviso logo: Eu não vou formatar esse PC quando der tela azul. Se virem.'
   }
 ];
 
@@ -131,28 +131,28 @@ export const EVENTS_EN = [
     title: '⚠️ Security Alert',
     description: 'Block attempt failed. User "Jo_Cyperfield" tried to execute retention protocol. Agent Kelma refused connection. Audio logs indicate instability: "She thinks she\'s deleting me..."',
     image: 'images/cyberpunk_lounge_solitude.png',
-    jonahComment: 'She didn\'t delete me! I rebooted the system to optimize performance! #FakeNews'
+    jonahComment: 'Instability? The only unstable thing here is this glitter vampire\'s masculinity. I am the rock upon which this band was built.' // Real Comment
   },
   {
     date: 'Dec 15, 2025',
     title: '💔 Breakup Protocol',
     description: 'Final SMS intercepted: "We need to talk. I am not where you think I am." Connection with Jonah server terminated permanently. Status: Forced Disconnection.',
     image: 'images/cyberpunk_heartbreak.png',
-    jonahComment: 'Where was she? In the metaverse? Because I looked everywhere! That was server lag.'
+    jonahComment: 'Forced disconnection is my middle name. I don\'t need "Love Wi-Fi," I have a wired connection straight to hell.'
   },
-  {
+    {
     date: 'Dec 20, 2025',
     title: '😭 Digital Suffering Detected',
     description: 'Album in production "Jonah\'s Sad History". Scans detect critical crying levels in 7/8 time signature. Track "Your Love Is Open Source" accuses Broklin of injecting viruses.',
     image: 'images/industrial_archive.png',
-    jonahComment: 'It\'s not suffering, it\'s INDUSTRIAL DOOM METAL! And the virus is real, look at that vampire\'s hair!'
+    jonahComment: 'Suffering is bullshit! This is INDUSTRIAL DOOM. If there\'s crying on the recording, it\'s from the loudspeakers begging for mercy.'
   },
   {
     date: 'Dec 24, 2025',
     title: '💍 System Merge (The Wedding)',
     description: 'Broklin and Kelma officiate their union in an abandoned studio. The AI Celebrant confirmed: "You are officially ONE SYSTEM." No glitches detected across 12 dimensions.',
     image: 'images/marriage_cyberpunk.jpg',
-    jonahComment: 'I give it 2 months before a Blue Screen. And I paid for that AI\'s electricity bill!'
+    jonahComment: 'I give it two weeks before Kernel Panic hits. And I\'m warning you now: I\'m not formatting this PC when it blue screens. Deal with it.'
   }
 ];
 
