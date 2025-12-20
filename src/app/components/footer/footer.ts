@@ -6,10 +6,11 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { AdBannerComponent } from "../ad-banner/ad-banner";
 
 @Component({
   selector: 'app-footer',
-  imports: [CommonModule, FormsModule, MatIconModule, MatButtonModule],
+  imports: [CommonModule, FormsModule, MatIconModule, MatButtonModule, AdBannerComponent],
   templateUrl: './footer.html',
   styleUrl: './footer.scss'
 })

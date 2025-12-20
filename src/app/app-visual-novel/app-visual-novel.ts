@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import { TranslationService } from '../services/translation.service';
 import { VISUAL_NOVEL_PT, VISUAL_NOVEL_EN } from '../data/app-data';
 import { Router } from '@angular/router';
-import { MatIcon } from "@angular/material/icon"; // <--- IMPORTANTE: Importe o Router!
+import { MatIcon } from "@angular/material/icon";
+import { AdBannerComponent } from "../components/ad-banner/ad-banner"; // <--- IMPORTANTE: Importe o Router!
 
 @Component({
   selector: 'app-visual-novel',
   standalone: true,
-  imports: [CommonModule, MatIcon],
+  imports: [CommonModule, MatIcon, AdBannerComponent],
   templateUrl: './app-visual-novel.html',
   styleUrls: ['./app-visual-novel.scss']
 })

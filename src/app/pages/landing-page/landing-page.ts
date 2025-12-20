@@ -5,6 +5,7 @@ import { AppVisualNovel } from "../../app-visual-novel/app-visual-novel";
 import { StorytellingComponent } from "../../app-storytelling/app-storytelling";
 import { SobreComponent } from "../sobre/sobre";
 import { Home } from "../home/home";
+import { AdBannerComponent } from "../../components/ad-banner/ad-banner";
 
 @Component({
   selector: 'app-landing-page',
@@ -13,7 +14,7 @@ import { Home } from "../home/home";
     AppVisualNovel,
     StorytellingComponent,
     SobreComponent,
-    Home],
+    Home, AdBannerComponent],
   templateUrl: './landing-page.html',
   styleUrl: './landing-page.scss',
 })
