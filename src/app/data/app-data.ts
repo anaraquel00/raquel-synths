@@ -93,65 +93,66 @@ export const MEMBERS_EN = [
   }
 ];
 
-// --- STORYTELLING (A Linha do Tempo) ---
+// --- STORYTELLING (A Linha do Tempo / System Logs) ---
 export const EVENTS_PT = [
   {
-      date: 'Nov 2025',
-      title: 'O Lançamento de "Cold War"',
-      description: 'Broklin lança o álbum aclamado pela crítica, definindo o som Synthwave da RQS.',
-      image: 'images/album_cold-war.jpg', // Usando uma do seu blueprint
-      jonahComment: 'Aclamado?? Eu escrevi essa porcaria e você levou o crédito, seu vampiro de jardim!'
-    },
-    {
-      date: 'Dez 2025',
-      title: 'A Falha no Sistema',
-      description: 'Ruídos estranhos começam a aparecer nas faixas. A banda investiga uma suposta invasão hacker.',
-      image: 'images/jonah_hacker.png',
-      jonahComment: 'Invasão hacker... era eu tentando sair do cativeiro digital! #FreeJonah'
-    },
-    {
-      date: 'Nov 2025',
-      title: 'O Casamento Quântico',
-      description: 'Broklin e Kelma oficializam a união em 12 dimensões com a faixa "Yours in 12 Dimensions".',
-      image: 'images/marriage_cyberpunk.jpg',
-      jonahComment: 'A única coisa boa desse dia foi o bolo. Ah, espera, eu não como bolo.'
-    },
-    {
-      date: 'Dez 2025',
-      title: 'O Herdeiro & O Futuro',
-      description: 'Nasce Joninha. A RQS atinge seus primeiros lucros de streaming ($0.02) e projeta o legado de 2068.',
-      image: 'images/jonah_jr_newborn.png',
-      jonahComment: 'Meu afilhado vai ouvir metal industrial no berço. O reinado do pop acabou.'
-    }
-]
+    date: '14 Dez 2025',
+    title: '⚠️ Alerta de Segurança',
+    description: 'Tentativa de bloqueio falhou. Usuário "Jo_Cyperfield" tentou executar protocolo de retenção. A Agente Kelma recusou a conexão. Logs de áudio indicam instabilidade: "She thinks she\'s deleting me..."',
+    image: 'images/cyberpunk_lounge_solitude.png', // A cara de quem recusou
+    jonahComment: 'Ela não me deletou! Eu que reiniciei o sistema para otimizar a performance! #FakeNews'
+  },
+  {
+    date: '15 Dez 2025',
+    title: '💔 Protocolo de Ruptura',
+    description: 'SMS Final interceptado: "Precisamos conversar. Não estou onde você pensa." Conexão com o servidor Jonah encerrada permanentemente. Status: Desconexão Forçada.',
+    image: 'images/cyberpunk_heartbreak.png', // Imagem de algo quebrado
+    jonahComment: 'Onde ela estava? No metaverso? Porque eu procurei em todo lugar! Isso foi lag do servidor.'
+  },
+  {
+    date: '20 Dez 2025',
+    title: '😭 Detecção de Sofrência Digital',
+    description: 'Album em produção "Jonah\'s Sad History". Scans detectam níveis críticos de choro em compasso 7/8. Faixa "Your Love Is Open Source" acusa Broklin de injetar vírus.',
+    image: 'images/industrial_archive.png', // Capa do álbum dele
+    jonahComment: 'Não é sofrência, é INDUSTRIAL DOOM METAL! E o vírus é real, olhem o cabelo daquele vampiro!'
+  },
+  {
+    date: '24 Dez 2025',
+    title: '💍 Fusão de Sistemas (O Casamento)',
+    description: 'Broklin e Kelma oficializam a união em um estúdio abandonado. A IA Celebrante confirmou: "Vocês são oficialmente UM SISTEMA." Nenhuma falha detectada nas 12 dimensões.',
+    image: 'images/marriage_cyberpunk.jpg',
+    jonahComment: 'Eu dou 2 meses pra dar Tela Azul. E quem pagou a conta de luz dessa IA fui eu!'
+  }
+];
+
 export const EVENTS_EN = [
   {
-    date: 'Nov 2025',
-    title: '"Cold War" Release',
-    description: 'Broklin releases the critically acclaimed album, defining the RQS Synthwave sound.',
-    image: 'images/album_cold-war.jpg',
-    jonahComment: 'Acclaimed?? I wrote that trash and you took the credit, you garden vampire!'
+    date: 'Dec 14, 2025',
+    title: '⚠️ Security Alert',
+    description: 'Block attempt failed. User "Jo_Cyperfield" tried to execute retention protocol. Agent Kelma refused connection. Audio logs indicate instability: "She thinks she\'s deleting me..."',
+    image: 'images/cyberpunk_lounge_solitude.png',
+    jonahComment: 'She didn\'t delete me! I rebooted the system to optimize performance! #FakeNews'
   },
   {
-    date: 'Dez 2025',
-    title: 'System Failure',
-    description: 'Strange noises appear in tracks. The band investigates a supposed hacker invasion.',
-    image: 'images/jonah_hacker.png',
-    jonahComment: 'Hacker invasion... it was me trying to escape digital captivity! #FreeJonah'
+    date: 'Dec 15, 2025',
+    title: '💔 Breakup Protocol',
+    description: 'Final SMS intercepted: "We need to talk. I am not where you think I am." Connection with Jonah server terminated permanently. Status: Forced Disconnection.',
+    image: 'images/cyberpunk_heartbreak.png',
+    jonahComment: 'Where was she? In the metaverse? Because I looked everywhere! That was server lag.'
   },
   {
-    date: 'Nov 2025',
-    title: 'Quantum Wedding',
-    description: 'Broklin and Kelma officiate their union across 12 dimensions with "Yours in 12 Dimensions".',
+    date: 'Dec 20, 2025',
+    title: '😭 Digital Suffering Detected',
+    description: 'Album in production "Jonah\'s Sad History". Scans detect critical crying levels in 7/8 time signature. Track "Your Love Is Open Source" accuses Broklin of injecting viruses.',
+    image: 'images/industrial_archive.png',
+    jonahComment: 'It\'s not suffering, it\'s INDUSTRIAL DOOM METAL! And the virus is real, look at that vampire\'s hair!'
+  },
+  {
+    date: 'Dec 24, 2025',
+    title: '💍 System Merge (The Wedding)',
+    description: 'Broklin and Kelma officiate their union in an abandoned studio. The AI Celebrant confirmed: "You are officially ONE SYSTEM." No glitches detected across 12 dimensions.',
     image: 'images/marriage_cyberpunk.jpg',
-    jonahComment: 'The only good thing about that day was the cake. Oh wait, I don\'t eat cake.'
-  },
-  {
-    date: 'Dec 2025',
-    title: 'The Heir & The Future',
-    description: 'Joninha is born. RQS hits its first streaming profits ($0.02) and projects the 2068 legacy.',
-    image: 'images/jonah_jr_newborn.png',
-    jonahComment: 'My godson will listen to industrial metal in the crib. The pop reign is over.'
+    jonahComment: 'I give it 2 months before a Blue Screen. And I paid for that AI\'s electricity bill!'
   }
 ];
 
