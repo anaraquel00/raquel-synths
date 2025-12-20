@@ -10,7 +10,7 @@ import { AdBannerComponent } from "../ad-banner/ad-banner";
 
 @Component({
   selector: 'app-footer',
-  imports: [CommonModule, FormsModule, MatIconModule, MatButtonModule, AdBannerComponent],
+  imports: [CommonModule, FormsModule, MatIconModule, MatButtonModule],
   templateUrl: './footer.html',
   styleUrl: './footer.scss'
 })
