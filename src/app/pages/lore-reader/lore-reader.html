@@ -1,58 +1,65 @@
 <div class="lore-container">
 
-  <!-- BOTÃO DE VOLTAR (Navegação Tática) -->
+  <!-- BOTÃO DE VOLTAR -->
   <button class="back-btn" (click)="goBack()">
     &larr; {{ translate.isPt() ? 'VOLTAR À BASE' : 'BACK TO BASE' }}
   </button>
 
-  <!-- CABEÇALHO DA SAGA -->
-  <header class="lore-header">
-    <h1>{{ translate.isPt() ? 'ARQUIVOS CONFIDENCIAIS' : 'CONFIDENTIAL FILES' }}</h1>
+  <!-- CABEÇALHO DA PÁGINA -->
+  <header class="saga-header">
+    <h1>{{ translate.isPt() ? 'ARQUIVOS RQS' : 'RQS ARCHIVES' }}</h1>
     <p class="subtitle">VISUAL NOVEL: ARCO BROKLIN</p>
   </header>
 
   <!-- LISTA DE EPISÓDIOS -->
+  <!-- O *ngFor aqui vai percorrer a lista 'episodes' que definimos no TS -->
   <div class="episodes-list">
 
-    <!-- Loop que desenha cada episódio publicado -->
     <article *ngFor="let ep of episodes" class="episode-card">
 
-      <div class="season-badge">{{ ep.seasonTitle }}</div>
-
-      <h2>{{ ep.title }}</h2>
-      <div class="meta-date">{{ ep.releaseDate | date:'dd/MM/yyyy' }}</div>
-
-      <!-- A IMAGEM DE CAPA (Se existir) -->
-      <div class="episode-cover" *ngIf="ep.coverImage">
-        <img [src]="ep.coverImage" alt="Cena do episódio">
+      <!-- Cabeçalho do Episódio -->
+      <div class="ep-header">
+        <span class="season-badge">{{ ep.seasonTitle }}</span>
+        <span class="date">{{ ep.releaseDate | date:'dd/MM/yyyy' }}</span>
       </div>
 
-      <!-- O CONTEÚDO (Texto Rico) -->
-      <!-- O [innerHTML] é vital para o Angular aceitar os <p> e <strong> do arquivo de dados -->
-      <div class="lore-content" [innerHTML]="ep.content"></div>
+      <h2>{{ ep.title }}</h2>
 
+      <!-- IMAGEM DE CAPA (Só aparece se tiver imagem no data) -->
+      <div class="episode-cover" *ngIf="ep.coverImage">
+        <img [src]="ep.coverImage" alt="Cover do Episódio">
+      </div>
+
+      <!-- 👇 O CONTEÚDO DO TEXTO (AQUI ESTÁ A HISTÓRIA) -->
+       <div class="story-content">
+
+        <ng-container *ngFor="let block of ep.blocks">
+
+          <!-- SE FOR TEXTO -->
+          <div *ngIf="block.type === 'text'" [innerHTML]="block.content"></div>
+
+          <!-- SE FOR ANÚNCIO (AQUI ELE CARREGA DE VERDADE!) -->
+          <div *ngIf="block.type === 'ad'" class="ad-spacer">
+            <app-ad-banner></app-ad-banner> <!-- Seu componente mágico -->
+          </div>
+
+        </ng-container>
+
+      </div>
+
+      <!-- Divisor Estiloso -->
       <div class="divider">
-        <span>RQS</span>
+        <span>● ● ●</span>
       </div>
 
     </article>
 
-    <!-- MENSAGEM DE "CONTINUA..." -->
+    <!-- Mensagem se não houver episódios ou fim da lista -->
     <div class="cliffhanger">
-      <p>{{ translate.isPt() ? 'Próximo episódio em breve...' : 'Next episode coming soon...' }}</p>
+      <p>
+        {{ translate.isPt() ? 'Próxima transmissão em breve...' : 'Next transmission incoming...' }}
+      </p>
     </div>
 
   </div>
-
-  <div class="lore-footer">
-    <h3>
-      {{ translate.isPt() ? 'Quer ver essa cena em movimento?' : 'Want to see this scene in motion?' }}
-    </h3>
-
-    <a href="https://youtube.com/playlist?list=SEU_PLAYLIST_LINK" target="_blank" class="cta-button">
-      {{ translate.isPt() ? 'ASSISTIR A SÉRIE VISUAL' : 'WATCH THE VISUAL SERIES' }}
-      <i class="fas fa-play"></i>
-    </a>
-  </div>
-
 </div>
