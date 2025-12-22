@@ -23,9 +23,34 @@
   }
 }
 
+.synopsis-container {
+  background: rgba(0, 0, 0, 0.6); /* Fundo escuro transparente */
+  border-left: 4px solid #d600ff; /* Borda Roxa Neon RQS */
+  padding: 12px;
+  margin-bottom: 24px;
+  border-radius: 8px;
+
+  h3 {
+    color: #00ffcc; /* Ciano Cyberpunk */
+    margin-top: 0;
+  }
+
+  p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #e0e0e0;
+  }
+
+  .neon-divider {
+    border: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #d600ff, transparent);
+    margin-top: 20px;
+  }
+}
 .saga-header {
   text-align: center;
-  margin-bottom: 45px;
+  margin-bottom: 22px;
 
   h1 {
     font-family: var(--font-heading); /* Fonte Cyberpunk */

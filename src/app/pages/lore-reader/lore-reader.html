@@ -11,8 +11,43 @@
     <p class="subtitle">{{ translate.isPt() ? 'ARCO BROKLIN' : 'BROKLIN ARCH'}}</p>
   </header>
 
+  <!-- 📢 BLOCO DE SINOPSE (NOVO) -->
+  <div class="synopsis-container">
+
+    <!-- VERSÃO PT -->
+    <div *ngIf="translate.isPt()" class="synopsis-content">
+      <p>
+        <strong>Broklin Garpeter</strong>, um produtor Cyberpunk enigmático com estética gótica e aura de "vampiro digital",
+        entra em cena para abalar as estruturas da banda <strong>RaQuel Synths</strong>.
+        Originalmente formada pelo casal <strong>Kelma Adlanko</strong> e <strong>Jonah Cyperfield</strong> (o "Lord do Metal"),
+        a dinâmica muda drasticamente quando Kelma busca um terceiro elemento.
+      </p>
+      <p>
+        O que começa como um encontro em um local sombrio na calada da noite se transforma em algo fatal.
+        <strong>Sedução, paixões e intrigas</strong> vão mudar o rumo dessa história para sempre.
+        Não perca os próximos episódios.
+      </p>
+    </div>
+
+    <!-- VERSÃO EN -->
+    <div *ngIf="!translate.isPt()" class="synopsis-content">
+      <p>
+        <strong>Broklin Garpeter</strong>, an enigmatic Cyberpunk producer with a gothic aesthetic and a "digital vampire" aura,
+        arrives to shake the foundations of <strong>RaQuel Synths</strong>.
+        Originally formed by the couple Kelma and <strong>Jonah Cyperfield</strong> (the "Metal Lord"),
+        dynamics change drastically when Kelma seeks a third member.
+      </p>
+      <p>
+        What starts as a meeting in a shadowy place in the dead of night turns into something fatal.
+        <strong>Seduction, passion, and intrigue</strong> will change the course of this story forever.
+        Don't miss the next episodes.
+      </p>
+    </div>
+
+    <hr class="neon-divider">
+  </div>
+
   <!-- LISTA DE EPISÓDIOS -->
-  <!-- O *ngFor aqui vai percorrer a lista 'episodes' que definimos no TS -->
   <div class="episodes-list">
 
     <article *ngFor="let ep of episodes" class="episode-card">
@@ -25,26 +60,24 @@
 
       <h2>{{ ep.title }}</h2>
 
-      <!-- IMAGEM DE CAPA (Só aparece se tiver imagem no data) -->
+      <!-- IMAGEM DE CAPA -->
       <div class="episode-cover" *ngIf="ep.coverImage">
         <img [src]="ep.coverImage" alt="Cover do Episódio">
       </div>
 
-      <!-- 👇 O CONTEÚDO DO TEXTO (AQUI ESTÁ A HISTÓRIA) -->
-       <div class="story-content">
-
+      <!-- CONTEÚDO DO TEXTO -->
+      <div class="story-content">
         <ng-container *ngFor="let block of ep.blocks">
 
-          <!-- SE FOR TEXTO -->
+          <!-- TEXTO -->
           <div *ngIf="block.type === 'text'" [innerHTML]="block.content"></div>
 
-          <!-- SE FOR ANÚNCIO (AQUI ELE CARREGA DE VERDADE!) -->
+          <!-- ANÚNCIO -->
           <div *ngIf="block.type === 'ad'" class="ad-spacer">
-            <app-ad-banner></app-ad-banner> <!-- Seu componente mágico -->
+            <app-ad-banner></app-ad-banner>
           </div>
 
         </ng-container>
-
       </div>
 
       <!-- Divisor Estiloso -->
@@ -54,7 +87,7 @@
 
     </article>
 
-    <!-- Mensagem se não houver episódios ou fim da lista -->
+    <!-- Fim da lista -->
     <div class="cliffhanger">
       <p>
         {{ translate.isPt() ? 'Próxima transmissão em breve...' : 'Next transmission incoming...' }}

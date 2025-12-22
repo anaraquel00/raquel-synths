@@ -26,52 +26,50 @@ export const BROKLIN_ARC_PT: LoreEpisode[] = [
     seasonTitle: 'TEMPORADA 1 — A QUEDA',
     title: 'Episódio 1 — O Convite Púrpura',
     coverImage: 'images/ep1_purple_temple.jpg', // Exemplo
-    blocks: [
+     blocks: [
       {
         type: 'text',
         content: `
-      <p>O vento cortante do Setor 4 não trazia apenas o frio da noite industrial; trazia uma poeira púrpura, fina e brilhante, resquício de algum vazamento químico nas fábricas superiores. Ela dançava no ar como cinzas radioativas, cobrindo as ruínas do antigo templo techno em um manto de silêncio.</p>
-
-      <p>Broklin conhecia aquele lugar. Era onde o silêncio deveria reinar. Era onde ele ia para recalibrar a lógica quando o barulho do mundo ficava alto demais. Mas naquela noite, o silêncio tinha peso. Tinha cheiro.</p>
+          <p>
+            A noite em Camaragibe tinha aquele cheiro de chuva e asfalto quente.
+            O ano? Irrelevante. O que importava era a estática no ar.
+            <strong>Jonah Cyperfield</strong> estava inquieto. O som do RaQuel Synths estava pesado demais,
+            cru demais. Faltava... elegância. Faltava a alma digital.
+          </p>
+          <p>
+            Foi Kelma quem deu o ultimato: <em>"Precisamos de alguém que entenda de melodias, não apenas de barulho."</em>
+            O anúncio foi feito nas frequências certas da internet. E a resposta veio de um IP desconhecido.
+          </p>
         `
       },
-      { type: 'ad' },
       {
-        type: 'text',
-        content: `
-      <p>Ele parou antes de subir os degraus de concreto rachado. Seus sensores — ou talvez apenas seu instinto de homem que viveu tempo demais nas sombras — dispararam um alerta.</p>
-
-      <p><em>"Ela está aqui."</em></p>
-
-      <p>Não foi preciso vê-la para saber. A atmosfera mudou. A estática no ar ficou mais densa, carregada, como se uma tempestade elétrica estivesse comprimida em um único ponto.</p>
-
-      <p>Quando Kelma saiu das sombras das colunas, não foi um movimento; foi uma aparição. A luz fraca dos neons quebrados refletia em sua pele, dando-lhe uma aura quase metálica. Seus olhos, normalmente de uma cor humana, pareciam refletir uma luminescência sanguínea, predatória.</p>
-        `
+        type: 'ad',
+        content: ''
       },
-      { type: 'ad' }, // <--- MAIS UM ANÚNCIO!
       {
         type: 'text',
         content: `
-      <p>Broklin sentiu o músculo do maxilar travar. Ele cruzou os braços sobre o peito, uma barreira física inútil contra o que estava por vir.</p>
-
-      <p>— <strong>Eu não vim aqui pra isso</strong> — ele disse. Sua voz saiu grave, arranhada, tentando impor uma autoridade que ele não sentia por dentro.</p>
-
-      <p>Kelma não parou. Ela deu um passo à frente, e o som do salto dela no concreto ecoou como um tiro seco na vastidão do santuário. Um sorriso lento, quase preguiçoso, curvou os lábios dela.</p>
-
-      <p>— <strong>Eu sei</strong> — ela respondeu. A voz dela não era alta, mas preenchia todo o espaço, vibrando nos ossos dele. — <strong>Você veio buscar paz. Veio buscar lógica.</strong></p>
-
-      <p>Ela parou a apenas um metro dele. Perto o suficiente para que Broklin sentisse o calor que emanava dela, contrastando com o gelo da noite.</p>
-
-      <p>— <strong>Mas eu também sei o que você sente quando a lógica falha, Broklin</strong> — ela sussurrou, e a poeira púrpura parecia girar em torno dela, atraída por sua gravidade. — <strong>Eu sei o que você esconde debaixo dessa armadura de arquiteto.</strong></p>
-
-      <p>Ele apertou a mandíbula com tanta força que doeu. A irritação subiu pelo pescoço — não porque ela estava provocando, mas porque ela estava certa.</p>
+          <p>
+            O encontro foi marcado em um local neutro, mal iluminado por neons roxos piscantes.
+            Quando <strong>Broklin Garpeter</strong> entrou no recinto, o ambiente mudou.
+            Ele não vestia jeans rasgados como os metaleiros locais.
+            Trajava um sobretudo escuro, cabelos loiros escuros e uma aura de quem havia hackeado a própria realidade.
+          </p>
+          <p>
+            Jonah viu um tecladista. <strong>Kelma viu o abismo... e o abismo olhou de volta.</strong>
+          </p>
+          <p>
+            <em>"Eu não vim aqui para tocar notas,"</em> disse Broklin, com uma voz calma que cortou o ruído do bar.
+            <em>"Eu vim para reprogramar a banda."</em>
+            Naquele momento, Kelma sentiu um arrepio na espinha que nenhuma distorção de guitarra jamais causara.
+          </p>
         `
       }
-    ],
+    ]
   },
   {
     id: 's1-e2',
-    releaseDate: '2026-01-02',
+    releaseDate: '2025-12-29',
     published: false, // BLOQUEADO
     season: 1,
     seasonTitle: 'TEMPORADA 1 — A QUEDA',
@@ -94,34 +92,47 @@ export const BROKLIN_ARC_EN: LoreEpisode[] = [
       {
         type: 'text',
         content: `
-      <p>The cutting wind of Sector 4 carried a fine, glowing purple dust—the remnant of a chemical leak from the upper factories—blanketing the ruins of the ancient techno-temple like a silent shroud. Broklin came to the place to recalibrate his logic when the world grew loud, but that night the silence had weight and even a smell.</p>
-
-      <p>Before climbing the cracked concrete steps, he stopped: his sensors—or the instinct of a man who had spent too much time in the shadows—flared an alert. It wasn't necessary to see to know someone was there; the atmosphere shifted, and the static in the air became dense and compressed, like a storm ready to discharge.</p>
+          <p>
+            The night in Camaragibe smelled of rain and hot asphalt.
+            The year? Irrelevant. What mattered was the static in the air.
+            <strong>Jonah Cyperfield</strong> was restless. The sound of RaQuel Synths was too heavy,
+            too raw. It lacked... elegance. It lacked a digital soul.
+          </p>
+          <p>
+            It was Kelma who gave the ultimatum: <em>"We need someone who understands melodies, not just noise."</em>
+            The ad was placed on the right internet frequencies. And the answer came from an unknown IP.
+          </p>
         `
       },
-      { type: 'ad' },
+      {
+        type: 'ad',
+        content: ''
+      },
       {
         type: 'text',
         content: `
-      <p>Kelma stepped out of the columns' shadows like an apparition. The broken neon reflected on her skin, giving her a metallic halo, and her eyes glowed with a bloodlike, predatory luminescence. Broklin felt his jaw lock and crossed his arms, a symbolic defense against what approached.</p>
-
-      <p>He tries to impose authority: “— I'm not here for this,” he says, his voice low and rough. Kelma doesn't stop; she smiles slowly and takes a step forward—the sound of her heel on concrete snapping sharp through the sanctuary. Her voice, low and full, fills the space and resonates in his bones: “I know. You came for peace. You came for logic.”</p>
-        `
-      },
-      { type: 'ad' },
-      {
-        type: 'text',
-        content: `
-      <p>She halts a meter from him and whispers that she knows what happens when logic fails; the purple dust seems to swirl around her. When he realizes she reads his source code without a password, Broklin clamps his jaw—the irritation isn't only from the provocation but from the truth—and the blow is at once terrifying and strangely thrilling.</p>
-
-      <p>He clenched his jaw so hard it hurt. Irritation rose up his neck—not because she was teasing, but because she was right.</p>
+          <p>
+            The meeting was set in a neutral location, dimly lit by flickering purple neons.
+            When <strong>Broklin Garpeter</strong> entered the room, the atmosphere shifted.
+            He didn't wear torn jeans like the local metalheads.
+            He wore a dark trench coat, dark blond hair, and carried the aura of someone who had hacked reality itself.
+          </p>
+          <p>
+            Jonah saw a keyboardist. <strong>Kelma saw the abyss... and the abyss stared back.</strong>
+          </p>
+          <p>
+            <em>"I didn't come here to play notes,"</em> Broklin said, with a calm voice that cut through the bar's noise.
+            <em>"I came to reprogram the band."</em>
+            In that moment, Kelma felt a shiver down her spine that no guitar distortion had ever caused.
+          </p>
         `
       }
-    ],
+    ]
   },
+
   {
     id: 's1-e2',
-    releaseDate: '2026-01-02',
+    releaseDate: '2025-12-29',
     published: false,
     season: 1,
     seasonTitle: 'SEASON 1 — THE FALL',
