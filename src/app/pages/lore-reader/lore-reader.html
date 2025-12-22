@@ -1,29 +1,48 @@
 <div class="lore-container">
 
+  <!-- BOTÃO DE VOLTAR (Navegação Tática) -->
+  <button class="back-btn" (click)="goBack()">
+    &larr; {{ translate.isPt() ? 'VOLTAR À BASE' : 'BACK TO BASE' }}
+  </button>
+
+  <!-- CABEÇALHO DA SAGA -->
   <header class="lore-header">
-      <span class="season-tag">{{ story.season }}</span>
-    <h1>{{ story.title }}</h1>
-    <div class="meta-data">
-      <span><i class="fas fa-user-edit"></i> Arquivo: Broklin Garpeter</span>
-      <span><i class="fas fa-clock"></i> Tempo de Leitura: 5 min</span>
-    </div>
-    <div class="nav-back">
-    <button class="btn-back" routerLink="/">
-  <i class="fas fa-arrow-left"></i>
-  {{ translate.isPt() ? 'VOLTAR PARA A BASE' : 'BACK TO BASE' }}
-    </button>
-  </div>
+    <h1>{{ translate.isPt() ? 'ARQUIVOS CONFIDENCIAIS' : 'CONFIDENTIAL FILES' }}</h1>
+    <p class="subtitle">VISUAL NOVEL: ARCO BROKLIN</p>
   </header>
 
-  <article class="lore-content">
-    <ng-container *ngFor="let paragraph of story.content">
+  <!-- LISTA DE EPISÓDIOS -->
+  <div class="episodes-list">
 
-      <app-ad-banner *ngIf="isAdBreak(paragraph)"></app-ad-banner>
+    <!-- Loop que desenha cada episódio publicado -->
+    <article *ngFor="let ep of episodes" class="episode-card">
 
-      <p *ngIf="!isAdBreak(paragraph)" [innerHTML]="paragraph"></p>
+      <div class="season-badge">{{ ep.seasonTitle }}</div>
 
-    </ng-container>
-  </article>
+      <h2>{{ ep.title }}</h2>
+      <div class="meta-date">{{ ep.releaseDate | date:'dd/MM/yyyy' }}</div>
+
+      <!-- A IMAGEM DE CAPA (Se existir) -->
+      <div class="episode-cover" *ngIf="ep.coverImage">
+        <img [src]="ep.coverImage" alt="Cena do episódio">
+      </div>
+
+      <!-- O CONTEÚDO (Texto Rico) -->
+      <!-- O [innerHTML] é vital para o Angular aceitar os <p> e <strong> do arquivo de dados -->
+      <div class="lore-content" [innerHTML]="ep.content"></div>
+
+      <div class="divider">
+        <span>RQS</span>
+      </div>
+
+    </article>
+
+    <!-- MENSAGEM DE "CONTINUA..." -->
+    <div class="cliffhanger">
+      <p>{{ translate.isPt() ? 'Próximo episódio em breve...' : 'Next episode coming soon...' }}</p>
+    </div>
+
+  </div>
 
   <div class="lore-footer">
     <h3>

@@ -13,6 +13,10 @@ import { TranslationService } from '../../services/translation.service';
   styleUrls: ['./lore-reader.scss']
 })
 export class LoreReaderComponent {
+episodes: any;
+goBack() {
+throw new Error('Method not implemented.');
+}
   // Injeta o tradutor
   translate = inject(TranslationService);
 
