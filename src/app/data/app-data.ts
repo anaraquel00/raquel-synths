@@ -180,7 +180,7 @@ export const VISUAL_NOVEL_PT = [
       mode: 'chaos'
     },
     {
-      title: 'ARCO BROKLIN (EM BREVE)',
+      title: 'ARCO BROKLIN',
       subtitle: 'Amor, Vinho & Melancolia',
       description: 'A jornada de um vampiro gótico em busca de redenção através do amor de Kelma. Inclui o hit "Neon Tears".',
       image: 'images/arco-broklin.png', // Use a capa do arco
@@ -207,7 +207,7 @@ export const VISUAL_NOVEL_EN = [
       mode: 'chaos'
   },
   {
-      title: 'BROKLIN ARC (SOON)',
+      title: 'BROKLIN ARC',
       subtitle: 'Love, Wine and Melancholy',
       description: 'The journey of a gothic vampire seeking redemption through the love of Kelma. Includes the hit song "Neon Tears".',
       image: 'images/arco-broklin.png', // Use a capa do arco
