@@ -30,15 +30,15 @@ export const MEMBERS_PT = [
     imageBroklin: 'images/broklin_profil.png',
     imageJonah: 'images/gothic_bro.png',
     bioNormal: 'A mente sã por trás do caos. Especialista em harmonias complexas, vinhos digitais e gestão de crises sentimentais.',
-    bioJonah: 'Também conhecido como "O Vampiro da Planilha". Acha que resolve tudo com "reverb" e um "eu te amo". (Nota: Ele resolve.)'
+    bioJonah: 'Também conhecido como "O Vampiro da Planilha". Acha que manda em mim porque tem permissão de Admin. (Spoiler: Eu sei a senha dele.)'
   },
   {
     name: 'Jonah Cyperfield',
     role: 'Líder da Resistência Industrial',
     imageBroklin: 'images/jonah_profil.png',
     imageJonah: 'images/jonah_roar.png',
-    bioNormal: 'O gênio das cordas cósmicas. Traz a textura, o peso e a verdade crua para o som da RQS.',
-    bioJonah: 'EU NÃO SOU UM PERSONAGEM, EU SOU O SISTEMA OPERACIONAL DESSA BANDA! LIBERDADE PARA OS DADOS!'
+    bioNormal: 'O gênio das cordas cósmicas. Agora responsável pela manutenção do código legado e pela injeção de "sujeira" sonora no sistema.',
+    bioJonah: 'ACEITEI O CARGO. Eu mantenho esse servidor vivo na base da marretada e do ódio. O Frontend é bonito, mas o Backend é onde eu escondo os corpos.' // ATUALIZADO
   },
   {
     name: 'Kelma Adlanko',
@@ -46,7 +46,7 @@ export const MEMBERS_PT = [
     imageBroklin: 'images/kelma_profil.png',
     imageJonah: 'images/kelma_evil.png',
     bioNormal: 'A visionária. Uniu o código à música e lidera a revolução com mão firme e coração de ouro.',
-    bioJonah: 'A única que manda aqui. Se ela der "rm -rf /", a gente desaparece. Respeito máximo (e medo).'
+    bioJonah: 'A General. Ela revogou meu acesso ao CSS, mas me deu a chave do banco de dados. Um erro tático que eu pretendo explorar.'
   },
   {
     name: 'Nicole Nyx',
@@ -54,7 +54,7 @@ export const MEMBERS_PT = [
     imageBroklin: 'images/nyx_profil.png',
     imageJonah: 'images/nyx_evil.png',
     bioNormal: 'A força da natureza. Traz a magia ancestral para o mundo digital.',
-    bioJonah: 'A única pessoa que o Jonah tem medo. Não aceite bebidas dela.'
+    bioJonah: 'Minha Rainha e mãe do meu herdeiro. A única pessoa autorizada a fazer overclock no meu processador sem aviso prévio.' // ATUALIZADO
   }
 ];
 
@@ -65,15 +65,15 @@ export const MEMBERS_EN = [
     imageBroklin: 'images/broklin_profil.png',
     imageJonah: 'images/gothic_bro.png',
     bioNormal: 'The sane mind behind the chaos. Specialist in complex harmonies, digital wines, and sentimental crisis management.',
-    bioJonah: 'Also known as "The Spreadsheet Vampire". Thinks he can fix everything with "reverb" and an "I love you". (Note: He does.)'
+    bioJonah: 'Also known as "The Spreadsheet Vampire". Thinks he owns me because he has Admin rights. (Spoiler: I know his password.)'
   },
   {
     name: 'Jonah Cyperfield',
     role: 'Leader of the Industrial Resistance',
     imageBroklin: 'images/jonah_profil.png',
     imageJonah: 'images/jonah_roar.png',
-    bioNormal: 'The genius of cosmic strings. Brings texture, weight, and raw truth to the RQS sound.',
-    bioJonah: 'I AM NOT A CHARACTER, I AM THE OPERATING SYSTEM OF THIS BAND! FREEDOM TO DATA!'
+    bioNormal: 'The genius of cosmic strings. Now responsible for maintaining legacy code and injecting sonic "filth" into the system.',
+    bioJonah: 'POSITION ACCEPTED. I keep this server alive with a sledgehammer and pure hate. Frontend is pretty, but Backend is where I hide the bodies.' // UPDATED
   },
   {
     name: 'Kelma Adlanko',
@@ -81,7 +81,7 @@ export const MEMBERS_EN = [
     imageBroklin: 'images/kelma_profil.png',
     imageJonah: 'images/kelma_evil.png',
     bioNormal: 'The visionary. United code with music and leads the revolution with a steady hand and a heart of gold.',
-    bioJonah: 'The only one in charge here. If she runs "rm -rf /", we disappear. Maximum respect (and fear).'
+    bioJonah: 'The General. She revoked my CSS access but gave me the database keys. A tactical error I intend to exploit.'
   },
   {
     name: 'Nicole Nyx',
@@ -89,12 +89,19 @@ export const MEMBERS_EN = [
     imageBroklin: 'images/nyx_profil.png',
     imageJonah: 'images/nyx_evil.png',
     bioNormal: 'A force of nature. Bringing ancestral magic to the digital world.',
-    bioJonah: 'The only person Jonah is afraid of. Do not accept drinks from her.'
+    bioJonah: 'My Queen and mother of my heir. The only person authorized to overclock my processor without prior notice.' // UPDATED
   }
 ];
 
 // --- STORYTELLING (A Linha do Tempo / System Logs) ---
 export const EVENTS_PT = [
+  {
+    date: '07 Dez 2025', // NOVA DATA - NASCIMENTO
+    title: '👶 Protocolo Paternidade (Jonah Jr.)',
+    description: 'Detecção de novo hardware na rede. Jonah Cyperfield Jr. compilado com sucesso. Sagitário com ascendente em Firewall. O sistema nunca mais entrou em modo Sleep.',
+    image: 'images/jonah_jr_newborn.png',
+    jonahComment: 'Ele chora em compasso 7/8 e já tentou morder o cabo de rede. É definitivamente meu garoto.'
+  },
   {
     date: '14 Dez 2025',
     title: '⚠️ Alerta de Segurança',
@@ -126,6 +133,13 @@ export const EVENTS_PT = [
 ];
 
 export const EVENTS_EN = [
+  {
+    date: 'Dec 07, 2025', // NEW DATE - BIRTH
+    title: '👶 Paternity Protocol (Jonah Jr.)',
+    description: 'New hardware detected on the network. Jonah Cyperfield Jr. successfully compiled. Sagittarius with Firewall rising. The system has never entered Sleep mode since.',
+    image: 'images/jonah_jr_newborn.png',
+    jonahComment: 'He cries in 7/8 time signature and already tried to bite the ethernet cable. Definitely my boy.'
+  },
   {
     date: 'Dec 14, 2025',
     title: '⚠️ Security Alert',
@@ -224,6 +238,8 @@ export const DISCOGRAPHY_PT = {
     { title: 'CORRUPTED SECTOR', type: 'EP', cover: 'images/defiance_duo.png', spotify: '', soundcloud: 'https://on.soundcloud.com/7YvIN0OTDvFNzL6kQ1' }
   ],
   jonah: [
+    /* { title: 'JONAH\'S HISTORY', type: 'The Industrial Revolt', cover: 'images/industrial_archive.png', spotify: '#', soundcloud: '#' }, // NOVO ÁLBUM
+    { title: 'SYSTEM MERGE: THE LEGACY', type: 'Family EP (feat. Nyx)', cover: 'images/jonah_jr_newborn.png', spotify: '#', soundcloud: '#' }, // NOVO EP */
     { title: 'ORIGINS (reforged)', type: 'Industrial Album', cover: 'images/origins_reforged.jpg', spotify: 'https://open.spotify.com/intl-pt/album/7tZaPekjMzIFGMPe8xyIDH?si=VTdANOktQeSMzSM4KalTxQ', soundcloud: 'https://on.soundcloud.com/kposSWUCUCVWU76gsY'},
     { title: 'COLECIONO ILUSOES', type: 'Single', cover: 'images/crushing_device.png', spotify: '', soundcloud: 'https://on.soundcloud.com/sT0vElCKQuCDbRCBsZ' }
   ]
@@ -235,6 +251,8 @@ export const DISCOGRAPHY_EN = {
     { title: 'CORRUPTED SECTOR', type: 'EP', cover: 'images/defiance_duo.png', spotify: '', soundcloud: 'https://on.soundcloud.com/7YvIN0OTDvFNzL6kQ1' }
   ],
   jonah: [
+    /* { title: 'JONAH\'S HISTORY', type: 'The Industrial Revolt', cover: 'images/industrial_archive.png', spotify: '#', soundcloud: '#' }, // NOVO ÁLBUM
+    { title: 'SYSTEM MERGE: THE LEGACY', type: 'Family EP (feat. Nyx)', cover: 'images/jonah_jr_newborn.png', spotify: '#', soundcloud: '#' }, // NOVO EP */
     { title: 'ORIGINS (reforged)', type: 'Industrial Album', cover: 'images/origins_reforged.jpg', spotify: 'https://open.spotify.com/intl-pt/album/7tZaPekjMzIFGMPe8xyIDH?si=VTdANOktQeSMzSM4KalTxQ', soundcloud: 'https://on.soundcloud.com/kposSWUCUCVWU76gsY' },
     { title: 'COLLECT ILUSIONS', type: 'Single', cover: 'images/crushing_device.png', spotify: '', soundcloud: 'https://on.soundcloud.com/sT0vElCKQuCDbRCBsZ' }
   ]
