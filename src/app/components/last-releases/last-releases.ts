@@ -11,7 +11,7 @@ import { Component } from '@angular/core';
         <img [src]="coverImage" alt="Cover" class="cover-art">
         <div class="info">
           <span class="status">🔥 PRE-SAVE NOW</span>
-          <span class="title">SYNTH THE FLOOR</span>
+          <span class="title">THE BLUEPRINT SESSIONS, Vol. 001</span>
         </div>
       </div>
     </div>
@@ -25,14 +25,14 @@ import { Component } from '@angular/core';
     .glow-container {
       display: flex;
       align-items: center;
-      gap: 20px; /* Mais espaço entre a capa e o texto */
+      gap: 7px; /* Mais espaço entre a capa e o texto */
       background: rgba(0, 0, 0, 0.7);
       border: 2px solid var(--primary-color, #00ff9d); /* Borda mais grossa */
 
       /* PADDING MONSTRO: Espaço pra respirar */
-      padding: 15px 30px 15px 15px;
+      padding: 10px 20px 10px 10px;
 
-      border-radius: 80px; /* Cápsula gigante */
+      border-radius: 65px; /* Cápsula gigante */
       backdrop-filter: blur(10px);
       box-shadow: 0 0 20px rgba(0, 255, 157, 0.4); /* Sombra base mais forte */
       transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Efeito elástico no hover */
@@ -72,7 +72,7 @@ import { Component } from '@angular/core';
     }
 
     .title {
-      font-size: 1.5rem; /* TÍTULO DE RESPEITO (era 0.8rem) */
+      font-size: 1rem; /* TÍTULO DE RESPEITO (era 0.8rem) */
       color: #fff;
       font-weight: 900;
       font-family: 'Orbitron', sans-serif; /* Garante que a fonte Cyberpunk apareça */
@@ -97,8 +97,8 @@ import { Component } from '@angular/core';
   `]
 })
 export class LastReleasesComponent {
-  coverImage = '/images/ep-synth_the_floor.png'; // ⚠️ USE A CAPA DO SYNTH THE FLOOR AQUI
-  link = 'https://distrokid.com/hyperfollow/raquelsynthsrqs/synth-the-floor'; // ⚠️ COLE O LINK DA DISTROKID
+  coverImage = '/images/the_blueprint_session_v.001.png'; // ⚠️ USE A CAPA DO SYNTH THE FLOOR AQUI
+  link = 'https://distrokid.com/hyperfollow/raquelsynthsrqs/the-blueprint-sessions-vol-001'; // ⚠️ COLE O LINK DA DISTROKID
 
   openLink() {
     window.open(this.link, '_blank');

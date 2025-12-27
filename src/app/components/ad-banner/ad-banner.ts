@@ -1,5 +1,5 @@
-import { Component, AfterViewInit, inject, PLATFORM_ID } from '@angular/core'; // <--- Adicionei PLATFORM_ID
-import { CommonModule, isPlatformBrowser } from '@angular/common'; // <--- Adicionei isPlatformBrowser
+import { Component, AfterViewInit, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { TranslationService } from '../../services/translation.service';
 import { ADS_DATA } from '../../data/app-data';
 
@@ -40,18 +40,15 @@ import { ADS_DATA } from '../../data/app-data';
   `]
 })
 export class AdBannerComponent implements AfterViewInit {
-  translate = inject(TranslationService);
-  platformId = inject(PLATFORM_ID); // <--- Injetamos a identidade da plataforma
-
   isBrowser = false; // Variável para controlar o template
+
+  constructor(private translate: TranslationService, @Inject(PLATFORM_ID) private platformId: Object) {
+    // Verifica se estamos no navegador
+    this.isBrowser = isPlatformBrowser(this.platformId);
+  }
 
   get t() {
     return this.translate.isPt() ? ADS_DATA.pt : ADS_DATA.en;
-  }
-
-  constructor() {
-    // Verifica se estamos no navegador
-    this.isBrowser = isPlatformBrowser(this.platformId);
   }
 
   ngAfterViewInit() {
