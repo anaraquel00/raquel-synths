@@ -2,7 +2,7 @@ import { Component, signal } from '@angular/core';
 import { MatIconModule } from "@angular/material/icon";
 import { FOOTER_DATA } from '../../data/app-data';
 import { TranslationService } from '../../services/translation.service';
-import { CommonModule } from '@angular/common';
+
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -10,7 +10,7 @@ import { AdBannerComponent } from "../ad-banner/ad-banner";
 
 @Component({
   selector: 'app-footer',
-  imports: [CommonModule, FormsModule, MatIconModule, MatButtonModule],
+  imports: [FormsModule, MatIconModule, MatButtonModule],
   templateUrl: './footer.html',
   styleUrl: './footer.scss'
 })

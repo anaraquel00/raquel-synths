@@ -10,12 +10,18 @@
         [ngModel]="email()"
         (ngModelChange)="email.set($event)"
         [disabled]="loading()"
-      >
+        >
 
       <button mat-flat-button color="accent" (click)="subscribe()" [disabled]="loading()">
-        <span *ngIf="!loading()">{{ t.subBtn }}</span>
-        <span *ngIf="loading()">...</span>
-        <mat-icon *ngIf="!loading()">send</mat-icon>
+        @if (!loading()) {
+          <span>{{ t.subBtn }}</span>
+        }
+        @if (loading()) {
+          <span>...</span>
+        }
+        @if (!loading()) {
+          <mat-icon>send</mat-icon>
+        }
       </button>
     </div>
 
@@ -65,5 +71,5 @@
         </li>
       </ul>
     </div>
-    </div>
+  </div>
 </footer>

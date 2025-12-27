@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; // Importante para o *ngIf
+ // Importante para o *ngIf
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms'; // O Arsenal de Formulários
 import { CONTACT_DATA } from '../../data/app-data';
 import { TranslationService } from '../../services/translation.service';
@@ -9,10 +9,9 @@ import { HttpClient,HttpClientModule } from '@angular/common/http';
   selector: 'app-contato',
   standalone: true, // <--- A MÁGICA ESTÁ AQUI. Diz que ele é independente.
   imports: [
-    CommonModule,        // Traz o *ngIf, *ngFor
     ReactiveFormsModule,
-    HttpClientModule// Traz o formGroup, formControlName
-  ],
+    HttpClientModule
+],
   templateUrl: './contato.html', // Ou o nome que você deu
   styleUrls: ['./contato.scss']
 })

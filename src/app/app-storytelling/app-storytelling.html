@@ -2,23 +2,22 @@
   <h2 class="section-title">SYSTEM_LOGS_2025</h2>
 
   <div class="timeline">
-    <div class="timeline-item" *ngFor="let event of events; let i = index" [class.left]="i % 2 === 0" [class.right]="i % 2 !== 0">
-
-      <div class="content-box">
-        <span class="date">{{ event.date }}</span>
-        <h3 class="title">{{ event.title }}</h3>
-
-        <div class="img-wrapper">
-          <img [src]="event.image" [alt]="event.title">
-        </div>
-
-        <p class="description">{{ event.description }}</p>
-
-        <div class="jonah-note" *ngIf="event.jonahComment">
-          <strong>[JONAH_OVERRIDE]:</strong> {{ event.jonahComment }}
+    @for (event of events; track event; let i = $index) {
+      <div class="timeline-item" [class.left]="i % 2 === 0" [class.right]="i % 2 !== 0">
+        <div class="content-box">
+          <span class="date">{{ event.date }}</span>
+          <h3 class="title">{{ event.title }}</h3>
+          <div class="img-wrapper">
+            <img [src]="event.image" [alt]="event.title">
+          </div>
+          <p class="description">{{ event.description }}</p>
+          @if (event.jonahComment) {
+            <div class="jonah-note">
+              <strong>[JONAH_OVERRIDE]:</strong> {{ event.jonahComment }}
+            </div>
+          }
         </div>
       </div>
-
-    </div>
+    }
   </div>
 </section>

@@ -1,5 +1,5 @@
-import { Component, AfterViewInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, AfterViewInit, inject, PLATFORM_ID } from '@angular/core'; // <--- Adicionei PLATFORM_ID
+import { CommonModule, isPlatformBrowser } from '@angular/common'; // <--- Adicionei isPlatformBrowser
 import { TranslationService } from '../../services/translation.service';
 import { ADS_DATA } from '../../data/app-data';
 
@@ -8,7 +8,7 @@ import { ADS_DATA } from '../../data/app-data';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="ad-container">
+    <div class="ad-container" *ngIf="isBrowser">
       <div class="ad-label">{{ t.label }}</div>
 
       <ins class="adsbygoogle"
@@ -23,20 +23,15 @@ import { ADS_DATA } from '../../data/app-data';
     .ad-container {
       margin: 40px auto;
       max-width: 728px;
-      /* AQUI ESTÁ O TRUQUE: Usamos var(--accent-color)
-         Se for Broklin = Verde Neon.
-         Se for Jonah = Laranja Queimado. */
       border: 1px dashed var(--accent-color);
       background: rgba(0, 0, 0, 0.3);
       padding: 15px;
       text-align: center;
-      transition: border-color 0.5s ease; /* Transição suave na troca de tema */
+      transition: border-color 0.5s ease;
     }
-
     .ad-label {
-      font-family: 'Courier New', monospace; /* Fonte Hacker */
+      font-family: 'Courier New', monospace;
       font-size: 0.7rem;
-      /* A cor do texto também segue o tema */
       color: var(--text-color);
       opacity: 0.7;
       letter-spacing: 2px;
@@ -45,19 +40,29 @@ import { ADS_DATA } from '../../data/app-data';
   `]
 })
 export class AdBannerComponent implements AfterViewInit {
-  translate = inject(TranslationService); // Injeção moderna do Angular 19
+  translate = inject(TranslationService);
+  platformId = inject(PLATFORM_ID); // <--- Injetamos a identidade da plataforma
 
-  // Getter para pegar o texto certo (PT ou EN)
+  isBrowser = false; // Variável para controlar o template
+
   get t() {
     return this.translate.isPt() ? ADS_DATA.pt : ADS_DATA.en;
   }
 
+  constructor() {
+    // Verifica se estamos no navegador
+    this.isBrowser = isPlatformBrowser(this.platformId);
+  }
+
   ngAfterViewInit() {
-    try {
-      (window as any).adsbygoogle = (window as any).adsbygoogle || [];
-      (window as any).adsbygoogle.push({});
-    } catch (e) {
-      console.error('AdSense error:', e);
+    // A Proteção Mágica: Só roda se for no Browser!
+    if (this.isBrowser) {
+      try {
+        (window as any).adsbygoogle = (window as any).adsbygoogle || [];
+        (window as any).adsbygoogle.push({});
+      } catch (e) {
+        console.error('AdSense error:', e);
+      }
     }
   }
 }

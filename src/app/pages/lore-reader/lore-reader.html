@@ -15,34 +15,38 @@
   <div class="synopsis-container">
 
     <!-- VERSÃO PT -->
-    <div *ngIf="translate.isPt()" class="synopsis-content">
-      <p>
-        <strong>Broklin Garpeter</strong>, um produtor Cyberpunk enigmático com estética gótica e aura de "vampiro digital",
-        entra em cena para abalar as estruturas da banda <strong>RaQuel Synths</strong>.
-        Originalmente formada pelo casal <strong>Kelma Adlanko</strong> e <strong>Jonah Cyperfield</strong> (o "Lord do Metal"),
-        a dinâmica muda drasticamente quando Kelma busca um terceiro elemento.
-      </p>
-      <p>
-        O que começa como um encontro em um local sombrio na calada da noite se transforma em algo fatal.
-        <strong>Sedução, paixões e intrigas</strong> vão mudar o rumo dessa história para sempre.
-        Não perca os próximos episódios.
-      </p>
-    </div>
+    @if (translate.isPt()) {
+      <div class="synopsis-content">
+        <p>
+          <strong>Broklin Garpeter</strong>, um produtor Cyberpunk enigmático com estética gótica e aura de "vampiro digital",
+          entra em cena para abalar as estruturas da banda <strong>RaQuel Synths</strong>.
+          Originalmente formada pelo casal <strong>Kelma Adlanko</strong> e <strong>Jonah Cyperfield</strong> (o "Lord do Metal"),
+          a dinâmica muda drasticamente quando Kelma busca um terceiro elemento.
+        </p>
+        <p>
+          O que começa como um encontro em um local sombrio na calada da noite se transforma em algo fatal.
+          <strong>Sedução, paixões e intrigas</strong> vão mudar o rumo dessa história para sempre.
+          Não perca os próximos episódios.
+        </p>
+      </div>
+    }
 
     <!-- VERSÃO EN -->
-    <div *ngIf="!translate.isPt()" class="synopsis-content">
-      <p>
-        <strong>Broklin Garpeter</strong>, an enigmatic Cyberpunk producer with a gothic aesthetic and a "digital vampire" aura,
-        arrives to shake the foundations of <strong>RaQuel Synths</strong>.
-        Originally formed by the couple Kelma and <strong>Jonah Cyperfield</strong> (the "Metal Lord"),
-        dynamics change drastically when Kelma seeks a third member.
-      </p>
-      <p>
-        What starts as a meeting in a shadowy place in the dead of night turns into something fatal.
-        <strong>Seduction, passion, and intrigue</strong> will change the course of this story forever.
-        Don't miss the next episodes.
-      </p>
-    </div>
+    @if (!translate.isPt()) {
+      <div class="synopsis-content">
+        <p>
+          <strong>Broklin Garpeter</strong>, an enigmatic Cyberpunk producer with a gothic aesthetic and a "digital vampire" aura,
+          arrives to shake the foundations of <strong>RaQuel Synths</strong>.
+          Originally formed by the couple Kelma and <strong>Jonah Cyperfield</strong> (the "Metal Lord"),
+          dynamics change drastically when Kelma seeks a third member.
+        </p>
+        <p>
+          What starts as a meeting in a shadowy place in the dead of night turns into something fatal.
+          <strong>Seduction, passion, and intrigue</strong> will change the course of this story forever.
+          Don't miss the next episodes.
+        </p>
+      </div>
+    }
 
     <hr class="neon-divider">
   </div>
@@ -50,42 +54,41 @@
   <!-- LISTA DE EPISÓDIOS -->
   <div class="episodes-list">
 
-    <article *ngFor="let ep of episodes" class="episode-card">
-
-      <!-- Cabeçalho do Episódio -->
-      <div class="ep-header">
-        <span class="season-badge">{{ ep.seasonTitle }}</span>
-        <span class="date">{{ ep.releaseDate | date:'dd/MM/yyyy' }}</span>
-      </div>
-
-      <h2>{{ ep.title }}</h2>
-
-      <!-- IMAGEM DE CAPA -->
-      <div class="episode-cover" *ngIf="ep.coverImage">
-        <img [src]="ep.coverImage" alt="Cover do Episódio">
-      </div>
-
-      <!-- CONTEÚDO DO TEXTO -->
-      <div class="story-content">
-        <ng-container *ngFor="let block of ep.blocks">
-
-          <!-- TEXTO -->
-          <div *ngIf="block.type === 'text'" [innerHTML]="block.content"></div>
-
-          <!-- ANÚNCIO -->
-          <div *ngIf="block.type === 'ad'" class="ad-spacer">
-            <app-ad-banner></app-ad-banner>
+    @for (ep of episodes; track ep) {
+      <article class="episode-card">
+        <!-- Cabeçalho do Episódio -->
+        <div class="ep-header">
+          <span class="season-badge">{{ ep.seasonTitle }}</span>
+          <span class="date">{{ ep.releaseDate | date:'dd/MM/yyyy' }}</span>
+        </div>
+        <h2>{{ ep.title }}</h2>
+        <!-- IMAGEM DE CAPA -->
+        @if (ep.coverImage) {
+          <div class="episode-cover">
+            <img [src]="ep.coverImage" alt="Cover do Episódio">
           </div>
-
-        </ng-container>
-      </div>
-
-      <!-- Divisor Estiloso -->
-      <div class="divider">
-        <span>● ● ●</span>
-      </div>
-
-    </article>
+        }
+        <!-- CONTEÚDO DO TEXTO -->
+        <div class="story-content">
+          @for (block of ep.blocks; track block) {
+            <!-- TEXTO -->
+            @if (block.type === 'text') {
+              <div [innerHTML]="block.content"></div>
+            }
+            <!-- ANÚNCIO -->
+            @if (block.type === 'ad') {
+              <div class="ad-spacer">
+                <app-ad-banner></app-ad-banner>
+              </div>
+            }
+          }
+        </div>
+        <!-- Divisor Estiloso -->
+        <div class="divider">
+          <span>● ● ●</span>
+        </div>
+      </article>
+    }
 
     <!-- Fim da lista -->
     <div class="cliffhanger">

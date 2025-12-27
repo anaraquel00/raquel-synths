@@ -1,5 +1,5 @@
 import { Component, effect } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslationService } from '../services/translation.service';
@@ -8,7 +8,7 @@ import { DISCOGRAPHY_EN, DISCOGRAPHY_PT } from '../data/app-data';
 @Component({
   selector: 'app-discography',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule],
+  imports: [MatButtonModule, MatIconModule],
   templateUrl: './app-discography.html',
   styleUrl: './app-discography.scss'
 })

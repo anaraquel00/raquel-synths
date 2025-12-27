@@ -1,5 +1,5 @@
 import { Component, effect } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { EVENTS_EN, EVENTS_PT } from '../data/app-data';
 import { TranslationService } from '../services/translation.service';
 
@@ -14,7 +14,7 @@ import { TranslationService } from '../services/translation.service';
 @Component({
   selector: 'app-storytelling',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './app-storytelling.html',
   styleUrl: './app-storytelling.scss'
 })

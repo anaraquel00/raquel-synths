@@ -1,12 +1,12 @@
 import { Component, effect } from '@angular/core'; // Importe 'effect'
-import { CommonModule } from '@angular/common';
+
 import { MEMBERS_PT, MEMBERS_EN } from '../../data/app-data'; // Importe os dados
 import { TranslationService } from '../../services/translation.service';
 
 @Component({
   selector: 'app-sobre',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './sobre.html',
   styleUrl: './sobre.scss'
 })

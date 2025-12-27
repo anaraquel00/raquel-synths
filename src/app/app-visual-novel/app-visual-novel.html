@@ -3,30 +3,28 @@
   <p class="section-subtitle">{{ text.subtitle }}</p>
 
   <div class="arcs-grid">
-    <div class="arc-card" *ngFor="let arc of arcs" [ngClass]="arc.mode">
-
-      <div class="poster" [style.backgroundImage]="'url(' + arc.image + ')'">
-        <div class="overlay">
-          <button mat-fab color="accent" class="play-btn" (click)="navigate(arc.link)">
-            <mat-icon>play_arrow</mat-icon>
+    @for (arc of arcs; track arc) {
+      <div class="arc-card" [ngClass]="arc.mode">
+        <div class="poster" [style.backgroundImage]="'url(' + arc.image + ')'">
+          <div class="overlay">
+            <button mat-fab color="accent" class="play-btn" (click)="navigate(arc.link)">
+              <mat-icon>play_arrow</mat-icon>
+            </button>
+          </div>
+        </div>
+        <div class="arc-info">
+          <h3>{{ arc.title }}</h3>
+          <span class="subtitle">{{ arc.subtitle }}</span>
+          <p>{{ arc.description }}</p>
+          <button class="btn-watch" (click)="navigate(arc.link)">
+            {{ arc.link.startsWith('/') ?
+            (translate.isPt() ? 'LER HISTÓRIA' : 'READ STORY') :
+            (translate.isPt() ? 'ASSISTIR' : 'WATCH')
+            }}
           </button>
         </div>
       </div>
-
-      <div class="arc-info">
-        <h3>{{ arc.title }}</h3>
-        <span class="subtitle">{{ arc.subtitle }}</span>
-        <p>{{ arc.description }}</p>
-
-        <button class="btn-watch" (click)="navigate(arc.link)">
-          {{ arc.link.startsWith('/') ?
-             (translate.isPt() ? 'LER HISTÓRIA' : 'READ STORY') :
-             (translate.isPt() ? 'ASSISTIR' : 'WATCH')
-          }}
-        </button>
-      </div>
-
-    </div>
+    }
   </div>
   <section class="ads-section">
     <app-ad-banner></app-ad-banner>
