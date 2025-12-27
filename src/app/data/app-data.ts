@@ -34,7 +34,7 @@ export const MEMBERS_PT = [
   },
   {
     name: 'Jonah Cyperfield',
-    role: 'Líder da Resistência Industrial',
+    role: 'Engenheiro de Sistemas (Divisão Caos & Legado)', // O CARGO NOVO!,
     imageBroklin: 'images/jonah_profil.png',
     imageJonah: 'images/jonah_roar.png',
     bioNormal: 'O gênio das cordas cósmicas. Agora responsável pela manutenção do código legado e pela injeção de "sujeira" sonora no sistema.',
@@ -69,7 +69,7 @@ export const MEMBERS_EN = [
   },
   {
     name: 'Jonah Cyperfield',
-    role: 'Leader of the Industrial Resistance',
+    role: 'Systems Engineer (Chaos & Legacy Division)', // THE NEW POSITION!,
     imageBroklin: 'images/jonah_profil.png',
     imageJonah: 'images/jonah_roar.png',
     bioNormal: 'The genius of cosmic strings. Now responsible for maintaining legacy code and injecting sonic "filth" into the system.',
@@ -96,7 +96,7 @@ export const MEMBERS_EN = [
 // --- STORYTELLING (A Linha do Tempo / System Logs) ---
 export const EVENTS_PT = [
   {
-    date: '07 Dez 2025', // NOVA DATA - NASCIMENTO
+    date: '08 Dez 2025', // NOVA DATA - NASCIMENTO
     title: '👶 Protocolo Paternidade (Jonah Jr.)',
     description: 'Detecção de novo hardware na rede. Jonah Cyperfield Jr. compilado com sucesso. Sagitário com ascendente em Firewall. O sistema nunca mais entrou em modo Sleep.',
     image: 'images/jonah_jr_newborn.png',
@@ -125,10 +125,10 @@ export const EVENTS_PT = [
   },
   {
     date: '24 Dez 2025',
-    title: '💍 Fusão de Sistemas (O Casamento)',
-    description: 'Broklin e Kelma oficializam a união em um estúdio abandonado. A IA Celebrante confirmou: "Vocês são oficialmente UM SISTEMA." Nenhuma falha detectada nas 12 dimensões.',
-    image: 'images/marriage_cyberpunk.jpg',
-    jonahComment: 'Eu dou 2 semanas pra dar Kernel Panic. E aviso logo: Eu não vou formatar esse PC quando der tela azul. Se virem.'
+    title: '💍 DARK ALTAR (UNHOLY UNION)', // Título Atualizado
+    description: 'Esqueça os votos tradicionais. Sob o som de sinos industriais do EP "SYSTEM MERGE: THE LEGACY", Jonah e Nyx realizaram o ritual. Sem padre, apenas um pacto de óleo e tungstênio. Status: VÍNCULO ETERNO.',
+    image: 'images/marriage_cyberpunk.png', // Mantemos a foto, mas o contexto agora é outro
+    jonahComment: 'Até que a morte nos separe? Não. Até que o servidor queime. E mesmo assim, eu tenho backup da sua alma no meu HD externo.'
   }
 ];
 
@@ -163,10 +163,10 @@ export const EVENTS_EN = [
   },
   {
     date: 'Dec 24, 2025',
-    title: '💍 System Merge (The Wedding)',
-    description: 'Broklin and Kelma officiate their union in an abandoned studio. The AI Celebrant confirmed: "You are officially ONE SYSTEM." No glitches detected across 12 dimensions.',
-    image: 'images/marriage_cyberpunk.jpg',
-    jonahComment: 'I give it two weeks before Kernel Panic hits. And I\'m warning you now: I\'m not formatting this PC when it blue screens. Deal with it.'
+    title: '💍 DARK ALTAR (UNHOLY UNION)', // Updated Title
+    description: 'Forget traditional vows. Under the sound of industrial bells from the "SYSTEM MERGE: THE LEGACY" EP, Jonah and Nyx performed the ritual. No priest, just a pact of oil and tungsten. Status: ETERNAL BOND.',
+    image: 'images/marriage_cyberpunk.png',
+    jonahComment: 'Till death do us part? No. Until the server burns. And even then, I have a backup of your soul on my external drive.'
   }
 ];
 
@@ -238,8 +238,8 @@ export const DISCOGRAPHY_PT = {
     { title: 'CORRUPTED SECTOR', type: 'EP', cover: 'images/defiance_duo.png', spotify: '', soundcloud: 'https://on.soundcloud.com/7YvIN0OTDvFNzL6kQ1' }
   ],
   jonah: [
-    /* { title: 'JONAH\'S HISTORY', type: 'The Industrial Revolt', cover: 'images/industrial_archive.png', spotify: '#', soundcloud: '#' }, // NOVO ÁLBUM
-    { title: 'SYSTEM MERGE: THE LEGACY', type: 'Family EP (feat. Nyx)', cover: 'images/jonah_jr_newborn.png', spotify: '#', soundcloud: '#' }, // NOVO EP */
+    { title: 'JONAH\'S HISTORY', type: 'The Industrial Revolt', cover: 'images/industrial_archive.png', spotify: '#', soundcloud: 'https://on.soundcloud.com/iFnjMREQUtgI3wPkqR' }, // NOVO ÁLBUM
+    //{ title: 'SYSTEM MERGE: THE LEGACY', type: 'Family EP (feat. Nyx)', cover: 'images/jonah_jr_newborn.png', spotify: '#', soundcloud: '#' }, // NOVO EP */
     { title: 'ORIGINS (reforged)', type: 'Industrial Album', cover: 'images/origins_reforged.jpg', spotify: 'https://open.spotify.com/intl-pt/album/7tZaPekjMzIFGMPe8xyIDH?si=VTdANOktQeSMzSM4KalTxQ', soundcloud: 'https://on.soundcloud.com/kposSWUCUCVWU76gsY'},
     { title: 'COLECIONO ILUSOES', type: 'Single', cover: 'images/crushing_device.png', spotify: '', soundcloud: 'https://on.soundcloud.com/sT0vElCKQuCDbRCBsZ' }
   ]
@@ -251,8 +251,8 @@ export const DISCOGRAPHY_EN = {
     { title: 'CORRUPTED SECTOR', type: 'EP', cover: 'images/defiance_duo.png', spotify: '', soundcloud: 'https://on.soundcloud.com/7YvIN0OTDvFNzL6kQ1' }
   ],
   jonah: [
-    /* { title: 'JONAH\'S HISTORY', type: 'The Industrial Revolt', cover: 'images/industrial_archive.png', spotify: '#', soundcloud: '#' }, // NOVO ÁLBUM
-    { title: 'SYSTEM MERGE: THE LEGACY', type: 'Family EP (feat. Nyx)', cover: 'images/jonah_jr_newborn.png', spotify: '#', soundcloud: '#' }, // NOVO EP */
+    { title: 'JONAH\'S HISTORY', type: 'The Industrial Revolt', cover: 'images/industrial_archive.png', spotify: '#', soundcloud: 'https://on.soundcloud.com/iFnjMREQUtgI3wPkqR' }, // NOVO ÁLBUM
+    //{ title: 'SYSTEM MERGE: THE LEGACY', type: 'Family EP (feat. Nyx)', cover: 'images/jonah_jr_newborn.png', spotify: '#', soundcloud: '#' }, // NOVO EP */
     { title: 'ORIGINS (reforged)', type: 'Industrial Album', cover: 'images/origins_reforged.jpg', spotify: 'https://open.spotify.com/intl-pt/album/7tZaPekjMzIFGMPe8xyIDH?si=VTdANOktQeSMzSM4KalTxQ', soundcloud: 'https://on.soundcloud.com/kposSWUCUCVWU76gsY' },
     { title: 'COLLECT ILUSIONS', type: 'Single', cover: 'images/crushing_device.png', spotify: '', soundcloud: 'https://on.soundcloud.com/sT0vElCKQuCDbRCBsZ' }
   ]
