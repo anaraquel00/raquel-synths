@@ -50,7 +50,7 @@ body {
 }
 
 /* ========================================= */
-/* 📱 MOBILE (O Fix Definitivo)              */
+/* 📱 MOBILE (O Fix da Barra Preta)          */
 /* ========================================= */
 @media (max-width: 768px) {
 
@@ -58,26 +58,30 @@ body {
   html, body {
     background-color: transparent !important;
     background-image: none !important;
+    /* O html pode ter min-height pra garantir */
+    min-height: 100%;
   }
 
   /* O Elemento Fantasma Fixo */
   body::before {
     content: "";
     position: fixed;
+
+    /* 👇 A ANCORAGEM QUÁDRUPLA (O Segredo) */
     top: 0;
     left: 0;
-    width: 100vw;
+    right: 0;
+    bottom: 0; /* Cola no chão e não solta mais! */
 
-    /* O SEGREDO 2: Usar 'dvh' (Dynamic Viewport Height) */
-    /* Isso evita que a barra do navegador corte a imagem */
-    height: 100vh;
-    height: 100dvh; /* Para navegadores modernos */
+    /* Removemos height: 100vh ou 100dvh. A âncora resolve. */
 
-    z-index: -10; /* Bem lá pra trás */
+    z-index: -10;
 
     /* A Imagem */
-    background-image: url('/images/broklin_universe_mobile.jpg');
-    background-size: cover;
+    background-image: url('/images/broklin_universe_mobile.jpg'); /* Verifique se é .jpg ou .png! */
+
+    /* 👇 VOLTAMOS PRO SEU PREFERIDO: Estica pra caber tudo */
+    background-size: 100% 100%;
     background-position: center center;
     background-repeat: no-repeat;
 
@@ -86,7 +90,7 @@ body {
     pointer-events: none;
   }
 
-  /* Camada de segurança preta BEM lá no fundo (no html) caso a imagem falhe */
+  /* Camada de segurança preta caso a imagem falhe (mas agora deve ficar escondida) */
   html {
     background-color: #0a0a12 !important;
   }
