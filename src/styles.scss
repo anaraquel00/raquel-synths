@@ -1,14 +1,9 @@
 /* src/styles.scss */
-
-/* --- IMPORTAÇÕES DO ANGULAR MATERIAL --- */
 @use '@angular/material' as mat;
 
 html {
   @include mat.theme((
-    color: (
-      primary: mat.$magenta-palette,
-      tertiary: mat.$violet-palette,
-    ),
+    color: (primary: mat.$magenta-palette, tertiary: mat.$violet-palette),
     typography: Roboto,
     density: 0,
   ));
@@ -17,75 +12,103 @@ html {
   overflow-y: auto;
 }
 
-/* --- VARIÁVEIS BASE --- */
-:root {
-  --transition-speed: 0.5s;
-}
-
-/* --- CONFIGURAÇÃO PADRÃO DO BODY --- */
 body {
   margin: 0;
-  /* 👇 1. A COMPENSAÇÃO DO HEADER FIXO (OBRIGATÓRIO) */
   padding-top: 70px;
-
   font-family: 'Roboto', sans-serif;
   transition: background-color 0.5s ease;
+  min-height: 100vh;
 
-  /* VARIÁVEIS DO BROKLIN (Padrão) */
+  /* VARIÁVEIS */
   --primary-color: #6200ea;
   --accent-color: #06fd12;
   --text-color: #ffffff;
   --bg-color: #0a0a12;
-  --footer-bg: #000000;
-  --footer-text: #86f863;
   --hero-overlay: rgba(0, 0, 0, 0.4);
-  --font-heading: 'Roboto', sans-serif;
 
-  background-color: var(--bg-color);
   color: var(--text-color);
 
+  /* Padrão Desktop (Com cor de fundo normal) */
+  background-color: #0a0a12 !important;
+
+  /* ========================================= */
+  /* 🖥️ DESKTOP (Padrão) */
+  /* ========================================= */
   background-image: url('/images/broklin_universe.png');
   background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background-position: center center;
   background-attachment: fixed;
-
-  /* Garante que o pseudo-elemento cubra tudo */
-  min-height: 100vh;
+  background-repeat: no-repeat;
 }
 
-/* --- MODO JONAH (O Caos) --- */
+/* ========================================= */
+/* 📱 MOBILE (O Papel de Parede Imóvel)      */
+/* ========================================= */
+@media (max-width: 768px) {
+  body {
+    /* Deixa transparente para vermos o ::before */
+    background-color: transparent !important;
+    background-image: none !important;
+  }
+
+  /* Camada Fixa do Fundo */
+  body::before {
+    content: "";
+    position: fixed; /* O segredo */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0; /* Usa as 4 âncoras para travar */
+
+    /* Z-Index: Atrás de tudo, mas na frente do HTML preto */
+    z-index: -1;
+
+    /* A IMAGEM MOBILE (Verifique se o nome do arquivo está EXATO na pasta!) */
+    background-image: url('/images/broklin_universe_mobile.jpg');
+
+    background-size: 100%;
+    background-position: center top; /* Foca no topo */
+    background-repeat: no-repeat;
+
+    /* Performance: Avisa o celular que isso é um fundo */
+    will-change: transform;
+    pointer-events: none; /* O clique passa direto */
+  }
+}
+
+/* --- MODO JONAH --- */
 body.mode-jonah {
   --primary-color: #bf360c;
   --accent-color: #ff5722;
   --text-color: #e0e0e0;
   --bg-color: #1a1815;
-  --footer-bg: #1a1815;
-  --footer-text: #bf360c;
   --hero-overlay: rgba(50, 20, 0, 0.7);
-  --font-heading: 'Courier Prime', monospace;
 
+  /* Desktop */
   background-image: url('/images/cyberpunk_industrial.png');
-
-  /* 🚫 REMOVI O FILTER DAQUI POIS QUEBRAVA O HEADER */
-  /* filter: contrast(110%) sepia(20%); <--- O CULPADO FOI ELIMINADO */
 }
 
-/* 👇 2. A SOLUÇÃO MÁGICA PARA O EFEITO SÉPIA */
-/* Criamos uma lente virtual na frente da tela */
+/* Mobile Jonah */
+@media (max-width: 768px) {
+  body.mode-jonah {
+    background-image: none !important;
+    background-color: transparent !important;
+  }
+
+  /* Troca o papel de parede fixo */
+  body.mode-jonah::before {
+    background-image: url('/images/cyberpunk_industrial_mobile.jpg') !important;
+  }
+}
+
+/* Filtro Sépia do Jonah */
 body.mode-jonah::after {
   content: "";
-  position: fixed; /* Fixo na tela */
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-
-  /* O efeito visual vive aqui agora */
-  background: rgba(100, 50, 0, 0.15); /* Tintura de ferrugem */
-  backdrop-filter: sepia(30%) contrast(110%); /* O filtro moderno */
-
-  pointer-events: none; /* Deixa o clique passar (essencial!) */
-  z-index: 9998; /* Fica acima do site, mas abaixo do Header (9999) */
-  mix-blend-mode: overlay; /* Mistura com o fundo */
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(100, 50, 0, 0.15);
+  backdrop-filter: sepia(30%) contrast(110%);
+  pointer-events: none;
+  z-index: 9998;
+  mix-blend-mode: overlay;
 }
