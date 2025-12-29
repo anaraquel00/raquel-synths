@@ -1,6 +1,7 @@
 /* src/styles.scss */
 @use '@angular/material' as mat;
 
+/* 1. RESET CRÍTICO DO HTML */
 html {
   @include mat.theme((
     color: (primary: mat.$magenta-palette, tertiary: mat.$violet-palette),
@@ -8,16 +9,17 @@ html {
     density: 0,
   ));
   scroll-behavior: smooth;
-  overflow-x: hidden;
-  overflow-y: auto;
+  height: 100%;
+  /* O SEGREDO 1: O html NÃO PODE ser branco. Tem que ser preto/escuro */
+  background-color: #0a0a12;
 }
 
 body {
   margin: 0;
   padding-top: 70px;
   font-family: 'Roboto', sans-serif;
-  transition: background-color 0.5s ease;
   min-height: 100vh;
+  position: relative;
 
   /* VARIÁVEIS */
   --primary-color: #6200ea;
@@ -28,76 +30,90 @@ body {
 
   color: var(--text-color);
 
-  /* Padrão Desktop (Com cor de fundo normal) */
-  background-color: #0a0a12 !important;
-
-  /* ========================================= */
-  /* 🖥️ DESKTOP (Padrão) */
-  /* ========================================= */
-  background-image: url('/images/broklin_universe.png');
-  background-size: cover;
-  background-position: center center;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
+  /* Removemos o background-color do body pra ele não tampar nada */
+  background-color: transparent;
 }
 
 /* ========================================= */
-/* 📱 MOBILE (O Papel de Parede Imóvel)      */
+/* 🖥️ DESKTOP (Acima de 768px)               */
+/* ========================================= */
+@media (min-width: 769px) {
+  body {
+    background-image: url('/images/broklin_universe.png');
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    /* No desktop, o body pode ter cor de fundo de segurança */
+    background-color: #0a0a12;
+  }
+}
+
+/* ========================================= */
+/* 📱 MOBILE (O Fix Definitivo)              */
 /* ========================================= */
 @media (max-width: 768px) {
-  body {
-    /* Deixa transparente para vermos o ::before */
+
+  /* Garante que body e html não tenham cor tapando a imagem */
+  html, body {
     background-color: transparent !important;
     background-image: none !important;
   }
 
-  /* Camada Fixa do Fundo */
+  /* O Elemento Fantasma Fixo */
   body::before {
     content: "";
-    position: fixed; /* O segredo */
+    position: fixed;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0; /* Usa as 4 âncoras para travar */
+    width: 100vw;
 
-    /* Z-Index: Atrás de tudo, mas na frente do HTML preto */
-    z-index: -1;
+    /* O SEGREDO 2: Usar 'dvh' (Dynamic Viewport Height) */
+    /* Isso evita que a barra do navegador corte a imagem */
+    height: 100vh;
+    height: 100dvh; /* Para navegadores modernos */
 
-    /* A IMAGEM MOBILE (Verifique se o nome do arquivo está EXATO na pasta!) */
+    z-index: -10; /* Bem lá pra trás */
+
+    /* A Imagem */
     background-image: url('/images/broklin_universe_mobile.jpg');
-
-    background-size: 100%;
-    background-position: center top; /* Foca no topo */
+    background-size: cover;
+    background-position: center center;
     background-repeat: no-repeat;
 
-    /* Performance: Avisa o celular que isso é um fundo */
+    /* Performance */
     will-change: transform;
-    pointer-events: none; /* O clique passa direto */
+    pointer-events: none;
+  }
+
+  /* Camada de segurança preta BEM lá no fundo (no html) caso a imagem falhe */
+  html {
+    background-color: #0a0a12 !important;
   }
 }
 
-/* --- MODO JONAH --- */
+/* ========================================= */
+/* 🔥 MODO JONAH (Tema Alternativo)          */
+/* ========================================= */
 body.mode-jonah {
   --primary-color: #bf360c;
-  --accent-color: #ff5722;
-  --text-color: #e0e0e0;
   --bg-color: #1a1815;
-  --hero-overlay: rgba(50, 20, 0, 0.7);
-
-  /* Desktop */
-  background-image: url('/images/cyberpunk_industrial.png');
 }
 
-/* Mobile Jonah */
-@media (max-width: 768px) {
+@media (min-width: 769px) {
   body.mode-jonah {
-    background-image: none !important;
-    background-color: transparent !important;
+    background-image: url('/images/cyberpunk_industrial.png');
   }
+}
 
-  /* Troca o papel de parede fixo */
+@media (max-width: 768px) {
   body.mode-jonah::before {
     background-image: url('/images/cyberpunk_industrial_mobile.jpg') !important;
+  }
+
+  /* Ajuste de cor de fundo do HTML para o modo Jonah */
+  html:has(body.mode-jonah) {
+    background-color: #1a1815 !important;
   }
 }
 
@@ -105,10 +121,67 @@ body.mode-jonah {
 body.mode-jonah::after {
   content: "";
   position: fixed;
-  top: 0; left: 0; width: 100vw; height: 100vh;
+  top: 0; left: 0; width: 100vw; height: 100dvh;
   background: rgba(100, 50, 0, 0.15);
   backdrop-filter: sepia(30%) contrast(110%);
   pointer-events: none;
-  z-index: 9998;
+  z-index: -5; /* Entre a imagem (-10) e o texto (0) */
   mix-blend-mode: overlay;
+}
+/* ========================================= */
+/* ⚡ EFEITOS DE GLITCH (Estilo Jonah)       */
+/* ========================================= */
+
+/* Classe para aplicar o efeito no texto */
+.glitch-text {
+  position: relative;
+  display: inline-block;
+  color: var(--text-color);
+}
+
+/* Criando as camadas duplicadas para o efeito */
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-color); /* Fundo igual ao site pra esconder o original */
+}
+
+/* Camada 1: Ciano/Roxo deslocado */
+.glitch-text::before {
+  left: 2px;
+  text-shadow: -1px 0 #ff00c1;
+  clip: rect(44px, 450px, 56px, 0);
+  animation: glitch-anim-1 5s infinite linear alternate-reverse;
+}
+
+/* Camada 2: Verde/Azul deslocado */
+.glitch-text::after {
+  left: -2px;
+  text-shadow: -1px 0 #00fff9;
+  clip: rect(44px, 450px, 56px, 0);
+  animation: glitch-anim-2 5s infinite linear alternate-reverse;
+}
+
+/* As Animações do Caos */
+@keyframes glitch-anim-1 {
+  0% { clip: rect(20px, 9999px, 80px, 0); }
+  20% { clip: rect(60px, 9999px, 10px, 0); }
+  40% { clip: rect(10px, 9999px, 90px, 0); }
+  60% { clip: rect(80px, 9999px, 20px, 0); }
+  80% { clip: rect(30px, 9999px, 60px, 0); }
+  100% { clip: rect(50px, 9999px, 40px, 0); }
+}
+
+@keyframes glitch-anim-2 {
+  0% { clip: rect(60px, 9999px, 10px, 0); }
+  20% { clip: rect(20px, 9999px, 80px, 0); }
+  40% { clip: rect(80px, 9999px, 20px, 0); }
+  60% { clip: rect(30px, 9999px, 60px, 0); }
+  80% { clip: rect(50px, 9999px, 40px, 0); }
+  100% { clip: rect(10px, 9999px, 90px, 0); }
 }
