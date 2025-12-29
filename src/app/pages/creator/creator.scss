@@ -1,0 +1,325 @@
+/* 1. BARRA DE NAVEGAÇÃO (Mantemos escura para contraste com o topo) */
+.nav-bar {
+  padding: 15px 20px;
+  background: rgba(0, 0, 0, 0.6); /* Mais escuro para ler o botão */
+  backdrop-filter: blur(5px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.back-btn {
+  color: var(--accent-color);
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+/* 2. O CONTAINER "FOLHA DE PAPEL" (A Mágica da Leitura) */
+.creator-container {
+  max-width: 900px;
+  margin: 20px auto 40px; /* Margem ajustada */
+  padding: 40px;
+
+  /* 👇 FUNDO BRANCO TRANSLÚCIDO */
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(15px);
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+
+  /* 👇 TEXTO ESCURO PADRÃO */
+  color: #333;
+}
+
+/* --- HERO SECTION --- */
+.profile-grid {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+  margin-top: 30px;
+  flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+}
+
+.profile-photo-container {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: 4px solid var(--accent-color);
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* Sombra mais suave */
+  flex-shrink: 0;
+
+  img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.4s ease;
+  }
+
+  .photo-broklin { opacity: 1; }
+  .photo-jonah { opacity: 0; }
+}
+
+/* Efeito Hover (Modo Jonah) */
+:host-context(.mode-jonah) .profile-photo-container {
+  border-color: #ff4500;
+  box-shadow: 0 0 25px rgba(255, 69, 0, 0.5);
+  .photo-broklin { opacity: 0; }
+  .photo-jonah { opacity: 1; filter: contrast(1.2); }
+}
+
+.profile-bio {
+  flex: 1;
+  /* Título Preto Forte */
+  .dev-name {
+    font-size: 2.5rem;
+    margin: 0;
+    color: #111; /* Preto quase total */
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+  }
+
+  /* Cargo com cor de destaque mas legível */
+  .dev-role {
+    color: #4a3aff; /* Azul/Roxo vibrante para ler no branco */
+    margin-bottom: 15px;
+    font-weight: 600;
+  }
+
+  /* Texto Cinza Escuro */
+  .bio-text {
+    line-height: 1.6;
+    font-size: 1.1rem;
+    color: #444;
+    font-weight: 500;
+  }
+}
+
+.social-links {
+  margin-top: 20px;
+  display: flex;
+  gap: 15px;
+
+  @media (max-width: 768px) { justify-content: center; }
+
+  .social-btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.9rem;
+    transition: transform 0.2s;
+
+    &.linkedin { background: #0077b5; color: white; }
+    &.github { background: #222; color: white; }
+
+    &:hover { transform: translateY(-3px); }
+  }
+}
+
+.cyber-divider {
+  margin: 50px 0;
+  border: 0;
+  height: 1px;
+  /* Gradiente cinza para combinar com o fundo claro */
+  background: linear-gradient(90deg, transparent, #ccc, transparent);
+}
+
+/* --- SEÇÕES (Títulos) --- */
+h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #222; /* Títulos das seções em preto */
+  font-size: 1.5rem;
+  margin-bottom: 25px;
+  font-weight: bold;
+
+  mat-icon { color: var(--accent-color); } /* Só o ícone colorido */
+}
+
+/* --- SKILLS --- */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.skill-category {
+  /* Fundo cinza claro */
+  background: #f4f4f4;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #ddd; /* Borda cinza */
+
+  &:hover {
+    background: #fff;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  }
+}
+
+.category-label {
+  display: block;
+  font-size: 0.8rem;
+  color: #666; /* Label cinza médio */
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+  font-weight: bold;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tech-chip {
+  background: #fff;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 0.9rem;
+  border: 1px solid #ccc;
+  color: #333;
+  font-weight: 500;
+
+  /* Cores específicas mantidas */
+  &.java { border-color: #f89820; color: #d67b09; background: #fff8e1; }
+  &.angular { border-color: #dd0031; color: #b50027; background: #ffe6ea; }
+  &.spring { border-color: #6db33f; color: #4e852a; background: #f0f9eb; }
+}
+
+/* --- PROJETOS --- */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.project-card {
+  background: #f4f4f4; /* Card claro */
+  padding: 20px;
+  border-radius: 10px;
+  border-left: 4px solid #888;
+  transition: all 0.3s;
+  color: #333;
+
+  &:hover {
+    background: #fff;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  }
+
+  &.featured { border-left-color: var(--accent-color); }
+
+  .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  h4 { margin: 0; font-size: 1.1rem; font-weight: bold; color: #000; }
+
+  .badge {
+    background: var(--accent-color);
+    color: #000;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: bold;
+  }
+  .badge.secondary { background: #ddd; color: #333; }
+
+  p { font-size: 0.95rem; color: #555; }
+
+  .card-techs { margin-top: 15px; display: flex; gap: 10px; opacity: 1; color: #666; font-size: 0.85rem; }
+}
+
+/* --- TIMELINE (Formação) --- */
+/* creator.component.scss - A Timeline Legível */
+.timeline {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+
+  li {
+    display: flex;
+    gap: 25px; /* Mais espaço entre ano e texto */
+    margin-bottom: 30px; /* Mais espaço entre os itens */
+    align-items: flex-start; /* Alinha no topo */
+
+    @media (max-width: 600px) {
+      flex-direction: column; /* No celular fica um embaixo do outro */
+      gap: 5px;
+    }
+
+    .year {
+      min-width: 130px; /* Mais largo para caber "2025 - Atual" */
+      font-size: 1.2rem; /* AUMENTADO (era pequeno) */
+      font-weight: 800; /* Extra Negrito */
+      color: #2A2F4F; /* Azul Escuro Profundo (Legibilidade Máxima) */
+      text-align: right;
+      letter-spacing: -0.5px;
+      padding-top: 5px; /* Ajuste fino de alinhamento */
+
+      @media (max-width: 600px) {
+        text-align: left;
+        color: var(--accent-color); /* No mobile pode ser colorido */
+        font-size: 1rem;
+      }
+    }
+
+    .content {
+      flex: 1;
+      border-left: 3px solid #ddd; /* Linha mais grossa e visível */
+      padding-left: 25px;
+      transition: border-left-color 0.3s;
+
+      /* Efeito visual: quando passa o mouse, a linha acende */
+      &:hover {
+        border-left-color: var(--accent-color);
+      }
+
+      h4 {
+        margin: 0 0 5px 0;
+        color: #000;
+        font-size: 1.2rem; /* Título maior */
+        font-weight: bold;
+      }
+
+      p {
+        margin: 0;
+        color: #333;
+        font-size: 1rem; /* Texto base maior */
+        font-weight: 600;
+      }
+
+      small {
+        display: block;
+        margin-top: 8px;
+        color: #666;
+        font-size: 0.9rem;
+        line-height: 1.4;
+        font-style: italic;
+      }
+    }
+  }
+}
+
+.project-link {
+  display: inline-block;
+  margin-top: 15px;
+  font-size: 0.85rem;
+  color: var(--accent-color);
+  text-decoration: none;
+  font-weight: bold;
+  border-bottom: 1px solid transparent;
+
+  &:hover {
+    border-bottom-color: var(--accent-color);
+  }
+}

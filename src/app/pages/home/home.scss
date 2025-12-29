@@ -41,27 +41,59 @@
 
   /* Ajuste fino no título para remover a margem antiga que atrapalhava */
 
-  .hero-title {
-    font-size: 4rem;
-    font-weight: 900;
-    margin-bottom: 0;
-    font-family: var(--font-heading); /* Roboto ou Courier */
+ .hero-title {
+  font-size: 5rem; /* Aumentei pra impor respeito (era 4rem) */
+  font-weight: 900;
+  margin-bottom: 0;
+  font-family: var(--font-heading);
 
-    /* Gradiente no Texto (Opcional, mas fica chique) */
-    background: linear-gradient(90deg, #fff, var(--primary-color));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+  /* --- A MÁGICA DO GRADIENTE ANIMADO --- */
+  /* Definimos um tamanho maior (200%) para poder mover o fundo */
+  background: linear-gradient(
+    90deg,
+    #ffffff 0%,
+    var(--primary-color) 50%,
+    #ffffff 100%
+  );
+  background-size: 200% auto; /* O segredo do movimento */
 
-    text-transform: uppercase;
-    letter-spacing: 4px;
+  /* Recorta o fundo no formato do texto */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 
-    /* Sombra Neon */
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 4px; /* Espaçamento inicial */
 
-    @media (max-width: 768px) {
-      font-size: 2.5rem; /* Menor no celular */
-    }
+  /* Animação contínua (O Fluxo) */
+  animation: shine 6s linear infinite;
+
+  /* Transição suave para o hover */
+  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  /* Sombra inicial (Glow suave) */
+  filter: drop-shadow(0 0 15px rgba(var(--primary-rgb), 0.4));
+
+  /* --- O EFEITO CINEMATOGRÁFICO (HOVER) --- */
+  &:hover {
+    letter-spacing: 8px; /* As letras se afastam dramaticamente */
+    transform: scale(1.02); /* Cresce levemente */
+    filter: drop-shadow(0 0 25px var(--accent-color)); /* Glow explode em Neon */
   }
+
+  @media (max-width: 768px) {
+    font-size: 2.8rem; /* Ajuste mobile */
+    letter-spacing: 2px;
+    &:hover { letter-spacing: 4px; } /* Menos expansão no celular */
+  }
+}
+
+/* A ANIMAÇÃO QUE MOVE O GRADIENTE */
+@keyframes shine {
+  to {
+    background-position: 200% center;
+  }
+}
 
   .hero-subtitle {
     font-size: 1.5rem;
@@ -174,14 +206,26 @@
 
 /* QUANDO O MODO JONAH ESTIVER ATIVADO NO BODY */
 :host-context(body.mode-jonah) .hero-title {
-  /* Fonte monoespaçada já definida no global, mas vamos reforçar o caos */
+  /* Animações de Glitch */
   animation: glitch-skew 0.3s infinite linear alternate-reverse,
              glitch-flash 2s infinite steps(1);
 
-  color: var(--accent-color); /* Fica Laranja/Vermelho */
-  border-bottom: 3px solid var(--accent-color);
-  background: rgba(0, 0, 0, 0);
-  padding: 0 10px;
+  color: var(--accent-color);
+  background: none; /* Remove o gradiente */
+  -webkit-text-fill-color: var(--accent-color);
+
+
+  /* Mantemos mais "fechado" pra não empurrar o Widget enquanto treme */
+  letter-spacing: 4px !important;
+
+  /* Removemos o Hover expansivo no modo Jonah pra evitar caos desnecessário */
+  &:hover {
+    letter-spacing: 4px !important; /* Trava o tamanho */
+    transform: none; /* Sem crescer */
+  }
+
+  /* Opcional: Reduzir um pouco a fonte se ainda estiver quebrando */
+  /* font-size: 4rem; */
 }
 
 /* --- RESPONSIVIDADE MOBILE --- */

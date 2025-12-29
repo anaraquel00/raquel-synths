@@ -7,10 +7,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { AdBannerComponent } from "../ad-banner/ad-banner";
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-footer',
-  imports: [FormsModule, MatIconModule, MatButtonModule],
+  imports: [FormsModule, MatIconModule, MatButtonModule, RouterLink],
   templateUrl: './footer.html',
   styleUrl: './footer.scss'
 })

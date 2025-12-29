@@ -1,35 +1,110 @@
+/* header.scss - Ajuste de Contraste e Hover */
+
+:host {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+  transition: all 0.3s ease-in-out;
+}
+
 mat-toolbar {
-  background-color: #000000;
-  color: #86f863;
+  background: rgba(10, 10, 18, 0.85) !important; /* Um pouco mais escuro para leitura */
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.275);
+  padding: 0 20px;
+  height: 70px;
+}
+/* header.scss - A Marca */
+
+.brand-logo {
+  font-family: 'Oswald', 'Roboto', sans-serif; /* Fonte forte */
+  font-weight: 800; /* Extra Bold */
+  font-size: 1.5rem; /* Tamanho de destaque */
+  letter-spacing: 2px; /* Estilo cinematográfico */
+
+  cursor: pointer;
+  color: #ffffff; /* Começa Branco Puro */
+
+  /* Um brilho suave inicial para não parecer texto morto */
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Animação elástica */
+
+  /* EFEITO HOVER (A EXPLOSÃO) */
+  &:hover {
+    color: var(--accent-color); /* Vira Verde Neon */
+
+    /* O famoso "Neon Bloom" Cyberpunk */
+    text-shadow:
+      0 0 5px #fff,               /* Núcleo branco */
+      0 0 10px var(--accent-color), /* Brilho médio */
+      0 0 20px var(--accent-color), /* Brilho forte */
+      0 0 40px var(--accent-color); /* Aura externa */
+
+    transform: scale(1.05); /* Cresce levemente */
+  }
+
+  /* Ajuste para mobile */
+  @media (max-width: 600px) {
+    font-size: 1.1rem; /* Um pouco menor no celular para caber */
+    letter-spacing: 1px;
+  }
 }
 
-::ng-deep .mat-mdc-button .mdc-button__label{
-  color: #86f863 !important;
-}
-::ng-deep .mat-mdc-button:hover .mdc-button__label{
-  color: #000000 !important;
-  background-color: #00ff0dde;
-  border-radius: 5px;
-  padding: 5px 5px 5px;
-  margin: auto;
+.spacer {
+  flex: 1 1 auto;
 }
 
-/* --- RESPONSIVIDADE MOBILE --- */
-@media (max-width: 900px) {
+/* 👇 AQUI ESTÁ A CORREÇÃO, AMOR! 👇 */
+button[mat-button] {
+  /* 1. Cor padrão do texto: BRANCO (para ler no fundo escuro) */
+  color: #ffffff !important;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+
+  /* Ícones também brancos */
+  mat-icon {
+    color: #ffffff;
+    transition: color 0.3s ease;
+  }
+
+  /* 2. O HOVER "DISCRETO" */
+  &:hover {
+    /* Texto fica Verde Neon */
+    color: var(--accent-color) !important;
+
+    /* Fundo fica um verde bem clarinho (5% de opacidade) em vez de roxo */
+    background-color: rgba(0, 255, 148, 0.08) !important;
+
+    /* Brilho sutil no texto */
+    text-shadow: 0 0 8px rgba(0, 255, 148, 0.4);
+
+    /* Ícone também fica verde */
+    mat-icon {
+      color: var(--accent-color) !important;
+    }
+  }
+}
+
+/* Manteve a classe do Criador com a borda, mas herdando as cores acima */
+.btn-creator {
+  border: 1px solid var(--accent-color) !important;
+  padding: 0 15px !important;
+  margin-left: 8px;
+
+  /* Ajuste específico para o Creator já começar com ícone colorido se quiser,
+     ou deixe branco igual aos outros para uniformidade.
+     Vou deixar branco para ficar elegante e acender no hover. */
+}
+
+@media (max-width: 600px) {
   mat-toolbar {
-    height: auto !important; /* Permite crescer para baixo */
-    flex-wrap: wrap; /* Botões caem para a próxima linha */
-    justify-content: center;
-    padding: 10px 0;
-  }
-
-  /* Ajusta os botões para caberem melhor */
-  button {
-    font-size: 0.8rem;
-    margin: 2px 0;
-  }
-
-  .spacer {
-    display: none; /* Esconde o espaço vazio para compactar */
+    height: 60px;
+    padding: 0 10px;
   }
 }

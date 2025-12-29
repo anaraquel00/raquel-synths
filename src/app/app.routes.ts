@@ -13,6 +13,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/lore-reader/lore-reader').then(m => m.LoreReaderComponent)
   },
 
+  {
+      path: 'creator',
+      loadComponent: () => import('./pages/creator/creator').then(m => m.Creator)
+    },
+
   // Rota de Erro (Volta pra Home)
   { path: '**', redirectTo: '' }
 ];

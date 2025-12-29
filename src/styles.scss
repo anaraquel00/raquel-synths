@@ -1,3 +1,5 @@
+/* src/styles.scss */
+
 /* --- IMPORTAÇÕES DO ANGULAR MATERIAL --- */
 @use '@angular/material' as mat;
 
@@ -10,9 +12,9 @@ html {
     typography: Roboto,
     density: 0,
   ));
-  scroll-behavior: smooth; /* Scroll suave para a One Page */
-  overflow-x: hidden; /* Evita scroll lateral indesejado */
-  overflow-y: auto;   /* Garante que o scroll vertical funciona */
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 /* --- VARIÁVEIS BASE --- */
@@ -20,52 +22,70 @@ html {
   --transition-speed: 0.5s;
 }
 
-/* --- CONFIGURAÇÃO PADRÃO DO BODY (MODO BROKLIN - PADRÃO) --- */
-/* Aqui definimos que o site JÁ NASCE no modo Broklin */
+/* --- CONFIGURAÇÃO PADRÃO DO BODY --- */
 body {
   margin: 0;
-  font-family: 'Roboto', sans-serif;
-  transition: background-color 0.5s ease, filter 0.5s ease;
+  /* 👇 1. A COMPENSAÇÃO DO HEADER FIXO (OBRIGATÓRIO) */
+  padding-top: 70px;
 
-  /* VARIÁVEIS DO BROKLIN (Agora são o padrão!) */
-  --primary-color: #6200ea;     /* Roxo */
-  --accent-color: #06fd12;      /* Verde Neon */
-  --text-color: #ffffff;        /* Texto Branco */
-  --bg-color: #0a0a12;          /* Fundo Preto */
+  font-family: 'Roboto', sans-serif;
+  transition: background-color 0.5s ease;
+
+  /* VARIÁVEIS DO BROKLIN (Padrão) */
+  --primary-color: #6200ea;
+  --accent-color: #06fd12;
+  --text-color: #ffffff;
+  --bg-color: #0a0a12;
   --footer-bg: #000000;
   --footer-text: #86f863;
   --hero-overlay: rgba(0, 0, 0, 0.4);
   --font-heading: 'Roboto', sans-serif;
 
-  /* Aplica as cores imediatamente */
   background-color: var(--bg-color);
   color: var(--text-color);
 
-  /* IMAGEM DE FUNDO DO BROKLIN */
   background-image: url('/images/broklin_universe.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
+
+  /* Garante que o pseudo-elemento cubra tudo */
+  min-height: 100vh;
 }
 
-/* --- MODO JONAH (A Exceção / O Caos) --- */
-/* Só aplicamos isso quando a classe for adicionada via botão */
+/* --- MODO JONAH (O Caos) --- */
 body.mode-jonah {
-  --primary-color: #bf360c;     /* Laranja Queimado */
-  --accent-color: #ff5722;      /* Vermelho Alerta */
-  --text-color: #e0e0e0;        /* Cinza Sujo */
-  --bg-color: #1a1815;          /* Preto Óleo */
+  --primary-color: #bf360c;
+  --accent-color: #ff5722;
+  --text-color: #e0e0e0;
+  --bg-color: #1a1815;
   --footer-bg: #1a1815;
   --footer-text: #bf360c;
   --hero-overlay: rgba(50, 20, 0, 0.7);
   --font-heading: 'Courier Prime', monospace;
 
-  /* IMAGEM DE FUNDO DO JONAH */
   background-image: url('/images/cyberpunk_industrial.png');
 
-  /* Filtro de "Filme Velho" */
-  filter: contrast(110%) sepia(20%);
+  /* 🚫 REMOVI O FILTER DAQUI POIS QUEBRAVA O HEADER */
+  /* filter: contrast(110%) sepia(20%); <--- O CULPADO FOI ELIMINADO */
 }
 
+/* 👇 2. A SOLUÇÃO MÁGICA PARA O EFEITO SÉPIA */
+/* Criamos uma lente virtual na frente da tela */
+body.mode-jonah::after {
+  content: "";
+  position: fixed; /* Fixo na tela */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
 
+  /* O efeito visual vive aqui agora */
+  background: rgba(100, 50, 0, 0.15); /* Tintura de ferrugem */
+  backdrop-filter: sepia(30%) contrast(110%); /* O filtro moderno */
+
+  pointer-events: none; /* Deixa o clique passar (essencial!) */
+  z-index: 9998; /* Fica acima do site, mas abaixo do Header (9999) */
+  mix-blend-mode: overlay; /* Mistura com o fundo */
+}

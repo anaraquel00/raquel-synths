@@ -1,0 +1,169 @@
+<div class="nav-bar">
+  <button mat-button [routerLink]="['/']" class="back-btn">
+    <mat-icon>arrow_back</mat-icon>
+    {{ navText.backToBase }}
+  </button>
+</div>
+
+<div class="creator-container">
+
+  <header class="profile-header">
+    <div class="profile-grid">
+      <div class="profile-photo-container">
+        <img src="images/foto_perfil.jpeg" alt="Ana Raquel Dev" class="photo-broklin">
+        <img src="images/general_perfil.jpg" alt="General Kelma" class="photo-jonah">
+      </div>
+
+      <div class="profile-bio">
+        <h2 class="dev-name">Ana Raquel de Holanda</h2>
+        <h3 class="dev-role">
+          {{ translate.isPt() ? 'Desenvolvedora Front-End & AI Enthusiast' : 'Front-End Developer & AI Enthusiast' }}
+        </h3>
+
+        <p class="bio-text">
+          {{ translate.isPt()
+             ? 'Atualmente Estagiária Front-End na Fuctura Empresa Júnior, liderando reestruturações em Angular 19+. Especialista em unir código criativo com IA Generativa (GenAI), Java e Música.'
+             : 'Currently Front-End Intern at Fuctura Junior Enterprise, leading restructuring in Angular 19+. Specialist in merging creative code with Generative AI (GenAI), Java, and Music.' }}
+        </p>
+
+        <div class="social-links">
+          <a href="https://www.linkedin.com/in/ana-raquel-de-holanda" target="_blank" class="social-btn linkedin">
+            LinkedIn
+          </a>
+          <a href="https://github.com/anaraquel00" target="_blank" class="social-btn github">
+            GitHub
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <hr class="cyber-divider">
+
+  <section class="education-section">
+    <h3><mat-icon>work_history</mat-icon> {{ translate.isPt() ? 'TRAJETÓRIA (XP)' : 'CAREER PATH' }}</h3>
+
+    <ul class="timeline">
+      <li>
+        <span class="year">2025 - Atual</span>
+        <div class="content">
+          <h4>Estágio Desenvolvedora Front-End</h4>
+          <p><strong>Fuctura Empresa Júnior</strong></p>
+          <small>Reforma e reestruturação de sites utilizando Framework Angular 19+.</small>
+        </div>
+      </li>
+
+      <li>
+        <span class="year">2024 - Atual</span>
+        <div class="content">
+          <h4>Academia Java Full Stack</h4>
+          <p>Fuctura Tecnologia (96h)</p>
+          <small>Java POO, Spring Boot, APIs REST, Angular.</small>
+        </div>
+      </li>
+
+      <li>
+        <span class="year">2025</span>
+        <div class="content">
+          <h4>Bootcamps Intensivos (DIO)</h4>
+          <p>Decola Tech 2025 & Microsoft AI</p>
+          <small>Foco em IA Generativa, GitHub Copilot e Engenharia de Prompts.</small>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <hr class="cyber-divider">
+
+  <section class="skills-section">
+    <h3><mat-icon>memory</mat-icon> {{ translate.isPt() ? 'ARSENAL TÉCNICO' : 'TECH STACK' }}</h3>
+
+    <div class="skills-grid">
+      <div class="skill-category">
+        <span class="category-label">FRONTEND & UI</span>
+        <div class="chips">
+          <span class="tech-chip angular">Angular 19+</span>
+          <span class="tech-chip">React</span>
+          <span class="tech-chip">TypeScript</span>
+          <span class="tech-chip">HTML5/SCSS</span>
+        </div>
+      </div>
+
+      <div class="skill-category">
+        <span class="category-label">BACKEND & DATA</span>
+        <div class="chips">
+          <span class="tech-chip java">Java</span>
+          <span class="tech-chip spring">Spring Boot</span>
+          <span class="tech-chip">Python</span>
+          <span class="tech-chip">MySQL/Hibernate</span>
+        </div>
+      </div>
+
+      <div class="skill-category">
+        <span class="category-label">AI & TOOLS</span>
+        <div class="chips">
+          <span class="tech-chip" style="border-color: #9c27b0; color: #9c27b0;">GenAI & Prompts</span>
+          <span class="tech-chip">Hugging Face</span>
+          <span class="tech-chip">GitHub Copilot</span>
+          <span class="tech-chip">Git/Postman</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="projects-section">
+    <h3><mat-icon>code</mat-icon> {{ translate.isPt() ? 'MISSÕES CUMPRIDAS' : 'DEPLOYED MISSIONS' }}</h3>
+
+    <div class="projects-grid">
+
+      <div class="project-card featured">
+        <div class="card-header">
+          <h4>Gestão de Imóveis (SPA)</h4>
+          <span class="badge">ANGULAR 19</span>
+        </div>
+        <p>
+          {{ translate.isPt()
+             ? 'Sistema completo para gestão do ciclo de vida de aluguéis. Foco em UX limpa e acessibilidade.'
+             : 'Complete system for rental lifecycle management. Focus on clean UX and accessibility.' }}
+        </p>
+        <div class="card-techs">
+          <small>Angular 19</small> <small>Freelance</small> <small>UX/UI</small>
+        </div>
+        <a href="https://github.com/anaraquel00/GESTAO-DE-ALUGUEIS" target="_blank" class="project-link">Ver Código</a>
+      </div>
+
+      <div class="project-card">
+        <div class="card-header">
+          <h4>Virtual Piano + Synth</h4>
+          <span class="badge secondary">AUDIO DEV</span>
+        </div>
+        <p>
+          {{ translate.isPt()
+             ? 'Sintetizador interativo com Arpeggiator e presets (Lead, Pad, Bass). A base da tecnologia musical.'
+             : 'Interactive synthesizer with Arpeggiator and presets. The foundation of music tech.' }}
+        </p>
+        <div class="card-techs">
+          <small>JS</small> <small>Tone.js</small> <small>CSS3</small>
+        </div>
+        <a href="https://github.com/anaraquel00/piano-emulator" target="_blank" class="project-link">Ver Código</a>
+      </div>
+
+       <div class="project-card">
+        <div class="card-header">
+          <h4>RaQuel Synths Platform</h4>
+          <span class="badge secondary">PRODUÇÃO</span>
+        </div>
+        <p>
+          {{ translate.isPt()
+             ? 'Plataforma de streaming e storytelling da banda. Integração com Spotify e i18n.'
+             : 'Streaming and storytelling platform. Spotify integration and i18n.' }}
+        </p>
+        <div class="card-techs">
+          <small>Angular</small> <small>Vercel</small>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</div>

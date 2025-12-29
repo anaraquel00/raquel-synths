@@ -1,7 +1,7 @@
 // DADOS DO HEADER/NAV
 export const NAV_DATA = {
-  pt: { inicio: 'INÍCIO', sobre: 'QUEM SOMOS', visualNovel: 'VISUAL NOVEL', discografia: 'DISCOGRAFIA', playlist: 'PLAYLIST', lore: 'LORE (HISTÓRIA)' },
-  en: { inicio: 'HOME', sobre: 'WHO WE ARE', visualNovel: 'VISUAL NOVEL', discografia: 'DISCOGRAPHY', playlist: 'PLAYLIST', lore: 'LORE (STORIES)' }
+  pt: { inicio: 'INÍCIO', sobre: 'QUEM SOMOS', visualNovel: 'VISUAL NOVEL', discografia: 'DISCOGRAFIA', playlist: 'PLAYLIST', lore: 'LORE (HISTÓRIA)', creator: 'A CRIADORA', backToBase: 'VOLTAR À BASE' },
+  en: { inicio: 'HOME', sobre: 'WHO WE ARE', visualNovel: 'VISUAL NOVEL', discografia: 'DISCOGRAPHY', playlist: 'PLAYLIST', lore: 'LORE (STORIES)', creator: 'THE CREATOR', backToBase: 'BACK TO BASE' }
 };
 
 // DADOS DA HOME
@@ -313,6 +313,7 @@ export const FOOTER_DATA = {
     connect: 'CONECTE-SE',
     support: 'APOIE A BANDA:',
     coffee: 'Pagar um Café ☕',
+    devProfile: 'VER PERFIL TÉCNICO >',
     // NOVOS DADOS DA NEWSLETTER:
     newsTitle: '🔥 RECEBA O CAOS & A GLÓRIA',
     newsDesc: 'Novos lançamentos, Lore secreta e fofocas do Jonah direto na sua caixa de entrada.',
@@ -329,6 +330,7 @@ export const FOOTER_DATA = {
     connect: 'CONNECT',
     support: 'SUPPORT THE BAND:',
     coffee: 'Buy us a Coffee ☕',
+    devProfile: 'VIEW TECH PROFILE >',
     // NEW NEWSLETTER DATA:
     newsTitle: '🔥 RECEIVE THE CHAOS & GLORY',
     newsDesc: 'New releases, secret Lore, and Jonah\'s gossip straight to your inbox.',
