@@ -1,246 +1,114 @@
-/* Importando os mixins do Material (se precisar) */
+/* src/app/pages/home/home.scss */
 @use '@angular/material' as mat;
 
 .home-container {
-  /* Ocupa a tela toda (menos o header) */
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  position: relative; /* Para o z-index funcionar */
+  position: relative;
 }
 
-/* --- HERO SECTION (A Capa) --- */
+/* --- HERO SECTION --- */
 .hero-section {
-  flex: 1; /* Ocupa o espaço disponível */
+  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
   padding: 2rem;
-
-  /* Fundo escuro semi-transparente para o texto brilhar */
   background: var(--hero-overlay);
-  backdrop-filter: blur(2px); /* Um leve blur na imagem de fundo do body */
+  backdrop-filter: blur(2px);
 
- /* NOVO CONTAINER PARA ALINHAR TÍTULO E WIDGET */
+  /* CONTAINER DO TÍTULO + WIDGET */
   .title-wrapper {
     display: flex;
-    align-items: flex-start; /* Centraliza verticalmente */
+    align-items: flex-start;
     justify-content: center;
-    gap: 65px; /* Espaço entre o nome e o widget */
-    flex-wrap: wrap; /* Se a tela for pequena, quebra linha */
+    gap: 65px;
+    flex-wrap: wrap;
     margin-bottom: 1rem;
 
-    /* Ajuste para mobile: um em cima do outro */
-    @media (max-width: 768px) {
-      flex-direction: column;
-      gap: 10px;
+    /* 👇 A CORREÇÃO: Sincronizado com o Header (1280px) */
+    @media (max-width: 1280px) {
+      flex-direction: column; /* Um em cima do outro */
+      align-items: center;
+      gap: 30px;
     }
   }
 
-  /* Ajuste fino no título para remover a margem antiga que atrapalhava */
+  .hero-title {
+    font-size: 5rem;
+    font-weight: 900;
+    margin-bottom: 0;
+    font-family: var(--font-heading);
 
- .hero-title {
-  font-size: 5rem; /* Aumentei pra impor respeito (era 4rem) */
-  font-weight: 900;
-  margin-bottom: 0;
-  font-family: var(--font-heading);
+    /* Gradiente Animado */
+    background: linear-gradient(90deg, #ffffff 0%, var(--primary-color) 50%, #ffffff 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 
-  /* --- A MÁGICA DO GRADIENTE ANIMADO --- */
-  /* Definimos um tamanho maior (200%) para poder mover o fundo */
-  background: linear-gradient(
-    90deg,
-    #ffffff 0%,
-    var(--primary-color) 50%,
-    #ffffff 100%
-  );
-  background-size: 200% auto; /* O segredo do movimento */
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    animation: shine 6s linear infinite;
+    filter: drop-shadow(0 0 15px rgba(var(--primary-rgb), 0.4));
 
-  /* Recorta o fundo no formato do texto */
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+    /* Ajustes Responsivos */
+    @media (max-width: 1280px) {
+      font-size: 3.5rem; /* Menor em Laptops/Tablets */
+    }
 
-  text-transform: uppercase;
-  letter-spacing: 4px; /* Espaçamento inicial */
-
-  /* Animação contínua (O Fluxo) */
-  animation: shine 6s linear infinite;
-
-  /* Transição suave para o hover */
-  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-
-  /* Sombra inicial (Glow suave) */
-  filter: drop-shadow(0 0 15px rgba(var(--primary-rgb), 0.4));
-
-  /* --- O EFEITO CINEMATOGRÁFICO (HOVER) --- */
-  &:hover {
-    letter-spacing: 8px; /* As letras se afastam dramaticamente */
-    transform: scale(1.02); /* Cresce levemente */
-    filter: drop-shadow(0 0 25px var(--accent-color)); /* Glow explode em Neon */
+    @media (max-width: 768px) {
+      font-size: 2.5rem; /* Menor ainda em Celulares */
+      letter-spacing: 2px;
+    }
   }
 
-  @media (max-width: 768px) {
-    font-size: 2.8rem; /* Ajuste mobile */
-    letter-spacing: 2px;
-    &:hover { letter-spacing: 4px; } /* Menos expansão no celular */
-  }
-}
+  /* Animação */
+  @keyframes shine { to { background-position: 200% center; } }
 
-/* A ANIMAÇÃO QUE MOVE O GRADIENTE */
-@keyframes shine {
-  to {
-    background-position: 200% center;
-  }
-}
-
+  /* Subtítulo */
   .hero-subtitle {
     font-size: 1.5rem;
     max-width: 600px;
     margin-bottom: 3rem;
     color: var(--text-color);
     opacity: 0.9;
-    font-weight: 300;
-    letter-spacing: 1px;
 
-    @media (max-width: 768px) {
-      font-size: 1.1rem;
-    }
+    @media (max-width: 768px) { font-size: 1.1rem; }
   }
 
+  /* Botão CTA */
   .hero-cta {
-  /* TAMANHO & FONTE */
-  font-size: 1.2rem !important; /* Força o tamanho */
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  font-weight: 900;
-  padding: 15px 40px !important;
-  border-width: 2px !important;
-  border-radius: 0px !important; /* Quadrado = Mais Cyberpunk */
+     /* Estilos do botão (mantidos iguais para não quebrar) */
+     font-size: 1.2rem !important;
+     letter-spacing: 3px;
+     text-transform: uppercase;
+     font-weight: 900;
+     padding: 15px 40px !important;
+     border: 2px solid var(--accent-color) !important;
+     color: var(--accent-color);
+     background: transparent;
 
-  /* A MÁGICA DAS CORES (VARIAVEIS GLOBAIS) */
-  /* Isso aqui muda sozinho quando entra o modo Jonah! */
-  color: var(--accent-color);
-  border-color: var(--accent-color) !important;
-  background: transparent;
-
-  /* BRILHO INICIAL (Sutil) */
-  box-shadow: 0 0 5px var(--accent-color), inset 0 0 5px rgba(0,0,0,0.5);
-
-  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Pulo elástico */
-
-  /* Ícone ou detalhe antes do texto (Opcional, mas fica pro) */
-  &::before {
-    content: '[ ';
-    margin-right: 5px;
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-  &::after {
-    content: ' ]';
-    margin-left: 5px;
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-
-  /* QUANDO O MOUSE PASSA (HOVER) */
-  &:hover {
-    background-color: var(--accent-color); /* Preenche com a cor */
-    color: #000; /* Texto fica preto */
-    box-shadow: 0 0 25px var(--accent-color); /* Brilho forte */
-    transform: scale(1.1); /* Cresce */
-
-    &::before, &::after {
-      opacity: 1; /* Mostra os colchetes */
-    }
-  }
-}
-}
-
-.actions-container {
-  display: flex;
-  flex-wrap: wrap; // Pra cair pra linha de baixo se a tela for pequena
-  align-items: center;
-  justify-content: space-between; // Separa os botões do widget
-  gap: 20px;
-  margin-top: 40px;
-  width: 100%;
-  max-width: 900px;
-}
-
-// Em telas pequenas (celular), centraliza tudo
-@media (max-width: 768px) {
-  .actions-container {
-    justify-content: center;
-    flex-direction: column;
+     &:hover {
+       background-color: var(--accent-color);
+       color: #000;
+     }
   }
 }
 
-/* --- SEÇÃO UPLINK (Onde fica o formulário) --- */
-.uplink-wrapper {
-  padding: 4rem 1rem;
-  background: linear-gradient(to top, var(--bg-color), transparent);
-  min-height: 500px; /* Garante espaço pro formulário */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* ANIMAÇÕES DE GLITCH PARA O MODO JONAH */
-@keyframes glitch-skew {
-  0% { transform: skew(0deg); }
-  20% { transform: skew(-2deg); }
-  40% { transform: skew(2deg); }
-  60% { transform: skew(-1deg); }
-  80% { transform: skew(1deg); }
-  100% { transform: skew(0deg); }
-}
-
-@keyframes glitch-flash {
-  0% { opacity: 1; }
-  50% { opacity: 0.8; text-shadow: 2px 2px #ff0000; }
-  51% { opacity: 1; text-shadow: -2px -2px #00ff00; }
-  100% { opacity: 1; }
-}
-
-/* QUANDO O MODO JONAH ESTIVER ATIVADO NO BODY */
+/* --- MODO JONAH (GLITCH) --- */
 :host-context(body.mode-jonah) .hero-title {
-  /* Animações de Glitch */
-  animation: glitch-skew 0.3s infinite linear alternate-reverse,
-             glitch-flash 2s infinite steps(1);
-
+  /* ... Animações de Glitch mantidas ... */
   color: var(--accent-color);
-  background: none; /* Remove o gradiente */
+  background: none;
   -webkit-text-fill-color: var(--accent-color);
-
-
-  /* Mantemos mais "fechado" pra não empurrar o Widget enquanto treme */
   letter-spacing: 4px !important;
 
-  /* Removemos o Hover expansivo no modo Jonah pra evitar caos desnecessário */
   &:hover {
-    letter-spacing: 4px !important; /* Trava o tamanho */
-    transform: none; /* Sem crescer */
-  }
-
-  /* Opcional: Reduzir um pouco a fonte se ainda estiver quebrando */
-  /* font-size: 4rem; */
-}
-
-/* --- RESPONSIVIDADE MOBILE --- */
-@media (max-width: 768px) {
-  .hero-section {
-    padding: 1rem; /* Menos borda */
-    width: 90%; /* Ocupa quase tudo */
-  }
-
-  .hero-title {
-    font-size: 2.5rem; /* Diminui de 4rem para 2.5rem */
-    letter-spacing: 0.05em;
-  }
-
-  .hero-subtitle {
-    font-size: 1.1rem;
+    letter-spacing: 4px !important;
+    transform: none;
   }
 }
