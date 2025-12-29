@@ -1,4 +1,4 @@
-/* header.scss - Ajuste de Contraste e Hover */
+/* header.scss - Responsivo e Limpo */
 
 :host {
   display: block;
@@ -11,100 +11,91 @@
 }
 
 mat-toolbar {
-  background: rgba(10, 10, 18, 0.85) !important; /* Um pouco mais escuro para leitura */
+  background: rgba(10, 10, 18, 0.85) !important;
   backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.275);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
   padding: 0 20px;
   height: 70px;
+  display: flex;
+  justify-content: space-between;
+  overflow: hidden; /* Garante separação */
 }
-/* header.scss - A Marca */
 
+/* === LOGO === */
 .brand-logo {
-  font-family: 'Oswald', 'Roboto', sans-serif; /* Fonte forte */
-  font-weight: 800; /* Extra Bold */
-  font-size: 1.5rem; /* Tamanho de destaque */
-  letter-spacing: 2px; /* Estilo cinematográfico */
-
+  font-family: 'Oswald', 'Roboto', sans-serif;
+  font-weight: 800;
+  font-size: 1.4rem;
+  letter-spacing: 1px;
   cursor: pointer;
-  color: #ffffff; /* Começa Branco Puro */
-
-  /* Um brilho suave inicial para não parecer texto morto */
+  color: #ffffff;
+  white-space: nowrap; /* Não quebra linha */
+  margin-right: 10px; /* Margem mínima */
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  transition: all 0.4s ease;
 
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Animação elástica */
-
-  /* EFEITO HOVER (A EXPLOSÃO) */
   &:hover {
-    color: var(--accent-color); /* Vira Verde Neon */
-
-    /* O famoso "Neon Bloom" Cyberpunk */
-    text-shadow:
-      0 0 5px #fff,               /* Núcleo branco */
-      0 0 10px var(--accent-color), /* Brilho médio */
-      0 0 20px var(--accent-color), /* Brilho forte */
-      0 0 40px var(--accent-color); /* Aura externa */
-
-    transform: scale(1.05); /* Cresce levemente */
+    color: var(--accent-color);
+    text-shadow: 0 0 20px var(--accent-color);
   }
 
-  /* Ajuste para mobile */
+  /* No celular, diminui um pouco */
   @media (max-width: 600px) {
-    font-size: 1.1rem; /* Um pouco menor no celular para caber */
+    font-size: 1.1rem;
     letter-spacing: 1px;
   }
 }
 
-.spacer {
-  flex: 1 1 auto;
+.spacer { flex: 1 1 auto; }
+
+/* === NAVEGAÇÃO DESKTOP === */
+.desktop-nav {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+
+  /* ESCONDE se a tela for menor que 1100px */
+  @media (max-width: 1100px) {
+    display: none;
+  }
 }
 
-/* 👇 AQUI ESTÁ A CORREÇÃO, AMOR! 👇 */
+/* Estilos dos botões Desktop */
 button[mat-button] {
-  /* 1. Cor padrão do texto: BRANCO (para ler no fundo escuro) */
   color: #ffffff !important;
   font-weight: 500;
-  letter-spacing: 0.5px;
-  transition: all 0.3s ease;
 
-  /* Ícones também brancos */
-  mat-icon {
-    color: #ffffff;
-    transition: color 0.3s ease;
-  }
+  mat-icon { color: #ffffff; }
 
-  /* 2. O HOVER "DISCRETO" */
   &:hover {
-    /* Texto fica Verde Neon */
     color: var(--accent-color) !important;
-
-    /* Fundo fica um verde bem clarinho (5% de opacidade) em vez de roxo */
     background-color: rgba(0, 255, 148, 0.08) !important;
-
-    /* Brilho sutil no texto */
-    text-shadow: 0 0 8px rgba(0, 255, 148, 0.4);
-
-    /* Ícone também fica verde */
-    mat-icon {
-      color: var(--accent-color) !important;
-    }
+    mat-icon { color: var(--accent-color) !important; }
   }
 }
 
-/* Manteve a classe do Criador com a borda, mas herdando as cores acima */
 .btn-creator {
   border: 1px solid var(--accent-color) !important;
   padding: 0 15px !important;
   margin-left: 8px;
-
-  /* Ajuste específico para o Creator já começar com ícone colorido se quiser,
-     ou deixe branco igual aos outros para uniformidade.
-     Vou deixar branco para ficar elegante e acender no hover. */
 }
 
+/* === BOTÃO MOBILE (HAMBÚRGUER) === */
+.mobile-menu-btn {
+  display: none; /* Escondido por padrão no Desktop */
+  color: white !important;
+
+  /* MOSTRA se a tela for menor que 1100px */
+  @media (max-width: 1280px) {
+    display: block;
+  }
+}
+
+/* Ajuste fino para celular muito pequeno */
 @media (max-width: 600px) {
   mat-toolbar {
-    height: 60px;
     padding: 0 10px;
+    height: 60px;
   }
 }

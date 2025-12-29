@@ -7,11 +7,17 @@ import { MatMenuModule } from '@angular/material/menu';
 import { TranslationService } from '../../services/translation.service';
 import { NAV_DATA } from '../../data/app-data';
 import { Router, RouterModule } from '@angular/router';
+import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [MatToolbar, MatButtonModule, MatIconModule, MatMenuModule, RouterModule],
+  imports: [MatToolbar,
+       MatButtonModule,
+       MatIconModule,
+       MatMenuModule,
+       MatDividerModule ,
+       RouterModule],
   templateUrl: './header.html',
   styleUrl: './header.scss'
 })

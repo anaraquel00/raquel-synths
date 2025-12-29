@@ -5,31 +5,67 @@
 
   <span class="spacer"></span>
 
-  <button mat-button (click)="translate.toggle()">
-  {{ translate.isPt() ? '🇺🇸 EN' : '🇧🇷 PT' }}
+  <div class="desktop-nav">
+    <button mat-button (click)="translate.toggle()">
+      {{ translate.isPt() ? '🇺🇸 EN' : '🇧🇷 PT' }}
+    </button>
+
+    <button mat-button (click)="activateBroklinMode()">
+      <mat-icon>diamond</mat-icon> BROKLIN
+    </button>
+    <button mat-button (click)="activateJonahMode()">
+      <mat-icon>warning</mat-icon> JONAH
+    </button>
+
+    <button mat-button (click)="scrollTo('sobre')">{{ navText.sobre }}</button>
+    <button mat-button (click)="scrollTo('visual-novel')">{{ navText.visualNovel }}</button>
+
+    <button mat-button [routerLink]="['/lore/broklin']">
+      <mat-icon>auto_stories</mat-icon> {{ navText.lore }}
+    </button>
+
+    <button mat-button [routerLink]="['/creator']" class="btn-creator">
+      <mat-icon>terminal</mat-icon> {{ navText.creator }}
+    </button>
+
+    <button mat-button (click)="scrollTo('discografia')">DISCOGRAFIA</button>
+
+    <button mat-button (click)="openExternal('https://soundcloud.com/rqs_official/albums')">
+      PLAYLIST <mat-icon iconPositionEnd>open_in_new</mat-icon>
+    </button>
+  </div>
+
+  <button mat-icon-button [matMenuTriggerFor]="mobileMenu" class="mobile-menu-btn">
+    <mat-icon>menu</mat-icon>
   </button>
 
-  <button mat-button (click)="activateBroklinMode()">
-    <mat-icon>diamond</mat-icon> BROKLIN
-  </button>
-  <button mat-button (click)="activateJonahMode()">
-    <mat-icon>warning</mat-icon> JONAH
-  </button>
+  <mat-menu #mobileMenu="matMenu" xPosition="before">
+    <button mat-menu-item (click)="translate.toggle()">
+      <mat-icon>translate</mat-icon>
+      <span>{{ translate.isPt() ? 'Mudar idioma' : 'Switch Language' }}</span>
+    </button>
 
-  <button mat-button (click)="scrollTo('sobre')">{{ navText.sobre }}</button>
-  <button mat-button (click)="scrollTo('visual-novel')">{{ navText.visualNovel }}</button>
+    <mat-divider></mat-divider>
 
-  <button mat-button [routerLink]="['/lore/broklin']">
-  <mat-icon>auto_stories</mat-icon> {{ navText.lore }}
-  </button>
+    <button mat-menu-item (click)="activateBroklinMode()">
+      <mat-icon>diamond</mat-icon> <span>Modo Broklin</span>
+    </button>
 
-   <button mat-button [routerLink]="['/creator']" class="btn-creator">
-  <mat-icon>terminal</mat-icon> {{ navText.creator }}
-   </button>
-  <button mat-button (click)="scrollTo('discografia')">DISCOGRAFIA</button>
+    <button mat-menu-item (click)="activateJonahMode()">
+      <mat-icon>warning</mat-icon> <span>Modo Jonah</span>
+    </button>
 
-  <button mat-button (click)="openExternal('https://soundcloud.com/rqs_official/albums')">
-    PLAYLIST <mat-icon iconPositionEnd>open_in_new</mat-icon>
-  </button>
+    <mat-divider></mat-divider>
+
+    <button mat-menu-item [routerLink]="['/creator']">
+      <mat-icon style="color: var(--accent-color);">terminal</mat-icon>
+      <span style="color: var(--accent-color); font-weight: bold;">{{ navText.creator }}</span>
+    </button>
+
+    <button mat-menu-item (click)="scrollTo('sobre')">{{ navText.sobre }}</button>
+    <button mat-menu-item (click)="scrollTo('visual-novel')">{{ navText.visualNovel }}</button>
+    <button mat-menu-item [routerLink]="['/lore/broklin']">{{ navText.lore }}</button>
+    <button mat-menu-item (click)="scrollTo('discografia')">DISCOGRAFIA</button>
+  </mat-menu>
 
 </mat-toolbar>
