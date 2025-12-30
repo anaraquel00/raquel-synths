@@ -73,7 +73,7 @@
   .hero-subtitle {
     font-size: 1.5rem;
     max-width: 600px;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
     color: var(--text-color);
     opacity: 0.9;
 
@@ -96,6 +96,22 @@
        background-color: var(--accent-color);
        color: #000;
      }
+  }
+}
+
+.music-player-container {
+  width: 100%;
+  max-width: 500px; /* Não deixa ficar muito largo em telas grandes */
+  margin: 1.5rem 0; /* Espaço em cima e embaixo para respirar */
+  z-index: 10; /* Garante que fique clicável */
+
+  iframe {
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); /* Sombra Cyberpunk */
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.02); /* Leve zoom quando passa o mouse */
+    }
   }
 }
 
