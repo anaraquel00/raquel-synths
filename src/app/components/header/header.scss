@@ -21,41 +21,39 @@
 }
 
 mat-toolbar {
-  /* ... mantenha suas cores e efeitos de vidro ... */
+  /* Fundo escuro vidro */
   background: rgba(10, 10, 18, 0.95) !important;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 
-  /* Força a toolbar a caber dentro do host */
-  width: 100%;
-  box-sizing: border-box; /* OBRIGATÓRIO */
+  /* 👇 AQUI ESTÁ O VERDE NEON QUE FALTAVA 👇 */
+  border-bottom: 1px solid var(--accent-color); /* A linha sólida */
+  box-shadow: 0 4px 20px rgba(6, 253, 18, 0.2);  /* O brilho espalhado */
 
-  /* Se tiver padding, ele agora desconta da largura total */
+  /* Layout */
+  width: 100%;
+  box-sizing: border-box;
   padding: 0 16px;
   margin: 0;
-
   display: flex;
   justify-content: space-between;
   align-items: center;
   height: 100%;
 }
 
-/* === LOGO === */
+/* === BÔNUS: O Logo Brilhando === */
 .brand-logo {
+  /* ... configs de fonte ... */
   font-family: 'Oswald', sans-serif;
   font-weight: 800;
-  font-size: 1.4rem;
-  letter-spacing: 1px;
-  cursor: pointer;
   color: #ffffff;
-  white-space: nowrap;
-  text-transform: uppercase;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
   transition: all 0.3s ease;
 
+  /* Quando passa o mouse, ele acende */
   &:hover {
     color: var(--accent-color);
-    text-shadow: 0 0 15px var(--accent-color);
+    text-shadow: 0 0 15px var(--accent-color), 0 0 30px var(--accent-color);
+    cursor: pointer;
   }
 
   /* Ajuste no mobile pra não quebrar */
@@ -66,46 +64,120 @@ mat-toolbar {
 
 .spacer { flex: 1 1 auto; }
 
-/* === NAVEGAÇÃO DESKTOP === */
-.desktop-nav {
-  display: flex;
-  align-items: center;
-  gap: 5px;
+/* src/app/components/header/header.scss */
 
-  /* Esconde no Tablet/Mobile (abaixo de 1000px já fica apertado) */
-  @media (max-width: 1000px) {
-    display: none !important;
+/* === BOTÕES DO DESKTOP (A correção da cor) === */
+.desktop-nav {
+
+  button[mat-button] {
+    /* 👇 AQUI ESTÁ A LUZ! Força branco sempre 👇 */
+    color: #49fa02 !important;
+
+    font-weight: 600;
+    font-size: 0.82rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+
+    /* Ícones dentro dos botões (já começam verdes ou brancos?) */
+    mat-icon {
+      color: var(--accent-color) !important; /* Ícone Verde Neon */
+      margin-right: 2px;
+      vertical-align: middle;
+      padding-bottom: 2px;
+    }
+
+    /* 👇 EFEITO HOVER (Quando passa o mouse) */
+    &:hover {
+      color: var(--accent-color) !important; /* Texto vira Verde */
+      background: rgba(255, 255, 255, 0.05); /* Fundo sutil */
+      text-shadow: 0 0 10px var(--accent-color); /* Brilho neon no texto */
+
+      mat-icon {
+        transform: scale(1.1);
+        text-shadow: 0 0 12px var(--accent-color);
+      }
+    }
+  }
+
+  /* O Botão Especial "Creator" (Borda) */
+  button[mat-button].btn-creator {
+  border: 1px solid var(--accent-color) !important;
+  margin-left: 15px;
+
+  /* Estado Normal */
+  color: #49fa02!important;
+
+    &:hover {
+    /* Fundo Verde Neon */
+    background-color: var(--accent-color) !important;
+
+    /* Texto PRETO SÓLIDO (Sem brilho, pra ler bem) */
+    color: #000000 !important;
+    text-shadow: none !important;
+
+    /* Ícone PRETO SÓLIDO */
+    mat-icon {
+      color: #000000 !important;
+      text-shadow: none !important;
+      transform: scale(1.1);
+    }
+  }
   }
 }
 
 /* === BOTÃO MOBILE (Hambúrguer) === */
-.mobile-menu-btn {
-  display: none; /* Escondido no Desktop */
-  color: white !important;
+/* 👇 ESTILO CYBERPUNK PARA O MENU MOBILE 👇 */
+::ng-deep .cyber-menu {
+  /* 1. O Painel Flutuante (A Caixa) */
+  background-color: rgba(10, 10, 18, 0.95) !important; /* Fundo Dark quase opaco */
+  backdrop-filter: blur(12px); /* Desfoque de vidro */
+  border: 1px solid var(--accent-color); /* A Borda Verde Neon */
+  box-shadow: 0 0 25px rgba(6, 253, 18, 0.2); /* O Brilho em volta */
+  border-radius: 0 0 8px 8px !important; /* Cantos arredondados embaixo */
 
-  @media (max-width: 1000px) {
-    display: block !important; /* Aparece no Tablet/Mobile */
+  max-width: 90vw !important; /* Garante que cabe na tela */
+  min-width: 250px;
+  padding: 10px 0;
+
+  /* 2. Os Botões dentro do menu */
+  .mat-mdc-menu-item {
+    color: #ffffff !important; /* Texto Branco */
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    height: 54px; /* Botões um pouco mais altos pro dedo acertar */
+    transition: all 0.2s ease-in-out;
+
+    /* Ícones */
+    mat-icon {
+      color: var(--accent-color) !important; /* Ícone Verde sempre */
+      margin-right: 12px;
+      opacity: 0.8;
+      transition: transform 0.2s;
+    }
+
+    /* Efeito ao Passar o Dedo/Mouse (Hover) */
+    &:hover, &:focus {
+      background: rgba(255, 255, 255, 0.08) !important; /* Cinza bem suave */
+
+      span {
+        color: var(--accent-color) !important; /* Texto acende */
+        text-shadow: 0 0 5px var(--accent-color);
+      }
+
+      mat-icon {
+        opacity: 1;
+        transform: translateX(3px) scale(1.1); /* Ícone move e cresce */
+        text-shadow: 0 0 8px var(--accent-color);
+      }
+    }
   }
 
-  mat-icon {
-    font-size: 1.8rem;
-  }
-}
-
-/* Estilos dos Botões */
-button[mat-button] {
-  color: #ffffff !important;
-  font-weight: 700;
-  font-size: 0.85rem;
-
-  &:hover {
-    color: var(--accent-color) !important;
-    background: rgba(255, 255, 255, 0.05);
-  }
-
-  mat-icon {
-    vertical-align: middle;
-    margin-right: 4px;
+  /* 3. Divisórias */
+  .mat-divider {
+    border-top-color: rgba(255, 255, 255, 0.15) !important;
+    margin: 3px 0;
   }
 }
 
@@ -120,5 +192,34 @@ button[mat-button] {
     color: #000 !important; /* Texto preto no hover pra leitura */
 
     mat-icon { color: #000 !important; }
+  }
+}
+
+
+/* --- 1. COMPORTAMENTO PADRÃO (MOBILE FIRST) --- */
+
+/* Por padrão (celular), o menu Desktop SOME */
+.desktop-nav {
+  display: none !important;
+}
+
+/* Por padrão (celular), o botão Hambúrguer APARECE */
+.mobile-menu-btn {
+  display: block !important;
+  color: var(--accent-color) !important; /* Garante que o ícone seja verde */
+}
+
+/* --- 2. QUANDO A TELA FOR GRANDE (PC/Tablet) --- */
+@media (min-width: 900px) {
+
+  /* Agora o Desktop APARECE */
+  .desktop-nav {
+    display: flex !important;
+    align-items: center;
+  }
+
+  /* E o botão Hambúrguer SOME */
+  .mobile-menu-btn {
+    display: none !important;
   }
 }

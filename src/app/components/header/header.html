@@ -39,7 +39,7 @@
     <mat-icon>menu</mat-icon>
   </button>
 
-  <mat-menu #mobileMenu="matMenu" xPosition="before">
+  <mat-menu #mobileMenu="matMenu" xPosition="before" class="cyber-menu">
     <button mat-menu-item (click)="translate.toggle()">
       <mat-icon>translate</mat-icon>
       <span>{{ translate.isPt() ? 'Mudar idioma' : 'Switch Language' }}</span>
