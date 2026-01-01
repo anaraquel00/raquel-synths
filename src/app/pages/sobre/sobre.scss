@@ -4,6 +4,15 @@
   margin: 0 auto;
 }
 
+.section-title {
+  text-align: center;
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  margin-bottom: 3rem;
+  text-shadow: 0 0 10px var(--primary-color);
+  letter-spacing: 3.5px;
+}
+
 .members-grid {
   display: flex;
   justify-content: center;

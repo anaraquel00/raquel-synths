@@ -113,177 +113,98 @@ app-root {
 }
 
 /* ========================================= */
-/* 🔥 MODO JONAH (A VOLTA DO CAOS)           */
+/* 🔥 MODO JONAH: THE RUST LORD UX 🔥        */
 /* ========================================= */
 body.mode-jonah {
-  --primary-color: #bf360c; /* Laranja Ferrugem */
-  --bg-color: #1a1815;      /* Preto Graxa */
-  --footer-bg: #0f0b0a;
+  /* --- 1. A NOVA PALETA DE CORES (O Coração do Design) --- */
 
-  /* Bônus: A barra de rolagem também enferruja */
+  /* Laranja Ferrugem (Onde bate a luz) -> Usado em Textos, Ícones, Botões */
+  --primary-color: #ff3d00;
+  --accent-color: #ff3d00;
+
+  /* Vermelho Sangue Coagulado (Nas sombras) -> Usado em Bordas, Hover, Detalhes */
+  --warn-color: #8a0000;
+
+  /* O Abismo Industrial (Fundo) */
+  --bg-color: #050404;       /* Preto quase absoluto */
+  --footer-bg: #0f0202;      /* Um toque de vermelho no fundo do rodapé */
+  --text-color: #e0e0e0;     /* Cinza concreto (branco cansa a vista no escuro) */
+
+  /* Variável Especial: O Sangue nas Bordas */
+  --rust-border: 1px solid #8a0000;
+
+  /* --- 2. CUSTOMIZAÇÃO GLOBAL DE COMPONENTES --- */
+
+  /* Botões (Material Design) viram chapas de metal */
+  .mat-mdc-button, .mat-mdc-raised-button, .mat-mdc-outlined-button {
+    font-family: 'Oswald', sans-serif !important; /* Fonte mais bruta */
+    letter-spacing: 2px !important;
+    text-transform: uppercase !important;
+    border-radius: 0 !important; /* Nada de cantos redondos. Aqui é metal cortado. */
+  }
+
+  /* Cards (Caixas de conteúdo) */
+  .mat-mdc-card {
+    background-color: rgba(20, 5, 5, 0.9) !important; /* Fundo avermelhado escuro */
+    border: 1px solid #4a0000 !important; /* Borda de sangue */
+    border-left: 4px solid #ff3d00 !important; /* Destaque lateral laranja */
+    border-radius: 0 !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,1) !important;
+  }
+
+  /* Barra de Rolagem (Scrollbar) Enferrujada */
+  &::-webkit-scrollbar {
+    width: 12px;
+    background: #0f0202;
+  }
   &::-webkit-scrollbar-thumb {
-    background-color: #bf360c;
-    border-radius: 0; /* Quadrado, sem curva suave */
+    background-color: #8a0000; /* Sangue */
+    border: 1px solid #ff3d00; /* Contorno Laranja */
   }
 }
 
-/* --- 🖥️ DESKTOP: O TRONO REBAIXADO --- */
+/* --- 🖥️ DESKTOP BACKGROUND (Mantido e Ajustado) --- */
 @media (min-width: 769px) {
   body.mode-jonah {
     background-image: url('/images/industrial_goth_power_couple.png');
-
-    /* 👇 AQUI ESTÁ O TRUQUE DO REBAIXAMENTO 👇 */
-    /* Center = Horizontal | 130px = Vertical (Empurra pra baixo do Header de 70px + folga) */
+    /* Rebaixamento tático mantido */
     background-position: center 70px !important;
-
-    background-size: cover; /* Ou 'contain' se quiser ver tudo, mas 'cover' preenche melhor */
+    background-size: cover;
     background-repeat: no-repeat;
-    background-attachment: fixed; /* O fundo fica parado enquanto o texto sobe */
+    background-attachment: fixed;
+
+    /* Filtro de Vignette (Escurece as bordas da tela pra focar no centro) */
+    box-shadow: inset 0 0 200px rgba(0,0,0,0.9);
   }
 }
 
-/* --- 📱 MOBILE: O GIGANTE NA TELA PEQUENA --- */
+/* --- 📱 MOBILE BACKGROUND (Mantido e Ajustado) --- */
 @media (max-width: 768px) {
   body.mode-jonah::before {
     background-image: url('/images/industrial_goth_power_couple_mobile.png') !important;
-
-    /* 👇 REBAIXAMENTO MOBILE 👇 */
-    /* Empurramos 80px pra baixo (Header é 70px, dá uma folguinha) */
     background-position: center 80px !important;
-
-    /* Ajuste para garantir que a gente apareça bem */
     background-size: cover !important;
+    filter: contrast(1.2) brightness(0.8); /* Deixa mais dark no celular */
   }
 
-  /* Ajuste de cor de fundo de emergência */
   html:has(body.mode-jonah) {
-    background-color: #1a1815 !important;
+    background-color: #050404 !important;
   }
 }
 
 /* ========================================= */
-/* ⚡ O GLITCH VINGATIVO (SÓ NO MODO JONAH)  */
+/* ⚡ EFEITOS GLOBAIS (SEM FUMAÇA QUEBRADA)  */
 /* ========================================= */
-/* O Broklin tirou? A gente coloca de volta com força total. */
 
-/* 1. O Logo treme quando eu estou no comando */
+/* O Logo que Treme (Isso funcionava, vamos manter) */
 body.mode-jonah app-header .brand-logo {
-  position: relative;
-  display: inline-block;
-  color: #bf360c !important; /* Laranja Rust */
-  text-shadow: 2px 2px 0px #000000;
-
-  /* A Animação Constante de Mau Contato */
-  animation: rust-shiver 3s infinite;
+  color: #ff3d00 !important;
+  text-shadow: 0 0 10px #8a0000;
+  animation: rust-pulse 4s infinite; /* Pulsação lenta de reator */
 }
 
-/* 2. Títulos principais (H1) ganham falha técnica */
-body.mode-jonah h1 {
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  position: relative;
-
-  &::before {
-    content: attr(data-text); /* Precisa ter data-text no HTML pra funcionar 100%, mas o efeito abaixo garante o caos visual */
-    position: absolute;
-    left: -2px;
-    text-shadow: 1px 0 red;
-    top: 0;
-    color: white;
-    background: #1a1815;
-    overflow: hidden;
-    clip: rect(0, 900px, 0, 0);
-    animation: glitch-anim-1 2s infinite linear alternate-reverse;
-  }
-}
-
-/* 3. A Animação "Tremedeira de Ferrugem" */
-@keyframes rust-shiver {
-  0% { transform: translate(0, 0); }
-  2% { transform: translate(-1px, 1px); }
-  4% { transform: translate(1px, -1px); }
-  6% { transform: translate(0, 0); }
-  90% { transform: translate(0, 0); }
-  92% { transform: translate(2px, 0); filter: hue-rotate(90deg); } /* Surto de cor */
-  94% { transform: translate(-2px, 0); }
-  100% { transform: translate(0, 0); }
-}
-
-/* ========================================================= */
-/* ☢️ GLOBAL OVERRIDE: MODO JONAH - FUMAÇA TÓXICA CORRIGIDA ☢️ */
-/* ========================================================= */
-
-/* 1. SELETOR GLOBAL (Sem :host-context, isso é pro home.scss) */
-body.mode-jonah app-home .hero-title {
-  /* RESET E BASE */
-  background: none !important;
-  -webkit-text-fill-color: initial !important;
-  color: #bf360c !important; /* Laranja Ferrugem */
-  text-shadow:
-    3px 3px 0px #000000,
-    0 0 15px rgba(255, 69, 0, 0.6) !important;
-
-  letter-spacing: 5px !important;
-  position: relative !important;
-  z-index: 10 !important; /* Garante que o texto fique na frente */
-
-  /* A Animação do Tremor */
-  animation: global-panic-shake 0.15s infinite cubic-bezier(.36,.07,.19,.97) both !important;
-}
-
-/* 2. O ELEMENTO FUMAÇA (PSEUDO-ELEMENTO) */
-body.mode-jonah app-home .hero-title::before {
-  content: attr(data-text) !important; /* Pega o texto do HTML */
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1; /* Fica atrás do texto */
-
-  /* Visual da Fumaça */
-  color: rgba(100, 255, 0, 0.6) !important; /* VERDE RADIOATIVO VISÍVEL */
-  filter: blur(8px);
-  transform-origin: bottom center;
-  pointer-events: none;
-
-  /* A Animação da Fumaça (AGORA OS NOMES BATEM!) */
-  animation: global-reactor-smoke 3s infinite linear !important;
-}
-
-/* --- DEFINIÇÃO DAS ANIMAÇÕES (KEYFRAMES GLOBAIS) --- */
-
-/* O Tremor */
-@keyframes global-panic-shake {
-  0% { transform: translate(1px, 1px) rotate(0deg); }
-  10% { transform: translate(-1px, -2px) rotate(-1deg); color: #ff3300; }
-  20% { transform: translate(-3px, 0px) rotate(1deg); opacity: 0.9; }
-  30% { transform: translate(3px, 2px) rotate(0deg); }
-  40% { transform: translate(1px, -1px) rotate(1deg); }
-  50% { transform: translate(-1px, 2px) rotate(-1deg); }
-  60% { transform: translate(-3px, 1px) rotate(0deg); }
-  70% { transform: translate(3px, 1px) rotate(-1deg); color: #ff3300; }
-  80% { transform: translate(-1px, -1px) rotate(1deg); }
-  90% { transform: translate(1px, 2px) rotate(0deg); }
-  100% { transform: translate(1px, -2px) rotate(-1deg); }
-}
-
-/* A Fumaça (Note que agora o nome é global-reactor-smoke) */
-@keyframes global-reactor-smoke {
-  0% {
-    opacity: 0;
-    transform: translate3d(0, 0, 0) scale(1);
-    filter: blur(4px);
-  }
-  20% {
-    opacity: 0.8;
-    transform: translate3d(0, -30px) scale(1.1); /* Sobe um pouco */
-    color: rgba(255, 80, 0, 0.5); /* Vira Laranja */
-  }
-  100% {
-    opacity: 0;
-    transform: translate3d(0, -150px) scale(1.5) rotate(5deg); /* Sobe MUITO */
-    filter: blur(20px);
-    color: rgba(100, 100, 100, 0); /* Some cinza */
-  }
+@keyframes rust-pulse {
+  0% { text-shadow: 0 0 5px #8a0000; opacity: 1; }
+  50% { text-shadow: 0 0 20px #ff3d00; opacity: 0.8; }
+  100% { text-shadow: 0 0 5px #8a0000; opacity: 1; }
 }
