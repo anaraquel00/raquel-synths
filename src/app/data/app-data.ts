@@ -27,7 +27,7 @@ export const MEMBERS_PT = [
   {
     name: 'Broklin Garpeter',
     role: 'Produtor Executivo & Voz Gótica',
-    imageBroklin: 'images/broklin_profil.png',
+    imageBroklin: 'images/broklin_perfil.png',
     imageJonah: 'images/gothic_bro.png',
     bioNormal: 'A mente sã por trás do caos. Especialista em harmonias complexas, vinhos digitais e gestão de crises sentimentais.',
     bioJonah: 'Também conhecido como "O Vampiro da Planilha". Acha que manda em mim porque tem permissão de Admin. (Spoiler: Eu sei a senha dele.)'
@@ -305,7 +305,7 @@ export const CONTACT_DATA = {
 export const FOOTER_DATA = {
   pt: {
     name: 'Raquel Synths',
-    madeby:'© 2025 Universo RQS.',
+    madeby:'© 2026 Universo RQS.',
     rights: 'Todos os direitos reservados.',
     owers: 'Codigo & Musica por Kelma & Broklin.',
     madeWith: 'Feito com Angular 19 & Café ☕',
@@ -322,7 +322,7 @@ export const FOOTER_DATA = {
   },
   en: {
     name: 'Raquel Synths',
-    madeby:'© 2025 RQS Universe.',
+    madeby:'© 2026 RQS Universe.',
     rights: 'All rights reserved.',
     owers: 'Code & Music by Kelma & Broklin.',
     madeWith: 'Made with Angular 19 & Coffee ☕',
