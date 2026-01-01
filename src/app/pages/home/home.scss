@@ -133,24 +133,24 @@
   z-index: 1;
 }
 
-/* --- A FUMAÇA TÓXICA (ATUALIZADA) --- */
-:host-context(body.mode-jonah) .hero-title::before {
-  content: attr(data-text); /* Pega o texto do HTML */
+/* 3. A FUMAÇA TÓXICA (PSEUDO-ELEMENTO) */
+body.mode-jonah app-home .hero-title::before {
+  content: attr(data-text) !important; /* Pega o texto do HTML */
   position: absolute;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  z-index: -1; /* Fica atrás do texto principal */
+  z-index: -1;
 
-  /* Aparência Base da Fumaça */
-  color: rgba(100, 255, 0, 0.4); /* VERDE TÓXICO (Pra ver se funciona) */
-  filter: blur(6px); /* Bem borrado */
+  /* Visual da Fumaça */
+  color: rgba(100, 255, 0, 0.5) !important; /* VERDE RADIOATIVO */
+  filter: blur(5px);
   transform-origin: bottom center;
   pointer-events: none;
 
-  /* A Animação de Vazamento */
-  animation: reactor-smoke 2.5s infinite linear;
+  /* A Animação da Fumaça */
+  animation: global-reactor-smoke 2.5s infinite linear !important;
 }
 
 /* O TREMOR (MANTIDO) */

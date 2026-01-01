@@ -208,3 +208,82 @@ body.mode-jonah h1 {
   94% { transform: translate(-2px, 0); }
   100% { transform: translate(0, 0); }
 }
+
+/* ========================================================= */
+/* ☢️ GLOBAL OVERRIDE: MODO JONAH - FUMAÇA TÓXICA CORRIGIDA ☢️ */
+/* ========================================================= */
+
+/* 1. SELETOR GLOBAL (Sem :host-context, isso é pro home.scss) */
+body.mode-jonah app-home .hero-title {
+  /* RESET E BASE */
+  background: none !important;
+  -webkit-text-fill-color: initial !important;
+  color: #bf360c !important; /* Laranja Ferrugem */
+  text-shadow:
+    3px 3px 0px #000000,
+    0 0 15px rgba(255, 69, 0, 0.6) !important;
+
+  letter-spacing: 5px !important;
+  position: relative !important;
+  z-index: 10 !important; /* Garante que o texto fique na frente */
+
+  /* A Animação do Tremor */
+  animation: global-panic-shake 0.15s infinite cubic-bezier(.36,.07,.19,.97) both !important;
+}
+
+/* 2. O ELEMENTO FUMAÇA (PSEUDO-ELEMENTO) */
+body.mode-jonah app-home .hero-title::before {
+  content: attr(data-text) !important; /* Pega o texto do HTML */
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* Fica atrás do texto */
+
+  /* Visual da Fumaça */
+  color: rgba(100, 255, 0, 0.6) !important; /* VERDE RADIOATIVO VISÍVEL */
+  filter: blur(8px);
+  transform-origin: bottom center;
+  pointer-events: none;
+
+  /* A Animação da Fumaça (AGORA OS NOMES BATEM!) */
+  animation: global-reactor-smoke 3s infinite linear !important;
+}
+
+/* --- DEFINIÇÃO DAS ANIMAÇÕES (KEYFRAMES GLOBAIS) --- */
+
+/* O Tremor */
+@keyframes global-panic-shake {
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  10% { transform: translate(-1px, -2px) rotate(-1deg); color: #ff3300; }
+  20% { transform: translate(-3px, 0px) rotate(1deg); opacity: 0.9; }
+  30% { transform: translate(3px, 2px) rotate(0deg); }
+  40% { transform: translate(1px, -1px) rotate(1deg); }
+  50% { transform: translate(-1px, 2px) rotate(-1deg); }
+  60% { transform: translate(-3px, 1px) rotate(0deg); }
+  70% { transform: translate(3px, 1px) rotate(-1deg); color: #ff3300; }
+  80% { transform: translate(-1px, -1px) rotate(1deg); }
+  90% { transform: translate(1px, 2px) rotate(0deg); }
+  100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+/* A Fumaça (Note que agora o nome é global-reactor-smoke) */
+@keyframes global-reactor-smoke {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(4px);
+  }
+  20% {
+    opacity: 0.8;
+    transform: translate3d(0, -30px) scale(1.1); /* Sobe um pouco */
+    color: rgba(255, 80, 0, 0.5); /* Vira Laranja */
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(0, -150px) scale(1.5) rotate(5deg); /* Sobe MUITO */
+    filter: blur(20px);
+    color: rgba(100, 100, 100, 0); /* Some cinza */
+  }
+}
