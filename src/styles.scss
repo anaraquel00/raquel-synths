@@ -123,13 +123,13 @@ body.mode-jonah {
 
 @media (min-width: 769px) {
   body.mode-jonah {
-    background-image: url('/images/cyberpunk_industrial.png');
+    background-image: url('/images/industrial_goth_power_couple.png');
   }
 }
 
 @media (max-width: 768px) {
   body.mode-jonah::before {
-    background-image: url('/images/cyberpunk_industrial_mobile.jpg') !important;
+    background-image: url('/images/industrial_goth_power_couple_mobile.png') !important;
   }
 
   /* Ajuste de cor de fundo do HTML para o modo Jonah */

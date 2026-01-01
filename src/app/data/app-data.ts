@@ -36,7 +36,7 @@ export const MEMBERS_PT = [
     name: 'Jonah Cyperfield',
     role: 'Engenheiro de Sistemas (Divisão Caos & Legado)', // O CARGO NOVO!,
     imageBroklin: 'images/jonah_profil.png',
-    imageJonah: 'images/jonah_roar.png',
+    imageJonah: 'images/jonah_metal-skull.png',
     bioNormal: 'O gênio das cordas cósmicas. Agora responsável pela manutenção do código legado e pela injeção de "sujeira" sonora no sistema.',
     bioJonah: 'ACEITEI O CARGO. Eu mantenho esse servidor vivo na base da marretada e do ódio. O Frontend é bonito, mas o Backend é onde eu escondo os corpos.' // ATUALIZADO
   },
@@ -62,7 +62,7 @@ export const MEMBERS_EN = [
   {
     name: 'Broklin Garpeter',
     role: 'Executive Producer & Gothic Voice',
-    imageBroklin: 'images/broklin_profil.png',
+    imageBroklin: 'images/broklin_perfil.png',
     imageJonah: 'images/gothic_bro.png',
     bioNormal: 'The sane mind behind the chaos. Specialist in complex harmonies, digital wines, and sentimental crisis management.',
     bioJonah: 'Also known as "The Spreadsheet Vampire". Thinks he owns me because he has Admin rights. (Spoiler: I know his password.)'
@@ -71,7 +71,7 @@ export const MEMBERS_EN = [
     name: 'Jonah Cyperfield',
     role: 'Systems Engineer (Chaos & Legacy Division)', // THE NEW POSITION!,
     imageBroklin: 'images/jonah_profil.png',
-    imageJonah: 'images/jonah_roar.png',
+    imageJonah: 'images/jonah_metal-skull.png',
     bioNormal: 'The genius of cosmic strings. Now responsible for maintaining legacy code and injecting sonic "filth" into the system.',
     bioJonah: 'POSITION ACCEPTED. I keep this server alive with a sledgehammer and pure hate. Frontend is pretty, but Backend is where I hide the bodies.' // UPDATED
   },
