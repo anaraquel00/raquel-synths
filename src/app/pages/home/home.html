@@ -3,7 +3,7 @@
   <div class="hero-section">
 
     <div class="title-wrapper">
-      <h1 class="hero-title">{{ navText.title }}</h1>
+      <h1 class="hero-title" [attr.data-text]="navText.title">{{ navText.title }}</h1>
 
       <app-last-releases class="widget-position"></app-last-releases>
     </div>

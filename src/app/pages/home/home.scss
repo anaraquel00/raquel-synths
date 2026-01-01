@@ -115,16 +115,76 @@
   }
 }
 
-/* --- MODO JONAH (GLITCH) --- */
+/* ========================================= */
+/* ☢️ MODO JONAH: REATOR EM FUSÃO (TREMOR + FUMAÇA) */
+/* ========================================= */
 :host-context(body.mode-jonah) .hero-title {
-  /* ... Animações de Glitch mantidas ... */
-  color: var(--accent-color);
-  background: none;
-  -webkit-text-fill-color: var(--accent-color);
-  letter-spacing: 4px !important;
+  /* --- CONFIGURAÇÕES DO TREMOR (MANTIDAS) --- */
+  background: none !important;
+  -webkit-text-fill-color: initial !important;
+  color: #bf360c !important; /* Laranja Núcleo */
+  text-shadow:
+    3px 3px 0px #000000,
+    0 0 15px rgba(255, 69, 0, 0.6); /* Glow radioativo */
+  letter-spacing: 5px !important;
+  animation: panic-shake 0.15s infinite cubic-bezier(.36,.07,.19,.97) both;
+  transform: translate3d(0, 0, 0);
+  position: relative; /* Necessário pra fumaça se prender aqui */
+  z-index: 1;
+}
 
-  &:hover {
-    letter-spacing: 4px !important;
-    transform: none;
+/* --- A FUMAÇA TÓXICA (ATUALIZADA) --- */
+:host-context(body.mode-jonah) .hero-title::before {
+  content: attr(data-text); /* Pega o texto do HTML */
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* Fica atrás do texto principal */
+
+  /* Aparência Base da Fumaça */
+  color: rgba(100, 255, 0, 0.4); /* VERDE TÓXICO (Pra ver se funciona) */
+  filter: blur(6px); /* Bem borrado */
+  transform-origin: bottom center;
+  pointer-events: none;
+
+  /* A Animação de Vazamento */
+  animation: reactor-smoke 2.5s infinite linear;
+}
+
+/* O TREMOR (MANTIDO) */
+@keyframes panic-shake {
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  10% { transform: translate(-1px, -2px) rotate(-1deg); color: #ff3300; } /* Flash Vermelho */
+  20% { transform: translate(-3px, 0px) rotate(1deg); opacity: 0.9; }
+  30% { transform: translate(3px, 2px) rotate(0deg); }
+  40% { transform: translate(1px, -1px) rotate(1deg); }
+  50% { transform: translate(-1px, 2px) rotate(-1deg); }
+  60% { transform: translate(-3px, 1px) rotate(0deg); }
+  70% { transform: translate(3px, 1px) rotate(-1deg); color: #ff3300; }
+  80% { transform: translate(-1px, -1px) rotate(1deg); }
+  90% { transform: translate(1px, 2px) rotate(0deg); }
+  100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+/* A ANIMAÇÃO DA FUMAÇA SUBINDO (TURBINADA) */
+@keyframes reactor-smoke {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(4px);
+  }
+  20% {
+    opacity: 0.8; /* Aparece rápido */
+    transform: translate3d(0, -20px) scale(1.05); /* Começa a subir */
+    color: rgba(255, 80, 0, 0.6); /* Vira Laranja Fogo no meio */
+  }
+  100% {
+    opacity: 0;
+    /* Sobe MUITO mais pra sair de trás da letra */
+    transform: translate3d(0, -150px) scale(1.5) rotate(2deg);
+    filter: blur(20px); /* Dissolve no ar */
+    color: rgba(100, 100, 100, 0); /* Vira cinza e some */
   }
 }
