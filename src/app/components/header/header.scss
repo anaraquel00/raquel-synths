@@ -223,3 +223,108 @@ mat-toolbar {
     display: none !important;
   }
 }
+
+/* ========================================= */
+/* 💀 MODO JONAH: INVASÃO DO HEADER 💀       */
+/* ========================================= */
+:host-context(body.mode-jonah) {
+
+  /* 1. A Barra em si (Vermelho Sangue e Sombra Pesada) */
+  mat-toolbar {
+    border-bottom: 2px solid #8a0000 !important;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.9) !important;
+    background: rgba(5, 4, 4, 0.98) !important; /* Quase preto sólido */
+  }
+
+  /* 2. Botões de Navegação (Laranja Rust vs Verde Neon) */
+  /* === ÁREA DA NAVEGAÇÃO DESKTOP (MODO JONAH) === */
+  .desktop-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px; /* Espacinho militar */
+
+    /* 1. OS SOLDADOS COMUNS (Todos, MENOS o Creator) */
+    button[mat-button]:not(.btn-creator) {
+      color: #ff3d00 !important; /* Laranja Rust */
+      font-family: 'Oswald', sans-serif;
+      font-weight: 600;
+      font-size: 0.75rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      transition: all 0.3s ease;
+
+      padding: 0 8px !important;
+      min-width: auto !important;
+      line-height: 36px;
+
+      /* HOVER DOS COMUNS: Brilho Laranja (NÃO PRETO!) */
+      &:hover {
+        background: rgba(255, 61, 0, 0.15); /* Fundo sutil */
+        text-shadow: 0 0 15px #ff3d00;      /* Glow Laranja */
+        color: #ff3d00 !important;          /* Mantém a cor Laranja */
+
+        mat-icon {
+           transform: scale(1.1);
+           text-shadow: 0 0 10px #ff3d00;
+        }
+      }
+
+      mat-icon {
+        color: #ff3d00 !important;
+        margin-right: 4px;
+        transform: scale(0.9);
+        padding-bottom: 2px;
+        transition: transform 0.3s;
+      }
+    }
+
+    /* 2. O GENERAL "CREATOR" (Totalmente Independente) */
+    button[mat-button].btn-creator {
+      /* Base igual, mas com borda */
+      color: #ff3d00 !important;
+      border: 1px solid #ff3d00 !important;
+      font-family: 'Oswald', sans-serif;
+      font-weight: 700; /* Mais grosso */
+      font-size: 0.75rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 0 12px !important; /* Um pouco mais largo */
+      margin-left: 8px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); /* Movimento rápido */
+
+      mat-icon {
+        color: #ff3d00 !important;
+        margin-right: 4px;
+      }
+
+      /* HOVER DO ÓDIO: ALTO CONTRASTE (Aqui vira preto!) */
+      &:hover {
+        background-color: #ff3d00 !important; /* Fundo Sólido */
+        box-shadow: 0 0 25px #ff3d00 !important; /* Brilho Radioativo */
+        border-color: #ff3d00 !important;
+        transform: translateY(-2px); /* Pula pra frente */
+
+        /* AQUI ACONTECE A MÁGICA DO CONTRASTE */
+        /* Força TUDO dentro dele a ficar preto */
+        &, span, .mdc-button__label, mat-icon {
+          color: #000000 !important;
+          text-shadow: none !important; /* Sem brilho pra ler melhor */
+        }
+      }
+    }
+  }
+
+  /* 4. O Logo (Pulsação de Reator) */
+  .brand-logo {
+    color: #ff3d00 !important;
+    text-shadow: 0 0 10px #8a0000;
+
+    /* Vamos manter a pulsação que definimos no global, ou redefinir aqui se quiser */
+  }
+
+  /* 5. Menu Mobile (Hambúrguer) */
+  .mobile-menu-btn {
+    color: #ff3d00 !important;
+  }
+}
+
