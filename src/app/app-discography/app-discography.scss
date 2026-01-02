@@ -103,3 +103,21 @@
     font-size: 2rem; /* Título menor */
   }
 }
+
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+
+  button {
+    font-family: var(--font-heading);
+    letter-spacing: 2px;
+    border-width: 2px;
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    }
+  }
+}

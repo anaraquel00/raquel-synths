@@ -3,10 +3,11 @@
 
   <div class="disco-section broklin-side">
     <h3 class="side-title"><mat-icon>diamond</mat-icon> UNIVERSO RQS (Synthwave)</h3>
+
     <div class="album-grid">
-      @for (item of broklinReleases; track item) {
+      @for (item of visibleBroklin; track item) {
         <div class="album-card">
-          <img [src]="item.cover" class="cover-img">
+          <img [src]="item.cover" class="cover-img" alt="Capa do Álbum">
           <div class="album-info">
             <h4>{{ item.title }}</h4>
             <span>{{ item.type }}</span>
@@ -22,16 +23,25 @@
         </div>
       }
     </div>
+
+    @if (visibleBroklin.length < allBroklin.length) {
+      <div class="load-more-container">
+        <button mat-stroked-button color="accent" (click)="showMoreBroklin()">
+          <mat-icon>expand_more</mat-icon> VER MAIS LANÇAMENTOS
+        </button>
+      </div>
+    }
   </div>
 
   <hr class="divider">
 
   <div class="disco-section jonah-side">
     <h3 class="side-title"><mat-icon>warning</mat-icon> JONAH'S REBELLION (Industrial)</h3>
+
     <div class="album-grid">
-      @for (item of jonahReleases; track item) {
+      @for (item of visibleJonah; track item) {
         <div class="album-card">
-          <img [src]="item.cover" class="cover-img">
+          <img [src]="item.cover" class="cover-img" alt="Capa do Álbum">
           <div class="album-info">
             <h4>{{ item.title }}</h4>
             <span>{{ item.type }}</span>
@@ -47,6 +57,14 @@
         </div>
       }
     </div>
+
+    @if (visibleJonah.length < allJonah.length) {
+      <div class="load-more-container">
+        <button mat-stroked-button color="warn" (click)="showMoreJonah()">
+          <mat-icon>expand_more</mat-icon> EXPOSE MORE CHAOS
+        </button>
+      </div>
+    }
   </div>
 
 </section>
