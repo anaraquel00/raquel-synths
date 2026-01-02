@@ -178,7 +178,7 @@ export const ADS_DATA = {
 
 export const VISUAL_NOVEL_PT = [
     {
-      title: '⚡ RQS: Guerra Civil  (Series)',
+      title: '⚡ RQS: Guerra Civil (Series)',
       subtitle: '⚠️ SYSTEM STATUS: FRATURADO.',
       description: 'Bem-vindo(a) à visual novel musical de RaQuel Synths. Esta não é apenas uma coleção de vídeos; é um registro cronológico da Guerra Fria entre duas filosofias sonoras.',
       image: 'images/civil-war.png', // Use a capa do arco
