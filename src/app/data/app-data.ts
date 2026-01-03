@@ -37,7 +37,7 @@ export const MEMBERS_PT = [
     role: 'Engenheiro de Sistemas (Divisão Caos & Legado)',
     imageBroklin: 'images/jonah_profil.png',
     imageJonah: 'images/jonah_metal-skull.png',
-    bioNormal: 'O gênio das cordas cósmicas. Agora responsável pela manutenção do código legado e pela injeção de "sujeira" sonora no sistema.',
+    bioNormal: 'O gênio das cordas cósmicas. Agora responsável pela manutenção do código legado e pela injeção de "sujeira" sonora do sistema.',
     bioJonah: 'CARGO ACEITO. Eu mantenho esse servidor vivo na base da marretada e do ódio. O Frontend é bonito, mas o Backend é onde eu escondo os corpos.' // ATUALIZADO
   },
   {
