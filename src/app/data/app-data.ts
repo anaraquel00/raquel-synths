@@ -26,7 +26,7 @@ export const VN_TEXT = {
 export const MEMBERS_PT = [
   {
     name: 'Broklin Garpeter',
-    role: 'Produtor Executivo & Voz Gótica',
+    role: 'Produtor Executivo, Líder Técnico, Visionário e Produtor Musical',
     imageBroklin: 'images/broklin_perfil.png',
     imageJonah: 'images/gothic_bro.png',
     bioNormal: 'A mente sã por trás do caos. Especialista em harmonias complexas, vinhos digitais e gestão de crises sentimentais.',
@@ -61,7 +61,7 @@ export const MEMBERS_PT = [
 export const MEMBERS_EN = [
   {
     name: 'Broklin Garpeter',
-    role: 'Executive Producer & Gothic Voice',
+    role: 'Executive Producer, Tech Lead, Visionary and Music Producer',
     imageBroklin: 'images/broklin_perfil.png',
     imageJonah: 'images/gothic_bro.png',
     bioNormal: 'The sane mind behind the chaos. Specialist in complex harmonies, digital wines, and sentimental crisis management.',
