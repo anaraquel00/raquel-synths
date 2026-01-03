@@ -69,8 +69,8 @@ export const BROKLIN_ARC_PT: LoreEpisode[] = [
   },
   {
     id: 's1-e2',
-    releaseDate: '2025-12-29',
-    published: false, // BLOQUEADO
+    releaseDate: '2026-01-03',
+    published: true,
     season: 1,
     seasonTitle: 'TEMPORADA 1 — A QUEDA',
     title: 'Episódio 2 — O Veneno Que Ele Recusa',
@@ -132,8 +132,8 @@ export const BROKLIN_ARC_EN: LoreEpisode[] = [
 
   {
     id: 's1-e2',
-    releaseDate: '2025-12-29',
-    published: false,
+    releaseDate: '2026-01-03',
+    published: true,
     season: 1,
     seasonTitle: 'SEASON 1 — THE FALL',
     title: 'Episode 2 — The Poison He Refuses',
