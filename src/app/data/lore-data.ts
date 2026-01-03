@@ -137,6 +137,6 @@ export const BROKLIN_ARC_EN: LoreEpisode[] = [
     season: 1,
     seasonTitle: 'SEASON 1 — THE FALL',
     title: 'Episode 2 — The Poison He Refuses',
-    content: `<p>Coming soon...</p>`
+    content: `<p>Coming soon....</p>`
   }
 ];
