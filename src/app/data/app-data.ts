@@ -34,11 +34,11 @@ export const MEMBERS_PT = [
   },
   {
     name: 'Jonah Cyperfield',
-    role: 'Engenheiro de Sistemas (Divisão Caos & Legado)', // O CARGO NOVO!,
+    role: 'Engenheiro de Sistemas (Divisão Caos & Legado)',
     imageBroklin: 'images/jonah_profil.png',
     imageJonah: 'images/jonah_metal-skull.png',
     bioNormal: 'O gênio das cordas cósmicas. Agora responsável pela manutenção do código legado e pela injeção de "sujeira" sonora no sistema.',
-    bioJonah: 'ACEITEI O CARGO. Eu mantenho esse servidor vivo na base da marretada e do ódio. O Frontend é bonito, mas o Backend é onde eu escondo os corpos.' // ATUALIZADO
+    bioJonah: 'CARGO ACEITO. Eu mantenho esse servidor vivo na base da marretada e do ódio. O Frontend é bonito, mas o Backend é onde eu escondo os corpos.' // ATUALIZADO
   },
   {
     name: 'Kelma Adlanko',
