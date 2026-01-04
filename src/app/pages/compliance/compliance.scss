@@ -1,10 +1,13 @@
-// Importamos variáveis globais se houver (opcional), mas vamos fazer autocontido
+// src/app/pages/compliance/compliance.scss
+
 .compliance-page {
+  // --- ESTILOS BASE (O Padrão/Canvas) ---
   padding: 40px 20px;
   min-height: 80vh;
   color: #fff;
-  font-family: 'Courier New', Courier, monospace; // Tech vibe padrão
+  font-family: 'Courier New', Courier, monospace;
   transition: background 0.5s ease, color 0.5s ease;
+  background-color: #111; // Segurança contra fundo branco
 
   h1 {
     font-size: 2.5rem;
@@ -12,9 +15,10 @@
     text-align: center;
     text-transform: uppercase;
     letter-spacing: 2px;
-    border-bottom: 2px solid;
+    border-bottom: 2px solid; // A cor vem do modo
     padding-bottom: 10px;
     display: inline-block;
+    transition: all 0.3s ease;
   }
 
   article {
@@ -23,6 +27,7 @@
     padding: 20px;
     border-left: 4px solid;
     background: rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
 
     h2 {
       font-size: 1.5rem;
@@ -37,12 +42,14 @@
     }
   }
 
-  // --- MODO BROKLIN (Elegante / Neon Azul / Tech) ---
+  // =========================================================
+  // 🍷 MODO BROKLIN (Elegante / Neon Azul / Tech)
+  // =========================================================
   &.broklin-mode {
     background: radial-gradient(circle at center, #1a1a2e 0%, #000000 100%);
 
     h1 {
-      color: #00d4ff; // Cyan Neon
+      color: #00d4ff;
       border-color: #00d4ff;
       text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
     }
@@ -51,51 +58,52 @@
       border-color: #00d4ff;
       box-shadow: 0 0 15px rgba(0, 212, 255, 0.1);
 
-      h2 {
-        color: #e0e0e0;
-      }
+      h2 { color: #e0e0e0; }
     }
   }
 
-  // --- MODO JONAH (Caos / Vermelho Industrial / Metal) ---
+  // =========================================================
+  // 💀 MODO JONAH (Caos / Vermelho Industrial / Metal)
+  // =========================================================
+  // O SEGREDO: Usamos '&' para colar na classe .compliance-page
   &.jonah-mode {
-    background:
-      linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)),
-      url('/assets/images/noise-texture.png'); // Se tiver textura
-    background-color: #0a0000;
+    background: #0a0000;
+    // Se quiser a textura de ruído, descomente abaixo:
+    // background-image: url('/assets/images/noise-texture.png');
 
     h1 {
       color: #ff2a2a; // Vermelho Sangue
       border-color: #ff2a2a;
       text-shadow: 3px 0px 0px rgba(255, 0, 0, 0.7); // Glitch effect
       font-weight: 900;
+      letter-spacing: 4px; // Mais agressivo
     }
 
     article {
       border-color: #ff2a2a;
-      border-style: dashed; // Estilo rústico
-      background: rgba(20, 0, 0, 0.6);
+      border-left-width: 6px; // Borda mais grossa
+      border-style: dashed;   // Estilo rústico industrial
+      background: rgba(30, 0, 0, 0.7); // Fundo avermelhado sujo
 
       h2 {
         color: #ff2a2a;
         text-transform: uppercase;
+        border-bottom: 1px solid #4a0000;
+        padding-bottom: 5px;
       }
 
       p {
-        color: #ccc;
+        color: #dcdcdc;
+        font-family: 'Arial', sans-serif; // Fonte mais legível no caos
       }
     }
   }
 }
 
-// Responsividade para Mobile
+// Responsividade
 @media (max-width: 768px) {
   .compliance-page {
-    h1 {
-      font-size: 1.8rem;
-    }
-    article {
-      padding: 15px;
-    }
+    h1 { font-size: 1.8rem; }
+    article { padding: 15px; }
   }
 }
