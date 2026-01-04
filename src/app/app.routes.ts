@@ -16,7 +16,12 @@ export const routes: Routes = [
   {
       path: 'creator',
       loadComponent: () => import('./pages/creator/creator').then(m => m.Creator)
-    },
+  },
+
+  {
+    path: 'compliance',
+    loadComponent: () => import('./pages/compliance/compliance').then(m => m.ComplianceComponent)
+  },
 
   // Rota de Erro (Volta pra Home)
   { path: '**', redirectTo: '' }

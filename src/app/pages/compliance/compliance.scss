@@ -1,0 +1,101 @@
+// Importamos variáveis globais se houver (opcional), mas vamos fazer autocontido
+.compliance-page {
+  padding: 40px 20px;
+  min-height: 80vh;
+  color: #fff;
+  font-family: 'Courier New', Courier, monospace; // Tech vibe padrão
+  transition: background 0.5s ease, color 0.5s ease;
+
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-bottom: 2px solid;
+    padding-bottom: 10px;
+    display: inline-block;
+  }
+
+  article {
+    max-width: 800px;
+    margin: 0 auto 40px auto;
+    padding: 20px;
+    border-left: 4px solid;
+    background: rgba(0, 0, 0, 0.3);
+
+    h2 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    p {
+      line-height: 1.6;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+    }
+  }
+
+  // --- MODO BROKLIN (Elegante / Neon Azul / Tech) ---
+  &.broklin-mode {
+    background: radial-gradient(circle at center, #1a1a2e 0%, #000000 100%);
+
+    h1 {
+      color: #00d4ff; // Cyan Neon
+      border-color: #00d4ff;
+      text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+    }
+
+    article {
+      border-color: #00d4ff;
+      box-shadow: 0 0 15px rgba(0, 212, 255, 0.1);
+
+      h2 {
+        color: #e0e0e0;
+      }
+    }
+  }
+
+  // --- MODO JONAH (Caos / Vermelho Industrial / Metal) ---
+  &.jonah-mode {
+    background:
+      linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)),
+      url('/assets/images/noise-texture.png'); // Se tiver textura
+    background-color: #0a0000;
+
+    h1 {
+      color: #ff2a2a; // Vermelho Sangue
+      border-color: #ff2a2a;
+      text-shadow: 3px 0px 0px rgba(255, 0, 0, 0.7); // Glitch effect
+      font-weight: 900;
+    }
+
+    article {
+      border-color: #ff2a2a;
+      border-style: dashed; // Estilo rústico
+      background: rgba(20, 0, 0, 0.6);
+
+      h2 {
+        color: #ff2a2a;
+        text-transform: uppercase;
+      }
+
+      p {
+        color: #ccc;
+      }
+    }
+  }
+}
+
+// Responsividade para Mobile
+@media (max-width: 768px) {
+  .compliance-page {
+    h1 {
+      font-size: 1.8rem;
+    }
+    article {
+      padding: 15px;
+    }
+  }
+}

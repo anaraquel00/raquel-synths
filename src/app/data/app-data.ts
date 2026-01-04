@@ -315,6 +315,50 @@ export const CONTACT_DATA = {
   }
 };
 
+// --- DADOS DE COMPLIANCE (Privacidade e Exclusão) ---
+export const COMPLIANCE_DATA = {
+  pt: {
+    broklin: {
+      title: '🛡️ COMPLIANCE & PRIVACIDADE',
+      privacyTitle: '1. Política de Privacidade',
+      privacyText: 'O aplicativo RaQuel Synths (RQS) utiliza a API do Facebook/Instagram exclusivamente para automação de postagens e interação artística. Prezamos pela integridade técnica: não coletamos, armazenamos ou compartilhamos dados pessoais de terceiros.',
+      deletionTitle: '2. Instruções para Exclusão de Dados',
+      deletionText: 'Para revogar o acesso ao sistema, acesse as configurações de "Apps e Sites" em seu perfil do Facebook e remova a permissão da "RQS API". Caso deseje limpeza de logs manuais, entre em contato via uplink.',
+      categoryTitle: '3. Categoria',
+      categoryText: 'Artes e Entretenimento: Banda Musical / Tech-Art.'
+    },
+    jonah: {
+      title: '💀 PROTOCOLO DE SEGURANÇA (CAOS)',
+      privacyTitle: '1. RASTROS DIGITAIS',
+      privacyText: 'O sistema RQS invade as redes apenas para espalhar o som. Seus dados não me interessam, eu só quero que o servidor não caia enquanto o mundo queima. Nada é guardado nos meus arquivos.',
+      deletionTitle: '2. APAGAR EVIDÊNCIAS',
+      deletionText: 'Quer sair da rede? Vá nas configurações do Facebook e corte o cabo de conexão da RQS API. Eu não vou guardar backup do seu rastro digital, não sou babá de dados.',
+      categoryTitle: '3. SETOR',
+      categoryText: 'Divisão Industrial: Revolta contra a Programação.'
+    }
+  },
+  en: {
+    broklin: {
+      title: '🛡️ COMPLIANCE & PRIVACY',
+      privacyTitle: '1. Privacy Policy',
+      privacyText: 'The RaQuel Synths (RQS) app uses the Facebook/Instagram API exclusively for post automation and artistic interaction. We value technical integrity: we do not collect, store, or share third-party personal data.',
+      deletionTitle: '2. Data Deletion Instructions',
+      deletionText: 'To revoke system access, go to the "Apps and Websites" settings in your Facebook profile and remove the "RQS API" permission. For manual log clearing, contact us via uplink.',
+      categoryTitle: '3. Category',
+      categoryText: 'Arts & Entertainment: Musical Band / Tech-Art.'
+    },
+    jonah: {
+      title: '💀 SECURITY PROTOCOL (CHAOS)',
+      privacyTitle: '1. DIGITAL FOOTPRINTS',
+      privacyText: 'The RQS system hits the networks only to spread the sound. Your data does not interest me; I just want the server to stay up while the world burns. Nothing is stored in my archives.',
+      deletionTitle: '2. ERASING EVIDENCE',
+      deletionText: 'Want out of the grid? Go to your Facebook settings and cut the RQS API connection cable. I won’t keep a backup of your digital footprint; I’m not a data babysitter.',
+      categoryTitle: '3. SECTOR',
+      categoryText: 'Industrial Division: Revolt against Programming.'
+    }
+  }
+};
+
 // --- FOOTER (Rodapé) ---
 export const FOOTER_DATA = {
   pt: {
@@ -328,6 +372,7 @@ export const FOOTER_DATA = {
     support: 'APOIE A BANDA:',
     coffee: 'Pagar um Café ☕',
     devProfile: 'VER PERFIL TÉCNICO >',
+    compliance: 'PRIVACIDADE & COMPLIANCE >',
     // NOVOS DADOS DA NEWSLETTER:
     newsTitle: '🔥 RECEBA O CAOS & A GLÓRIA',
     newsDesc: 'Novos lançamentos, Lore secreta e fofocas do Jonah direto na sua caixa de entrada.',
@@ -345,6 +390,7 @@ export const FOOTER_DATA = {
     support: 'SUPPORT THE BAND:',
     coffee: 'Buy us a Coffee ☕',
     devProfile: 'VIEW TECH PROFILE >',
+    compliance: 'PRIVACY & COMPLIANCE >',
     // NEW NEWSLETTER DATA:
     newsTitle: '🔥 RECEIVE THE CHAOS & GLORY',
     newsDesc: 'New releases, secret Lore, and Jonah\'s gossip straight to your inbox.',
