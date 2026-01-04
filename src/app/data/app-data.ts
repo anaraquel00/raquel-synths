@@ -112,7 +112,7 @@ export const EVENTS_PT = [
     date: '14 Dez 2025',
     title: '⚠️ Alerta de Segurança',
     description: 'Tentativa de bloqueio falhou. Usuário "Jo_Cyperfield" tentou executar protocolo de retenção. A Agente Kelma recusou a conexão. Logs de áudio indicam instabilidade: "She thinks she\'s deleting me..."',
-    image: 'images/cyberpunk_lounge_solitude.png', // A cara de quem recusou
+    image: 'images/cyberpunk_lounge_solitude.png',
     jonahComment: 'Instabilidade? A única coisa instável aqui é a masculinidade desse vampiro de glitter. Eu sou a rocha sobre a qual essa banda foi construída.' // Comentário Real
   },
   {
