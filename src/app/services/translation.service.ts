@@ -29,7 +29,7 @@ export class TranslationService {
   toggleMode() {
     this.isJonahMode.update(val => !val);
   }
-  // NOVO: Função para definir o modo explicitamente pelos botões
+  //Função para definir o modo explicitamente pelos botões
   setMode(mode: 'broklin' | 'jonah') {
     this.isJonahMode.set(mode === 'jonah');
   }
