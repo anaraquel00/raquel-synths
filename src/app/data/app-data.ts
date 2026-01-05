@@ -294,7 +294,7 @@ export const CONTACT_DATA = {
     }
   },
   en: {
-    heroButton: "📡 INITIATE UPLINK", // O botão da Home
+    heroButton: "📡 INITIATE UPLINK", // O botão Home
     title: "📡 UPLINK // COLLABORATION PROTOCOL",
     subtitle: "Send your signal. We search for compatible frequencies.",
     success: "✅ SIGNAL RECEIVED. OVER AND OUT.",
