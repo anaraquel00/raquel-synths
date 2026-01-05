@@ -46,7 +46,7 @@
   // 🍷 MODO BROKLIN (Elegante / Neon Azul / Tech)
   // =========================================================
   &.broklin-mode {
-    background: radial-gradient(circle at center, #1a1a2e 0%, #000000 100%);
+    background: radial-gradient(circle at center, #1a1a2e 0%, #0a0000c5 100%);
 
     h1 {
       color: #00d4ff;
@@ -61,15 +61,15 @@
       h2 { color: #e0e0e0; }
     }
   }
-
+}
   // =========================================================
   // 💀 MODO JONAH (Caos / Vermelho Industrial / Metal)
   // =========================================================
-  // O SEGREDO: Usamos '&' para colar na classe .compliance-page
-  &.jonah-mode {
-    background: #0a0000;
-    // Se quiser a textura de ruído, descomente abaixo:
-    // background-image: url('/assets/images/noise-texture.png');
+
+  :host-context(body.mode-jonah)
+   .compliance-page{
+    background: #0a0000c5;
+
 
     h1 {
       color: #ff2a2a; // Vermelho Sangue
@@ -81,24 +81,32 @@
 
     article {
       border-color: #ff2a2a;
-      border-left-width: 6px; // Borda mais grossa
-      border-style: dashed;   // Estilo rústico industrial
-      background: rgba(30, 0, 0, 0.7); // Fundo avermelhado sujo
+      border-left-width: 6px;
+      border-style: double;   // 'Dashed' é cerca. 'Double' é fiação exposta.
+      background: rgba(10, 0, 0, 0.9); // Mais escuro, mais trevas.
 
       h2 {
         color: #ff2a2a;
+        font-family: 'Courier New', Courier, monospace; // MÁQUINA DE ESCREVER
         text-transform: uppercase;
-        border-bottom: 1px solid #4a0000;
-        padding-bottom: 5px;
+        border-bottom: 2px solid #ff2a2a; // Linha sólida de sangue
+        padding-bottom: 10px;
+        letter-spacing: 2px;
       }
 
       p {
-        color: #dcdcdc;
-        font-family: 'Arial', sans-serif; // Fonte mais legível no caos
+        color: #00ff00; // Mudei pra VERDE TERMINAL ou mantenha o #dcdcdc (Cinza)
+        // Se quiser manter o cinza: color: #dcdcdc;
+        font-family: 'Consolas', 'Monaco', monospace; // FONTE DE HACKER
+        font-size: 1.1rem;
+        line-height: 1.6;
       }
-    }
   }
-}
+  }
+
+
+
+
 
 // Responsividade
 @media (max-width: 768px) {
