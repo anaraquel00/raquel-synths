@@ -1,6 +1,6 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { COMPLIANCE_DATA } from '../../data/app-data'; // Verifique se o caminho está certo
+import { Component, inject, OnInit, OnDestroy, signal, computed } from '@angular/core';
+import { CommonModule, DOCUMENT } from '@angular/common';
+import { COMPLIANCE_DATA } from '../../data/app-data';
 import { TranslationService } from '../../services/translation.service';
 
 @Component({
@@ -10,32 +10,51 @@ import { TranslationService } from '../../services/translation.service';
   templateUrl: './compliance.html',
   styleUrl: './compliance.scss'
 })
-export class ComplianceComponent {
-mode(): string|string[]|Set<string>|{ [klass: string]: any; }|null|undefined {
-throw new Error('Method not implemented.');
-}
+export class ComplianceComponent implements OnInit, OnDestroy {
+
   private translationService = inject(TranslationService);
+  // Injetamos o DOCUMENT para vigiar o corpo da página
+  private _document = inject(DOCUMENT);
 
-  // Mapeamos os sinais do serviço oficial
-  lang = this.translationService.currentLang; // 'pt' | 'en'
-  isJonah = this.translationService.isJonahMode; // boolean
+  // 1. TRADUÇÃO: Convertemos o boolean do serviço para string ('pt' ou 'en')
+  lang = computed(() => this.translationService.isPt() ? 'pt' : 'en');
 
-  /**
-   * get data()
-   * Forçamos a tipagem das chaves para satisfazer o compilador.
-   */
-  get data() {
-    // Definimos explicitamente que a chave de idioma é 'pt' ou 'en'
-    const langKey = this.lang() as 'pt' | 'en';
+  // 2. MODO CAOS: Detectamos manualmente, já que o serviço é burro
+  isJonah = signal(false);
+  private themeObserver: MutationObserver | undefined;
+currentModeClass: string|string[]|Set<string>|{ [klass: string]: any; }|null|undefined;
 
-    // Mapeamos o modo e forçamos o tipo literal 'broklin' ou 'jonah'
-    const modeKey = (this.isJonah() ? 'jonah' : 'broklin') as 'broklin' | 'jonah';
+  ngOnInit() {
+    // O Vigia: Se a classe 'mode-jonah' aparecer no body, a gente muda o texto
+    this.themeObserver = new MutationObserver(() => {
+      this.checkMode();
+    });
 
-    // Agora o TypeScript sabe que essas chaves existem no COMPLIANCE_DATA
-    return COMPLIANCE_DATA[langKey][modeKey];
+    this.themeObserver.observe(this._document.body, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+
+    // Checagem inicial
+    this.checkMode();
   }
 
-  get currentModeClass() {
-    return this.isJonah() ? 'jonah-mode' : 'broklin-mode';
+  ngOnDestroy() {
+    // Desliga o vigia ao sair
+    this.themeObserver?.disconnect();
+  }
+
+  private checkMode() {
+    // A verdade está no HTML, não no serviço
+    this.isJonah.set(this._document.body.classList.contains('mode-jonah'));
+  }
+
+  // 3. O GETTER DE DADOS (Blindado)
+  get data() {
+    const langKey = this.lang(); // 'pt' ou 'en'
+    const modeKey = this.isJonah() ? 'jonah' : 'broklin';
+
+    // Retorna o texto correto do arquivo de dados
+    return COMPLIANCE_DATA[langKey][modeKey];
   }
 }

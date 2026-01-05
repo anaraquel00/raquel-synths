@@ -45,7 +45,8 @@
   // =========================================================
   // 🍷 MODO BROKLIN (Elegante / Neon Azul / Tech)
   // =========================================================
-  &.broklin-mode {
+  :host-context(body.mode-broklin) .compliance-page{
+
     background: radial-gradient(circle at center, #1a1a2e 0%, #0a0000c5 100%);
 
     h1 {
@@ -61,7 +62,10 @@
       h2 { color: #e0e0e0; }
     }
   }
-}
+  }
+
+
+
   // =========================================================
   // 💀 MODO JONAH (Caos / Vermelho Industrial / Metal)
   // =========================================================
