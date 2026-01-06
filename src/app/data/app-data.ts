@@ -203,7 +203,7 @@ export const VISUAL_NOVEL_PT = [
       title: 'ARCO BROKLIN',
       subtitle: 'Amor, Vinho & Melancolia',
       description: 'A jornada de um vampiro gótico em busca de redenção através do amor de Kelma. Inclui o hit "Neon Tears".',
-      image: 'images/arco-broklin.png', // Use a capa do arco
+      image: 'images/arco-broklin.png', // Use capa do arco
       link: '/lore/broklin',
       mode: 'romance'
     }
