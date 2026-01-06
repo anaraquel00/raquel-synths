@@ -169,7 +169,7 @@ export const EVENTS_EN = [
   },
   {
     date: 'Dec 24, 2025',
-    title: '💍 DARK ALTAR (UNHOLY UNION)', // Updated Title
+    title: '💍 DARK ALTAR (UNHOLY UNION)', // Updated
     description: 'Forget traditional vows. Under the sound of industrial bells from the "SYSTEM MERGE: THE LEGACY" EP, Jonah and Nyx performed the ritual. No priest, just a pact of oil and tungsten. Status: ETERNAL BOND.',
     image: 'images/marriage_cyberpunk.png',
     jonahComment: 'Till death do us part? No. Until the server burns. And even then, I have a backup of your soul on my external drive.'
