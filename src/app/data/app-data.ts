@@ -274,7 +274,7 @@ export const DISCOGRAPHY_EN = {
 
 export const CONTACT_DATA = {
   pt: {
-    heroButton: "📡 INICIAR UPLINK", // O botão da Home
+    heroButton: "📡 INICIAR UPLINK", // O botão Home
     title: "📡 UPLINK // PROTOCOLO DE COLABORAÇÃO",
     subtitle: "Envie seu sinal. Buscamos frequências compatíveis.",
     success: "✅ SINAL RECEBIDO. CÂMBIO E DESLIGO.",
