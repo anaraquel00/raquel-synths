@@ -75,7 +75,7 @@ export const MEMBERS_EN = [
   },
   {
     name: 'Jonah Cyperfield',
-    role: 'Systems Engineer (Chaos & Legacy Division)', // THE NEW POSITION!,
+    role: 'Systems Engineer (Chaos & Legacy Division)', // THE NEW POSITION!
     imageBroklin: 'images/jonah_profil.png',
     imageJonah: 'images/jonah_metal-skull.png',
     bioNormal: 'The genius of cosmic strings. Now responsible for maintaining legacy code and injecting sonic "filth" into the system.',
