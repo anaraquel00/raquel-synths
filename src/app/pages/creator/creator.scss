@@ -323,3 +323,29 @@ h3 {
     border-bottom-color: var(--accent-color);
   }
 }
+
+/* --- NOVAS CLASSES DE AUTOMAÇÃO --- */
+
+/* Chip do n8n (Estilo Gradiente ou Laranja Forte) */
+.tech-chip.n8n {
+  border-color: #ff655a;
+  color: #ea4b3f;
+  background: #fff0ef;
+  font-weight: 700; /* Mais destaque */
+}
+
+/* Badge especial para o card do projeto RQS Uplink */
+.badge.n8n-badge {
+  background: linear-gradient(135deg, #ff6d5a, #ea4b3f);
+  color: white;
+}
+
+/* Card do projeto com borda destaque de Ops */
+.project-card.featured-ops {
+  border-left-color: #ea4b3f; /* Cor do n8n */
+  background: #fffcfc; /* Levemente avermelhado para diferenciar */
+
+  &:hover {
+    box-shadow: 0 10px 20px rgba(234, 75, 63, 0.15); /* Glow laranja suave */
+  }
+}

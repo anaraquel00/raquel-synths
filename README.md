@@ -36,6 +36,41 @@ Nossa história não tem fronteiras. O sistema foi construído nativamente para 
 - **Monetização:** Google AdSense Integration (`ads.txt` & Slots Dinâmicos).
 - **Deploy:** Ready for Vercel/Netlify.
 
+# RQS Uplink Protocol 🚀
+
+> Sistema de Automação e CI/CD para Mídias Sociais.
+
+Este projeto é o motor de automação que conecta meu desenvolvimento de código diretamente às minhas redes profissionais. Utilizando **n8n** como orquestrador, criei um pipeline que transforma commits do GitHub em conteúdo publicado.
+
+## 🛠️ Como Funciona (Arquitetura)
+
+O fluxo é disparado automaticamente a cada `git push` neste repositório. O sistema analisa a mensagem do commit em busca de **Tags Inteligentes**:
+
+- `#general`: Define a persona que assina a mensagem (KelmaGeneral).
+- `#linkedin`: Autoriza a publicação externa na rede profissional.
+
+Se as condições lógicas forem atendidas, o conteúdo é formatado e distribuído em paralelo para:
+1.  **Discord (RQS System):** Para log interno e notificação da equipe.
+2.  **LinkedIn (Perfil Profissional):** Publicação pública via API OAuth2.
+
+## 📸 Visualização do Workflow (n8n)
+
+Abaixo está o diagrama real do fluxo de automação em execução, demonstrando o caminho bem-sucedido do GitHub até o LinkedIn.
+
+![Diagrama do Workflow n8n](public/assets/n8n-workflow-final.png)
+
+---
+
+### 🧰 Tech Stack
+
+* **Orquestração:** n8n (Workflow Automation)
+* **Infraestrutura:** Servidor Linux (Ubuntu) + Ngrok (Tunneling)
+* **Integrações (APIs):** GitHub Webhooks, Discord Bot API, LinkedIn API (OAuth 2.0)
+* **Lógica:** JavaScript (Node.js) e JSON manipulation.
+
+---
+*Desenvolvido por Ana Raquel de Holanda - 2026*
+
 ## 👥 The Squad (Personas & Creators)
 
 O universo RQS é composto por mentes reais e virtuais:
