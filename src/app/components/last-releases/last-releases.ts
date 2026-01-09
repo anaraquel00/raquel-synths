@@ -11,7 +11,7 @@ import { Component } from '@angular/core';
         <img [src]="coverImage" alt="Cover" class="cover-art">
         <div class="info">
           <span class="status">🔥 PRE-SAVE NOW</span>
-          <span class="title">THE BLUEPRINT SESSIONS, Vol. 001</span>
+          <span class="title">NEON GUILLOTINE</span>
         </div>
       </div>
     </div>
@@ -112,8 +112,8 @@ import { Component } from '@angular/core';
   `]
 })
 export class LastReleasesComponent {
-  coverImage = '/images/the_blueprint_session_v.001.png';
-  link = 'https://distrokid.com/hyperfollow/raquelsynthsrqs/the-blueprint-sessions-vol-001';
+  coverImage = '/images/ep_neon_guillotine.png';
+  link = 'https://distrokid.com/hyperfollow/raquelsynthsrqs/neon-guillotine';
 
   openLink() {
     window.open(this.link, '_blank');

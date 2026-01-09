@@ -1,0 +1,34 @@
+<section class="store-container">
+
+  <!-- BOTÃO VOLTAR (Corrigido) -->
+  <button class="back-btn" (click)="goBackHome()">
+    &larr; {{ currentLang() === 'pt' ? 'VOLTAR À BASE' : 'BACK TO BASE' }}
+  </button>
+
+  <h1 class="glitch-title" data-text="NEON STORE">NEON STORE</h1>
+  <p class="subtitle">Official Merch // Print-on-Demand Protocol</p>
+
+  <div class="product-grid">
+    <div class="product-card" *ngFor="let item of products">
+
+      <div class="image-wrapper">
+        <img [src]="item.image" [alt]="item.content[currentLang()].name">
+        <div class="overlay"></div>
+      </div>
+
+      <div class="info">
+        <h3>{{ item.content[currentLang()].name }}</h3>
+        <p class="desc">{{ item.content[currentLang()].description }}</p>
+
+        <div class="price-row">
+          <span class="price">{{ item.content[currentLang()].price }}</span>
+          <button (click)="buyProduct(item.stripeUrl)" class="btn-neon">
+            {{ currentLang() === 'pt' ? 'VER PREÇO' : 'CHECK PRICE' }}
+          <i class="ph-tag"></i>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

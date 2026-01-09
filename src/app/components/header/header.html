@@ -30,8 +30,8 @@
 
     <button mat-button (click)="scrollTo('discografia')">DISCOGRAFIA</button>
 
-    <button mat-button (click)="openExternal('https://soundcloud.com/rqs_official/albums')">
-      PLAYLIST <mat-icon iconPositionEnd>open_in_new</mat-icon>
+    <button mat-button [routerLink]="['/store']" class="store-container">
+      {{ navText.store }} <mat-icon iconPositionEnd>open_in_new</mat-icon>
     </button>
   </div>
 
@@ -66,6 +66,7 @@
     <button mat-menu-item (click)="scrollTo('visual-novel')">{{ navText.visualNovel }}</button>
     <button mat-menu-item [routerLink]="['/lore/broklin']">{{ navText.lore }}</button>
     <button mat-menu-item (click)="scrollTo('discografia')">DISCOGRAFIA</button>
+    <button mat-menu-item [routerLink]="['/store']">{{ navText.store }}</button>
   </mat-menu>
 
 </mat-toolbar>

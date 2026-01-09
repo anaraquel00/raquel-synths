@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { StoreComponent } from './pages/store/store';
 
 export const routes: Routes = [
   // ROTA 1: A Página Principal (Landing Page)
@@ -22,6 +23,11 @@ export const routes: Routes = [
     path: 'compliance',
     loadComponent: () => import('./pages/compliance/compliance').then(m => m.ComplianceComponent)
   },
+
+  {
+    path: 'store',
+    loadComponent: () => import('./pages/store/store').then(m => m.StoreComponent)
+    },
 
   // Rota de Erro (Volta pra Home)
   { path: '**', redirectTo: '' }
