@@ -69,7 +69,40 @@ Abaixo está o diagrama real do fluxo de automação em execução, demonstrando
 * **Lógica:** JavaScript (Node.js) e JSON manipulation.
 
 ---
-*Desenvolvido por Ana Raquel de Holanda - 2026*
+
+## 🛍️ Módulo: Neon Store (E-Commerce & Afiliados)
+
+Um módulo desenvolvido para monetizar a marca RQS através de **Marketing de Afiliados (Curadoria)**, totalmente integrado ao ecossistema Angular 21 sem a necessidade de um backend de e-commerce pesado.
+
+### 🌟 Destaques Técnicos (Key Features)
+- **Arquitetura Zero-Stock:** Implementação de modelo de afiliados (Shein/AliExpress), eliminando logística enquanto mantém a autoridade da marca.
+- **UI Adaptativa (Dual Mode):** A loja reage ao estado global do tema (State Management):
+  - 🟦 **Modo Broklin:** Estética Clean, Glassmorphism e Tons Neon Cyan.
+  - 🟥 **Modo Jonah:** Estética Industrial, Texturas de "Erro" e Tons de Ferrugem.
+- **Internacionalização (i18n):** Suporte nativo PT-BR/EN-US utilizando **Angular Signals** para reatividade instantânea.
+- **Estratégia de UX:** Botões de CTA (Call-to-Action) com "Gap de Curiosidade" para maximizar a taxa de cliques (CTR).
+
+### 🏗️ Arquitetura & Fluxo de Dados
+
+O módulo segue os princípios de **Clean Architecture**, separando estritamente a camada de dados da camada de apresentação.
+
+#### 1. Camada de Dados (`store-data.ts`)
+Atua como a **Single Source of Truth** (Fonte Única de Verdade). Contém IDs, conteúdo localizado e Deep Links de afiliados. Isso permite manutenção do catálogo sem tocar na lógica do componente.
+
+```typescript
+export const STORE_DATA = [
+  {
+    id: 'blazer-tech-lead',
+    image: 'assets/store/blazer.png',
+    // Link de Afiliado gerado via API/Painel
+    stripeUrl: 'https://s.click.aliexpress.com/...', 
+    content: {
+      pt: { name: "Broklin's Executive Shell", price: "VER NA LOJA" },
+      en: { name: "Broklin's Executive Shell", price: "CHECK STORE" }
+    }
+  }
+];
+```
 
 ## 👥 The Squad (Personas & Creators)
 
