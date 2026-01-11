@@ -1,10 +1,11 @@
 <footer class="rqs-footer">
-  <div class="newsletter-section">
+  <div class="newsletter-section" id="newsletter-target">
     <h4>{{ t.newsTitle }}</h4>
     <p>{{ t.newsDesc }}</p>
 
     <div class="input-group">
       <input
+        id="email-input"
         type="email"
         [placeholder]="t.emailPlace"
         [ngModel]="email()"

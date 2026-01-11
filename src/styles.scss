@@ -208,3 +208,108 @@ body.mode-jonah app-header .brand-logo {
   50% { text-shadow: 0 0 20px #ff3d00; opacity: 0.8; }
   100% { text-shadow: 0 0 5px #8a0000; opacity: 1; }
 }
+
+// --- SWEETALERT CUSTOMIZATION ---
+
+// Força a fonte do site no alerta
+div:where(.swal2-container) {
+  z-index: 99999 !important; // Garante que fica em cima de tudo
+}
+
+/* MODO BROKLIN (Tech/Ciano) - Pra não ficar sem estilo */
+body.mode-broklin .swal2-confirm {
+  background-color: #000 !important;
+  border: 2px solid #00ffff !important;
+  color: #00ffff !important;
+}
+
+body.mode-broklin .swal2-confirm:hover {
+  background-color: #00ffff !important;
+  color: #000 !important;
+  box-shadow: 0 0 20px #00ffff !important;
+}
+
+/* MODO JONAH (Fogo/Caos) - O estilo que você pediu */
+body.mode-jonah .swal2-confirm {
+  background-color: #1a0000 !important; /* Fundo Escuro Avermelhado */
+  border: 2px solid #ff3300 !important; /* Borda Laranja/Vermelha */
+  color: #ff3300 !important;            /* Texto Laranja/Vermelho */
+  box-shadow: 0 0 10px rgba(255, 51, 0, 0.2) !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Efeito Hover do Jonah (Quando passa o mouse) */
+body.mode-jonah .swal2-confirm:hover {
+  background-color: #ff3300 !important; /* Preenche de Vermelho */
+  color: #000000 !important;            /* Texto fica Preto */
+  box-shadow: 0 0 20px #ff3300 !important; /* Brilho de Fogo */
+  transform: scale(1.05);
+}
+
+// Cor do texto geral
+.swal2-title, .swal2-content, .swal2-html-container {
+  color: #fff !important;
+}
+/* --- RODAPÉ DO POPUP (FOOTER) --- */
+
+/* MODO JONAH (Fogo/Caos) */
+body.mode-jonah .swal2-footer {
+  color: #ff3300 !important;            /* Texto Vermelho/Laranja */
+  border-top: 1px solid #ff3300 !important; /* Linha de separação Vermelha */
+
+  /* Opcional: Um brilho suave no texto */
+  text-shadow: 0 0 5px rgba(255, 51, 0, 0.5);
+}
+
+/* MODO BROKLIN (Tech/Ciano) */
+body.mode-broklin .swal2-footer {
+  color: #00ffff !important;            /* Texto Ciano */
+  border-top: 1px solid #00ffff !important; /* Linha de separação Ciano */
+
+  /* Opcional: Um brilho suave no texto */
+  text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+}
+/* --- ÍCONE DO POPUP (O Círculo de Informação) --- */
+
+/* Regra Geral para centralizar e preparar o brilho */
+.swal2-icon {
+  border-width: 3px !important; /* Deixa a borda do círculo mais grossa */
+  /* Remove a animação padrão chata pra gente por a nossa */
+  animation: none !important;
+}
+
+/* MODO JONAH (Fogo/Caos - Vermelho #ff3300) */
+body.mode-jonah .swal2-icon.swal2-info {
+  border-color: #ff3300 !important; /* Borda do círculo */
+  color: #ff3300 !important;        /* O traço/letra 'i' dentro */
+
+  /* O BRILHO NEON DE FOGO */
+  box-shadow: 0 0 25px rgba(255, 51, 0, 0.6), inset 0 0 10px rgba(255, 51, 0, 0.4) !important;
+
+  /* Uma animaçãozinha de pulsação para parecer vivo */
+  animation: neon-pulse-jonah 1.5s infinite alternate ease-in-out !important;
+}
+
+/* MODO BROKLIN (Tech/Ciano - Azul #00ffff) */
+body.mode-broklin .swal2-icon.swal2-info {
+  border-color: #00ffff !important;
+  color: #00ffff !important;
+
+  /* O BRILHO NEON CIANO */
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.6), inset 0 0 10px rgba(0, 255, 255, 0.4) !important;
+
+  /* Animação de pulsação */
+  animation: neon-pulse-broklin 1.5s infinite alternate ease-in-out !important;
+}
+
+/* --- ANIMAÇÕES DE PULSAÇÃO (Para dar vida ao ícone) --- */
+
+@keyframes neon-pulse-jonah {
+  from { box-shadow: 0 0 20px rgba(255, 51, 0, 0.5), inset 0 0 5px rgba(255, 51, 0, 0.3); }
+  to   { box-shadow: 0 0 35px rgba(255, 51, 0, 0.8), inset 0 0 15px rgba(255, 51, 0, 0.6); transform: scale(1.05); }
+}
+
+@keyframes neon-pulse-broklin {
+  from { box-shadow: 0 0 20px rgba(0, 255, 255, 0.5), inset 0 0 5px rgba(0, 255, 255, 0.3); }
+  to   { box-shadow: 0 0 35px rgba(0, 255, 255, 0.8), inset 0 0 15px rgba(0, 255, 255, 0.6); transform: scale(1.05); }
+}

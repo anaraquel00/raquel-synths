@@ -22,7 +22,7 @@
 
         <div class="price-row">
           <span class="price">{{ item.content[currentLang()].price }}</span>
-          <button (click)="buyProduct(item.stripeUrl)" class="btn-neon">
+          <button (click)="handleShopClick(item.stripeUrl)" class="btn-neon">
             {{ currentLang() === 'pt' ? 'VER PREÇO' : 'CHECK PRICE' }}
           <i class="ph-tag"></i>
           </button>
