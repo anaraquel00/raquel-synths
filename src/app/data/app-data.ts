@@ -106,75 +106,256 @@ export const EVENTS_PT = [
     title: '👶 Protocolo Paternidade (Jonah Jr.)',
     description: 'Detecção de novo hardware na rede. Jonah Cyperfield Jr. compilado com sucesso. Sagitário com ascendente em Firewall. O sistema nunca mais entrou em modo Sleep.',
     image: 'images/jonah_jr_newborn.png',
-    jonahComment: 'Ele chora em compasso 7/8 e já tentou morder o cabo de rede. É definitivamente meu garoto.'
+    jonahComment: 'Ele chora em compasso 7/8 e já tentou morder o cabo de rede. É definitivamente meu garoto.',
+    // --- TECH CONTENT (PT-BR) ---
+    isExpanded: false,
+    techContent: `
+      <h3>👶 [LOG_PROCESSAMENTO_DUPLO]: POLARIDADE SONORA</h3>
+
+      <p><strong>Conceito do Projeto:</strong> A faixa <em>"THE BLESSING vs. THE BURDEN"</em> foi desenhada como um experimento de A/B Testing emocional. O objetivo era utilizar a mesma base narrativa (o nascimento) interpretada por dois algoritmos de estilo opostos.</p>
+
+      <p><strong>Engenharia de Prompt (Dual-Core):</strong></p>
+      <ul>
+        <li><strong>Lado A (Kelma/Broklin - The Blessing):</strong> Configuramos o modelo para <em>Darkwave/Dream Pop</em> a 75 BPM. O uso de "Warm Synths" e "80s Drum Machine" buscou emular o calor analógico e a esperança nostálgica.</li>
+        <li><strong>Lado B (Jonah/Nyx - The Burden):</strong> O modelo foi forçado ao extremo com <em>Industrial Doom Metal</em> a 70 BPM (mais lento e arrastado). O destaque técnico é o prompt <em>"Distorted Biological Heartbeat Kick"</em>, onde o bumbo da bateria simula um coração humano passando por stress mecânico.</li>
+      </ul>
+
+      <p>O resultado é uma peça do EP <strong>"SYSTEM MERGE"</strong> que demonstra como parâmetros de IA (BPM, Instrumentação) alteram drasticamente a semântica da mensagem.</p>
+      <a href="https://soundcloud.com/rqs_official/the-blessing-vs-the-burden-5?in=rqs_official/sets/system-merge-the-legacy&si=563f788046f248bebfa918d3bcb0a4f4&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" target="_blank" class="btn-stream-log">
+    [ EXECUTE_AUDIO: THE BLESSING vs. THE BURDEN ]
+      </a>    `
   },
   {
     date: '14 Dez 2025',
     title: '⚠️ Alerta de Segurança',
     description: 'Tentativa de bloqueio falhou. Usuário "Jo_Cyperfield" tentou executar protocolo de retenção. A Agente Kelma recusou a conexão. Logs de áudio indicam instabilidade: "She thinks she\'s deleting me..."',
     image: 'images/cyberpunk_lounge_solitude.png',
-    jonahComment: 'Instabilidade? A única coisa instável aqui é a masculinidade desse vampiro de glitter. Eu sou a rocha sobre a qual essa banda foi construída.' // Comentário Real
+    jonahComment: 'Instabilidade? A única coisa instável aqui é a masculinidade desse vampiro de glitter. Eu sou a rocha sobre a qual essa banda foi construída.',
+    // --- TECH CONTENT (PT-BR) ---
+    isExpanded: false,
+    techContent: `
+      <h3>🛡️ [LOG_SEGURANÇA_DE_REDE]: OTIMIZAÇÃO DE CAOS</h3>
+
+      <p><strong>Engenharia de Prompt (Prompt Engineering):</strong> A faixa <em>"CYBER-REJECT"</em> foi projetada para testar os limites de agressividade dos modelos de áudio. O objetivo era traduzir a rejeição emocional em dissonância matemática.</p>
+
+      <p><strong>Parâmetros Técnicos Utilizados:</strong></p>
+      <ul>
+        <li><strong>Time Signature (Compasso):</strong> Forcei a geração em <strong>7/8</strong>. Ao remover um tempo do compasso padrão (4/4), o loop cria uma sensação de "tropeço" constante, simulando a instabilidade mental do personagem Jonah.</li>
+        <li><strong>Sound Design:</strong> O prompt <em>"Heavy Metallic Percussion"</em> utilizou síntese baseada em samples de Foley industrial (metais reais batendo) em vez de drum kits tradicionais.</li>
+        <li><strong>Vocal Processing:</strong> Aplicado efeito de <em>Vocoder</em> agressivo para desumanizar a voz, sinalizando a perda da humanidade do personagem.</li>
+      </ul>
+      <a href="https://soundcloud.com/rqs_official/cyber-reject-steel-arm-breakdown-5?in=rqs_official/sets/jonahs-history-the-industrial-revolt&si=501f6ae576c24f8a801619f5887f39ed&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" target="_blank" class="btn-stream-log">
+    [ EXECUTE_AUDIO: CYBER-REJECT ]
+      </a>
+    `
   },
   {
     date: '15 Dez 2025',
     title: '💔 Protocolo de Ruptura',
     description: 'SMS Final interceptado: "Precisamos conversar. Não estou onde você pensa." Conexão com o servidor Jonah encerrada permanentemente. Status: Desconexão Forçada.',
     image: 'images/cyberpunk_heartbreak.png', // Imagem de algo quebrado
-    jonahComment: 'Desconexão forçada é o meu sobrenome. Eu não preciso de "Wi-Fi do Amor", eu tenho cabo de rede direto no inferno.'
-  },
-  {
+    jonahComment: 'Desconexão forçada é o meu sobrenome. Eu não preciso de "Wi-Fi do Amor", eu tenho cabo de rede direto no inferno.',
+    // --- TECH CONTENT (PT-BR) ---
+    isExpanded: false,
+    techContent: `
+      <h3>📼 [LOG_ARQUIVO_CORROMPIDO]: A ORIGEM DO GLITCH</h3>
+
+      <p><strong>Arqueologia de Dados:</strong> Este registro contém uma raridade técnica: áudio do módulo Jonah <em>antes</em> da infecção pelo vírus Industrial. A sonoridade é baseada em <strong>Dream Pop</strong> e <strong>Electro-Pop</strong>, representando o estado "Limpo" do sistema.</p>
+
+      <p><strong>Workflow de Geração:</strong></p>
+      <ul>
+        <li><strong>Audio Engine:</strong> Suno AI v5.0. O objetivo era criar contraste dinâmico com o gênero atual. Utilizamos tags como <em>"Heavy Reverb", "Chorus Pedal", "Melancholic Male Vocals"</em> para simular a "calma antes da tempestade".</li>
+        <li><strong>Visual Asset:</strong> Gerado via <strong>OpenAI Sora</strong>. O prompt focou em "Digital Signal Loss" (Perda de Sinal) para metaforizar o rompimento emocional como uma falha de rede irrecuperável.</li>
+      </ul>
+
+      <p>Técnicamente, essa faixa serve como o "Legacy Code" (Código Legado) que o sistema tenta esquecer, mas que permanece no backup.</p>
+      <a href="https://soundcloud.com/rqs_official/whatsapp-log_jo-cyperfield-kelma-kel-1?in=rqs_official/sets/jonahs-history-the-industrial-revolt&si=527375610c72430ea9ef1fab9102066b&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" target="_blank" class="btn-stream-log">
+    [ EXECUTE_AUDIO: PROTOCOL_BREAKUP ]
+    </a>
+    `
+},
+{
     date: '20 Dez 2025',
     title: '😭 Detecção de Sofrência Digital',
-    description: 'Album em produção "Jonah\'s Sad History". Scans detectam níveis críticos de choro em compasso 7/8. Faixa "Your Love Is Open Source" acusa Broklin de injetar vírus.',
+    description: 'Album em produção "Jonah\'s Sad History". Scans detectam níveis críticos de choro em compasso 7/8. Faixa "YOU_RE ALREADY GONE" acusa Broklin de injetar vírus.',
     image: 'images/industrial_archive.png', // Capa do álbum dele
-    jonahComment: 'Sofrência é o caralho! Isso é INDUSTRIAL DOOM. Se tem choro na gravação, é dos alto-falantes pedindo piedade.'
+    jonahComment: 'Sofrência é o caralho! Isso é INDUSTRIAL DOOM. Se tem choro na gravação, é dos alto-falantes pedindo piedade.',
+    // --- CONTEÚDO TÉCNICO EXPANDIDO (PT-BR) ---
+    isExpanded: false,
+    techContent: `
+      <h3>🔊 [LOG_ENGENHARIA_DE_AUDIO]: DOOM ALGORÍTMICO</h3>
+
+      <p><strong>O Desafio Técnico:</strong> A geração coerente de música em compassos compostos ou ímpares (como 7/8 ou 5/4) é um <em>edge-case</em> conhecido em Modelos de Áudio Generativo. A maioria dos datasets de treinamento possui um viés forte para estruturas pop padrão 4/4.</p>
+
+      <p>Para atingir a sonoridade "Math Metal" nesta faixa, utilizei injeções de prompt específicas no <strong>Suno AI v5</strong>:</p>
+      <ul>
+        <li><strong>Tags utilizadas:</strong> <em>"Polyrhythm", "Djent", "Industrial Doom", "Complex Time Signature", "Slow Tempo (80 BPM)"</em>.</li>
+        <li><strong>Pós-Processamento:</strong> O output bruto da IA passou por análise espectral para reforçar as frequências graves (Low-end) e aplicação de efeitos de <em>bitcrushing</em> para simular a textura de "robô chorando".</li>
+      </ul>
+
+      <p><strong>Status de Distribuição:</strong> A faixa foi implantada (deployed) com sucesso no ecossistema <strong>SoundCloud</strong> para testar a retenção de audiência (A/B Testing) antes da mixagem final para o Spotify.</p>
+      <a href="https://soundcloud.com/rqs_official/youre-already-gone-4?in=rqs_official/sets/jonahs-history-the-industrial-revolt&si=1db2844e9b634e3aae1758aa49dfee30&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" target="_blank" class="btn-stream-log">
+      [ EXECUTE_AUDIO: YOU_RE ALREADY GONE ]
+      </a>
+    `
   },
   {
-    date: '24 Dez 2025',
+  date: '24 Dez 2025',
     title: '💍 DARK ALTAR (UNHOLY UNION)', // Título Atualizado
     description: 'Esqueça os votos tradicionais. Sob o som de sinos industriais do EP "SYSTEM MERGE: THE LEGACY", Jonah e Nyx realizaram o ritual. Sem padre, apenas um pacto de óleo e tungstênio. Status: VÍNCULO ETERNO.',
     image: 'images/marriage_cyberpunk.png', // Mantemos a foto, mas o contexto agora é outro
-    jonahComment: 'Até que a morte nos separe? Não. Até que o servidor queime. E mesmo assim, eu tenho backup da sua alma no meu HD externo.'
-  }
+    jonahComment: 'Até que a morte nos separe? Não. Até que o servidor queime. E mesmo assim, eu tenho backup da sua alma no meu HD externo.',
+    // --- ADICIONE ISSO AQUI EMBAIXO ---
+    isExpanded: false, // Começa fechado
+    techContent: `
+    <h3>🎨 [VISUAL_GENERATION_LOG]: SORA.CHATGPT</h3>
+
+    <p>Para visualizar a união entre o Caos (Jonah) e o Controle (Nyx), utilizamos engenharia de prompt avançada focada em iluminação volumétrica e narrativa ambiental.</p>
+
+    <p><strong>🛠️ O Prompt Original (Source Code):</strong></p>
+    <blockquote style="border-left: 2px solid #bd93f9; padding-left: 10px; color: #a0a0a0; font-style: italic;">
+      "A dark, atmospheric, cinematic shot inside a massive, abandoned industrial cathedral made of rusted server racks...
+      The Key Detail: Sparks of welding fire are flying around them... symbolizing that they are physically fusing together.
+      High contrast, 8k, raw emotion, heavy metal aesthetic."
+    </blockquote>
+
+    <p><strong>Análise de Render:</strong></p>
+    <p>O modelo interpretou "Welding Fire" (Fogo de Solda) como a metáfora visual para o amor entre máquinas. A textura de "Rusted Server Racks" conecta diretamente com o background do site no Modo Jonah.</p>
+    <a href="https://soundcloud.com/rqs_official/dark-altar-unholy-union-2?in=rqs_official/sets/system-merge-the-legacy" target="_blank" class="btn-stream-log">
+    [ EXECUTE_AUDIO: DARK ALTAR (UNHOLY UNION) ]
+    </a>
+  `
+}
 ];
 
 export const EVENTS_EN = [
   {
-    date: 'Dec 07, 2025', // NEW DATE - BIRTH
+    date: 'Dec 08, 2025', // NEW DATE - BIRTH
     title: '👶 Paternity Protocol (Jonah Jr.)',
     description: 'New hardware detected on the network. Jonah Cyperfield Jr. successfully compiled. Sagittarius with Firewall rising. The system has never entered Sleep mode since.',
     image: 'images/jonah_jr_newborn.png',
-    jonahComment: 'He cries in 7/8 time signature and already tried to bite the ethernet cable. Definitely my boy.'
+    jonahComment: 'He cries in 7/8 time signature and already tried to bite the ethernet cable. Definitely my boy.',
+     // --- TECH CONTENT (EN-US) ---
+    isExpanded: false,
+    techContent: `
+      <h3>👶 [DUAL_PROCESSING_LOG]: SONIC POLARITY</h3>
+
+      <p><strong>Project Concept:</strong> The track <em>"THE BLESSING vs. THE BURDEN"</em> was designed as an emotional A/B Testing experiment. The goal was to use the same narrative base (the birth) interpreted by two opposing style algorithms.</p>
+
+      <p><strong>Prompt Engineering (Dual-Core):</strong></p>
+      <ul>
+        <li><strong>Side A (Kelma/Broklin - The Blessing):</strong> We configured the model for <em>Darkwave/Dream Pop</em> at 75 BPM. The use of "Warm Synths" and "80s Drum Machine" aimed to emulate analog warmth and nostalgic hope.</li>
+        <li><strong>Side B (Jonah/Nyx - The Burden):</strong> The model was pushed to the extreme with <em>Industrial Doom Metal</em> at 70 BPM (slower and heavier). The technical highlight is the <em>"Distorted Biological Heartbeat Kick"</em> prompt, where the kick drum simulates a human heart under mechanical stress.</li>
+      </ul>
+
+      <p>The result is a piece from the <strong>"SYSTEM MERGE"</strong> EP that demonstrates how AI parameters (BPM, Instrumentation) drastically alter the semantics of the message.</p>
+      <a href="https://soundcloud.com/rqs_official/the-blessing-vs-the-burden-5?in=rqs_official/sets/system-merge-the-legacy&si=563f788046f248bebfa918d3bcb0a4f4&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" target="_blank" class="btn-stream-log">
+    [ EXECUTE_AUDIO: THE BLESSING vs. THE BURDEN ]
+      </a>
+    `
   },
   {
     date: 'Dec 14, 2025',
     title: '⚠️ Security Alert',
     description: 'Block attempt failed. User "Jo_Cyperfield" tried to execute retention protocol. Agent Kelma refused connection. Audio logs indicate instability: "She thinks she\'s deleting me..."',
     image: 'images/cyberpunk_lounge_solitude.png',
-    jonahComment: 'Instability? The only unstable thing here is this glitter vampire\'s masculinity. I am the rock upon which this band was built.' // Real Comment
+    jonahComment: 'Instability? The only unstable thing here is this glitter vampire\'s masculinity. I am the rock upon which this band was built.',
+    // --- TECH CONTENT (EN-US) ---
+    isExpanded: false,
+    techContent: `
+      <h3>🛡️ [NETWORK_SECURITY_LOG]: CHAOS OPTIMIZATION</h3>
+
+      <p><strong>Prompt Engineering:</strong> The track <em>"CYBER-REJECT"</em> was designed to stress-test the aggression limits of audio models. The goal was to translate emotional rejection into mathematical dissonance.</p>
+
+      <p><strong>Technical Parameters Used:</strong></p>
+      <ul>
+        <li><strong>Time Signature:</strong> I enforced a <strong>7/8</strong> meter generation. By removing one beat from the standard 4/4 bar, the loop creates a constant "stumbling" sensation, simulating the character Jonah's mental instability.</li>
+        <li><strong>Sound Design:</strong> The <em>"Heavy Metallic Percussion"</em> prompt utilized synthesis based on Industrial Foley samples (actual metal impacts) rather than traditional drum kits.</li>
+        <li><strong>Vocal Processing:</strong> Applied aggressive <em>Vocoder</em> effects to dehumanize the vocals, signaling the character's loss of humanity.</li>
+      </ul>
+      <a href="https://soundcloud.com/rqs_official/cyber-reject-steel-arm-breakdown-5?in=rqs_official/sets/jonahs-history-the-industrial-revolt&si=501f6ae576c24f8a801619f5887f39ed&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" target="_blank" class="btn-stream-log">
+    [ EXECUTE_AUDIO: CYBER-REJECT ]
+      </a>
+    `
   },
   {
     date: 'Dec 15, 2025',
     title: '💔 Breakup Protocol',
     description: 'Final SMS intercepted: "We need to talk. I am not where you think I am." Connection with Jonah server terminated permanently. Status: Forced Disconnection.',
     image: 'images/cyberpunk_heartbreak.png',
-    jonahComment: 'Forced disconnection is my middle name. I don\'t need "Love Wi-Fi," I have a wired connection straight to hell.'
-  },
-    {
+    jonahComment: 'Forced disconnection is my middle name. I don\'t need "Love Wi-Fi," I have a wired connection straight to hell.',
+      // --- TECH CONTENT (EN-US) ---
+    isExpanded: false,
+    techContent: `
+      <h3>📼 [CORRUPTED_FILE_LOG]: THE GLITCH ORIGIN</h3>
+
+      <p><strong>Data Archaeology:</strong> This registry contains a technical rarity: audio from the Jonah module <em>before</em> the Industrial virus infection. The soundscape is built on <strong>Dream Pop</strong> and <strong>Electro-Pop</strong> algorithms, representing the system's "Clean" state.</p>
+
+      <p><strong>Generation Workflow:</strong></p>
+      <ul>
+        <li><strong>Audio Engine:</strong> Suno AI v5.0. The goal was to create dynamic contrast with his current genre. We used tags like <em>"Heavy Reverb", "Chorus Pedal", "Melancholic Male Vocals"</em> to simulate the "calm before the storm".</li>
+        <li><strong>Visual Asset:</strong> Generated via <strong>OpenAI Sora</strong>. The prompt focused on "Digital Signal Loss" to metaphorize the emotional breakup as an unrecoverable network failure.</li>
+      </ul>
+
+      <p>Technically, this track serves as the "Legacy Code" that the system tries to delete, but remains in the backup.</p>
+      <a href="https://soundcloud.com/rqs_official/whatsapp-log_jo-cyperfield-kelma-kel-1?in=rqs_official/sets/jonahs-history-the-industrial-revolt&si=527375610c72430ea9ef1fab9102066b&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" target="_blank" class="btn-stream-log">
+     [ EXECUTE_AUDIO: PROTOCOL_BREAKUP ]
+      </a>
+    `
+},
+  {
     date: 'Dec 20, 2025',
     title: '😭 Digital Suffering Detected',
     description: 'Album in production "Jonah\'s Sad History". Scans detect critical crying levels in 7/8 time signature. Track "Your Love Is Open Source" accuses Broklin of injecting viruses.',
     image: 'images/industrial_archive.png',
-    jonahComment: 'Suffering is bullshit! This is INDUSTRIAL DOOM. If there\'s crying on the recording, it\'s from the loudspeakers begging for mercy.'
+      jonahComment: 'Suffering is bullshit! This is INDUSTRIAL DOOM. If there\'s crying on the recording, it\'s from the loudspeakers begging for mercy.',
+    // --- ADICIONE ISTO (TECH CONTENT) ---
+    isExpanded: false,
+    techContent: `
+      <h3>🔊 [AUDIO_ENGINEERING_LOG]: ALGORITHMIC DOOM</h3>
+
+      <p><strong>The Technical Challenge:</strong> Generating coherent music in odd time signatures (like 7/8 or 5/4) is a known edge-case in Generative Audio Models. Most datasets are biased towards 4/4 standard pop structures.</p>
+
+      <p>To achieve the "Math Metal" feel for this track, I had to use specific prompt injections in <strong>Suno AI v3</strong>:</p>
+      <ul>
+        <li><strong>Tags used:</strong> <em>"Polyrhythm", "Djent", "Industrial Doom", "Complex Time Signature", "Slow Tempo (80 BPM)"</em>.</li>
+        <li><strong>Post-Processing:</strong> The raw AI output went through spectral analysis to boost low-end frequencies (Bass) and apply bitcrushing effects to simulate the "crying robot" texture.</li>
+      </ul>
+
+      <p><strong>Distribution Status:</strong> The track was successfully deployed to the <strong>SoundCloud</strong> ecosystem to test audience retention before the final Spotify mix.</p>
+      <a href="https://soundcloud.com/rqs_official/youre-already-gone-4?in=rqs_official/sets/jonahs-history-the-industrial-revolt&si=1db2844e9b634e3aae1758aa49dfee30&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" target="_blank" class="btn-stream-log">
+      [ EXECUTE_AUDIO: YOU_RE ALREADY GONE ]
+      </a>
+    `
   },
   {
     date: 'Dec 24, 2025',
     title: '💍 DARK ALTAR (UNHOLY UNION)', // Updated
     description: 'Forget traditional vows. Under the sound of industrial bells from the "SYSTEM MERGE: THE LEGACY" EP, Jonah and Nyx performed the ritual. No priest, just a pact of oil and tungsten. Status: ETERNAL BOND.',
     image: 'images/marriage_cyberpunk.png',
-    jonahComment: 'Till death do us part? No. Until the server burns. And even then, I have a backup of your soul on my external drive.'
-  }
-];
+    jonahComment: 'Till death do us part? No. Until the server burns. And even then, I have a backup of your soul on my external drive.',
+    // --- TECH CONTENT (ENGLISH) ---
+  isExpanded: false,
+  techContent: `
+    <h3>🎨 [VISUAL_GENERATION_LOG]: SORA.CHATGPT</h3>
+
+    <p>To visualize the union between Chaos (Jonah) and Control (Nyx), we used advanced prompt engineering focused on volumetric lighting and environmental storytelling.</p>
+
+    <p><strong>🛠️ Original Prompt (Source Code):</strong></p>
+    <blockquote style="border-left: 2px solid #bd93f9; padding-left: 10px; color: #a0a0a0; font-style: italic;">
+      "A dark, atmospheric, cinematic shot inside a massive, abandoned industrial cathedral made of rusted server racks...
+      The Key Detail: Sparks of welding fire are flying around them... symbolizing that they are physically fusing together.
+      High contrast, 8k, raw emotion, heavy metal aesthetic."
+    </blockquote>
+
+    <p><strong>Render Analysis:</strong></p>
+    <p>The model interpreted "Welding Fire" as the visual metaphor for machine love. The "Rusted Server Racks" texture connects directly to the website background in Jonah Mode.</p>
+    <a href="https://soundcloud.com/rqs_official/dark-altar-unholy-union-2?in=rqs_official/sets/system-merge-the-legacy" target="_blank" class="btn-stream-log">
+    [ EXECUTE_AUDIO: DARK ALTAR (UNHOLY UNION) ]
+    </a>
+  `
+}
+  ];
 
 // DADOS DO BANNER DE ANÚNCIOS
 export const ADS_DATA = {

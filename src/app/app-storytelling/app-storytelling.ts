@@ -3,13 +3,7 @@ import { Component, effect } from '@angular/core';
 import { EVENTS_EN, EVENTS_PT } from '../data/app-data';
 import { TranslationService } from '../services/translation.service';
 
-/* interface TimelineEvent {
-  date: string;
-  title: string;
-  description: string;
-  image: string;
-  jonahComment?: string; // O comentário ácido do Jonah
-} */
+
 
 @Component({
   selector: 'app-storytelling',
@@ -32,6 +26,10 @@ export class StorytellingComponent {
         this.events = EVENTS_EN;
       }
     });
+  }
+  // --- ADICIONE ESSA FUNÇÃO ---
+  toggleLog(event: any) {
+    event.isExpanded = !event.isExpanded;
   }
 }
 

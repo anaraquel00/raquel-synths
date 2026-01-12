@@ -78,6 +78,9 @@
   position: relative;
   backdrop-filter: blur(5px);
   transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column; /* Padrão Mobile: Um embaixo do outro */
+  transition: all 0.4s ease-in-out; /* Para animar quando crescer */
 }
 
 .content-box:hover {
@@ -96,6 +99,31 @@
   border-radius: 8px;
   margin: 10px 0;
   border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* --- NOVAS CLASSES PARA O LAYOUT DE COLUNAS --- */
+
+.lore-column {
+  width: 100%;
+  /* Garante que o conteúdo da Lore ocupe o espaço */
+}
+
+.tech-column {
+  width: 100%;
+
+  .tech-panel {
+    /* Estilo do painel técnico */
+    border-top: 2px solid #00ffcc; /* Borda em cima no mobile */
+    background: rgba(0, 0, 0, 0.3);
+    padding: 15px;
+    margin-top: 15px;
+    animation: fadeIn 0.5s ease;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* --- O SEGREDO DO MODO JONAH (CAOS) --- */
@@ -131,6 +159,139 @@
     text-decoration: line-through;
     opacity: 0.6;
   }
+}
+
+.btn-decrypt {
+  background: transparent;
+  border: 1px solid #00ffcc; /* Ciano Neon */
+  color: #00ffcc;
+  padding: 8px 12px;
+  margin-top: 15px;
+  cursor: pointer;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  width: 100%;
+
+  &:hover {
+    background: rgba(0, 255, 204, 0.1);
+    box-shadow: 0 0 10px #00ffcc;
+  }
+}
+
+.tech-panel {
+  background-color: #0a0a0a; /* Fundo quase preto */
+  border-left: 3px solid #00ffcc;
+  padding: 15px;
+  margin-top: 10px;
+  font-family: 'Fira Code', 'Consolas', monospace; /* Fonte de código */
+  font-size: 0.9rem;
+  color: #dcdcdc;
+  animation: slideDown 0.3s ease-out;
+
+  /* Estilo para o conteúdo que vem do innerHTML */
+  ::ng-deep h3 {
+    color: #bd93f9;
+    margin-bottom: 10px;
+    font-size: 1rem; /* Reduz um pouco no mobile para caber melhor */
+    line-height: 1.4;
+  }
+
+   ::ng-deep p, ::ng-deep li {
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+}
+/* --- NOVO: BOTÃO DE STREAMING DENTRO DO LOG --- */
+  ::ng-deep .btn-stream-log {
+    display: inline-block;
+    margin-top: 20px;
+    background-color: #1DB954; /* Verde Spotify */
+    color: #000;
+    font-weight: bold;
+    font-family: 'Fira Code', monospace;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    transition: transform 0.2s;
+    border: 1px solid #1ed760;
+
+    &:hover {
+      transform: scale(1.05);
+      background-color: #1ed760;
+      box-shadow: 0 0 10px rgba(29, 185, 84, 0.5);
+    }
+
+    /* Ícone simples com texto */
+    &::before {
+      content: '▶ ';
+    }
+  }
+/* Ajuste para Desktop (Aumenta a fonte se tiver espaço) */
+@media (min-width: 1024px) {
+  .tech-panel ::ng-deep h3 {
+    font-size: 1.2rem;
+  }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- REGRAS ESPECÍFICAS PARA A TIMELINE ZIG-ZAG (DESKTOP) --- */
+@media (min-width: 1024px) {
+
+  .timeline-item.expanded-mode {
+    /* Traz o item para frente de tudo (inclusive da linha central) */
+    z-index: 100;
+    position: relative;
+
+    .content-box {
+      /* Ativa o modo lado a lado */
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+
+      /* Força uma largura maior para caber o texto técnico */
+      /* O card vai ficar bem largo, tipo 800px */
+      min-width: 800px;
+    }
+
+    /* --- CENÁRIO 1: O Card está na ESQUERDA --- */
+    &.left .content-box {
+      /* Ele cresce para a direita, invadindo o centro */
+      /* Não precisa de margem negativa, o fluxo natural é p/ direita */
+      margin-right: -400px; /* (Opcional) Se precisar forçar a invasão */
+    }
+
+    /* --- CENÁRIO 2: O Card está na DIREITA --- */
+    &.right .content-box {
+      /* PROBLEMA: Se crescer pra direita, sai da tela. */
+      /* SOLUÇÃO: Forçamos ele a crescer para a ESQUERDA usando margem negativa */
+      margin-left: -450px;
+    }
+
+    /* Ajuste as colunas internas */
+    .lore-column {
+      flex: 1; /* 50% */
+      border-right: 1px solid rgba(0, 255, 204, 0.2);
+      padding-right: 20px;
+    }
+
+    .tech-column {
+      flex: 1; /* 50% */
+      /* Animação suave aparecendo */
+      animation: fadeInRight 0.5s ease;
+    }
+  }
+}
+
+/* Animação para o texto técnico entrar suave */
+@keyframes fadeInRight {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
 }
 
 /* --- RESPONSIVIDADE MOBILE (TIMELINE VERTICAL) --- */

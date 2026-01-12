@@ -1,19 +1,46 @@
 <section class="story-container">
   <h2 class="section-title">SYSTEM_LOGS_2025</h2>
 
-  <div class="timeline">
+    <div class="timeline">
     @for (event of events; track event; let i = $index) {
-      <div class="timeline-item" [class.left]="i % 2 === 0" [class.right]="i % 2 !== 0">
+      <!-- Adicionamos a classe 'is-expanded' se estiver aberto -->
+      <div class="timeline-item"
+           [class.left]="i % 2 === 0"
+           [class.right]="i % 2 !== 0"
+           [class.expanded-mode]="event.isExpanded">
+
         <div class="content-box">
-          <span class="date">{{ event.date }}</span>
-          <h3 class="title">{{ event.title }}</h3>
-          <div class="img-wrapper">
-            <img [src]="event.image" [alt]="event.title">
+
+          <!-- COLUNA DA ESQUERDA (LORE) -->
+          <div class="lore-column">
+            <span class="date">{{ event.date }}</span>
+            <h3 class="title">{{ event.title }}</h3>
+
+            <div class="img-wrapper">
+              <img [src]="event.image" [alt]="event.title">
+            </div>
+
+            <p class="description">{{ event.description }}</p>
+
+            @if (event.jonahComment) {
+              <div class="jonah-note">
+                <strong>[JONAH_OVERRIDE]:</strong> {{ event.jonahComment }}
+              </div>
+            }
+
+            <!-- Botão fica na coluna da esquerda -->
+            <button class="btn-decrypt" (click)="toggleLog(event)">
+              {{ event.isExpanded ? '[ 🔒 ENCRYPT_LOGS ]' : '[ 🔓 DECRYPT_DEV_NOTES ]' }}
+            </button>
           </div>
-          <p class="description">{{ event.description }}</p>
-          @if (event.jonahComment) {
-            <div class="jonah-note">
-              <strong>[JONAH_OVERRIDE]:</strong> {{ event.jonahComment }}
+
+          <!-- COLUNA DA DIREITA (TECH) - Só aparece se expandido -->
+          @if (event.isExpanded) {
+            <div class="tech-column">
+              <div class="tech-panel">
+                <!-- Conteúdo HTML do app-data -->
+                <div [innerHTML]="event.techContent"></div>
+              </div>
             </div>
           }
         </div>
