@@ -85,6 +85,12 @@ import { ADS_DATA } from '../../data/app-data';
       50% { opacity: 0.3; }
       100% { opacity: 0.1; }
     }
+     @media (max-width: 768px) {
+      .ad-container {
+        min-height: 280px; /* Garante espaço para o quadrado de 300x250 que paga mais! */
+      }
+    }
+
   `]
 })
 export class AdBannerComponent implements AfterViewInit {

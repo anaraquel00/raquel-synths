@@ -294,33 +294,61 @@
   to { opacity: 1; transform: translateX(0); }
 }
 
-/* --- RESPONSIVIDADE MOBILE (TIMELINE VERTICAL) --- */
+/* --- RESPONSIVIDADE MOBILE (TIMELINE VERTICAL OTIMIZADA) --- */
 @media (max-width: 768px) {
-  /* A linha vertical vai para o canto esquerdo */
-  .timeline::after {
-    left: 31px;
+
+  /* 1. Ajuste do Container Geral */
+  .story-container {
+    padding: 2.5rem 0.5rem; /* Menos padding lateral na tela toda */
   }
 
-  /* Os cards ocupam a largura toda e dão espaço para a bolinha */
+  /* 2. A Linha Vertical (Espinha Dorsal) */
+  .timeline::after {
+    left: 20px; /* Move a linha bem para o canto esquerdo (ganha espaço) */
+  }
+
+  /* 3. Os Itens (Cards) */
   .timeline-item {
     width: 100%;
-    padding-left: 70px; /* Espaço para a linha/bolinha */
-    padding-right: 25px;
+    padding-left: 40px; /* Reduzi de 70px para 45px. Ganho de 25px! */
+    padding-right: 0.1;   /* Remove padding direito desnecessário */
+    margin-bottom: 2rem;
   }
 
-  /* Zera a posição do lado direito */
+  /* Remove comportamento de zig-zag (Lado Direito vira Esquerdo) */
   .timeline-item.right {
     left: 0;
   }
 
-  /* Ajusta a bolinha para ficar sempre na esquerda */
+  /* 4. A Bolinha (Marcador) */
   .timeline-item::after {
-    left: 21px; /* Alinha com a nova linha vertical */
-    right: auto; /* Remove configuração anterior */
+    left: 10px; /* Centraliza na nova linha (que está em 20px) */
+    width: 16px; /* Bolinha levemente menor pra ficar delicada */
+    height: 16px;
+    top: 20px;
   }
 
-  /* O box do conteúdo */
+  /* Ajuste Fino para o lado direito (se tiver regra específica sobrando) */
+  .timeline-item.right::after {
+    left: 10px;
+  }
+
+  /* 5. O Conteúdo (Box de Vidro) */
   .content-box {
-    font-size: 0.9rem;
+    width: 100%; /* Garante que use tudo */
+    padding: 15px; /* Padding interno confortável */
+    font-size: 0.95rem; /* Tamanho de fonte legível */
+  }
+
+  /* Título da Seção */
+  .section-title {
+    font-size: 1.5rem; /* Menor no celular para não quebrar */
+    letter-spacing: 2px;
+  }
+
+  /* Botão Dev Notes no Mobile */
+  .btn-decrypt {
+    padding: 12px; /* Área de toque maior (dedo gordo friendly) */
+    margin-top: 10px;
   }
 }
