@@ -91,7 +91,7 @@
 
   /* Cargo com cor de destaque mas legível */
   .dev-role {
-    color: #4a3aff; /* Azul/Roxo vibrante para ler no branco */
+    color: #161150; /* Azul/Roxo vibrante para ler no branco */
     margin-bottom: 15px;
     font-weight: 600;
   }
@@ -324,6 +324,115 @@ h3 {
   }
 }
 
+/* Seção de Negócios */
+.business-section {
+  margin-top: 40px;
+  margin-bottom: 60px;
+
+  h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #000000; /* Verde Matrix */
+    margin-bottom: 20px;
+    //font-family: 'Courier New', monospace;
+    font-weight: bold;
+  }
+}
+
+.business-terminal {
+  background: rgba(10, 20, 15, 0.8);
+  border: 1px solid #06fd12;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 15px rgba(0, 230, 118, 0.1);
+
+  .terminal-head {
+    background: rgba(0, 230, 118, 0.1);
+    padding: 10px 20px;
+    border-bottom: 1px solid #06fd12;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .status-led {
+      width: 10px;
+      height: 10px;
+      background-color: #06fd12;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #06fd12;
+      animation: blink 2s infinite;
+    }
+
+    .status-text {
+      color: #06fd12;;
+      font-size: 1rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+  }
+
+  .terminal-body {
+    padding: 30px;
+    text-align: center;
+
+    p {
+      color: #e0e0e0;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 30px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+}
+
+.biz-actions {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+
+  .action-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+
+    &.email {
+      background-color: #06fd12;
+      color: #000;
+      border: 1px solid #06fd12;
+      &:hover {
+        background-color: #06fd12;
+        transform: translateY(-2px);
+      }
+    }
+
+    &.linkedin {
+      background-color: transparent;
+      color: #06fd12;
+      border: 1px solid #06fd12;
+      &:hover {
+        background-color: rgba(0, 230, 118, 0.1);
+        transform: translateY(-2px);
+      }
+    }
+  }
+}
+
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
 /* --- NOVAS CLASSES DE AUTOMAÇÃO --- */
 
 /* Chip do n8n (Estilo Gradiente ou Laranja Forte) */
@@ -347,5 +456,49 @@ h3 {
 
   &:hover {
     box-shadow: 0 10px 20px rgba(234, 75, 63, 0.15); /* Glow laranja suave */
+  }
+}
+/* --- JONAH THEME OVERRIDE (Modo Industrial) --- */
+/* O :host-context verifica se algum pai tem a classe .jonah-mode */
+:host-context(body.mode-jonah) {
+
+  .business-section h3 {
+    color: #000000; /* Laranja Industrial */
+  }
+
+  .business-terminal {
+    background: rgba(20, 10, 5, 0.9); /* Fundo avermelhado escuro */
+    border-color: #ff5722;
+    box-shadow: 0 0 15px rgba(255, 87, 34, 0.2);
+
+    .terminal-head {
+      border-bottom-color: #ff5722;
+      background: rgba(255, 87, 34, 0.1);
+
+      .status-led {
+        background-color: #ff5722;
+        box-shadow: 0 0 8px #ff5722;
+      }
+
+      .status-text {
+        color: #ff5722;
+        /* Texto muda para algo mais agressivo no Jonah? Opcional */
+      }
+    }
+  }
+
+  .biz-actions .action-btn {
+    &.email {
+      background-color: #ff5722;
+      color: #fff; /* Contraste melhor */
+      border-color: #ff5722;
+      &:hover { background-color: #e64a19; }
+    }
+
+    &.linkedin {
+      color: #ff5722;
+      border-color: #ff5722;
+      &:hover { background-color: rgba(255, 87, 34, 0.1); }
+    }
   }
 }

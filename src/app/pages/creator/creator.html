@@ -18,14 +18,14 @@
         <h2 class="dev-name">Ana Raquel de Holanda</h2>
         <h3 class="dev-role">
     {{ translate.isPt()
-       ? 'Tecnóloga Criativa & Front-End Developer'
-       : 'Creative Technologist & Front-End Developer' }} 🚀
+         ? 'Tecnóloga Criativa & Front-End Developer'
+         : 'Creative Technologist & Front-End Developer' }} 🚀
         </h3>
 
         <p class="bio-text">
-          {{ translate.isPt()
-             ? 'Atualmente Estagiária Front-End na Fuctura Empresa Júnior, liderando reestruturações em Angular 19+. Especialista em unir código criativo com IA Generativa (GenAI), Java e Música.'
-             : 'Currently Front-End Intern at Fuctura Junior Enterprise, leading restructuring in Angular 19+. Specialist in merging creative code with Generative AI (GenAI), Java, and Music.' }}
+        {{ translate.isPt()
+         ? 'Tech Lead e Engenheira de Software no projeto RaQuel Synths. Especialista em unir arquitetura Angular 20+, Automação e IA Generativa para criar produtos digitais escaláveis.'
+         : 'Tech Lead and Software Engineer at RaQuel Synths. Specialist in merging Angular 20+ architecture, Automation, and Generative AI to build scalable digital products.' }}
         </p>
 
         <div class="social-links">
@@ -132,6 +132,50 @@
       </div>
 
     </div>
+
+  </section>
+<!-- ... (Sua section projects-section termina aqui) ... -->
+
+  <hr class="cyber-divider">
+
+  <!-- NOVA SEÇÃO: BUSINESS CHANNEL -->
+  <section class="business-section">
+    <h3>
+      <mat-icon>business_center</mat-icon>
+      {{ translate.isPt() ? 'CANAL CORPORATIVO' : 'BUSINESS CHANNEL' }}
+    </h3>
+
+    <div class="business-terminal">
+      <!-- Cabeçalho do Terminal de Negócios -->
+      <div class="terminal-head">
+        <span class="status-led"></span>
+        <span class="status-text">
+          {{ translate.isPt() ? 'SYSTEM STATUS: DISPONÍVEL PARA PROJETOS' : 'SYSTEM STATUS: OPEN FOR BUSINESS' }}
+        </span>
+      </div>
+
+      <div class="terminal-body">
+        <p>
+          {{ translate.isPt()
+             ? 'Procurando liderança técnica em Angular, automação de processos ou arquitetura de software moderna? Transformo requisitos complexos em código limpo e produtos digitais funcionais.'
+             : 'Looking for technical leadership in Angular, process automation, or modern software architecture? I turn complex requirements into clean code and functional digital products.' }}
+        </p>
+
+        <div class="biz-actions">
+          <!-- Botão E-mail (Ação Direta) -->
+          <a href="mailto:anaraquel00@gmail.com?subject=Business%20Inquiry%20-%20RQS" class="action-btn email">
+            <mat-icon>mail</mat-icon>
+            {{ translate.isPt() ? 'Solicitar Consultoria' : 'Contact for Hire' }}
+          </a>
+
+          <!-- Botão LinkedIn (Validação) -->
+          <a href="https://www.linkedin.com/in/ana-raquel-de-holanda" target="_blank" class="action-btn linkedin">
+            <mat-icon>work</mat-icon>
+            LinkedIn Profile
+          </a>
+        </div>
+      </div>
+    </div>
   </section>
 
-</div>
+</div> <!-- Fecha creator-container -->
