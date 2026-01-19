@@ -23,6 +23,7 @@ export class ComplianceComponent implements OnInit, OnDestroy {
   isJonah = signal(false);
   private themeObserver: MutationObserver | undefined;
 currentModeClass: string|string[]|Set<string>|{ [klass: string]: any; }|null|undefined;
+complianceData: any;
 
   ngOnInit() {
     // O Vigia: Se a classe 'mode-jonah' aparecer no body, a gente muda o texto

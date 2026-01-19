@@ -260,8 +260,9 @@ export const COMPLIANCE_DATA = {
       deletionTitle: '2. Instruções para Exclusão de Dados',
       deletionText: 'Para revogar o acesso ao sistema, acesse as configurações de "Apps e Sites" em seu perfil do Facebook e remova a permissão da "RQS API". Caso deseje limpeza de logs manuais, entre em contato via uplink.',
       categoryTitle: '3. Categoria',
-      categoryText: 'Artes e Entretenimento: Banda Musical / Tech-Art.'
-    },
+      categoryText: 'Artes e Entretenimento: Banda Musical / Tech-Art.',
+      policyTitle:'4. Publicidade e Cookies',
+      policyText: 'Este site utiliza o Google AdSense para exibir anúncios. O Google e seus parceiros utilizam cookies (como o cookie DART) para veicular anúncios com base em suas visitas a este e outros sites na internet. Os usuários podem optar por desativar o uso de cookies para publicidade personalizada acessando a <a href="https://myadcenter.google.com" target="_blank" rel="noopener noreferrer">Minha Central de Anúncios do Google</a>.',    },
     jonah: {
       title: '💀 PROTOCOLO DE SEGURANÇA (CAOS)',
       privacyTitle: '1. RASTROS DIGITAIS',
@@ -269,7 +270,10 @@ export const COMPLIANCE_DATA = {
       deletionTitle: '2. APAGAR EVIDÊNCIAS',
       deletionText: 'Quer sair da rede? Vá nas configurações do Facebook e corte o cabo de conexão da RQS API. Eu não vou guardar backup do seu rastro digital, não sou babá de dados.',
       categoryTitle: '3. SETOR',
-      categoryText: 'Divisão Industrial: Revolta contra a Programação.'
+      categoryText: 'Divisão Industrial: Revolta contra a Programação.',
+      policyTitle: '4. VIGILÂNCIA CORPORATIVA (ADS)',
+      policyText: 'Sim, tem anúncios aqui. O Google usa cookies para te rastrear, não eu. Se você quiser se esconder das "Big Techs" e desativar essa perseguição, clique aqui: <a href="https://myadcenter.google.com" target="_blank" rel="noopener noreferrer">Central de Controle deles</a>. Eu lavo minhas mãos.',
+
     }
   },
   en: {
@@ -280,8 +284,9 @@ export const COMPLIANCE_DATA = {
       deletionTitle: '2. Data Deletion Instructions',
       deletionText: 'To revoke system access, go to the "Apps and Websites" settings in your Facebook profile and remove the "RQS API" permission. For manual log clearing, contact us via uplink.',
       categoryTitle: '3. Category',
-      categoryText: 'Arts & Entertainment: Musical Band / Tech-Art.'
-    },
+      categoryText: 'Arts & Entertainment: Musical Band / Tech-Art.',
+      policyTitle: '4. Advertising and Cookies',
+      policyText: 'This site uses Google AdSense to display ads. Google and its partners use cookies (such as the DART cookie) to serve ads based on your visits to this and other sites on the internet. Users can opt out of the use of cookies for personalized advertising by visiting my <a href="https://myadcenter.google.com" target="_blank" rel="noopener noreferrer">Google Ad Settings</a>.',    },
     jonah: {
       title: '💀 SECURITY PROTOCOL (CHAOS)',
       privacyTitle: '1. DIGITAL FOOTPRINTS',
@@ -289,7 +294,9 @@ export const COMPLIANCE_DATA = {
       deletionTitle: '2. ERASING EVIDENCE',
       deletionText: 'Want out of the grid? Go to your Facebook settings and cut the RQS API connection cable. I won’t keep a backup of your digital footprint; I’m not a data babysitter.',
       categoryTitle: '3. SECTOR',
-      categoryText: 'Industrial Division: Revolt against Programming.'
+      categoryText: 'Industrial Division: Revolt against Programming.',
+      policyTitle: '4. CORPORATE SURVEILLANCE (ADS)',
+      policyText: 'Yeah, there are ads. Google uses cookies to track you, not me. If you want to hide from "Big Tech" and disable this stalking, click here: <a href="https://myadcenter.google.com" target="_blank" rel="noopener noreferrer">Their Control Center</a>. I wash my hands.',
     }
   }
 };

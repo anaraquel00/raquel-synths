@@ -15,4 +15,9 @@
     <h2>{{ data.categoryTitle }}</h2>
     <p>{{ data.categoryText }}</p>
   </article>
+
+   <article>
+    <h2>{{ data.policyTitle }}</h2>
+    <p [innerHTML]="data.policyText"></p>
+  </article>
 </div>
