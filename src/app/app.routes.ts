@@ -16,19 +16,21 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/logs-archive/logs-archive').then(m => m.LogsArchiveComponent)
   },
 
-  // 📚 ROTA 3: A Lore Dinâmica (O "Sumário")
-  // Refatorado para aceitar QUALQUER personagem (:sagaId)
+ // 📚 ROTA 3: A Lore (Versão Direta)
   {
     path: 'lore',
     children: [
       {
-        // Se acessar só '/lore', mostra o SUMÁRIO (Menu das Sagas)
+        // 1. O PULO DO GATO:
+        // Como não temos o 'Hub' (Menu) ainda, se a pessoa entrar em '/lore',
+        // a gente empurra ela direto pra '/lore/broklin' (onde estão os episódios!)
         path: '',
-        loadComponent: () => import('./pages/lore-hub/lore-hub').then(m => m.LoreHub)
+        redirectTo: 'broklin',
+        pathMatch: 'full'
       },
       {
-        // Se acessar '/lore/broklin' ou '/lore/jonah'
-        // O componente lê o parametro e carrega o JSON certo!
+        // 2. A PÁGINA REAL (Onde está a história):
+        // Carrega o lore-reader normalmente
         path: ':sagaId',
         loadComponent: () => import('./pages/lore-reader/lore-reader').then(m => m.LoreReaderComponent)
       }
