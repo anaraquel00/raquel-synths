@@ -170,7 +170,7 @@ export const SYSTEM_LOGS_DATA: any[] = [
   // --- SOFRÊNCIA DIGITAL (Dez 20) ---
   {
     date: 'Dec 20, 2025',
-    image: 'images/industrial_archive.png',
+    image: 'assets/disco/industrial_archive.png',
     isExpanded: false,
     pt: {
       title: '😭 Detecção de Sofrência Digital',
