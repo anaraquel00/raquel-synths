@@ -1,6 +1,13 @@
 .disco-container {
-  padding: 4rem 2rem;
-  max-width: 1000px;
+   //background: rgba(10, 10, 15, 0.75);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px); /* Pra funcionar no Safari/iPhone */
+  border-radius: 16px; /* Cantos arredondados modernos */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Borda fina e sutil */
+  //box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); /* Sombra pra dar profundidade */
+  padding: 2rem 1rem;
+  max-width: 1200px;
   margin: 0 auto;
   background-color: rgba(0,0,0,0.4);
   border-radius: 20px;
@@ -76,7 +83,7 @@
 
 .divider {
   border: 0;
-  height: 1px;
+  height: 2px;
   background: linear-gradient(to right, transparent, var(--primary-color), transparent);
   margin: 3rem 0;
 }

@@ -1,22 +1,46 @@
 import { Routes } from '@angular/router';
-import { StoreComponent } from './pages/store/store';
 
 export const routes: Routes = [
-  // ROTA 1: A Página Principal (Landing Page)
+  // 🏠 ROTA 1: A Vitrine (Landing Page)
+  // Continua igual! Aqui dentro, o componente <app-system-logs>
+  // vai ter um @Input() [limit]="5" para mostrar só os recentes.
   {
     path: '',
     loadComponent: () => import('./pages/landing-page/landing-page').then(m => m.LandingPage)
   },
 
-  // ROTA 2: A Página da História (Lore)
+  // 📜 ROTA 2: O Arquivo de Logs (A "Memória Infinita")
+  // NOVA ROTA! Quando clicar em "Leia Mais" na Home, vem pra cá.
   {
-    path: 'lore/broklin',
-    loadComponent: () => import('./pages/lore-reader/lore-reader').then(m => m.LoreReaderComponent)
+    path: 'logs-archive',
+    loadComponent: () => import('./pages/logs-archive/logs-archive').then(m => m.LogsArchiveComponent)
   },
 
+  // 📚 ROTA 3: A Lore Dinâmica (O "Sumário")
+  // Refatorado para aceitar QUALQUER personagem (:sagaId)
   {
-      path: 'creator',
-      loadComponent: () => import('./pages/creator/creator').then(m => m.Creator)
+    path: 'lore',
+    children: [
+      {
+        // Se acessar só '/lore', mostra o SUMÁRIO (Menu das Sagas)
+        path: '',
+        loadComponent: () => import('./pages/lore-hub/lore-hub').then(m => m.LoreHub)
+      },
+      {
+        // Se acessar '/lore/broklin' ou '/lore/jonah'
+        // O componente lê o parametro e carrega o JSON certo!
+        path: ':sagaId',
+        loadComponent: () => import('./pages/lore-reader/lore-reader').then(m => m.LoreReaderComponent)
+      }
+    ]
+  },
+
+  // 👩‍💻 ROTA 4: O Hub da Criadora (Blog Técnico/Portfólio)
+  {
+    path: 'creator',
+    // Aqui dentro você usa a mesma lógica: Blocos empilhados
+    // Se clicar num artigo, pode levar para 'creator/artigo-id'
+    loadComponent: () => import('./pages/creator/creator').then(m => m.Creator)
   },
 
   {
@@ -27,8 +51,7 @@ export const routes: Routes = [
   {
     path: 'store',
     loadComponent: () => import('./pages/store/store').then(m => m.StoreComponent)
-    },
+  },
 
-  // Rota de Erro (Volta pra Home)
   { path: '**', redirectTo: '' }
 ];

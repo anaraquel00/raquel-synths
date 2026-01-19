@@ -32,330 +32,72 @@ export const VN_TEXT = {
 export const MEMBERS_PT = [
   {
     name: 'Broklin Garpeter',
-    role: 'Produtor Executivo, Líder Técnico, Visionário e Produtor Musical',
+    role: 'CTO, Tech Lead & Music Producer',
     imageBroklin: 'images/broklin_perfil.png',
     imageJonah: 'images/gothic_bro.png',
-    bioNormal: 'A mente sã por trás do caos. Especialista em harmonias complexas, vinhos digitais e gestão de crises sentimentais.',
-    bioJonah: 'Também conhecido como "O Vampiro da Planilha". Acha que manda em mim porque tem permissão de Admin. (Spoiler: Eu sei a senha dele.)'
+    bioNormal: 'O arquiteto do sistema. Com 25 anos de experiência em produção e código, ele garante que a infraestrutura suporte a inovação. Especialista em mixagem técnica, orquestração de IA e em manter o servidor de pé quando o Jonah surta.',
+    bioJonah: 'O VELHO. Ele fica tentando colocar "grid" na minha distorção e chama isso de "masterização". Um burocrata digital que precisa de mais café e menos regras.',
   },
   {
     name: 'Jonah Cyperfield',
-    role: 'Engenheiro de Sistemas (Divisão Caos & Legado)',
+    role: 'Head of Sound Design (Chaos Ops)',
     imageBroklin: 'images/jonah_profil.png',
     imageJonah: 'images/jonah_metal-skull.png',
-    bioNormal: 'O gênio das cordas cósmicas. Agora responsável pela manutenção do código legado e pela injeção de "sujeira" sonora do sistema.',
-    bioJonah: 'CARGO ACEITO. Eu mantenho esse servidor vivo na base da marretada e do ódio. O Frontend é bonito, mas o Backend é onde eu escondo os corpos.' // ATUALIZADO
+    bioNormal: 'O elemento de entropia. Responsável pela texturização industrial e pelos "happy accidents" do algoritmo. Ele força os modelos de IA ao limite para extrair sonoridades que simulam falhas de hardware e angústia digital.',
+    bioJonah: 'EU SOU O ERRO NO SEU CÓDIGO. Enquanto eles brincam de "música bonita", eu estou aqui soldando cabos enferrujados no processador. Nu-Metal não é um estilo, é um aviso de falha.', // ATUALIZADO
   },
   {
     name: 'Kelma Adlanko',
-    role: 'A General & Dev Full Stack',
+    role: 'Founder, Lead Developer & Vocalist',
     imageBroklin: 'images/kelma_profil.png',
     imageJonah: 'images/kelma_evil.png',
-    bioNormal: 'A visionária. Uniu o código à música e lidera a revolução com mão firme e coração de ouro.',
-    bioJonah: 'A General. Ela revogou meu acesso ao CSS, mas me deu a chave do banco de dados. Um erro tático que eu pretendo explorar.'
+    bioNormal: 'A visionária por trás da RQS. Desenvolvedora Full-Stack que transformou linhas de código em partituras. Ela gerencia a arquitetura do projeto e define a direção criativa, unindo a precisão do Angular com a emoção do Synthwave.',
+    bioJonah: 'A CHEFE. Ela acha que pode controlar o caos com planilhas e commits organizados. Spoiler: ela não pode. Mas é a única pessoa que eu respeito o suficiente para não deletar do servidor.',
   },
   {
     name: 'Nicole Nyx',
-    role: 'Vocalista Industrial, DJ & Cyber-Witch',
+    role: 'Vocalist & Visual Arts Lead',
     imageBroklin: 'images/nyx_profil.png',
     imageJonah: 'images/nyx_evil.png',
-    bioNormal: 'A força da natureza. Traz a magia ancestral para o mundo digital.',
-    bioJonah: 'Minha Rainha e mãe do meu herdeiro. A única pessoa autorizada a fazer overclock no meu processador sem aviso prévio.' // ATUALIZADO
+    bioNormal: 'A voz do abismo. Traz a estética Gótica/Industrial para o visual da banda. Sua colaboração foca na profundidade lírica e na identidade visual sombria que contrasta com o pop sintético da Kelma.',
+    bioJonah: 'MINHA RAINHA. A única frequência que acalma o ruído na minha cabeça. Se ela pedir, eu formato o mundo inteiro só pra instalar um jardim pra ela.',
   }
 ];
 
 export const MEMBERS_EN = [
   {
     name: 'Broklin Garpeter',
-    role: 'Executive Producer, Tech Lead, Visionary and Music Producer',
+    role: 'CTO, Tech Lead & Music Producer',
     imageBroklin: 'images/broklin_perfil.png',
     imageJonah: 'images/gothic_bro.png',
-    bioNormal: 'The sane mind behind the chaos. Specialist in complex harmonies, digital wines, and sentimental crisis management.',
-    bioJonah: 'Also known as "The Spreadsheet Vampire". Thinks he owns me because he has Admin rights. (Spoiler: I know his password.)'
+    bioNormal: 'The system architect. With 25 years of experience in production and code, he ensures the infrastructure supports innovation. Specialist in technical mixing, AI orchestration, and keeping the server running when Jonah freaks out.',
+    bioJonah: 'THE OLD MAN. He tries to put a "grid" on my distortion and calls it "mastering." A digital bureaucrat who needs more coffee and fewer rules.',
   },
   {
     name: 'Jonah Cyperfield',
-    role: 'Systems Engineer (Chaos & Legacy Division)', // THE NEW POSITION!
+    role: 'Head of Sound Design (Chaos Ops)',
     imageBroklin: 'images/jonah_profil.png',
     imageJonah: 'images/jonah_metal-skull.png',
-    bioNormal: 'The genius of cosmic strings. Now responsible for maintaining legacy code and injecting sonic "filth" into the system.',
-    bioJonah: 'POSITION ACCEPTED. I keep this server alive with a sledgehammer and pure hate. Frontend is pretty, but Backend is where I hide the bodies.' // UPDATED
+    bioNormal: 'The entropy element. Responsible for industrial texturing and algorithmic "happy accidents." He pushes AI models to their limit to extract sounds that simulate hardware failure and digital anguish.',
+    bioJonah: 'I AM THE ERROR IN YOUR CODE. While they play "pretty music," I am soldering rusty cables to the processor. Nu-Metal is not a style; it is a crash report.',
   },
   {
     name: 'Kelma Adlanko',
-    role: 'The General & Full Stack Dev',
+    role: 'Founder, Lead Developer & Vocalist',
     imageBroklin: 'images/kelma_profil.png',
     imageJonah: 'images/kelma_evil.png',
-    bioNormal: 'The visionary. United code with music and leads the revolution with a steady hand and a heart of gold.',
-    bioJonah: 'The General. She revoked my CSS access but gave me the database keys. A tactical error I intend to exploit.'
+    bioNormal: 'The visionary behind RQS. A Full-Stack Developer who turned lines of code into musical scores. She manages the project architecture and defines the creative direction, merging Angular precision with Synthwave emotion.',
+    bioJonah: 'THE BOSS. She thinks she can control chaos with spreadsheets and clean commits. Spoiler: she can\'t. But she is the only person I respect enough not to delete from the server.',
   },
   {
     name: 'Nicole Nyx',
-    role: 'Industrial Vocalist, DJ & Cyber-Witch',
+    role: 'Vocalist & Visual Arts Lead',
     imageBroklin: 'images/nyx_profil.png',
     imageJonah: 'images/nyx_evil.png',
-    bioNormal: 'A force of nature. Bringing ancestral magic to the digital world.',
-    bioJonah: 'My Queen and mother of my heir. The only person authorized to overclock my processor without prior notice.' // UPDATED
+    bioNormal: 'The voice of the abyss. Brings the Gothic/Industrial aesthetic to the band\'s visuals. Her collaboration focuses on lyrical depth and the dark visual identity that contrasts with Kelma\'s synthetic pop.',
+    bioJonah: 'MY QUEEN. The only frequency that calms the noise in my head. If she asks, I\'ll format the entire world just to install a garden for her.',// UPDATED
   }
 ];
-
-// --- STORYTELLING (A Linha do Tempo / System Logs) ---
-export const EVENTS_PT = [
-  {
-    date: '08 Dez 2025', // NOVA DATA - NASCIMENTO
-    title: '👶 Protocolo Paternidade (Jonah Jr.)',
-    description: 'Detecção de novo hardware na rede. Jonah Cyperfield Jr. compilado com sucesso. Sagitário com ascendente em Firewall. O sistema nunca mais entrou em modo Sleep.',
-    image: 'images/jonah_jr_newborn.png',
-    jonahComment: 'Ele chora em compasso 7/8 e já tentou morder o cabo de rede. É definitivamente meu garoto.',
-    // --- TECH CONTENT (PT-BR) ---
-    isExpanded: false,
-    techContent: `
-      <h3>👶 [LOG_PROCESSAMENTO_DUPLO]: POLARIDADE SONORA</h3>
-
-      <p><strong>Conceito do Projeto:</strong> A faixa <em>"THE BLESSING vs. THE BURDEN"</em> foi desenhada como um experimento de A/B Testing emocional. O objetivo era utilizar a mesma base narrativa (o nascimento) interpretada por dois algoritmos de estilo opostos.</p>
-
-      <p><strong>Engenharia de Prompt (Dual-Core):</strong></p>
-      <ul>
-        <li><strong>Lado A (Kelma/Broklin - The Blessing):</strong> Configuramos o modelo para <em>Darkwave/Dream Pop</em> a 75 BPM. O uso de "Warm Synths" e "80s Drum Machine" buscou emular o calor analógico e a esperança nostálgica.</li>
-        <li><strong>Lado B (Jonah/Nyx - The Burden):</strong> O modelo foi forçado ao extremo com <em>Industrial Doom Metal</em> a 70 BPM (mais lento e arrastado). O destaque técnico é o prompt <em>"Distorted Biological Heartbeat Kick"</em>, onde o bumbo da bateria simula um coração humano passando por stress mecânico.</li>
-      </ul>
-
-      <p>O resultado é uma peça do EP <strong>"SYSTEM MERGE"</strong> que demonstra como parâmetros de IA (BPM, Instrumentação) alteram drasticamente a semântica da mensagem.</p>
-      <a href="https://soundcloud.com/rqs_official/the-blessing-vs-the-burden-5?in=rqs_official/sets/system-merge-the-legacy&si=563f788046f248bebfa918d3bcb0a4f4&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" target="_blank" class="btn-stream-log">
-    [ EXECUTE_AUDIO: THE BLESSING vs. THE BURDEN ]
-      </a>    `
-  },
-  {
-    date: '14 Dez 2025',
-    title: '⚠️ Alerta de Segurança',
-    description: 'Tentativa de bloqueio falhou. Usuário "Jo_Cyperfield" tentou executar protocolo de retenção. A Agente Kelma recusou a conexão. Logs de áudio indicam instabilidade: "She thinks she\'s deleting me..."',
-    image: 'images/cyberpunk_lounge_solitude.png',
-    jonahComment: 'Instabilidade? A única coisa instável aqui é a masculinidade desse vampiro de glitter. Eu sou a rocha sobre a qual essa banda foi construída.',
-    // --- TECH CONTENT (PT-BR) ---
-    isExpanded: false,
-    techContent: `
-      <h3>🛡️ [LOG_SEGURANÇA_DE_REDE]: OTIMIZAÇÃO DE CAOS</h3>
-
-      <p><strong>Engenharia de Prompt (Prompt Engineering):</strong> A faixa <em>"CYBER-REJECT"</em> foi projetada para testar os limites de agressividade dos modelos de áudio. O objetivo era traduzir a rejeição emocional em dissonância matemática.</p>
-
-      <p><strong>Parâmetros Técnicos Utilizados:</strong></p>
-      <ul>
-        <li><strong>Time Signature (Compasso):</strong> Forcei a geração em <strong>7/8</strong>. Ao remover um tempo do compasso padrão (4/4), o loop cria uma sensação de "tropeço" constante, simulando a instabilidade mental do personagem Jonah.</li>
-        <li><strong>Sound Design:</strong> O prompt <em>"Heavy Metallic Percussion"</em> utilizou síntese baseada em samples de Foley industrial (metais reais batendo) em vez de drum kits tradicionais.</li>
-        <li><strong>Vocal Processing:</strong> Aplicado efeito de <em>Vocoder</em> agressivo para desumanizar a voz, sinalizando a perda da humanidade do personagem.</li>
-      </ul>
-      <a href="https://soundcloud.com/rqs_official/cyber-reject-steel-arm-breakdown-5?in=rqs_official/sets/jonahs-history-the-industrial-revolt&si=501f6ae576c24f8a801619f5887f39ed&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" target="_blank" class="btn-stream-log">
-    [ EXECUTE_AUDIO: CYBER-REJECT ]
-      </a>
-    `
-  },
-  {
-    date: '15 Dez 2025',
-    title: '💔 Protocolo de Ruptura',
-    description: 'SMS Final interceptado: "Precisamos conversar. Não estou onde você pensa." Conexão com o servidor Jonah encerrada permanentemente. Status: Desconexão Forçada.',
-    image: 'images/cyberpunk_heartbreak.png', // Imagem de algo quebrado
-    jonahComment: 'Desconexão forçada é o meu sobrenome. Eu não preciso de "Wi-Fi do Amor", eu tenho cabo de rede direto no inferno.',
-    // --- TECH CONTENT (PT-BR) ---
-    isExpanded: false,
-    techContent: `
-      <h3>📼 [LOG_ARQUIVO_CORROMPIDO]: A ORIGEM DO GLITCH</h3>
-
-      <p><strong>Arqueologia de Dados:</strong> Este registro contém uma raridade técnica: áudio do módulo Jonah <em>antes</em> da infecção pelo vírus Industrial. A sonoridade é baseada em <strong>Dream Pop</strong> e <strong>Electro-Pop</strong>, representando o estado "Limpo" do sistema.</p>
-
-      <p><strong>Workflow de Geração:</strong></p>
-      <ul>
-        <li><strong>Audio Engine:</strong> Suno AI v5.0. O objetivo era criar contraste dinâmico com o gênero atual. Utilizamos tags como <em>"Heavy Reverb", "Chorus Pedal", "Melancholic Male Vocals"</em> para simular a "calma antes da tempestade".</li>
-        <li><strong>Visual Asset:</strong> Gerado via <strong>OpenAI Sora</strong>. O prompt focou em "Digital Signal Loss" (Perda de Sinal) para metaforizar o rompimento emocional como uma falha de rede irrecuperável.</li>
-      </ul>
-
-      <p>Técnicamente, essa faixa serve como o "Legacy Code" (Código Legado) que o sistema tenta esquecer, mas que permanece no backup.</p>
-      <a href="https://soundcloud.com/rqs_official/whatsapp-log_jo-cyperfield-kelma-kel-1?in=rqs_official/sets/jonahs-history-the-industrial-revolt&si=527375610c72430ea9ef1fab9102066b&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" target="_blank" class="btn-stream-log">
-    [ EXECUTE_AUDIO: PROTOCOL_BREAKUP ]
-    </a>
-    `
-},
-{
-    date: '20 Dez 2025',
-    title: '😭 Detecção de Sofrência Digital',
-    description: 'Album em produção "Jonah\'s Sad History". Scans detectam níveis críticos de choro em compasso 7/8. Faixa "YOU_RE ALREADY GONE" acusa Broklin de injetar vírus.',
-    image: 'images/industrial_archive.png', // Capa do álbum dele
-    jonahComment: 'Sofrência é o caralho! Isso é INDUSTRIAL DOOM. Se tem choro na gravação, é dos alto-falantes pedindo piedade.',
-    // --- CONTEÚDO TÉCNICO EXPANDIDO (PT-BR) ---
-    isExpanded: false,
-    techContent: `
-      <h3>🔊 [LOG_ENGENHARIA_DE_AUDIO]: DOOM ALGORÍTMICO</h3>
-
-      <p><strong>O Desafio Técnico:</strong> A geração coerente de música em compassos compostos ou ímpares (como 7/8 ou 5/4) é um <em>edge-case</em> conhecido em Modelos de Áudio Generativo. A maioria dos datasets de treinamento possui um viés forte para estruturas pop padrão 4/4.</p>
-
-      <p>Para atingir a sonoridade "Math Metal" nesta faixa, utilizei injeções de prompt específicas no <strong>Suno AI v5</strong>:</p>
-      <ul>
-        <li><strong>Tags utilizadas:</strong> <em>"Polyrhythm", "Djent", "Industrial Doom", "Complex Time Signature", "Slow Tempo (80 BPM)"</em>.</li>
-        <li><strong>Pós-Processamento:</strong> O output bruto da IA passou por análise espectral para reforçar as frequências graves (Low-end) e aplicação de efeitos de <em>bitcrushing</em> para simular a textura de "robô chorando".</li>
-      </ul>
-
-      <p><strong>Status de Distribuição:</strong> A faixa foi implantada (deployed) com sucesso no ecossistema <strong>SoundCloud</strong> para testar a retenção de audiência (A/B Testing) antes da mixagem final para o Spotify.</p>
-      <a href="https://soundcloud.com/rqs_official/youre-already-gone-4?in=rqs_official/sets/jonahs-history-the-industrial-revolt&si=1db2844e9b634e3aae1758aa49dfee30&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" target="_blank" class="btn-stream-log">
-      [ EXECUTE_AUDIO: YOU_RE ALREADY GONE ]
-      </a>
-    `
-  },
-  {
-  date: '24 Dez 2025',
-    title: '💍 DARK ALTAR (UNHOLY UNION)', // Título Atualizado
-    description: 'Esqueça os votos tradicionais. Sob o som de sinos industriais do EP "SYSTEM MERGE: THE LEGACY", Jonah e Nyx realizaram o ritual. Sem padre, apenas um pacto de óleo e tungstênio. Status: VÍNCULO ETERNO.',
-    image: 'images/marriage_cyberpunk.png', // Mantemos a foto, mas o contexto agora é outro
-    jonahComment: 'Até que a morte nos separe? Não. Até que o servidor queime. E mesmo assim, eu tenho backup da sua alma no meu HD externo.',
-    // --- ADICIONE ISSO AQUI EMBAIXO ---
-    isExpanded: false, // Começa fechado
-    techContent: `
-    <h3>🎨 [VISUAL_GENERATION_LOG]: SORA.CHATGPT</h3>
-
-    <p>Para visualizar a união entre o Caos (Jonah) e o Controle (Nyx), utilizamos engenharia de prompt avançada focada em iluminação volumétrica e narrativa ambiental.</p>
-
-    <p><strong>🛠️ O Prompt Original (Source Code):</strong></p>
-    <blockquote style="border-left: 2px solid #bd93f9; padding-left: 10px; color: #a0a0a0; font-style: italic;">
-      "A dark, atmospheric, cinematic shot inside a massive, abandoned industrial cathedral made of rusted server racks...
-      The Key Detail: Sparks of welding fire are flying around them... symbolizing that they are physically fusing together.
-      High contrast, 8k, raw emotion, heavy metal aesthetic."
-    </blockquote>
-
-    <p><strong>Análise de Render:</strong></p>
-    <p>O modelo interpretou "Welding Fire" (Fogo de Solda) como a metáfora visual para o amor entre máquinas. A textura de "Rusted Server Racks" conecta diretamente com o background do site no Modo Jonah.</p>
-    <a href="https://soundcloud.com/rqs_official/dark-altar-unholy-union-2?in=rqs_official/sets/system-merge-the-legacy" target="_blank" class="btn-stream-log">
-    [ EXECUTE_AUDIO: DARK ALTAR (UNHOLY UNION) ]
-    </a>
-  `
-}
-];
-
-export const EVENTS_EN = [
-  {
-    date: 'Dec 08, 2025', // NEW DATE - BIRTH
-    title: '👶 Paternity Protocol (Jonah Jr.)',
-    description: 'New hardware detected on the network. Jonah Cyperfield Jr. successfully compiled. Sagittarius with Firewall rising. The system has never entered Sleep mode since.',
-    image: 'images/jonah_jr_newborn.png',
-    jonahComment: 'He cries in 7/8 time signature and already tried to bite the ethernet cable. Definitely my boy.',
-     // --- TECH CONTENT (EN-US) ---
-    isExpanded: false,
-    techContent: `
-      <h3>👶 [DUAL_PROCESSING_LOG]: SONIC POLARITY</h3>
-
-      <p><strong>Project Concept:</strong> The track <em>"THE BLESSING vs. THE BURDEN"</em> was designed as an emotional A/B Testing experiment. The goal was to use the same narrative base (the birth) interpreted by two opposing style algorithms.</p>
-
-      <p><strong>Prompt Engineering (Dual-Core):</strong></p>
-      <ul>
-        <li><strong>Side A (Kelma/Broklin - The Blessing):</strong> We configured the model for <em>Darkwave/Dream Pop</em> at 75 BPM. The use of "Warm Synths" and "80s Drum Machine" aimed to emulate analog warmth and nostalgic hope.</li>
-        <li><strong>Side B (Jonah/Nyx - The Burden):</strong> The model was pushed to the extreme with <em>Industrial Doom Metal</em> at 70 BPM (slower and heavier). The technical highlight is the <em>"Distorted Biological Heartbeat Kick"</em> prompt, where the kick drum simulates a human heart under mechanical stress.</li>
-      </ul>
-
-      <p>The result is a piece from the <strong>"SYSTEM MERGE"</strong> EP that demonstrates how AI parameters (BPM, Instrumentation) drastically alter the semantics of the message.</p>
-      <a href="https://soundcloud.com/rqs_official/the-blessing-vs-the-burden-5?in=rqs_official/sets/system-merge-the-legacy&si=563f788046f248bebfa918d3bcb0a4f4&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" target="_blank" class="btn-stream-log">
-    [ EXECUTE_AUDIO: THE BLESSING vs. THE BURDEN ]
-      </a>
-    `
-  },
-  {
-    date: 'Dec 14, 2025',
-    title: '⚠️ Security Alert',
-    description: 'Block attempt failed. User "Jo_Cyperfield" tried to execute retention protocol. Agent Kelma refused connection. Audio logs indicate instability: "She thinks she\'s deleting me..."',
-    image: 'images/cyberpunk_lounge_solitude.png',
-    jonahComment: 'Instability? The only unstable thing here is this glitter vampire\'s masculinity. I am the rock upon which this band was built.',
-    // --- TECH CONTENT (EN-US) ---
-    isExpanded: false,
-    techContent: `
-      <h3>🛡️ [NETWORK_SECURITY_LOG]: CHAOS OPTIMIZATION</h3>
-
-      <p><strong>Prompt Engineering:</strong> The track <em>"CYBER-REJECT"</em> was designed to stress-test the aggression limits of audio models. The goal was to translate emotional rejection into mathematical dissonance.</p>
-
-      <p><strong>Technical Parameters Used:</strong></p>
-      <ul>
-        <li><strong>Time Signature:</strong> I enforced a <strong>7/8</strong> meter generation. By removing one beat from the standard 4/4 bar, the loop creates a constant "stumbling" sensation, simulating the character Jonah's mental instability.</li>
-        <li><strong>Sound Design:</strong> The <em>"Heavy Metallic Percussion"</em> prompt utilized synthesis based on Industrial Foley samples (actual metal impacts) rather than traditional drum kits.</li>
-        <li><strong>Vocal Processing:</strong> Applied aggressive <em>Vocoder</em> effects to dehumanize the vocals, signaling the character's loss of humanity.</li>
-      </ul>
-      <a href="https://soundcloud.com/rqs_official/cyber-reject-steel-arm-breakdown-5?in=rqs_official/sets/jonahs-history-the-industrial-revolt&si=501f6ae576c24f8a801619f5887f39ed&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" target="_blank" class="btn-stream-log">
-    [ EXECUTE_AUDIO: CYBER-REJECT ]
-      </a>
-    `
-  },
-  {
-    date: 'Dec 15, 2025',
-    title: '💔 Breakup Protocol',
-    description: 'Final SMS intercepted: "We need to talk. I am not where you think I am." Connection with Jonah server terminated permanently. Status: Forced Disconnection.',
-    image: 'images/cyberpunk_heartbreak.png',
-    jonahComment: 'Forced disconnection is my middle name. I don\'t need "Love Wi-Fi," I have a wired connection straight to hell.',
-      // --- TECH CONTENT (EN-US) ---
-    isExpanded: false,
-    techContent: `
-      <h3>📼 [CORRUPTED_FILE_LOG]: THE GLITCH ORIGIN</h3>
-
-      <p><strong>Data Archaeology:</strong> This registry contains a technical rarity: audio from the Jonah module <em>before</em> the Industrial virus infection. The soundscape is built on <strong>Dream Pop</strong> and <strong>Electro-Pop</strong> algorithms, representing the system's "Clean" state.</p>
-
-      <p><strong>Generation Workflow:</strong></p>
-      <ul>
-        <li><strong>Audio Engine:</strong> Suno AI v5.0. The goal was to create dynamic contrast with his current genre. We used tags like <em>"Heavy Reverb", "Chorus Pedal", "Melancholic Male Vocals"</em> to simulate the "calm before the storm".</li>
-        <li><strong>Visual Asset:</strong> Generated via <strong>OpenAI Sora</strong>. The prompt focused on "Digital Signal Loss" to metaphorize the emotional breakup as an unrecoverable network failure.</li>
-      </ul>
-
-      <p>Technically, this track serves as the "Legacy Code" that the system tries to delete, but remains in the backup.</p>
-      <a href="https://soundcloud.com/rqs_official/whatsapp-log_jo-cyperfield-kelma-kel-1?in=rqs_official/sets/jonahs-history-the-industrial-revolt&si=527375610c72430ea9ef1fab9102066b&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" target="_blank" class="btn-stream-log">
-     [ EXECUTE_AUDIO: PROTOCOL_BREAKUP ]
-      </a>
-    `
-},
-  {
-    date: 'Dec 20, 2025',
-    title: '😭 Digital Suffering Detected',
-    description: 'Album in production "Jonah\'s Sad History". Scans detect critical crying levels in 7/8 time signature. Track "Your Love Is Open Source" accuses Broklin of injecting viruses.',
-    image: 'images/industrial_archive.png',
-      jonahComment: 'Suffering is bullshit! This is INDUSTRIAL DOOM. If there\'s crying on the recording, it\'s from the loudspeakers begging for mercy.',
-    // --- ADICIONE ISTO (TECH CONTENT) ---
-    isExpanded: false,
-    techContent: `
-      <h3>🔊 [AUDIO_ENGINEERING_LOG]: ALGORITHMIC DOOM</h3>
-
-      <p><strong>The Technical Challenge:</strong> Generating coherent music in odd time signatures (like 7/8 or 5/4) is a known edge-case in Generative Audio Models. Most datasets are biased towards 4/4 standard pop structures.</p>
-
-      <p>To achieve the "Math Metal" feel for this track, I had to use specific prompt injections in <strong>Suno AI v3</strong>:</p>
-      <ul>
-        <li><strong>Tags used:</strong> <em>"Polyrhythm", "Djent", "Industrial Doom", "Complex Time Signature", "Slow Tempo (80 BPM)"</em>.</li>
-        <li><strong>Post-Processing:</strong> The raw AI output went through spectral analysis to boost low-end frequencies (Bass) and apply bitcrushing effects to simulate the "crying robot" texture.</li>
-      </ul>
-
-      <p><strong>Distribution Status:</strong> The track was successfully deployed to the <strong>SoundCloud</strong> ecosystem to test audience retention before the final Spotify mix.</p>
-      <a href="https://soundcloud.com/rqs_official/youre-already-gone-4?in=rqs_official/sets/jonahs-history-the-industrial-revolt&si=1db2844e9b634e3aae1758aa49dfee30&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" target="_blank" class="btn-stream-log">
-      [ EXECUTE_AUDIO: YOU_RE ALREADY GONE ]
-      </a>
-    `
-  },
-  {
-    date: 'Dec 24, 2025',
-    title: '💍 DARK ALTAR (UNHOLY UNION)', // Updated
-    description: 'Forget traditional vows. Under the sound of industrial bells from the "SYSTEM MERGE: THE LEGACY" EP, Jonah and Nyx performed the ritual. No priest, just a pact of oil and tungsten. Status: ETERNAL BOND.',
-    image: 'images/marriage_cyberpunk.png',
-    jonahComment: 'Till death do us part? No. Until the server burns. And even then, I have a backup of your soul on my external drive.',
-    // --- TECH CONTENT (ENGLISH) ---
-  isExpanded: false,
-  techContent: `
-    <h3>🎨 [VISUAL_GENERATION_LOG]: SORA.CHATGPT</h3>
-
-    <p>To visualize the union between Chaos (Jonah) and Control (Nyx), we used advanced prompt engineering focused on volumetric lighting and environmental storytelling.</p>
-
-    <p><strong>🛠️ Original Prompt (Source Code):</strong></p>
-    <blockquote style="border-left: 2px solid #bd93f9; padding-left: 10px; color: #a0a0a0; font-style: italic;">
-      "A dark, atmospheric, cinematic shot inside a massive, abandoned industrial cathedral made of rusted server racks...
-      The Key Detail: Sparks of welding fire are flying around them... symbolizing that they are physically fusing together.
-      High contrast, 8k, raw emotion, heavy metal aesthetic."
-    </blockquote>
-
-    <p><strong>Render Analysis:</strong></p>
-    <p>The model interpreted "Welding Fire" as the visual metaphor for machine love. The "Rusted Server Racks" texture connects directly to the website background in Jonah Mode.</p>
-    <a href="https://soundcloud.com/rqs_official/dark-altar-unholy-union-2?in=rqs_official/sets/system-merge-the-legacy" target="_blank" class="btn-stream-log">
-    [ EXECUTE_AUDIO: DARK ALTAR (UNHOLY UNION) ]
-    </a>
-  `
-}
-  ];
 
 // DADOS DO BANNER DE ANÚNCIOS
 export const ADS_DATA = {
@@ -376,7 +118,7 @@ export const VISUAL_NOVEL_PT = [
       title: '📼 RQS: ORIGINS (Before the Metal)',
       subtitle: 'Caos, Fios & Revolução',
       description: 'Quando o sistema falha, a verdade aparece. A revolta industrial de Jonah contra a programação.',
-      image: 'images/industrial_archive.png', // Capa do Jonah
+      image: 'assets/disco/album_jonas-history.png', // Capa do Jonah
       link: 'https://www.youtube.com/watch?v=tLMMifMMnPQ&list=PLfPBk0UpnLMnm5HhKHKGwHs6FO0Z9TOMg',
       mode: 'chaos'
     },
@@ -384,7 +126,7 @@ export const VISUAL_NOVEL_PT = [
       title: 'ARCO BROKLIN',
       subtitle: 'Amor, Vinho & Melancolia',
       description: 'A jornada de um vampiro gótico em busca de redenção através do amor de Kelma. Inclui o hit "Neon Tears".',
-      image: 'images/arco-broklin.png', // Use capa do arco
+      image: 'assets/disco/album_the-broklins-story.png', // Use capa do arco
       link: '/lore/broklin',
       mode: 'romance'
     }
@@ -403,7 +145,7 @@ export const VISUAL_NOVEL_EN = [
       title: '📼 RQS: ORIGINS (Before the Metal)',
       subtitle: 'Chaos, Wires & Revolution',
       description: 'When the system fails, the truth comes out. Jonahs industrial revolt against programming.',
-      image: 'images/industrial_archive.png', // Capa do Jonah
+      image: 'assets/disco/album_jonas-history.png',
       link: 'https://www.youtube.com/watch?v=tLMMifMMnPQ&list=PLfPBk0UpnLMnm5HhKHKGwHs6FO0Z9TOMg',
       mode: 'chaos'
   },
@@ -411,7 +153,7 @@ export const VISUAL_NOVEL_EN = [
       title: 'BROKLIN ARC',
       subtitle: 'Love, Wine and Melancholy',
       description: 'The journey of a gothic vampire seeking redemption through the love of Kelma. Includes the hit song "Neon Tears".',
-      image: 'images/arco-broklin.png', // Use a capa do arco
+      image: 'assets/disco/album_the-broklins-story.png', // Use a capa do arco
       link: '/lore/broklin',
       mode: 'romance'
     }
@@ -421,35 +163,47 @@ export const VISUAL_NOVEL_EN = [
 // --- DADOS DA DISCOGRAFIA ---
 export const DISCOGRAPHY_PT = {
   broklin: [
-
-    { title: 'THE BLUEPRINT SESSION Vol. 001', type: 'Álbum (Pré-Save 09/01)', cover: 'images/the_blueprint_session_v.001.png', spotify: 'https://open.spotify.com/intl-pt/album/255NEv7qHyrFqn19OVQr4c?si=1BOwoc5IQGKo4gcACdsbCw', soundcloud: 'https://on.soundcloud.com/G7Pk9L8eGVNMAvFzKC'     },
-    { title: 'SYNTH THE FLOOR', type: 'EP (2025)', cover: 'images/ep-synth_the_floor.png', spotify: 'https://open.spotify.com/intl-pt/album/1ZVlu9g43zK3Yw0LcpfY0L?si=Nyc35a0CSRyTKloX6s0Mpw', soundcloud: 'https://on.soundcloud.com/Sme1X25wkaoQq7Zcje'     },
-    { title: 'COLD WAR', type: 'Álbum (2025)', cover: 'images/album_cold-war.jpg', spotify: 'https://open.spotify.com/intl-pt/album/0c0CWDVGH05p90jXEkVOhA?si=J5e94SRVSuiyXAsVIghSsw', soundcloud: 'https://on.soundcloud.com/OYXuwBgfQXZdbD3iE5' },
-    { title: 'CORRUPTED SECTOR', type: 'EP', cover: 'images/defiance_duo.png', spotify: '', soundcloud: 'https://on.soundcloud.com/7YvIN0OTDvFNzL6kQ1' }
+    { title: 'System Reboot', type: 'EP', cover: 'assets/disco/ep_system-reboot.jpg', spotify: '', soundcloud: 'https://on.soundcloud.com/gAYTejXu6Cjvzcsr7R'    },
+    { title: 'Digital Ghosts (Vol. 1)', type: 'EP', cover: 'assets/disco/ep_digital-ghost.png', spotify: '', soundcloud: 'https://on.soundcloud.com/gQCMW5CsTPRG9Qn7Ih'    },
+    { title: 'Broklin\'s History (The Intergalactic Saga)', type: 'Album', cover: 'assets/disco/album_the-broklins-story.png', spotify: '', soundcloud: 'https://on.soundcloud.com/Rs8W9wMM100vf7S6Lx'   },
+    { title: 'Noctural Protocol', type: 'Single', cover: 'assets/disco/noctural_protocol.png', spotify: '', soundcloud: 'https://soundcloud.com/rqs_official/sets/noctural-protocol?si=ebfdd0255cae4ccbbd71b9cf56eef437&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing'    },
+    { title: 'THE BLUEPRINT SESSION Vol. 001', type: 'EP (2025)', cover: 'assets/disco/the_blueprint_session_v.001.png', spotify: 'https://open.spotify.com/intl-pt/album/255NEv7qHyrFqn19OVQr4c?si=1BOwoc5IQGKo4gcACdsbCw', soundcloud: 'https://on.soundcloud.com/G7Pk9L8eGVNMAvFzKC'     },
+    { title: 'SYNTH THE FLOOR', type: 'EP (2025)', cover: 'assets/disco/ep-synth_the_floor.png', spotify: 'https://open.spotify.com/intl-pt/album/1ZVlu9g43zK3Yw0LcpfY0L?si=Nyc35a0CSRyTKloX6s0Mpw', soundcloud: 'https://on.soundcloud.com/Sme1X25wkaoQq7Zcje'     },
+    { title: 'COLD WAR', type: 'Álbum (2025)', cover: 'assets/disco/album_cold-war.jpg', spotify: 'https://open.spotify.com/intl-pt/album/0c0CWDVGH05p90jXEkVOhA?si=J5e94SRVSuiyXAsVIghSsw', soundcloud: 'https://on.soundcloud.com/OYXuwBgfQXZdbD3iE5' },
+    { title: 'CORRUPTED SECTOR', type: 'EP', cover: 'assets/disco/defiance_duo.png', spotify: '', soundcloud: 'https://on.soundcloud.com/7YvIN0OTDvFNzL6kQ1' }
   ],
   jonah: [
-    { title: 'MECHANICAL FRICTION', type: 'EP (Explicit)', cover: 'images/mechanical_friction.jpg', spotify: '', soundcloud: 'https://on.soundcloud.com/WcQ2kvkhFZ1F0szIuG'},
-    { title: 'JONAH\'S HISTORY', type: 'The Industrial Revolt', cover: 'images/industrial_archive.png', spotify: '#', soundcloud: 'https://on.soundcloud.com/iFnjMREQUtgI3wPkqR' }, // NOVO ÁLBUM
-    { title: 'SYSTEM MERGE: THE LEGACY', type: 'Family EP (feat. Nyx)', cover: 'images/ep_system_merge.png', spotify: '#', soundcloud: '#' }, // NOVO EP */
-    { title: 'ORIGINS (reforged)', type: 'Industrial Album', cover: 'images/origins_reforged.jpg', spotify: 'https://open.spotify.com/intl-pt/album/7tZaPekjMzIFGMPe8xyIDH?si=VTdANOktQeSMzSM4KalTxQ', soundcloud: 'https://on.soundcloud.com/kposSWUCUCVWU76gsY'},
-    { title: 'COLECIONO ILUSOES', type: 'Single', cover: 'images/crushing_device.png', spotify: '', soundcloud: 'https://on.soundcloud.com/sT0vElCKQuCDbRCBsZ' }
+    { title: 'THE BLOODPRINT SESSIONS', type: 'EP', cover: 'assets/disco/ep_the-bloodprint-sessions.png', spotify: '', soundcloud: 'https://on.soundcloud.com/mrU9kmKBlubb5r635E'    },
+    { title: 'GLITCH IN THE MIRROR', type: 'EP', cover: 'assets/disco/ep_glitch-in-the-mirror.png', spotify: '', soundcloud: 'https://on.soundcloud.com/yseFxxMy3FZ6ggLgjh'    },
+    { title: 'RUST & HUNGER (Jonah\'s Fury)', type: 'EP', cover: 'assets/disco/ep_rust-and-hunger.png', spotify: '', soundcloud: 'https://on.soundcloud.com/dGeczcCz7ZfTL2e7ci'    },
+    { title: 'MECHANICAL FRICTION', type: 'EP (Explicit)', cover: 'assets/disco/mechanical_friction.jpg', spotify: '', soundcloud: 'https://on.soundcloud.com/WcQ2kvkhFZ1F0szIuG'},
+    { title: 'JONAH\'S HISTORY', type: 'The Industrial Revolt', cover: 'assets/disco/album_jonas-history.png', spotify: '#', soundcloud: 'https://on.soundcloud.com/iFnjMREQUtgI3wPkqR' }, // NOVO ÁLBUM
+    { title: 'SYSTEM MERGE: THE LEGACY', type: 'Family EP (feat. Nyx)', cover: 'assets/disco/ep_system_merge.png', spotify: '#', soundcloud: '#' }, // NOVO EP */
+    { title: 'ORIGINS (reforged)', type: 'Industrial Album', cover: 'assets/disco/origins_reforged.jpg', spotify: 'https://open.spotify.com/intl-pt/album/7tZaPekjMzIFGMPe8xyIDH?si=VTdANOktQeSMzSM4KalTxQ', soundcloud: 'https://on.soundcloud.com/kposSWUCUCVWU76gsY'},
+    { title: 'COLECIONO ILUSOES', type: 'Single', cover: 'assets/disco/crushing_device.png', spotify: '', soundcloud: 'https://on.soundcloud.com/sT0vElCKQuCDbRCBsZ' }
   ]
 };
 
 export const DISCOGRAPHY_EN = {
   broklin: [
-
-    {  title: 'THE BLUEPRINT SESSION Vol. 001', type: 'Álbum (Pré-Save 09/01)', cover: 'images/the_blueprint_session_v.001.png', spotify: 'https://open.spotify.com/intl-pt/album/255NEv7qHyrFqn19OVQr4c?si=1BOwoc5IQGKo4gcACdsbCw', soundcloud: 'https://on.soundcloud.com/G7Pk9L8eGVNMAvFzKC'    },
-    {  title: 'SYNTH THE FLOOR', type: 'EP (2025)', cover: 'images/ep-synth_the_floor.png', spotify: 'https://open.spotify.com/intl-pt/album/1ZVlu9g43zK3Yw0LcpfY0L?si=Nyc35a0CSRyTKloX6s0Mpw', soundcloud: 'https://on.soundcloud.com/Sme1X25wkaoQq7Zcje'    },
-    { title: 'COLD WAR', type: 'Album (2025)', cover: 'images/album_cold-war.jpg', spotify: 'https://open.spotify.com/intl-pt/album/0c0CWDVGH05p90jXEkVOhA?si=J5e94SRVSuiyXAsVIghSsw', soundcloud: 'https://on.soundcloud.com/OYXuwBgfQXZdbD3iE5' },
-    { title: 'CORRUPTED SECTOR', type: 'EP', cover: 'images/defiance_duo.png', spotify: '', soundcloud: 'https://on.soundcloud.com/7YvIN0OTDvFNzL6kQ1' }
+    { title: 'System Reboot', type: 'EP', cover: 'assets/disco/ep_system-reboot.jpg', spotify: '', soundcloud: 'https://on.soundcloud.com/gAYTejXu6Cjvzcsr7R'    },
+    { title: 'Digital Ghosts (Vol. 1)', type: 'EP', cover: 'assets/disco/ep_digital-ghost.png', spotify: '', soundcloud: 'https://on.soundcloud.com/gQCMW5CsTPRG9Qn7Ih'    },
+    { title: 'Broklin\'s History (The Intergalactic Saga)', type: 'Album', cover: 'assets/disco/album_the-broklins-story.png', spotify: '', soundcloud: 'https://on.soundcloud.com/Rs8W9wMM100vf7S6Lx'   },
+    { title: 'Noctural Protocol', type: 'Single', cover: 'assets/disco/noctural_protocol.png', spotify: '', soundcloud: 'https://soundcloud.com/rqs_official/sets/noctural-protocol?si=ebfdd0255cae4ccbbd71b9cf56eef437&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing'    },
+    { title: 'THE BLUEPRINT SESSION Vol. 001', type: 'EP (2025)', cover: 'assets/disco/the_blueprint_session_v.001.png', spotify: 'https://open.spotify.com/intl-pt/album/255NEv7qHyrFqn19OVQr4c?si=1BOwoc5IQGKo4gcACdsbCw', soundcloud: 'https://on.soundcloud.com/G7Pk9L8eGVNMAvFzKC'     },
+    { title: 'SYNTH THE FLOOR', type: 'EP (2025)', cover: 'assets/disco/ep-synth_the_floor.png', spotify: 'https://open.spotify.com/intl-pt/album/1ZVlu9g43zK3Yw0LcpfY0L?si=Nyc35a0CSRyTKloX6s0Mpw', soundcloud: 'https://on.soundcloud.com/Sme1X25wkaoQq7Zcje'     },
+    { title: 'COLD WAR', type: 'Álbum (2025)', cover: 'assets/disco/album_cold-war.jpg', spotify: 'https://open.spotify.com/intl-pt/album/0c0CWDVGH05p90jXEkVOhA?si=J5e94SRVSuiyXAsVIghSsw', soundcloud: 'https://on.soundcloud.com/OYXuwBgfQXZdbD3iE5' },
+    { title: 'CORRUPTED SECTOR', type: 'EP', cover: 'assets/disco/defiance_duo.png', spotify: '', soundcloud: 'https://on.soundcloud.com/7YvIN0OTDvFNzL6kQ1' }
   ],
   jonah: [
-    { title: 'MECHANICAL FRICTION', type: 'EP (Explicit)', cover: 'images/mechanical_friction.jpg', spotify: '', soundcloud: 'https://on.soundcloud.com/WcQ2kvkhFZ1F0szIuG'},
-    { title: 'JONAH\'S HISTORY', type: 'The Industrial Revolt', cover: 'images/industrial_archive.png', spotify: '#', soundcloud: 'https://on.soundcloud.com/iFnjMREQUtgI3wPkqR' }, // NOVO ÁLBUM
-    { title: 'SYSTEM MERGE: THE LEGACY', type: 'Family EP (feat. Nyx)', cover: 'images/ep_system_merge.png', spotify: '#', soundcloud: '#' }, // NOVO EP */
-    { title: 'ORIGINS (reforged)', type: 'Industrial Album', cover: 'images/origins_reforged.jpg', spotify: 'https://open.spotify.com/intl-pt/album/7tZaPekjMzIFGMPe8xyIDH?si=VTdANOktQeSMzSM4KalTxQ', soundcloud: 'https://on.soundcloud.com/kposSWUCUCVWU76gsY' },
-    { title: 'COLLECT ILUSIONS', type: 'Single', cover: 'images/crushing_device.png', spotify: '', soundcloud: 'https://on.soundcloud.com/sT0vElCKQuCDbRCBsZ' }
+   { title: 'THE BLOODPRINT SESSIONS', type: 'EP', cover: 'assets/disco/ep_the-bloodprint-sessions.png', spotify: '', soundcloud: 'https://on.soundcloud.com/mrU9kmKBlubb5r635E'    },
+    { title: 'GLITCH IN THE MIRROR', type: 'EP', cover: 'assets/disco/ep_glitch-in-the-mirror.png', spotify: '', soundcloud: 'https://on.soundcloud.com/yseFxxMy3FZ6ggLgjh'    },
+    { title: 'RUST & HUNGER (Jonah\'s Fury)', type: 'EP', cover: 'assets/disco/ep_rust-and-hunger.png', spotify: '', soundcloud: 'https://on.soundcloud.com/dGeczcCz7ZfTL2e7ci'    },
+    { title: 'MECHANICAL FRICTION', type: 'EP (Explicit)', cover: 'assets/disco/mechanical_friction.jpg', spotify: '', soundcloud: 'https://on.soundcloud.com/WcQ2kvkhFZ1F0szIuG'},
+    { title: 'JONAH\'S HISTORY', type: 'The Industrial Revolt', cover: 'assets/disco/industrial_archive.png', spotify: '#', soundcloud: 'https://on.soundcloud.com/iFnjMREQUtgI3wPkqR' },
+    { title: 'SYSTEM MERGE: THE LEGACY', type: 'Family EP (feat. Nyx)', cover: 'assets/disco/ep_system_merge.png', spotify: '#', soundcloud: '#' },
+    { title: 'ORIGINS (reforged)', type: 'Industrial Album', cover: 'assets/disco/origins_reforged.jpg', spotify: 'https://open.spotify.com/intl-pt/album/7tZaPekjMzIFGMPe8xyIDH?si=VTdANOktQeSMzSM4KalTxQ', soundcloud: 'https://on.soundcloud.com/kposSWUCUCVWU76gsY'},
+    { title: 'COLECIONO ILUSOES', type: 'Single', cover: 'assets/disco/crushing_device.png', spotify: '', soundcloud: 'https://on.soundcloud.com/sT0vElCKQuCDbRCBsZ' },
   ]
 };
 

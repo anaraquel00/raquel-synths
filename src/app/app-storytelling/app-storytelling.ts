@@ -1,35 +1,43 @@
-import { Component, effect } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule, Router } from '@angular/router';
 
-import { EVENTS_EN, EVENTS_PT } from '../data/app-data';
+// 1. IMPORTAMOS A NOVA FONTE ÚNICA
+import { SYSTEM_LOGS_DATA } from '../data/log-data';
+
+// 2. IMPORTAMOS O SERVIÇO DE TRADUÇÃO (Porque agora os dados são bilingues)
 import { TranslationService } from '../services/translation.service';
-
-
 
 @Component({
   selector: 'app-storytelling',
   standalone: true,
-  imports: [],
+  imports: [CommonModule, RouterModule],
   templateUrl: './app-storytelling.html',
-  styleUrl: './app-storytelling.scss'
+  styleUrls: ['./app-storytelling.scss']
 })
 export class StorytellingComponent {
 
-  // Começa com PT por padrão
-  events = EVENTS_PT;
+  private router = inject(Router);
+  public translate = inject(TranslationService); // Injetamos o tradutor
 
-  constructor(public translate: TranslationService) {
-    // O "Ouvido" do componente:
-    effect(() => {
-      if (this.translate.isPt()) {
-        this.events = EVENTS_PT;
-      } else {
-        this.events = EVENTS_EN;
-      }
-    });
+  // 3. FILTRO DA HOME:
+  // Lógica: Pegar tudo que NÃO é de 2025 (ou seja, 2026) OU o botão de Arquivo
+  events = SYSTEM_LOGS_DATA.filter(log => {
+    const isOld = log.date.includes('2025'); // É velho?
+    const isLink = log.isArchiveLink;        // É o botão?
+
+    // Na home, queremos: (NÃO É VELHO) OU (É O BOTÃO)
+    return !isOld || isLink;
+  });
+
+  // 4. FUNÇÃO AUXILIAR PARA O HTML LER (PT/EN)
+  // Como mudamos a estrutura dos dados, o HTML da home precisa dessa ajuda
+  getEventContent(event: any) {
+    return this.translate.isPt() ? event.pt : event.en;
   }
-  // --- ADICIONE ESSA FUNÇÃO ---
-  toggleLog(event: any) {
-    event.isExpanded = !event.isExpanded;
-  }
+
+  // ... (suas funções toggleLog e navigateToArchive continuam aqui)
+  toggleLog(event: any) { event.isExpanded = !event.isExpanded; }
+
+  navigateToArchive() { this.router.navigate(['/logs-archive']); }
 }
-

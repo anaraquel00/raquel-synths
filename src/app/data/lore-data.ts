@@ -274,7 +274,7 @@ export const BROKLIN_ARC_PT: LoreEpisode[] = [
   {
     id: 's1-e5',
     releaseDate: '2026-01-19', // Uma semana depois (Domingo/Segunda)
-    published: false,
+    published: true,
     season: 1,
     seasonTitle: 'TEMPORADA 1 — A QUEDA',
     title: 'Episódio 5 — A Vitória Silenciosa de Kelma',
@@ -595,7 +595,7 @@ export const BROKLIN_ARC_EN: LoreEpisode[] = [
   {
     id: 's1-e5',
     releaseDate: '2026-01-19',
-    published: false,
+    published: true,
     season: 1,
     seasonTitle: 'SEASON 1 — THE FALL',
     title: 'Episode 5 — Kelma\'s Silent Victory',

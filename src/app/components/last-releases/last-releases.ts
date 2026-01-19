@@ -112,7 +112,7 @@ import { Component } from '@angular/core';
   `]
 })
 export class LastReleasesComponent {
-  coverImage = '/images/ep_neon_guillotine.png';
+  coverImage = 'assets/disco/ep_neon_guillotine.png';
   link = 'https://distrokid.com/hyperfollow/raquelsynthsrqs/neon-guillotine';
 
   openLink() {

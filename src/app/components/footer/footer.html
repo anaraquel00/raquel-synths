@@ -55,8 +55,22 @@
         <li><a href="https://open.spotify.com/intl-pt/artist/1yrPZaFyIcsCjj876LaHXL?si=Qd2pr8ueQPuF-OwfqKGMUQ" target="_blank">Spotify</a></li>
         <li><a href="https://soundcloud.com/you/albums" target="_blank">SoundCloud</a></li>
         <li><a href="https://www.youtube.com/channel/UC4XQ29bhRmhxvYT9-4a9Otw" target="_blank">YouTube</a></li>
-        <li><a href="https://raquelsynths-rqs.bandcamp.com/music" target="_blank">Bandcamp</a></li>
+        <!-- <li><a href="https://raquelsynths-rqs.bandcamp.com/music" target="_blank">Bandcamp</a></li> -->
+      <li style="margin-top: 15px; margin-bottom: 5px;">
+          <strong style="color: var(--accent-color); font-size: 0.9rem;">APOIE A BANDA:</strong>
+        </li>
+        <li>
+          <a style="cursor: pointer;" (click)="openPaypal()" class="donate-btn paypal">
+            <mat-icon>public</mat-icon> PayPal (Intl.)
+          </a>
+        </li>
+        <li>
+          <a style="cursor: pointer;" (click)="copyPix()" class="donate-btn pix">
+            <mat-icon>pix</mat-icon> PIX (Brasil)
+          </a>
+        </li>
       </ul>
+
     </div>
 
     <div class="footer-column">
@@ -68,21 +82,6 @@
         <li><a href="https://discord.com/channels/1405682092238704753/1440032357431115977" target="_blank">Discord</a></li>
         <li><a href="https://t.me/raquelsynths_news" target="_blank">Telegram</a></li>
 
-        <li style="margin-top: 15px; margin-bottom: 5px;">
-          <strong style="color: var(--accent-color); font-size: 0.9rem;">APOIE A BANDA:</strong>
-        </li>
-
-        <li>
-          <a style="cursor: pointer;" (click)="openPaypal()" class="donate-btn paypal">
-            <mat-icon>public</mat-icon> PayPal (Intl.)
-          </a>
-        </li>
-
-        <li>
-          <a style="cursor: pointer;" (click)="copyPix()" class="donate-btn pix">
-            <mat-icon>pix</mat-icon> PIX (Brasil)
-          </a>
-        </li>
       </ul>
     </div>
   </div>

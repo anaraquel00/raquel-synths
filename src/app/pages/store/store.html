@@ -1,15 +1,26 @@
 <section class="store-container">
 
-  <!-- BOTÃO VOLTAR (Corrigido) -->
   <button class="back-btn" (click)="goBackHome()">
     &larr; {{ currentLang() === 'pt' ? 'VOLTAR À BASE' : 'BACK TO BASE' }}
   </button>
 
-  <h1 class="glitch-title" data-text="NEON STORE">NEON STORE</h1>
+  <div class="mode-alert-banner" (click)="scrollToTop()">
+
+    <div class="alert-content broklin-msg">
+      <span>{{ currentLang() === 'pt' ? '⚠️ Procurando a butique do Rust & Lord?' : '⚠️ Looking for the Rust & Lord boutique?' }}</span>
+      <strong>{{ currentLang() === 'pt' ? 'ATIVE O MODO JONAH! 💀' : 'TURN ON JONAH MODE! 💀' }}</strong>
+    </div>
+
+    <div class="alert-content jonah-msg">
+      <span>{{ currentLang() === 'pt' ? '🛡️ Muito pesado pra você?' : '🛡️ Too heavy for you?' }}</span>
+      <strong>{{ currentLang() === 'pt' ? 'VOLTE PARA A SEGURANÇA! 💠' : 'RETURN TO SAFETY! 💠' }}</strong>
+    </div>
+
+  </div> <h1 class="glitch-title" data-text="NEON STORE">NEON STORE</h1>
   <p class="subtitle">Official Merch // Print-on-Demand Protocol</p>
 
   <div class="product-grid">
-    <div class="product-card" *ngFor="let item of products">
+    <div class="product-card" *ngFor="let item of products" [class]="item.faction">
 
       <div class="image-wrapper">
         <img [src]="item.image" [alt]="item.content[currentLang()].name">
@@ -22,13 +33,15 @@
 
         <div class="price-row">
           <span class="price">{{ item.content[currentLang()].price }}</span>
+
           <button (click)="handleShopClick(item.stripeUrl)" class="btn-neon">
             {{ currentLang() === 'pt' ? 'VER PREÇO' : 'CHECK PRICE' }}
-          <i class="ph-tag"></i>
+            <i class="ph-tag"></i>
           </button>
         </div>
       </div>
 
     </div>
   </div>
+
 </section>

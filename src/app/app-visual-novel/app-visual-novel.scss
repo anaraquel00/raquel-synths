@@ -1,5 +1,15 @@
 .vn-container {
-  padding: 4rem 2rem;
+  background: rgba(10, 10, 15, 0.75);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px); /* Pra funcionar no Safari/iPhone */
+  border-radius: 16px; /* Cantos arredondados modernos */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Borda fina e sutil */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); /* Sombra pra dar profundidade */
+
+  padding: 20px;
+  margin-bottom: 20px;
+  padding: 2rem 1rem;
   max-width: 1200px;
   margin: 0 auto;
   text-align: center;
@@ -42,10 +52,14 @@
 
 /* O Pôster */
 .poster {
-  height: 200px;
+  height: 250px;
   background-size: cover;
   background-position: center;
+  aspect-ratio: 1 / 1;
   position: relative;
+  height: auto;
+  object-fit: contain;
+  object-position: top center;
 }
 
 .overlay {

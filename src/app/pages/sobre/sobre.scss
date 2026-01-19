@@ -1,22 +1,45 @@
 .bios-container {
-  padding: 4rem 2rem;
+  background: rgba(10, 10, 15, 0.75);
+
+  /* 2. O Pulo do Gato: Borra apenas o que está ATRÁS da caixa */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px); /* Pra funcionar no Safari/iPhone */
+
+  /* 3. Acabamento Premium */
+  border-radius: 16px; /* Cantos arredondados modernos */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Borda fina e sutil */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); /* Sombra pra dar profundidade */
+
+  /* 4. Espaçamento interno (pra o texto não colar na borda) */
+  padding: 20px;
+  margin-bottom: 40px;
+  padding: 2rem 1rem;
   max-width: 1200px;
   margin: 0 auto;
-}
+  border-radius: 20px;
 
+
+}
 .section-title {
   text-align: center;
   font-family: var(--font-heading);
-  font-size: 2rem;
+  font-size: 3rem;
   margin-bottom: 3rem;
   text-shadow: 0 0 10px var(--primary-color);
   letter-spacing: 3.5px;
+}
+.manifesto-text{
+  max-width: 900px;
+  margin: 0 auto 40px auto;
+  font-weight: bold;
+  text-align: center;
+  line-height: 1.6;
 }
 
 .members-grid {
   display: flex;
   justify-content: center;
-  gap: 2rem;
+  gap: 3rem;
   flex-wrap: wrap;
 }
 
@@ -46,6 +69,25 @@
   transition: opacity 0.5s ease;
 }
 
+.member-info, .info-box { /* Aceita os dois nomes pra garantir */
+  padding: 24px; /* <--- A SOLUÇÃO: Empurra o texto pra longe das bordas */
+  text-align: left; /* Ou center, se preferir */
+}
+
+.member-info h3, .info-box h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: #06fd12; /* Garante que o nome fique destacado */
+  font-size: 1.5rem;
+}
+
+.member-info p, .info-box p {
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  color: #ddd; /* Texto levemente cinza pra não cansar a vista */
+  line-height: 1.5; /* Altura da linha pra facilitar a leitura */
+}
+
 /* Padrão: Mostra Broklin, Esconde Jonah */
 .img-jonah { opacity: 0; }
 .img-broklin { opacity: 1; }
@@ -67,6 +109,12 @@
   /* Troca o texto */
   .normal-text { display: none; }
   .jonah-text { display: block; font-weight: bold; }
+  .member-info h3, .info-box h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: #ff5722; /* Garante que o nome fique destacado */
+  font-size: 1.5rem;
+}
 }
 
 /* --- RESPONSIVIDADE MOBILE --- */

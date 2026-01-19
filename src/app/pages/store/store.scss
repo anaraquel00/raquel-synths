@@ -5,7 +5,7 @@
 }
 
 .store-container {
-  padding: 4rem 2rem;
+  padding: 1rem 1rem;
   min-height: 100vh;
   // Tenta usar a variável global de fundo, senão usa o escuro padrão
   background-color: var(--bg-color-main, #0a0a12);
@@ -174,6 +174,55 @@
 }
 
 /* =========================================
+   🚨 BANNER DE ALERTA DE MODO
+   ========================================= */
+
+.mode-alert-banner {
+  margin: 20px auto 40px auto; /* Espaço bom em cima e embaixo */
+  max-width: 800px;
+  cursor: pointer;
+  text-align: center;
+  font-family: 'Courier New', monospace;
+
+  /* Animação suave */
+  transition: all 0.3s ease;
+}
+
+.alert-content {
+  padding: 15px;
+  border: 1px dashed;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  align-items: center;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+}
+
+/* --- ESTADO PADRÃO (AZUL / BROKLIN) --- */
+/* Mostra a mensagem de "Ir para o Jonah" */
+.mode-alert-banner {
+  .broklin-msg {
+    display: flex; /* Aparece */
+    color: #ff3300; /* Cinza discreto */
+    border-color: #555;
+
+    strong { color: #ff3300; } /* Destaque vermelho */
+
+    &:hover {
+      background: rgba(255, 50, 0, 0.1);
+      border-color: #ff3300;
+      color: #ff3300;
+    }
+  }
+
+  .jonah-msg {
+    display: none; /* Esconde a outra */
+  }
+}
+
+/* =========================================
    💀 MODO JONAH (INDUSTRIAL CHAOS PATCH)
    ========================================= */
 
@@ -251,4 +300,59 @@
       color: #000;
     }
   }
+  .mode-alert-banner {
+
+    /* Inverte a visibilidade! */
+    .broklin-msg { display: none; }
+
+    .jonah-msg {
+      display: flex; /* Aparece */
+      color: #00ccff; /* Azul Neon */
+      border-color: #00ccff;
+      background: rgba(0, 20, 40, 0.6);
+
+      strong { color: #fff; }
+
+      &:hover {
+        box-shadow: 0 0 15px #00ccff;
+      }
+    }
+  }
+}
+
+/* =========================================
+   👁️ LÓGICA DE VISIBILIDADE (QUEM APARECE?)
+   ========================================= */
+
+/* 1. COMPORTAMENTO PADRÃO (Modo Broklin/Azul) */
+/* Por padrão, escondemos tudo que é da facção 'jonah' */
+.product-card.jonah {
+  display: none !important;
+}
+
+/* 2. DENTRO DO MODO CAOS (:host-context) */
+:host-context(.mode-jonah) {
+
+  /* AQUI A LÓGICA INVERTE! */
+
+  /* Esconde os Mauricinhos (Broklin/Kelma) */
+  .product-card.broklin {
+    display: none !important;
+  }
+
+  /* Ressuscita os Metaleiros (Jonah/Nyx) */
+  .product-card.jonah {
+    display: flex !important; /* Traz de volta pro layout */
+    animation: glitch-anim 0.4s ease-out; /* Efeito de entrada */
+  }
+
+}
+
+/* =========================================
+   ANIMACÃO EXTRA (Opcional - Charme do Caos)
+   ========================================= */
+@keyframes glitch-anim {
+  0% { opacity: 0; transform: translateX(-50px); filter: blur(10px); }
+  50% { opacity: 1; transform: translateX(10px); }
+  100% { transform: translateX(0); filter: blur(0); }
 }

@@ -1,6 +1,6 @@
 /* --- CONTAINER GERAL --- */
 .story-container {
-  padding: 4rem 1rem;
+  padding: 1rem 1rem;
   background-color: transparent; /* Deixa ver o universo atrás */
   color: var(--text-color);
   max-width: 1200px;
@@ -19,7 +19,7 @@
 /* --- LINHA DO TEMPO (A espinha dorsal) --- */
 .timeline {
   position: relative;
-  max-width: 1000px;
+  max-width: 1800px;
   margin: 0 auto;
 }
 
@@ -162,11 +162,11 @@
 }
 
 .btn-decrypt {
-  background: transparent;
+  background:#0000009a;
   border: 1px solid #00ffcc; /* Ciano Neon */
   color: #00ffcc;
-  padding: 8px 12px;
-  margin-top: 15px;
+  padding: 8px 16px;
+  margin-top: 8px;
   cursor: pointer;
   font-family: 'Courier New', monospace;
   font-weight: bold;
@@ -263,14 +263,14 @@
     &.left .content-box {
       /* Ele cresce para a direita, invadindo o centro */
       /* Não precisa de margem negativa, o fluxo natural é p/ direita */
-      margin-right: -400px; /* (Opcional) Se precisar forçar a invasão */
+      margin-right: -600px; /* (Opcional) Se precisar forçar a invasão */
     }
 
     /* --- CENÁRIO 2: O Card está na DIREITA --- */
     &.right .content-box {
       /* PROBLEMA: Se crescer pra direita, sai da tela. */
       /* SOLUÇÃO: Forçamos ele a crescer para a ESQUERDA usando margem negativa */
-      margin-left: -450px;
+      margin-left: -600px;
     }
 
     /* Ajuste as colunas internas */
@@ -287,7 +287,6 @@
     }
   }
 }
-
 /* Animação para o texto técnico entrar suave */
 @keyframes fadeInRight {
   from { opacity: 0; transform: translateX(-20px); }
@@ -350,5 +349,40 @@
   .btn-decrypt {
     padding: 12px; /* Área de toque maior (dedo gordo friendly) */
     margin-top: 10px;
+  }
+}
+
+/* Estilo Base da Coluna Tech */
+.tech-column {
+  /* Começa "invisível" para o olho humano */
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  visibility: hidden;
+
+  /* Animação suave (Cyberpunk feel) */
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+  /* Quando o botão adiciona a classe .is-visible */
+  &.is-visible {
+    max-height: 2000px; /* Altura suficiente para mostrar todo o conteúdo */
+    opacity: 1;
+    visibility: visible;
+    margin-top: 20px; /* Espaço para respirar */
+  }
+
+  /* Opcional: Garante que o painel interno tenha estilo */
+  .tech-panel {
+    border: 1px solid var(--neon-cyan); /* Ajuste com sua cor */
+    background: rgba(0, 0, 0, 0.6);
+    padding: 15px;
+    border-radius: 8px;
+  }
+}
+
+/* Ajuste Mobile para garantir que não quebre */
+@media (max-width: 768px) {
+  .tech-column.is-visible {
+    width: 100%;
   }
 }
