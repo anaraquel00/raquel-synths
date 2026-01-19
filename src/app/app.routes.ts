@@ -18,24 +18,10 @@ export const routes: Routes = [
 
  // 📚 ROTA 3: A Lore (Versão Direta)
   {
-    path: 'lore',
-    children: [
-      {
-        // 1. O PULO DO GATO:
-        // Como não temos o 'Hub' (Menu) ainda, se a pessoa entrar em '/lore',
-        // a gente empurra ela direto pra '/lore/broklin' (onde estão os episódios!)
-        path: '',
-        redirectTo: 'broklin',
-        pathMatch: 'full'
-      },
-      {
-        // 2. A PÁGINA REAL (Onde está a história):
-        // Carrega o lore-reader normalmente
-        path: ':sagaId',
+    path: 'lore/broklin',
+
         loadComponent: () => import('./pages/lore-reader/lore-reader').then(m => m.LoreReaderComponent)
-      }
-    ]
-  },
+    },
 
   // 👩‍💻 ROTA 4: O Hub da Criadora (Blog Técnico/Portfólio)
   {
