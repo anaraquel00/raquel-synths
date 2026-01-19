@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Header } from "./components/header/header";
 import { Footer } from "./components/footer/footer";
@@ -11,6 +11,7 @@ import { DiscographyComponent } from "./app-discography/app-discography";
 import { ReactiveFormsModule } from '@angular/forms';
 import { ContatoComponent } from "./pages/contato/contato";
 import { AdBannerComponent } from "./components/ad-banner/ad-banner";
+import { injectSpeedInsights } from '@vercel/speed-insights';
 
 @Component({
   selector: 'app-root',
@@ -20,6 +21,14 @@ import { AdBannerComponent } from "./components/ad-banner/ad-banner";
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
-export class App {
-title = 'raquel-synths';
+export class App implements OnInit{
+  title = 'raquel-synths';
+  constructor() {
+    // 2. Inicie o monitoramento aqui!
+    // Isso conecta seu Angular ao painel da Vercel
+    injectSpeedInsights();
+  }
+  ngOnInit(): void {
+    // Vazio.
+  }
 }
