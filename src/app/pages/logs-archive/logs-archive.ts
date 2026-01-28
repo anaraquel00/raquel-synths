@@ -6,6 +6,9 @@ import { RouterModule } from '@angular/router';
 import { SYSTEM_LOGS_DATA } from '../../data/log-data';
 import { AdBannerComponent } from '../../components/ad-banner/ad-banner';
 import { TranslationService } from '../../services/translation.service';
+import { ContentService } from '../../services/content.service';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-logs-archive',
@@ -35,4 +38,24 @@ export class LogsArchiveComponent {
   getLogContent(log: any) {
     return this.translate.isPt() ? log.pt : log.en;
   }
+  private contentService = inject(ContentService);
+
+  logs$: Observable<any[]> = this.contentService.getLogs().pipe(
+    map(logs => {
+      // Ordena também, só para garantir
+      const sorted = logs.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+      return sorted.filter(log => {
+        const dateStr = String(log.date || '');
+        const isOld = dateStr.includes('2025'); // É de 2025?
+        const isLink = !!log.isArchiveLink;     // É o botão "Legacy"?
+
+        // NO ARQUIVO: Queremos (É VELHO) E (NÃO É O BOTÃO)
+        return isOld && !isLink;
+      });
+    })
+  );
+
+
+
 }

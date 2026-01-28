@@ -16,12 +16,25 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/logs-archive/logs-archive').then(m => m.LogsArchiveComponent)
   },
 
- // 📚 ROTA 3: A Lore (Versão Direta)
+ // ✨ NOVA ROTA 3: O Catálogo (A página que acabamos de criar)
+  // É aqui que o usuário escolhe qual episódio ler!
+  {
+    path: 'visual-novel',
+    loadComponent: () => import('./pages/visual-novel/visual-novel').then(m => m.VisualNovelComponent),
+    title: 'RaQuel Synths | Episódios' // Bom pra SEO!
+  },
+
+  // 📖 ROTA 4: O Leitor (Texto Puro)
+  // Essas rotas continuam existindo para carregar o conteúdo específico
   {
     path: 'lore/broklin',
-
-        loadComponent: () => import('./pages/lore-reader/lore-reader').then(m => m.LoreReaderComponent)
-    },
+    loadComponent: () => import('./pages/lore-reader/lore-reader').then(m => m.LoreReaderComponent)
+  },
+  {
+  // O ":id" avisa ao Angular: "O que vier aqui depois da barra é variável!"
+  path: 'lore-reader/:id',
+  loadComponent: () => import('./pages/lore-reader/lore-reader').then(m => m.LoreReaderComponent)
+ },
 
   // 👩‍💻 ROTA 4: O Hub da Criadora (Blog Técnico/Portfólio)
   {

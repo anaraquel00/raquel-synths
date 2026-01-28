@@ -1,31 +1,44 @@
-import { Component } from '@angular/core';
-
+import { Component, inject, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ContentService } from '../../services/content.service'; // Ajuste o caminho se necessário
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-last-releases',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   template: `
-    <div class="release-widget" (click)="openLink()">
+    <div *ngIf="currentTrack"
+         class="release-widget"
+         [class.jonah-mode]="isJonahMode"
+         (click)="openLink()">
+
       <div class="glow-container">
-        <img [src]="coverImage" alt="Cover" class="cover-art">
+        <img [src]="currentTrack.cover" alt="Cover" class="cover-art">
+
         <div class="info">
-          <span class="status">🔥 PRE-SAVE NOW</span>
-          <span class="title">NEON GUILLOTINE</span>
+          <span class="status">
+            {{ isPreSave ? '🔥 PRE-SAVE NOW' : '🎧 NEW RELEASE' }}
+          </span>
+
+          <span class="title">{{ currentTrack.title }}</span>
         </div>
       </div>
+
     </div>
   `,
   styles: [`
     .release-widget {
       cursor: pointer;
       animation: float 4s ease-in-out infinite;
+      transition: all 0.5s ease;
     }
 
     .glow-container {
       display: flex;
       align-items: center;
-      gap: 10px; /* Aumentei um pouco o gap geral */
+      gap: 10px;
+      /* ESTILO PADRÃO (BROKLIN) */
       background: rgba(0, 0, 0, 0.7);
       border: 2px solid var(--primary-color, #00ff9d);
       padding: 10px 20px 10px 10px;
@@ -35,10 +48,21 @@ import { Component } from '@angular/core';
       transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
+    /* --- ESTILO MODO JONAH (Adicionado) --- */
+    .jonah-mode .glow-container {
+      border-color: #ff3300; /* Laranja Fogo */
+      background: rgba(20, 0, 0, 0.9);
+      box-shadow: 0 0 25px rgba(255, 50, 0, 0.6);
+    }
+
+    .jonah-mode .status {
+      color: #ff3300 !important;
+      text-shadow: 0 0 8px rgba(255, 60, 0, 0.8);
+    }
+
     .glow-container:hover {
-      box-shadow: 0 0 40px var(--primary-color, #00ff9d), inset 0 0 20px rgba(0, 255, 157, 0.2);
-      transform: scale(1.1) rotate(-2deg);
-      background: rgba(0, 0, 0, 0.9);
+      transform: scale(1.05);
+      background: rgba(0, 0, 0, 0.95);
       border-color: #fff;
     }
 
@@ -49,19 +73,20 @@ import { Component } from '@angular/core';
       object-fit: cover;
       border: 3px solid #fff;
       box-shadow: 0 0 15px rgba(0,0,0,0.5);
-      flex-shrink: 0; /* IMPEDIR QUE A FOTO SEJA ESMAGADA */
+      flex-shrink: 0;
     }
 
     .info {
       display: flex;
       flex-direction: column;
       justify-content: center;
-      line-height: 1.2; /* Um pouco mais de altura pra quando quebrar linha */
-      overflow: hidden; /* Garante que nada vaze */
+      line-height: 1.2;
+      overflow: hidden;
+      max-width: 200px; /* Limite pra não estourar */
     }
 
     .status {
-      font-size: 0.8rem; /* Ajuste fino */
+      font-size: 0.8rem;
       color: var(--accent-color, #ff00ff);
       font-weight: 800;
       letter-spacing: 2px;
@@ -76,8 +101,10 @@ import { Component } from '@angular/core';
       font-weight: 900;
       font-family: 'Orbitron', sans-serif;
       text-shadow: 2px 2px 0px #000;
-      white-space: nowrap; /* No PC mantém numa linha só */
-      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2; /* Máximo 2 linhas */
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     @keyframes float {
@@ -86,36 +113,79 @@ import { Component } from '@angular/core';
       100% { transform: translateY(0px); }
     }
 
-    /* --- CORREÇÃO MOBILE --- */
     @media (max-width: 480px) {
-      .glow-container {
-        padding: 8px 15px 8px 8px; /* Reduzi o padding da direita pra ganhar espaço */
-        border-radius: 40px; /* Bordas menos redondas economizam espaço visual */
-      }
-
-      .cover-art {
-        width: 60px;
-        height: 60px;
-      }
-
-      .title {
-        font-size: 0.9rem; /* Diminuí pra caber */
-        white-space: normal; /* AGORA PODE QUEBRAR LINHA! */
-        word-wrap: break-word; /* Garante que palavras longas quebrem se precisar */
-      }
-
-      .status {
-        font-size: 0.7rem;
-        letter-spacing: 1px;
-      }
+      .glow-container { padding: 8px 15px 8px 8px; border-radius: 40px; }
+      .cover-art { width: 60px; height: 60px; }
+      .title { font-size: 0.9rem; }
+      .status { font-size: 0.7rem; }
     }
   `]
 })
-export class LastReleasesComponent {
-  coverImage = 'assets/disco/ep_neon_guillotine.png';
-  link = 'https://distrokid.com/hyperfollow/raquelsynthsrqs/neon-guillotine';
+export class LastReleasesComponent implements OnInit, OnDestroy {
+  private contentService = inject(ContentService);
+  private cdr = inject(ChangeDetectorRef);
+
+  currentTrack: any = null;
+  isPreSave = false;
+  isJonahMode = false;
+
+  private observer: MutationObserver | null = null;
+  private sub: Subscription | null = null;
+  private allMusic: any[] = [];
+
+  ngOnInit() {
+    // 1. Define modo inicial
+    this.checkMode();
+    // 2. Baixa dados do Firebase
+    this.sub = this.contentService.getDiscography().subscribe(data => {
+      this.allMusic = data;
+      this.updateCapsule();
+    });
+    // 3. Vigia mudança de tema no Body
+    this.observer = new MutationObserver(() => {
+      this.checkMode();
+      this.updateCapsule();
+    });
+    this.observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+  }
+
+  ngOnDestroy() {
+    if (this.observer) this.observer.disconnect();
+    if (this.sub) this.sub.unsubscribe();
+  }
+
+  checkMode() {
+    this.isJonahMode = document.body.classList.contains('mode-jonah');
+  }
+
+  updateCapsule() {
+    if (!this.allMusic.length) return;
+
+    const faction = this.isJonahMode ? 'jonah' : 'broklin';
+
+    // 1. Filtra músicas da facção atual
+    const factionTracks = this.allMusic.filter(t => t.faction === faction);
+
+    // 2. A HIERARQUIA DO HYPE:
+    // Prioridade 1: É Pre-Save? (Futuro)
+    // Prioridade 2: É Lançamento Recente? (Marcado com isLatest: true)
+    // Prioridade 3: Pega o primeiro da lista (Fallback)
+    const targetTrack = factionTracks.find(t => t.isPreSave === true)
+                     || factionTracks.find(t => t.isLatest === true)
+                     || factionTracks[0];
+
+    if (targetTrack) {
+      this.currentTrack = targetTrack;
+      this.isPreSave = !!targetTrack.isPreSave; // Se for Pre-Save, muda o botão
+      this.cdr.detectChanges();
+    }
+  }
 
   openLink() {
-    window.open(this.link, '_blank');
+    if (this.currentTrack) {
+      // Prioriza link Spotify, senão Soundcloud
+      const url = this.currentTrack.spotify || this.currentTrack.soundcloud;
+      if (url) window.open(url, '_blank');
+    }
   }
 }

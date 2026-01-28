@@ -5,12 +5,31 @@
 }
 
 .store-container {
-  padding: 1rem 1rem;
+  /* padding: 1rem 1rem;
   min-height: 100vh;
   // Tenta usar a variável global de fundo, senão usa o escuro padrão
   background-color: var(--bg-color-main, #0a0a12);
-  color: var(--text-main, #ffffff);
+  color: var(--text-main, #ffffff); */
   text-align: center;
+
+   background: rgba(10, 10, 15, 0.75);
+
+  /* 2. O Pulo do Gato: Borra apenas o que está ATRÁS da caixa */
+  backdrop-filter: blur(var(--bg-blur-intensity));
+  -webkit-backdrop-filter: blur(var(--bg-blur-intensity)); /* Pra funcionar no Safari/iPhone */
+
+  /* 3. Acabamento Premium */
+  border-radius: 16px; /* Cantos arredondados modernos */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Borda fina e sutil */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); /* Sombra pra dar profundidade */
+
+  /* 4. Espaçamento interno (pra o texto não colar na borda) */
+  padding: 20px;
+  margin-bottom: 40px;
+  padding: 2rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  border-radius: 20px;
 }
 
  .back-btn {
@@ -28,6 +47,7 @@
     color: #000000a0;
   }
 }
+
 /* --- TÍTULO COM EFEITO GLITCH --- */
 .glitch-title {
   font-size: 3rem;
@@ -42,9 +62,32 @@
 .subtitle {
   font-family: monospace;
   opacity: 0.7;
-  margin-bottom: 3rem;
+  margin-bottom: 1rem;
   letter-spacing: 1px;
 }
+
+.back-to-dept-btn{
+      align-self: flex-start;
+      background: rgba(255, 255, 255, 0.1); // Vidro
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: #fff;
+      padding: 12px 24px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background:  #00f3ff;
+        color: #000;
+        border-color:  #00f3ff;
+        box-shadow: 0 0 20px rgba(0, 243, 255, 0.6);
+      }
+    }
+
 
 /* --- GRID DE PRODUTOS --- */
 .product-grid {
@@ -174,13 +217,79 @@
 }
 
 /* =========================================
+   💠 SETOR HEADER: O PADRÃO (BROKLIN STYLE)
+   ========================================= */
+.sector-header {
+  text-align: center;
+  margin: 1rem 0 2rem 0;
+  position: relative;
+  transition: all 0.3s ease;
+
+  // No nosso lado, as faixas de perigo do Jonah ficam invisíveis!
+  .hazard-stripe { display: none; }
+
+  .sector-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.05); // Vidro sutil
+    padding: 0.6rem 1.5rem;
+    border-radius: 8px;
+    color: #00f3ff; // Azul Neon (Broklin)
+    font-size: 1.6rem;
+    font-family: 'Rajdhani', sans-serif; // Ou sua fonte limpa
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+
+    .folder-icon { font-size: 1.4rem; } // A pastinha 📂
+  }
+
+  /* -------------------------------------------
+     💀 O MODO JONAH (SÓ QUANDO ATIVADO NO SETOR)
+     ------------------------------------------- */
+  &.jonah-mode {
+    background: rgba(0, 0, 0, 0.8);
+    border-left: 5px solid #ff0000; // Barra vermelha lateral
+    padding: 1rem;
+
+    .hazard-stripe {
+      display: block; // Agora o perigo aparece!
+      height: 10px;
+      width: 100%;
+      background: repeating-linear-gradient(45deg, #ff0000, #ff0000 10px, #000 10px, #000 20px);
+      margin-bottom: 1rem;
+      &.bottom { margin-top: 1rem; margin-bottom: 0; }
+    }
+
+    .sector-label {
+      background: transparent;
+      font-family: 'Stencil', sans-serif;
+      font-size: 2.2rem;
+      color: #fff;
+      text-shadow: 4px 4px 0px #ff0000; // Sombra dura
+      letter-spacing: 5px;
+
+      .folder-icon { display: none; } // Tira a pastinha no caos
+    }
+
+    // Se quiser o texto de "System Msg" que ele inventou
+    .sector-desc {
+      display: block;
+      font-family: 'Courier New', monospace;
+      color: #ccc;
+      &::before { content: '>> SYSTEM MSG: '; color: #ff0000; }
+    }
+  }
+}
+
+/* =========================================
    🚨 BANNER DE ALERTA DE MODO
    ========================================= */
 
 .mode-alert-banner {
   margin: 20px auto 40px auto; /* Espaço bom em cima e embaixo */
   max-width: 800px;
-  cursor: pointer;
+  //cursor: pointer;
   text-align: center;
   font-family: 'Courier New', monospace;
 
@@ -221,6 +330,8 @@
     display: none; /* Esconde a outra */
   }
 }
+
+
 
 /* =========================================
    💀 MODO JONAH (INDUSTRIAL CHAOS PATCH)
@@ -290,6 +401,17 @@
     }
   }
 
+  .back-to-dept-btn{
+
+    border: 1px dashed #ff3300;
+    color: #ff3300;
+
+    &:hover {
+      background: #ff3300;
+      color: #000;
+    }
+      }
+
   // O Botão Voltar vira algo mais agressivo
   .back-btn {
     border: 1px dashed #ff3300;
@@ -300,6 +422,7 @@
       color: #000;
     }
   }
+
   .mode-alert-banner {
 
     /* Inverte a visibilidade! */
@@ -318,34 +441,6 @@
       }
     }
   }
-}
-
-/* =========================================
-   👁️ LÓGICA DE VISIBILIDADE (QUEM APARECE?)
-   ========================================= */
-
-/* 1. COMPORTAMENTO PADRÃO (Modo Broklin/Azul) */
-/* Por padrão, escondemos tudo que é da facção 'jonah' */
-.product-card.jonah {
-  display: none !important;
-}
-
-/* 2. DENTRO DO MODO CAOS (:host-context) */
-:host-context(.mode-jonah) {
-
-  /* AQUI A LÓGICA INVERTE! */
-
-  /* Esconde os Mauricinhos (Broklin/Kelma) */
-  .product-card.broklin {
-    display: none !important;
-  }
-
-  /* Ressuscita os Metaleiros (Jonah/Nyx) */
-  .product-card.jonah {
-    display: flex !important; /* Traz de volta pro layout */
-    animation: glitch-anim 0.4s ease-out; /* Efeito de entrada */
-  }
-
 }
 
 /* =========================================

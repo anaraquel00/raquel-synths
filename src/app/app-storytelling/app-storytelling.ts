@@ -1,12 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { map, catchError, tap } from 'rxjs/operators';
 
-// 1. IMPORTAMOS A NOVA FONTE ÚNICA
-import { SYSTEM_LOGS_DATA } from '../data/log-data';
-
-// 2. IMPORTAMOS O SERVIÇO DE TRADUÇÃO (Porque agora os dados são bilingues)
 import { TranslationService } from '../services/translation.service';
+import { ContentService } from '../services/content.service';
 
 @Component({
   selector: 'app-storytelling',
@@ -18,26 +17,47 @@ import { TranslationService } from '../services/translation.service';
 export class StorytellingComponent {
 
   private router = inject(Router);
-  public translate = inject(TranslationService); // Injetamos o tradutor
+  public translate = inject(TranslationService);
+  private contentService = inject(ContentService);
 
-  // 3. FILTRO DA HOME:
-  // Lógica: Pegar tudo que NÃO é de 2025 (ou seja, 2026) OU o botão de Arquivo
-  events = SYSTEM_LOGS_DATA.filter(log => {
-    const isOld = log.date.includes('2025'); // É velho?
-    const isLink = log.isArchiveLink;        // É o botão?
+  // 🔥 O FLUXO DE DADOS (COM ORDENAÇÃO E FILTRO)
+  logs$: Observable<any[]> = this.contentService.getLogs().pipe(
+    map(logs => {
+      if (!logs) return [];
 
-    // Na home, queremos: (NÃO É VELHO) OU (É O BOTÃO)
-    return !isOld || isLink;
-  });
+      // 1º PASSO: ORDENAR (Do mais novo para o mais antigo)
+      // Usamos JavaScript para comparar as datas, já que removemos do Firebase
+      const sortedLogs = logs.sort((a, b) => {
+        const dateA = new Date(a.date).getTime();
+        const dateB = new Date(b.date).getTime();
+        return dateB - dateA; // B menos A = Decrescente (Mais novo no topo)
+      });
 
-  // 4. FUNÇÃO AUXILIAR PARA O HTML LER (PT/EN)
-  // Como mudamos a estrutura dos dados, o HTML da home precisa dessa ajuda
+      // 2º PASSO: FILTRAR PARA A HOME
+      return sortedLogs.filter(log => {
+        const dateStr = String(log.date || '');
+        const isOld = dateStr.includes('2025'); // É coisa velha?
+        const isLink = !!log.isArchiveLink;     // É o botão do arquivo?
+
+        // Na Home mostramos: (NÃO é velho) OU (É o botão)
+        return !isOld || isLink;
+      });
+    }),
+    catchError(error => {
+      console.error('🔥 [FIREBASE ERROR]:', error);
+      return of([{ _isError: true, message: error.message }]);
+    })
+  );
+
   getEventContent(event: any) {
     return this.translate.isPt() ? event.pt : event.en;
   }
 
-  // ... (suas funções toggleLog e navigateToArchive continuam aqui)
-  toggleLog(event: any) { event.isExpanded = !event.isExpanded; }
+  toggleLog(event: any) {
+    event.isExpanded = !event.isExpanded;
+  }
 
-  navigateToArchive() { this.router.navigate(['/logs-archive']); }
+  navigateToArchive() {
+    this.router.navigate(['/logs-archive']);
+  }
 }

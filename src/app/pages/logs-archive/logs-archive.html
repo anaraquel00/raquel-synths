@@ -2,61 +2,74 @@
 
   <header class="blog-header">
     <h1 class="glitch-text">SYSTEM_ARCHIVE_MEMORY</h1>
-    <p class="subtitle">{{ translate.isPt() ? 'Log completo de operações e devaneios da RaQuel Synths' : 'Complete log of operations and daydreams of RaQuel Synths'}}.</p>
+    <p class="subtitle">
+      {{ translate.isPt() ? 'Log completo de operações e devaneios da RaQuel Synths' : 'Complete log of operations and daydreams of RaQuel Synths'}}.
+    </p>
 
     <app-ad-banner></app-ad-banner>
   </header>
 
   <div class="blog-feed">
 
-    @for (log of logs; track log.date; let i = $index) {
+    @let logs = logs$ | async;
 
-      @let content = getLogContent(log);
+   @if (logs) {
 
-      <article class="blog-post">
+      @for (log of logs; track log.id; let i = $index) {
 
-        <div class="post-header">
-          <span class="post-date">{{ log.date }}</span>
+        @let content = getLogContent(log);
 
-          <h2 class="post-title">{{ content.title }}</h2>
-        </div>
-       <div class="post-body">
+        <article class="blog-post">
 
-     @if (log.image) {
-    <div class="post-image">
-      <img [src]="log.image" [alt]="content.title" loading="lazy">
+          <div class="post-header">
+            <span class="post-date">{{ log.date }}</span>
+            <h2 class="post-title">{{ content?.title }}</h2>
+          </div>
+
+          <div class="post-body">
+
+            @if (log.image) {
+              <div class="post-image">
+                <img [src]="log.image" [alt]="content?.title" loading="lazy">
+              </div>
+            }
+
+            <div class="post-content-wrapper">
+
+              <p class="post-text">{{ content?.description }}</p>
+
+              @if (content?.jonahComment) {
+                <div class="jonah-box">
+                  <strong>[JONAH]:</strong> {{ content.jonahComment }}
+                </div>
+              }
+
+              @if (content?.techContent) {
+                <div class="tech-box">
+                  <span class="tech-label">[ DEV_NOTES ]</span>
+                  <div [innerHTML]="content.techContent"></div>
+                </div>
+              }
+            </div>
+          </div>
+
+        </article>
+
+        @if ((i + 1) % 2 === 0 && i !== logs.length - 1) {
+          <app-ad-banner></app-ad-banner>
+        }
+
+        @if ((i + 1) % 2 !== 0 && i < logs.length - 1) {
+          <hr class="cyber-divider">
+        }
+
+      }
+      } @else {
+      <div style="padding: 100px; text-align: center; color: #0f0;">
+        <p>🔄 DOWNLOADING ARCHIVE...</p>
       </div>
-      }
-
-    <div class="post-content-wrapper">
-
-      <p class="post-text">{{ content.description }}</p>
-
-      @if (content.jonahComment) {
-        <div class="jonah-box">
-          <strong>[JONAH]:</strong> {{ content.jonahComment }}
-        </div>
-      }
-
-      @if (content.techContent) {
-        <div class="tech-box">
-          <span class="tech-label">[ DEV_NOTES ]</span>
-          <div [innerHTML]="content.techContent"></div>
-        </div>
-      }
-     </div> </div>
-
-      </article>
-
-      @if ((i + 1) % 2 === 0 && i !== logs.length - 1) {
-        <app-ad-banner></app-ad-banner>
-      }
-
-      @if ((i + 1) % 2 !== 0 && i < logs.length - 1) {
-        <hr class="cyber-divider">
-      }
-
     }
+
   </div>
 
   <footer class="blog-footer">

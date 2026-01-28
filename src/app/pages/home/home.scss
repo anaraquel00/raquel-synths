@@ -100,12 +100,14 @@
 }
 
 .music-player-container {
+
   width: 100%;
   max-width: 500px; /* Não deixa ficar muito largo em telas grandes */
   margin: 1.5rem 0; /* Espaço em cima e embaixo para respirar */
   z-index: 10; /* Garante que fique clicável */
 
   iframe {
+    background-color: #000;
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); /* Sombra Cyberpunk */
     transition: transform 0.3s ease;
 
@@ -187,4 +189,20 @@ body.mode-jonah app-home .hero-title::before {
     filter: blur(20px); /* Dissolve no ar */
     color: rgba(100, 100, 100, 0); /* Vira cinza e some */
   }
+
 }
+/* Quando o body tiver a classe mode-jonah */
+:host-context(.mode-jonah) {
+  .music-player-container {
+    border-color: #ff3300; /* Laranja/Vermelho Fogo */
+    box-shadow: 0 0 20px rgba(255, 50, 0, 0.3);
+  }
+
+  .empty-player-state {
+    border-color: #ff3300;
+    color: #ff3300;
+  }
+}
+
+/* ========================================= */
+

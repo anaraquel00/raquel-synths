@@ -214,6 +214,23 @@
     &:hover { background: var(--neon-cyan); color: #06fd12; box-shadow: 0 0 20px var(--neon-cyan); }
   }
 }
+:host-context(.mode-jonah) {
+  .blog-footer {
+    border-top: 1px solid #ff4500; // Mudei a borda superior também pra combinar!
+
+    .btn-back {
+      border: 2px solid #ff4500;
+      color: #ff4500;
+
+      &:hover {
+        background: #320000e6; // Aquele vermelho sangue escuro
+        color: #ff4500;
+        box-shadow: 0 0 20px #ff4500; // Brilho Laranja
+        border-color: #ff4500;
+      }
+    }
+  }
+}
 
 /* --- MOBILE FINE TUNING --- */
 @media (max-width: 768px) {

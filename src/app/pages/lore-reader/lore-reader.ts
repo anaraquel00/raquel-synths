@@ -1,36 +1,107 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Component, OnInit, OnDestroy, AfterViewChecked, inject, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Router, ActivatedRoute } from '@angular/router';
 import { TranslationService } from '../../services/translation.service';
-// 👇 IMPORTANTE: Importando as duas listas separadas!
-import { BROKLIN_ARC_PT, BROKLIN_ARC_EN, LoreEpisode } from '../../data/lore-data';
 import { AdBannerComponent } from "../../components/ad-banner/ad-banner";
+import { ContentService } from '../../services/content.service';
+import { Observable, map } from 'rxjs';
+import { SplitContentPipe } from "../../components/pipes/content-splitter.pipe";
 
 @Component({
   selector: 'app-lore-reader',
   standalone: true,
-  imports: [CommonModule, AdBannerComponent],
+  imports: [CommonModule, AdBannerComponent, SplitContentPipe],
   templateUrl: './lore-reader.html',
   styleUrls: ['./lore-reader.scss']
 })
-export class LoreReaderComponent {
+export class LoreReaderComponent implements OnInit, OnDestroy, AfterViewChecked {
 
-  constructor(
-    public translate: TranslationService, // Injetando o serviço de tradução
-    private router: Router
-  ) {}
+  // --- INJEÇÕES ---
+  private contentService = inject(ContentService);
+  public translate = inject(TranslationService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
-  // 👇 O SEGREDO: Esse 'get' decide qual lista mostrar em tempo real
-  get episodes(): LoreEpisode[] {
-    // Se o site estiver em PT, usa a lista PT. Se não, usa a EN.
-    const currentList = this.translate.isPt() ? BROKLIN_ARC_PT : BROKLIN_ARC_EN;
+  // --- VARIÁVEIS DE CONTROLE ---
+  currentMode: 'broklin' | 'jonah' = 'broklin';
+  episodes$: Observable<any[]>;
 
-    // Filtra apenas os episódios marcados como 'published: true'
-    return currentList.filter(ep => ep.published);
+  // Variáveis para o Scroll
+  private targetId: string | null = null;
+  private scrollDone = false;
+  private themeObserver: MutationObserver | null = null;
+  isBrowser: boolean;
+
+  constructor(@Inject(PLATFORM_ID ) private platformId: Object) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+    // 1. Configuração Simples do Observable (Sem lógica de scroll aqui!)
+    this.episodes$ = this.contentService.getLoreEpisodes().pipe(
+      map((episodes: any[]) => {
+        return episodes.filter(ep =>
+          !ep.mode || ep.mode.toLowerCase() === this.currentMode.toLowerCase()
+        );
+      })
+    );
   }
 
-  // Função para voltar para a Home
+  ngOnInit() {
+    // 1. SÓ EXECUTA SE FOR NO NAVEGADOR!
+    if (this.isBrowser) {
+
+    this.checkTheme();
+
+    // 2. Captura o alvo assim que a página nasce
+    this.targetId = this.route.snapshot.paramMap.get('id');
+    console.log('🧔 Broklin: Alvo definido para:', this.targetId);
+
+    // Observer do Tema (Mantido)
+    this.themeObserver = new MutationObserver(() => {
+      this.checkTheme();
+    });
+    this.themeObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+  }
+}
+
+  // 🔥 A MÁGICA NUCLEAR 🔥
+  // Esse método roda VÁRIAS vezes. Ele verifica o HTML visualmente.
+  ngAfterViewChecked() {
+
+    // Se temos um alvo E ainda não scrolamos...
+    if (this.isBrowser && this.targetId && !this.scrollDone) {
+      const element = document.getElementById(this.targetId);
+
+      if (element) {
+        // ACHOU! Executa o scroll.
+        console.log('🧔 Broklin: Elemento encontrado visualmente! Scrollando...');
+
+        // Cálculo do Offset (para não ficar atrás do menu)
+        const headerOffset = 100;
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.scrollY - headerOffset;
+
+        window.scrollTo({
+
+          top: offsetPosition,
+          behavior: "smooth"
+        });
+
+        // Marca como feito para ele parar de tentar
+        this.scrollDone = true;
+      }
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.themeObserver) this.themeObserver.disconnect();
+  }
+
+  private checkTheme() {
+    if (!this.isBrowser) return;
+    const isJonah = document.body.classList.contains('mode-jonah');
+    this.currentMode = isJonah ? 'jonah' : 'broklin';
+  }
+
   goBack() {
-    this.router.navigate(['/']);
+    this.router.navigate(['/visual-novel']);
   }
 }

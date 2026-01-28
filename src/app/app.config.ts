@@ -5,6 +5,11 @@ import { provideRouter, withComponentInputBinding, withViewTransitions, withInMe
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideServiceWorker } from '@angular/service-worker';
+// Importações do Firebase
+import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
+import { provideFirestore, getFirestore } from '@angular/fire/firestore';
+import { provideAnalytics, getAnalytics } from '@angular/fire/analytics';
+import { environment } from '../environments/environment';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -19,7 +24,10 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withFetch()), provideClientHydration(withEventReplay()), provideServiceWorker('ngsw-worker.js', {
             enabled: !isDevMode(),
             registrationStrategy: 'registerWhenStable:30000'
-          })
-
+          }),
+   // Inicializando o Firebase
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideFirestore(() => getFirestore()),
+    provideAnalytics(() => getAnalytics())
   ]
 };

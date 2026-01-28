@@ -1,0 +1,33 @@
+<section class="department-sector">
+
+  <h2 class="sector-title">
+    {{ currentLang === 'pt' ? 'ESCOLHA SEU ESTILO' : 'CHOOSE YOUR STYLE' }}
+  </h2>
+
+  <div class="cards-grid">
+
+  <article
+    *ngFor="let item of departments"
+    class="dept-card"
+    [ngClass]="item.id"
+    (click)="onCardClick(item.id)"> <div class="card-image">
+      <img [src]="item.image" [alt]="item.title">
+      <div class="overlay"></div>
+    </div>
+
+    <div class="card-content">
+      <h3>{{ item.title }}</h3>
+
+      <p>{{ item.description[currentLang] }}</p>
+
+      <button class="shop-btn" (click)="onCardClick(item.id, $event)">
+        {{ item.buttonText[currentLang] }}
+      </button>
+
+    </div>
+
+  </article>
+
+</div>
+
+</section>

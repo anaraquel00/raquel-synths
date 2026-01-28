@@ -30,6 +30,7 @@ body {
   --text-color: #ffffff;
   --bg-color: #0a0a12;
   --hero-overlay: rgba(0, 0, 0, 0.4);
+  --bg-blur-intensity: 12px; /* 🌫️ Padrão Broklin: Desfoque elegante */
 
   --footer-bg: #000000;   /* Preto Absoluto para o rodapé */
   --footer-text: #ffffff; /* Texto branco */
@@ -124,6 +125,8 @@ body.mode-jonah {
 
   /* Vermelho Sangue Coagulado (Nas sombras) -> Usado em Bordas, Hover, Detalhes */
   --warn-color: #8a0000;
+
+  --bg-blur-intensity: 15px; /* 🌫️ Modo Jonah: Desfoque pesado e caótico */
 
   /* O Abismo Industrial (Fundo) */
   --bg-color: #050404;       /* Preto quase absoluto */
@@ -312,4 +315,93 @@ body.mode-broklin .swal2-icon.swal2-info {
 @keyframes neon-pulse-broklin {
   from { box-shadow: 0 0 20px rgba(0, 255, 255, 0.5), inset 0 0 5px rgba(0, 255, 255, 0.3); }
   to   { box-shadow: 0 0 35px rgba(0, 255, 255, 0.8), inset 0 0 15px rgba(0, 255, 255, 0.6); transform: scale(1.05); }
+}
+
+
+/* =======================================================
+   💣 OPERAÇÃO QUEBRA-BARREIRA (OVERLAY GLOBAL)
+   ======================================================= */
+
+/* 1. ATACANDO A RAIZ: O container que segura todos os menus do site.
+      Ele PRECISA ser maior que o 9999 do seu Header. */
+.cdk-overlay-container {
+  z-index: 12000 !important;
+}
+
+/* 2. FORÇANDO A SUBIDA: Se o margin-top falhou, usamos TRANSFORM.
+      O Transform é mais forte que o posicionamento do JavaScript. */
+.cdk-overlay-panel {
+  /* Sobe 4 pixels para garantir que ele 'atropele' a borda do header */
+  transform: translateY(-60px,-1px) !important;
+
+}
+
+/* 3. A FUSÃO VISUAL (MODO BROKLIN - VERDE) */
+.mat-mdc-menu-panel.cyber-menu {
+  background: rgba(10, 10, 18, 0.98) !important;
+  backdrop-filter: blur(12px);
+
+  /* Borda Verde Neon (sem a de cima) */
+  border: 1px solid #06fd12 !important;
+  border-top: 1px solid #06fd12 !important;
+  border-radius: 8px 8px 8px 8px !important;
+
+  box-shadow: 0 10px 10px rgba(6, 253, 18, 0.3) !important;
+  overflow: hidden !important;
+}
+
+/* =======================================================
+   🦊 MODO JONAH: INVASÃO LARANJA (SPECIFICITY MAX)
+   ======================================================= */
+
+body.mode-jonah {
+  /* O Painel fica Laranja e sobe igual */
+  .mat-mdc-menu-panel.cyber-menu {
+    border-color: #ff3d00 !important;
+    box-shadow: 0 10px 20px rgba(255, 61, 0, 0.4) !important;
+  }
+
+  /* Itens e Ícones Laranja */
+  .mat-mdc-menu-item {
+    .mat-icon { color: #ff3d00 !important; }
+
+    &:hover {
+      background-color: rgba(255, 61, 0, 0.15) !important;
+      .mat-icon {
+        color: #ffffff !important;
+        filter: drop-shadow(0 0 8px #ff3d00);
+      }
+    }
+  }
+}
+/* =======================================================
+   📱 AJUSTE RESPONSIVO DO SUBMENU (PC vs CELULAR)
+   ======================================================= */
+
+/* --- 1. CONFIGURAÇÃO PARA PC (Telas Maiores) --- */
+@media (min-width: 901px) {
+  .cdk-overlay-pane {
+    /* Mantém o alinhamento que a gente amou no Desktop */
+    transform: translate(-7px, -3px) !important;
+    z-index: 12000 !important;
+  }
+}
+
+/* --- 2. CONFIGURAÇÃO PARA MOBILE (Telas Menores) --- */
+@media (max-width: 900px) {
+  .cdk-overlay-pane {
+    /* No celular, não empurramos pra direita!
+       Deixamos o transform em 0 ou apenas um ajuste leve de altura. */
+    transform: translateY(-2px) !important;
+
+    /* Garante que o menu não saia da tela */
+    max-width: 95vw !important;
+    left: 10px !important; /* Margem de segurança na esquerda */
+    z-index: 12000 !important;
+  }
+
+  /* Forçando o 'COMUNIDADE' a parar de ser roxo e seguir o tema */
+  .mat-mdc-menu-trigger.COMUNIDADE-ROXO-FIX {
+    color: var(--accent-color) !important;
+  }
 }

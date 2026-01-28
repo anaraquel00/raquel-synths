@@ -13,6 +13,7 @@ import { ContatoComponent } from "./pages/contato/contato";
 import { AdBannerComponent } from "./components/ad-banner/ad-banner";
 import { injectSpeedInsights } from '@vercel/speed-insights';
 
+
 @Component({
   selector: 'app-root',
   imports: [Header,

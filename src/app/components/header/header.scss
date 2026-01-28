@@ -7,6 +7,8 @@
   left: 0;
   right: 0; /* Isso estica ele de ponta a ponta */
 
+  margin-top: -1px !important;
+
   width: auto; /* Deixa o left/right decidirem a largura */
   height: 70px;
   z-index: 9999;

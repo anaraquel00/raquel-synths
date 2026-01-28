@@ -1,5 +1,5 @@
-import { Component, inject, OnInit, OnDestroy, signal, computed } from '@angular/core';
-import { CommonModule, DOCUMENT } from '@angular/common';
+import { Component, inject, OnInit, OnDestroy, signal, computed, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { COMPLIANCE_DATA } from '../../data/app-data';
 import { TranslationService } from '../../services/translation.service';
 
@@ -11,6 +11,11 @@ import { TranslationService } from '../../services/translation.service';
   styleUrl: './compliance.scss'
 })
 export class ComplianceComponent implements OnInit, OnDestroy {
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+  }
+  isBrowser: boolean;
+  // Injetamos o serviço de tradução
 
   private translationService = inject(TranslationService);
   // Injetamos o DOCUMENT para vigiar o corpo da página
@@ -26,6 +31,7 @@ currentModeClass: string|string[]|Set<string>|{ [klass: string]: any; }|null|und
 complianceData: any;
 
   ngOnInit() {
+    if (this.isBrowser) {
     // O Vigia: Se a classe 'mode-jonah' aparecer no body, a gente muda o texto
     this.themeObserver = new MutationObserver(() => {
       this.checkMode();
@@ -39,6 +45,7 @@ complianceData: any;
     // Checagem inicial
     this.checkMode();
   }
+}
 
   ngOnDestroy() {
     // Desliga o vigia ao sair

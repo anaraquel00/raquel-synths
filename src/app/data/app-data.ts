@@ -1,7 +1,7 @@
 // DADOS DO HEADER/NAV
 export const NAV_DATA = {
-  pt: { inicio: 'INÍCIO', sobre: 'QUEM SOMOS', visualNovel: 'VISUAL NOVEL', discografia: 'DISCOGRAFIA', store: 'LOJA', lore: 'LORE (HISTÓRIA)', creator: 'A CRIADORA', backToBase: 'VOLTAR À BASE' },
-  en: { inicio: 'HOME', sobre: 'WHO WE ARE', visualNovel: 'VISUAL NOVEL', discografia: 'DISCOGRAPHY', store: 'STORE', lore: 'LORE (STORIES)', creator: 'THE CREATOR', backToBase: 'BACK TO BASE' }
+  pt: { lightmode:'MODO BROKLIN', darkmode:'MODO JONAH', inicio: 'INÍCIO', sobre: 'QUEM SOMOS', visualNovel: 'VISUAL NOVEL', discografia: 'DISCOGRAFIA', store: 'LOJA', social: 'COMUNIDADE', creator: 'A CRIADORA', backToBase: 'VOLTAR À BASE' },
+  en: { lightmode:'BROKLIN MODE', darkmode:'JONAH MODE', inicio: 'HOME', sobre: 'WHO WE ARE', visualNovel: 'VISUAL NOVEL', discografia: 'DISCOGRAPHY', store: 'STORE', social: 'COMMUNITY', creator: 'THE CREATOR', backToBase: 'BACK TO BASE' }
 };
 
 // DADOS DA HOME
@@ -119,7 +119,7 @@ export const VISUAL_NOVEL_PT = [
       subtitle: 'Caos, Fios & Revolução',
       description: 'Quando o sistema falha, a verdade aparece. A revolta industrial de Jonah contra a programação.',
       image: 'assets/disco/album_jonas-history.png', // Capa do Jonah
-      link: 'https://www.youtube.com/watch?v=tLMMifMMnPQ&list=PLfPBk0UpnLMnm5HhKHKGwHs6FO0Z9TOMg',
+      link: '/visual-novel',
       mode: 'chaos'
     },
     {
@@ -127,7 +127,7 @@ export const VISUAL_NOVEL_PT = [
       subtitle: 'Amor, Vinho & Melancolia',
       description: 'A jornada de um vampiro gótico em busca de redenção através do amor de Kelma. Inclui o hit "Neon Tears".',
       image: 'assets/disco/album_the-broklins-story.png', // Use capa do arco
-      link: '/lore/broklin',
+      link: '/visual-novel',
       mode: 'romance'
     }
 ];
@@ -146,7 +146,7 @@ export const VISUAL_NOVEL_EN = [
       subtitle: 'Chaos, Wires & Revolution',
       description: 'When the system fails, the truth comes out. Jonahs industrial revolt against programming.',
       image: 'assets/disco/album_jonas-history.png',
-      link: 'https://www.youtube.com/watch?v=tLMMifMMnPQ&list=PLfPBk0UpnLMnm5HhKHKGwHs6FO0Z9TOMg',
+      link: '/lore/jonah',
       mode: 'chaos'
   },
   {

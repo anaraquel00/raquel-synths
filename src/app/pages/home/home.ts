@@ -1,11 +1,16 @@
-import { Component, Inject, OnInit, OnDestroy, signal, effect, HostListener, inject } from '@angular/core';
-import { DOCUMENT, CommonModule } from '@angular/common';
+import { Component, Inject, OnInit, OnDestroy, signal, effect, HostListener, inject, PLATFORM_ID, ChangeDetectorRef } from '@angular/core';
+import { DOCUMENT, CommonModule, isPlatformBrowser } from '@angular/common';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser'; // 👈 NOVO
 import { MatButtonModule } from '@angular/material/button';
+import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
+import { Subscription } from 'rxjs'; // 👈 NOVO
+
+// Seus Imports
 import { TranslationService } from '../../services/translation.service';
+import { ContentService } from '../../services/content.service'; // 👈 NOVO (O Serviço do Firebase)
 import { CONTACT_DATA, HOME_DATA } from '../../data/app-data';
 import { LastReleasesComponent } from '../../components/last-releases/last-releases';
-import Swal from 'sweetalert2';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -16,17 +21,27 @@ import { Router } from '@angular/router';
 })
 export class Home implements OnInit, OnDestroy {
 
-  // Armazena os dados atuais (Reativo)
-  private homeSignal = signal<any>({});
-  private contactSignal = signal<any>({});
+  // --- INJEÇÕES NOVAS ---
+  private contentService = inject(ContentService);
+  private sanitizer = inject(DomSanitizer);
+  private cdr = inject(ChangeDetectorRef);
   private router = inject(Router);
 
-  // O Vigia do Body
+  // --- DADOS DA MÚSICA (NOVO) ---
+  allMusic: any[] = [];
+  featuredTrack: any = null;
+  safeSpotifyUrl: SafeResourceUrl | null = null;
+  private musicSub: Subscription | null = null;
+
+  // --- SEU CÓDIGO ANTIGO (TEXTOS) ---
+  private homeSignal = signal<any>({});
+  private contactSignal = signal<any>({});
   private themeObserver: MutationObserver | undefined;
 
   constructor(
     public translate: TranslationService,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
     // 1. Reage se o idioma mudar
     effect(() => {
@@ -34,57 +49,109 @@ export class Home implements OnInit, OnDestroy {
     });
   }
 
-  // 👇 INICIALIZAÇÃO: Onde ligamos o Vigia
   ngOnInit() {
-    this.themeObserver = new MutationObserver(() => {
-      this.updateContent(); // Se a classe do body mudar, atualiza o texto
+    // 👇 1. BAIXA A DISCOGRAFIA (NOVO)
+    this.musicSub = this.contentService.getDiscography().subscribe(data => {
+      this.allMusic = data;
+      this.updatePlayer(); // Atualiza o player assim que os dados chegarem
     });
 
-    // Começa a vigiar o <body> procurando mudanças na 'class'
-    this.themeObserver.observe(this.document.body, {
-      attributes: true,
-      attributeFilter: ['class']
-    });
+    // 👇 2. O VIGIA DO BODY (SEU CÓDIGO)
+    if (isPlatformBrowser(this.platformId)) {
+      this.themeObserver = new MutationObserver(() => {
+        this.updateContent();
+      });
 
-    // Primeira carga
+      this.themeObserver.observe(this.document.body, {
+        attributes: true,
+        attributeFilter: ['class']
+      });
+    }
+
+    // Inicializa conteúdo
     this.updateContent();
   }
 
-  // 👇 LIMPEZA: Desliga o Vigia quando sair da página
   ngOnDestroy() {
     this.themeObserver?.disconnect();
+    if (this.musicSub) this.musicSub.unsubscribe(); // 👈 Limpeza nova
   }
 
-  // 👇 A MÁGICA: Decide qual texto mostrar
+  // 👇 ATUALIZA TUDO (TEXTO + MÚSICA)
   updateContent() {
+    // A. ATUALIZA TEXTOS (SEU CÓDIGO)
     const lang = this.translate.isPt() ? 'pt' : 'en';
     const rawHome = HOME_DATA[lang];
-
-    // Verifica se o modo CAOS está ativado
     const isJonahMode = this.document.body.classList.contains('mode-jonah');
 
-    // Define os dados da Home (Normal ou Jonah)
     this.homeSignal.set({
       title: rawHome.title,
-      // Se for Jonah, tenta pegar o subtitleJonah. Se não, usa o normal.
       subtitle: isJonahMode ? (rawHome as any).subtitleJonah || rawHome.subtitle : rawHome.subtitle,
       cta: isJonahMode ? (rawHome as any).ctaJonah || rawHome.cta : rawHome.cta
     });
 
-    // Define os dados de contato
     this.contactSignal.set(CONTACT_DATA[lang]);
+
+    // B. ATUALIZA O PLAYER (NOVO)
+    this.updatePlayer(isJonahMode);
   }
 
-  // 👇 GETTERS: Para o seu HTML continuar funcionando igual ({{ navText.title }})
-  get navText() {
-    return this.homeSignal();
+  // --- 🎵 FUNÇÕES DO PLAYER (NOVO) ---
+
+  updatePlayer(isJonahMode?: boolean) {
+    if (!this.allMusic.length) return;
+
+    // Se não passou o modo, descobre
+    const isJonah = isJonahMode ?? this.document.body.classList.contains('mode-jonah');
+    const faction = isJonah ? 'jonah' : 'broklin';
+
+    // 1. Filtra músicas da facção atual
+    const factionTracks = this.allMusic.filter(t => t.faction === faction);
+
+    // 2. A HIERARQUIA DO HYPE:
+    // Prioridade 1: É Lançamento Recente? (Marcado com isLatest: true)
+    // Prioridade 2: É Pre-Save? (Futuro)
+    // Prioridade 3: Pega o primeiro da lista (Fallback)
+    const target = factionTracks.find(t => t.isLatest === true)
+                || factionTracks.find(t => t.isPreSave === true)
+                || factionTracks[0];
+
+    // 3. Gera URL Segura
+    if (target) {
+      this.featuredTrack = target;
+      this.generateSafeUrl(target.spotify);
+      this.cdr.detectChanges(); // Garante atualização da tela
+    }
   }
 
-  get contactText() {
-    return this.contactSignal();
+ // 🛡️ GERADOR DE LINK SEGURO (CORRIGIDO)
+  generateSafeUrl(originalUrl: string) {
+    if (!originalUrl) {
+      this.safeSpotifyUrl = null;
+      return;
+    }
+
+    let embedUrl = originalUrl;
+
+    // 1. Verifica se já é um link de embed. Se NÃO for, a gente converte.
+    // Transforma: "open.spotify.com/album/XYZ"
+    // Em:         "open.spotify.com/embed/album/XYZ"
+    if (!embedUrl.includes('/embed/')) {
+      embedUrl = embedUrl.replace('open.spotify.com/', 'open.spotify.com/embed/');
+    }
+
+    // 2. Limpa espaços em branco que causam erro 404
+    embedUrl = embedUrl.trim();
+
+    // 3. Sanitiza para o Angular aceitar
+    this.safeSpotifyUrl = this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl);
   }
 
-  // Mantive sua função de scroll original
+  // --- SEUS GETTERS E HELPERS ORIGINAIS ---
+
+  get navText() { return this.homeSignal(); }
+  get contactText() { return this.contactSignal(); }
+
   scrollTo(elementId: string): void {
     const element = this.document.getElementById(elementId);
     if (element) {
@@ -94,104 +161,64 @@ export class Home implements OnInit, OnDestroy {
     }
   }
 
-  // CONTROLE: Para mostrar o popup apenas uma vez
+  // --- SUA LÓGICA DE POPUP (EXIT INTENT) ---
   private hasSeenExitPopup = false;
 
-  // --- 1. O VIGIA (Escuta se o mouse saiu da tela) ---
   @HostListener('document:mouseleave', ['$event'])
   onMouseLeave(event: MouseEvent) {
-    // PROTEÇÃO 1: Se já viu o popup, não mostra de novo
-    if (this.hasSeenExitPopup) {
-      return;
-    }
+    if (this.hasSeenExitPopup) return;
+    if (event.clientY > 20) return;
 
-    // PROTEÇÃO 2: Só dispara se o mouse sair pelo TOPO (perto da barra de abas)
-    // Se sair pelos lados ou por baixo, ignora.
-    if (event.clientY > 20) {
-      return;
-    }
-
-    // Marca como visto e dispara
     this.hasSeenExitPopup = true;
     this.triggerHomeExitPopup();
   }
 
-  // --- 2. O POPUP (A Lógica Cyberpunk) ---
   triggerHomeExitPopup() {
     const lang = this.translate.currentLang();
-    const currentMode = this.translate.currentMode();
-    const isJonah = currentMode === 'jonah';
+    const isJonah = this.document.body.classList.contains('mode-jonah'); // Ajuste para ler direto do body
 
     // Cores baseadas no modo
     const modeColor = isJonah ? '#ff3300' : '#00ffff';
     const bgColor = isJonah ? '#1a0000' : '#121212';
 
-    // TEXTOS: Foco em Newsletter / Não perder novidades
+    // TEXTOS
     let title, msg, btnSub, btnLeave;
-
     if (lang === 'pt') {
       title = isJonah ? 'JÁ VAI FUGIR? 🔥' : 'CONEXÃO PERDIDA? ⚡';
-      msg = isJonah
-        ? 'O caos continua nas transmissões. Assine para receber ordens.'
-        : 'Mantenha a conexão ativa. Receba atualizações da banda e do sistema.';
+      msg = isJonah ? 'O caos continua nas transmissões. Assine para receber ordens.' : 'Mantenha a conexão ativa. Receba atualizações da banda e do sistema.';
       btnSub = 'Assinar Newsletter';
       btnLeave = 'Sair do Sistema';
     } else {
       title = isJonah ? 'RUNNING AWAY? 🔥' : 'CONNECTION LOST? ⚡';
-      msg = isJonah
-        ? 'The chaos continues in our transmissions. Subscribe to receive orders.'
-        : 'Keep the connection alive. Get band and system updates.';
+      msg = isJonah ? 'The chaos continues in our transmissions. Subscribe to receive orders.' : 'Keep the connection alive. Get band and system updates.';
       btnSub = 'Subscribe Now';
       btnLeave = 'Log Out';
     }
 
-    // CRIA O SWEETALERT
     Swal.fire({
       title: title,
       text: msg,
-      icon: 'question', // Ícone de dúvida
-
+      icon: 'question',
       color: '#fff',
       background: bgColor,
-
-      // Botão Principal: Assinar
       confirmButtonText: `${btnSub} 📩`,
       confirmButtonColor: 'transparent',
-
-      // Botão Cancelar: Sair
       showCancelButton: true,
       cancelButtonText: btnLeave,
       cancelButtonColor: '#333',
-
       footer: `<span style="color: ${modeColor}">${lang === 'pt' ? '💡 Novidades, shows e lançamentos.' : '💡 News, gigs and releases.'}</span>`,
-
-      customClass: {
-        popup: 'cyberpunk-swal'
-      },
-      didOpen: (popup: { querySelector: (arg0: string) => HTMLElement; }) => {
-        // Remove o foco do botão pra evitar enter acidental
+      customClass: { popup: 'cyberpunk-swal' },
+      didOpen: (popup) => {
         const confirmBtn = popup.querySelector('.swal2-confirm') as HTMLElement;
         if (confirmBtn) confirmBtn.blur();
       }
-    }).then((result: { isConfirmed: any; }) => {
-
-      // --- 3. A AÇÃO (Se clicar em Assinar) ---
+    }).then((result) => {
       if (result.isConfirmed) {
-        // Procura a newsletter lá no footer pelo ID
-        const targetElement = document.getElementById('newsletter-target');
-        const inputElement = document.getElementById('email-input');
-
+        const targetElement = this.document.getElementById('newsletter-target');
+        const inputElement = this.document.getElementById('email-input');
         if (targetElement) {
-          // Rola a tela até lá
-          targetElement.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center'
-          });
-
-          // Foca no campo de e-mail depois de um tempinho
-          setTimeout(() => {
-            if (inputElement) inputElement.focus();
-          }, 800);
+          targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          setTimeout(() => { if (inputElement) inputElement.focus(); }, 800);
         }
       }
     });
