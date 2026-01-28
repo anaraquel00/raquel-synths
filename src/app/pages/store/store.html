@@ -59,8 +59,9 @@
 
           <div class="info">
             <h3>{{ item.content[currentLang()].name }}</h3>
-            <p class="desc">{{ item.content[currentLang()].description }}</p>
-
+            <p class="desc">
+  {{ currentLang() === 'pt' ? item.pt?.description : (item.description_en || item.pt?.description) }}
+</p>
             <div class="price-row">
               <span class="price">{{ item.content[currentLang()].price }}</span>
               <button (click)="handleShopClick(item.stripeUrl)" class="btn-neon">
