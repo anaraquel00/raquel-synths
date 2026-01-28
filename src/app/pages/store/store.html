@@ -58,23 +58,17 @@
           </div>
 
           <div class="info">
-    <h3>
-      {{ currentLang() === 'en' ? (item.name_en || item.name) : item.name }}
-    </h3>
+            <h3>{{ item.content[currentLang()].name }}</h3>
+            <p class="desc">{{ item.content[currentLang()].description }}</p>
 
-    <p class="desc">
-      {{ currentLang() === 'en' ? (item.description_en || item.description) : item.description }}
-    </p>
-
-    <div class="price-row">
-      <span class="price">{{ item.price }}</span>
-
-      <button (click)="handleShopClick(item.stripeUrl)" class="btn-neon">
-        {{ currentLang() === 'pt' ? 'VER PREÇO' : 'SEE PRICE' }}
-        <i class="ph-tag"></i>
-      </button>
-    </div>
-</div>
+            <div class="price-row">
+              <span class="price">{{ item.content[currentLang()].price }}</span>
+              <button (click)="handleShopClick(item.stripeUrl)" class="btn-neon">
+                {{ currentLang() === 'pt' ? 'VER PREÇO' : 'SEE PRICE' }}
+                <i class="ph-tag"></i>
+              </button>
+            </div>
+          </div>
         </div>
 
         <div *ngIf="filteredProducts.length === 0" class="empty-state">
