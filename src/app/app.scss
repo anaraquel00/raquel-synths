@@ -82,15 +82,53 @@
   to { opacity: 1; transform: translate(-50%, 0); }
 }
 
-/* Responsivo */
-@media (max-width: 600px) {
+/* ========================================== */
+/* 📱 RESPONSIVO (MOBILE FIX)                 */
+/* ========================================== */
+@media (max-width: 768px) {
   .cookie-banner {
+    /* 1. Reseta o posicionamento de Desktop */
+    left: 0 !important;
+    bottom: 0 !important;
+    transform: none !important; /* Remove a centralização forçada */
+
+    /* 2. Ocupa a tela toda */
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 20px 20px 0 0; /* Arredonda só em cima */
+
+    /* 3. Layout Vertical (Texto em cima, botão embaixo) */
     flex-direction: column;
-    text-align: center;
-    bottom: 0;
-    width: 100%;
-    border-radius: 16px 16px 0 0;
-    left: 0;
-    transform: none; /* Remove centralização do desktop */
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+
+    /* 4. Espaçamento Seguro (pra não colar na borda) */
+    padding: 20px 20px;
+    /* Adiciona espaço extra pra barra do iPhone (Home Indicator) */
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+
+    .cookie-content {
+      width: 100%;
+      justify-content: center; /* Centraliza o texto */
+      text-align: center;
+
+      p {
+        font-size: 0.85rem; /* Texto levemente menor */
+        display: inline-block; /* Garante que o texto flua */
+      }
+
+      .cookie-icon {
+        display: none; /* Esconde o emoji no celular pra ganhar espaço (opcional) */
+      }
+    }
+
+    .btn-accept {
+      width: 100%; /* Botão Gigante pra facilitar o toque */
+      padding: 14px;
+      font-size: 1rem;
+      margin: 0;
+      display: block;
+    }
   }
 }
