@@ -427,7 +427,7 @@ export const DISCOGRAPHY_PT: { broklin: Album[], jonah: Album[] } = {
 
        Uma jornada de 4 faixas explorando a solidão digital e a busca por conexão em servidores abandonados.`,
       // 👇 NOVO: Link do Player (Tem que ser o link 'Embed' do SoundCloud, não o link curto!)
-      embedLink: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2175051779&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true'
+      embedLink: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2175051779&color=%23ff5500&auto_play=false&hide_related=false&show_comments=false&show_user=true&show_reposts=false&show_teaser=true&visual=true'
     },
     { title: 'Digital Ghosts (Vol. 1)',
        type: 'EP',
@@ -448,7 +448,7 @@ export const DISCOGRAPHY_PT: { broklin: Album[], jonah: Album[] } = {
  5. Burning Loneliness - [Doomgaze / Shoegaze]
 
  #DisconnectToConnect`,
-    embedLink:'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2170843934&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true',
+    embedLink:'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2170843934&color=%23ff5500&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=true&visual=true',
     },
     { title: 'Broklin\'s History (The Intergalactic Saga)', type: 'Album', cover: 'assets/disco/album_the-broklins-story.png', spotify: '', soundcloud: 'https://on.soundcloud.com/Rs8W9wMM100vf7S6Lx'   },
     { title: 'Noctural Protocol', type: 'Single', cover: 'assets/disco/noctural_protocol.png', spotify: '', soundcloud: 'https://soundcloud.com/rqs_official/sets/noctural-protocol?si=ebfdd0255cae4ccbbd71b9cf56eef437&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing'    },
@@ -482,7 +482,7 @@ export const DISCOGRAPHY_PT: { broklin: Album[], jonah: Album[] } = {
       Produzido por: Jonah Cyperfield
       Direção Criativa: Nicole Nyx`,
       // 👇 Link Embed (Exemplo - substitua pelo real do SoundCloud clicando em Share > Embed)
-      embedLink: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2176115153&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true'
+      embedLink: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2176115153&color=%23ff5500&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=true&visual=true'
     },
     { title: 'GLITCH IN THE MIRROR',
       type: 'EP',
@@ -505,7 +505,7 @@ export const DISCOGRAPHY_PT: { broklin: Album[], jonah: Album[] } = {
  6. Silver Strands (Doomgaze / Dark Ethereal) - A Ascensão da Bruxa de Silício.
 
  Voz/Guitarras: Nicole Nyx | Sintetizadores/História: Brooklyn Garpeter | Produção/Caos: Jonah Cyperfield` ,
-      embedLink:'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2173836095&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true'
+      embedLink:'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2173836095&color=%23ff5500&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=true&visual=true'
     },
     { title: 'RUST & HUNGER (Jonah\'s Fury)', type: 'EP', cover: 'assets/disco/ep_rust-and-hunger.png', spotify: '', soundcloud: 'https://on.soundcloud.com/dGeczcCz7ZfTL2e7ci'    },
     { title: 'MECHANICAL FRICTION', type: 'EP (Explicit)', cover: 'assets/disco/mechanical_friction.jpg', spotify: '', soundcloud: 'https://on.soundcloud.com/WcQ2kvkhFZ1F0szIuG'},
@@ -531,7 +531,7 @@ Color Palette: Blue #0000AA (BIOS Blue), Gray #C0C0C0 (Windows 95 Gray), Phospho
 "System Reboot" marks the beginning of the RQS era. Nostalgic synthesizers collide with the coldness of binary code.
 
 A 4-track journey exploring digital loneliness and the search for connection on abandoned servers.`,
-embedLink: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/123456789&color=%2300f3ff&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true', type: 'EP', cover: 'assets/disco/ep_system-reboot.jpg', spotify: '', soundcloud: 'https://on.soundcloud.com/gAYTejXu6Cjvzcsr7R'    },
+embedLink: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/123456789&color=%2300f3ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=true&visual=true', type: 'EP', cover: 'assets/disco/ep_system-reboot.jpg', spotify: '', soundcloud: 'https://on.soundcloud.com/gAYTejXu6Cjvzcsr7R'    },
     { title: 'Digital Ghosts (Vol. 1)',
        type: 'EP',
        cover: 'assets/disco/ep_digital-ghost.png',
@@ -551,7 +551,7 @@ embedLink: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tr
  5. Burning Loneliness - [Doomgaze / Shoegaze]
 
  #DisconnectToConnect`,
-      embedLink:'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2170843934&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true'
+      embedLink:'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2170843934&color=%23ff5500&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=true&visual=true'
     },
     { title: 'Broklin\'s History (The Intergalactic Saga)', type: 'Album', cover: 'assets/disco/album_the-broklins-story.png', spotify: '', soundcloud: 'https://on.soundcloud.com/Rs8W9wMM100vf7S6Lx'   },
     { title: 'Noctural Protocol', type: 'Single', cover: 'assets/disco/noctural_protocol.png', spotify: '', soundcloud: 'https://soundcloud.com/rqs_official/sets/noctural-protocol?si=ebfdd0255cae4ccbbd71b9cf56eef437&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing'    },
@@ -581,7 +581,7 @@ CREDITS:
 Produced by: Jonah Cyperfield
 Creative Direction: Nicole Nyx`,
       // 👇 Link Embed (Exemplo - substitua pelo real do SoundCloud clicando em Share > Embed)
-      embedLink: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2176115153&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true',type: 'EP', cover: 'assets/disco/ep_the-bloodprint-sessions.png', spotify: '', soundcloud: 'https://on.soundcloud.com/mrU9kmKBlubb5r635E'    },
+      embedLink: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2176115153&color=%23ff5500&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=true&visual=true',type: 'EP', cover: 'assets/disco/ep_the-bloodprint-sessions.png', spotify: '', soundcloud: 'https://on.soundcloud.com/mrU9kmKBlubb5r635E'    },
     { title: 'GLITCH IN THE MIRROR',
       type: 'EP',
        cover: 'assets/disco/ep_glitch-in-the-mirror.png',
@@ -603,7 +603,7 @@ TRACK LIST:
 6. Silver Strands (Doomgaze / Dark Ethereal) - The Rise of the Silicon Witch.
 
 Vocals/Guitars: Nicole Nyx | Synthesizers/Story: Brooklyn Garpeter | Production/Chaos: Jonah Cyperfield`,
-      embedLink:'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2173836095&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true',
+      embedLink:'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2173836095&color=%23ff5500&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=true&visual=true',
          },
     { title: 'RUST & HUNGER (Jonah\'s Fury)', type: 'EP', cover: 'assets/disco/ep_rust-and-hunger.png', spotify: '', soundcloud: 'https://on.soundcloud.com/dGeczcCz7ZfTL2e7ci'    },
     { title: 'MECHANICAL FRICTION', type: 'EP (Explicit)', cover: 'assets/disco/mechanical_friction.jpg', spotify: '', soundcloud: 'https://on.soundcloud.com/WcQ2kvkhFZ1F0szIuG'},
