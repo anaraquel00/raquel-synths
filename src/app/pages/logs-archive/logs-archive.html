@@ -47,7 +47,7 @@
               @if (content?.techContent) {
                 <div class="tech-box">
                   <span class="tech-label">[ DEV_NOTES ]</span>
-                  <div [innerHTML]="content.techContent"></div>
+                  <div class="tech-body" [innerHTML]="content.techContent | safeHtml"></div>
                 </div>
               }
             </div>

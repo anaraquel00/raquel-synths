@@ -53,7 +53,7 @@
       <mat-icon>terminal</mat-icon> {{ navText.creator }}
     </button>
 
-    <button mat-button (click)="scrollTo('discografia')">DISCOGRAFIA</button>
+    <button mat-button (click)="scrollTo('discografia')">{{ navText.discografia }}</button>
 
     <button mat-button [routerLink]="['/store']" class="store-container">
       {{ navText.store }} <mat-icon iconPositionEnd>open_in_new</mat-icon>

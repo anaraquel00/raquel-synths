@@ -20,6 +20,17 @@ import { LastReleasesComponent } from '../../components/last-releases/last-relea
   styleUrl: './home.scss'
 })
 export class Home implements OnInit, OnDestroy {
+  scrollToContact() {
+    // Procura o elemento com id 'contact-section' e rola até ele
+    const element = document.getElementById('contato');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      // Fallback: Se não achar (ex: se contato for outra página), redireciona
+      // this.router.navigate(['/contato']);
+      console.warn('Alvo do scroll não encontrado!');
+    }
+  }
 
   // --- INJEÇÕES NOVAS ---
   private contentService = inject(ContentService);
@@ -153,74 +164,13 @@ export class Home implements OnInit, OnDestroy {
   get contactText() { return this.contactSignal(); }
 
   scrollTo(elementId: string): void {
-    const element = this.document.getElementById(elementId);
-    if (element) {
+    const element = document.getElementById(elementId);
+        if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else {
       console.warn(`ALERTA: Elemento '${elementId}' não encontrado.`);
     }
   }
 
-  // --- SUA LÓGICA DE POPUP (EXIT INTENT) ---
-  private hasSeenExitPopup = false;
 
-  @HostListener('document:mouseleave', ['$event'])
-  onMouseLeave(event: MouseEvent) {
-    if (this.hasSeenExitPopup) return;
-    if (event.clientY > 20) return;
-
-    this.hasSeenExitPopup = true;
-    this.triggerHomeExitPopup();
-  }
-
-  triggerHomeExitPopup() {
-    const lang = this.translate.currentLang();
-    const isJonah = this.document.body.classList.contains('mode-jonah'); // Ajuste para ler direto do body
-
-    // Cores baseadas no modo
-    const modeColor = isJonah ? '#ff3300' : '#00ffff';
-    const bgColor = isJonah ? '#1a0000' : '#121212';
-
-    // TEXTOS
-    let title, msg, btnSub, btnLeave;
-    if (lang === 'pt') {
-      title = isJonah ? 'JÁ VAI FUGIR? 🔥' : 'CONEXÃO PERDIDA? ⚡';
-      msg = isJonah ? 'O caos continua nas transmissões. Assine para receber ordens.' : 'Mantenha a conexão ativa. Receba atualizações da banda e do sistema.';
-      btnSub = 'Assinar Newsletter';
-      btnLeave = 'Sair do Sistema';
-    } else {
-      title = isJonah ? 'RUNNING AWAY? 🔥' : 'CONNECTION LOST? ⚡';
-      msg = isJonah ? 'The chaos continues in our transmissions. Subscribe to receive orders.' : 'Keep the connection alive. Get band and system updates.';
-      btnSub = 'Subscribe Now';
-      btnLeave = 'Log Out';
-    }
-
-    Swal.fire({
-      title: title,
-      text: msg,
-      icon: 'question',
-      color: '#fff',
-      background: bgColor,
-      confirmButtonText: `${btnSub} 📩`,
-      confirmButtonColor: 'transparent',
-      showCancelButton: true,
-      cancelButtonText: btnLeave,
-      cancelButtonColor: '#333',
-      footer: `<span style="color: ${modeColor}">${lang === 'pt' ? '💡 Novidades, shows e lançamentos.' : '💡 News, gigs and releases.'}</span>`,
-      customClass: { popup: 'cyberpunk-swal' },
-      didOpen: (popup) => {
-        const confirmBtn = popup.querySelector('.swal2-confirm') as HTMLElement;
-        if (confirmBtn) confirmBtn.blur();
-      }
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const targetElement = this.document.getElementById('newsletter-target');
-        const inputElement = this.document.getElementById('email-input');
-        if (targetElement) {
-          targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          setTimeout(() => { if (inputElement) inputElement.focus(); }, 800);
-        }
-      }
-    });
-  }
 }

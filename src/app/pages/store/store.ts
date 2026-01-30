@@ -1,6 +1,6 @@
 import { Component, inject, OnDestroy, OnInit, signal, ChangeDetectorRef, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import Swal from 'sweetalert2';
 import { Subscription, combineLatest } from 'rxjs';
 
@@ -12,7 +12,7 @@ import { StoreDepartmentsComponent } from './store-departments/store-departments
 @Component({
   selector: 'app-store',
   standalone: true,
-  imports: [CommonModule, StoreDepartmentsComponent],
+  imports: [CommonModule, StoreDepartmentsComponent,RouterLink],
   templateUrl: './store.html',
   styleUrls: ['./store.scss']
 })
@@ -68,6 +68,13 @@ export class StoreComponent implements OnInit, OnDestroy {
 
     // 4. Inicia vigilância do tema
     this.setupThemeObserver();
+    setInterval(() => {
+  const newLang = this.translate.isPt() ? 'pt' : 'en';
+  if (this.currentLang() !== newLang) {
+    this.currentLang.set(newLang);
+    this.cdr.detectChanges(); // Pinta a tela de novo
+  }
+}, 500);
   }
 
   ngOnDestroy(): void {
@@ -75,7 +82,6 @@ export class StoreComponent implements OnInit, OnDestroy {
     if (this.dataSubscription) this.dataSubscription.unsubscribe();
   }
 
-  // --- FUNÇÃO DE CARREGAMENTO ---
   // --- FUNÇÃO DE CARREGAMENTO (CORRIGIDA) ---
   private loadData() {
     // 👇 AQUI ESTÁ A MÁGICA: combineLatest em vez de forkJoin

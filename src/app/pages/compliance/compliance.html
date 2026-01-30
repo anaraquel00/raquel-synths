@@ -12,12 +12,23 @@
   </article>
 
   <article>
-    <h2>{{ data.categoryTitle }}</h2>
-    <p>{{ data.categoryText }}</p>
-  </article>
+  <h3>{{ data.storeTitle }}</h3>
+  <p [innerHTML]="data.storeText"></p>
+</article>
+
+<article>
+  <h3>{{ data.affiliateTitle }}</h3>
+  <p [innerHTML]="data.affiliateText"></p>
+</article>
 
    <article>
     <h2>{{ data.policyTitle }}</h2>
     <p [innerHTML]="data.policyText"></p>
   </article>
+
+  <article>
+    <h2>{{ data.contactTitle }}</h2>
+    <p [innerHTML]="data.contactText"></p>
+  </article>
+
 </div>

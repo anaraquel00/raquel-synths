@@ -1,48 +1,43 @@
 <section class="story-container">
   <h2 class="section-title">SYSTEM_LOGS_LATEST</h2>
 
-  <div class="timeline">
+  <div class="timeline-vertical">
 
     @let events = logs$ | async;
 
-    <!-- [BROKLIN FIX]: Verifica se EXISTE (Carregado), não se tem tamanho -->
     @if (events) {
 
-      @for (event of events; track event.id; let i = $index) {
+      @for (event of events; track event.id) {
 
         @let content = getEventContent(event);
 
-        <!-- [BROKLIN DEBUG]: Tratamento de Erro Visual -->
         @if (event._isError) {
           <div class="error-card">
             <h3>🔥 SYSTEM FAILURE</h3>
             <p>CRITICAL ERROR: {{ event.message }}</p>
-            <small>Check browser console (F12) for details.</small>
           </div>
         } @else {
-        <div class="timeline-item"
-             [class.left]="i % 2 === 0"
-             [class.right]="i % 2 !== 0"
-             [class.expanded-mode]="event.isExpanded"
-             [class.archive-block]="event.isArchiveLink">
 
-          <div class="content-box">
-            <div class="lore-column">
+          <div class="log-card-full">
 
-              <span class="date">{{ event.date }}</span>
-              <h3 class="title">{{ content?.title }}</h3>
+            @if (event.image) {
+              <div class="img-wrapper-wide">
+                <img [src]="event.image" [alt]="content?.title">
+              </div>
+            }
 
-              @if (event.image) {
-                <div class="img-wrapper">
-                  <img [src]="event.image" [alt]="content?.title">
-                </div>
-              }
+            <div class="content-padding">
 
-              @if (event.isArchiveLink) {
-                <div class="archive-icon">🗄️🔓</div>
-              }
+              <div class="log-header">
+                <span class="date">{{ event.date }}</span>
+                <h3 class="title">{{ content?.title }}</h3>
+              </div>
 
-              <p class="description">{{ content?.description }}</p>
+              <p class="description-lead">{{ content?.description }}</p>
+
+              @if (content?.techContent) {
+                <div class="tech-body" [innerHTML]="content.techContent | safeHtml"></div>
+                  }
 
               @if (content?.jonahComment) {
                 <div class="jonah-note">
@@ -51,41 +46,25 @@
               }
 
               @if (event.isArchiveLink) {
-                <button class="btn-decrypt" (click)="navigateToArchive()">
-                  [ 🚀 INITIALIZE_FULL_DUMP ]
-                </button>
-              } @else {
-                <button class="btn-decrypt" (click)="toggleLog(event)">
-                  {{ event.isExpanded ? '[ 🔒 ENCRYPT_LOGS ]' : '[ 🔓 DECRYPT_DEV_NOTES ]' }}
-                </button>
-              }
-            </div>
-
-            @if (content?.techContent && event.isExpanded) {
-              <div class="tech-column" [class.is-visible]="event.isExpanded">
-                <div class="tech-panel">
-                  <div [innerHTML]="content.techContent"></div>
+                <div class="action-area">
+                  <button class="btn-decrypt" (click)="navigateToArchive()">
+                    [ 📂 ACCESS_FULL_ARCHIVES ]
+                  </button>
                 </div>
-              </div>
-            }
-          </div>
-        </div>
-        } <!-- Fim do @else do erro -->
-
+              }
+            </div> </div> <app-ad-banner></app-ad-banner>}
       }
 
-      <!-- Estado Vazio (Opcional, mas boa UX) -->
       @if (events.length === 0) {
         <div class="empty-state">
           <p>⚠️ NO_NEW_LOGS_DETECTED</p>
-          <p style="font-size: 0.8rem; opacity: 0.7;">(Check Archive for older data)</p>
-          <!-- Botão de fallback para ir pro arquivo se a home estiver vazia -->
-          <button class="btn-decrypt" style="margin-top: 20px; max-width: 300px;" (click)="navigateToArchive()">
+          <button class="btn-decrypt" (click)="navigateToArchive()">
             [ 📂 ACCESS_ARCHIVES ]
           </button>
         </div>
       }
-      } @else {
+
+    } @else {
       <div class="loading-state">
         <p>📡 ESTABLISHING UPLINK...</p>
       </div>

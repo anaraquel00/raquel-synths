@@ -1,0 +1,96 @@
+/* BANNER DE COOKIES - FICA FLUTUANDO EM CIMA DE TUDO */
+.cookie-banner {
+  position: fixed; /* O segredo: sai do fluxo normal da página */
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%); /* Centraliza horizontalmente */
+  width: 90%;
+  max-width: 600px;
+  z-index: 9999; /* Garante que fique na frente de qualquer outra coisa */
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+
+  padding: 15px 25px;
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+
+  /* Tema Padrão (Broklin) */
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #00f3ff;
+  color: #333;
+
+  /* Animação de entrada suave */
+  &.fade-in-up {
+    animation: fadeInUp 0.5s ease-out forwards;
+  }
+}
+
+/* Conteúdo interno */
+.cookie-content {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.3;
+  }
+
+  .cookie-icon { font-size: 1.5rem; }
+
+  .cookie-link {
+    color: #008ba3;
+    font-weight: bold;
+    text-decoration: underline;
+    cursor: pointer;
+    margin-left: 5px;
+  }
+}
+
+/* Botão Aceitar */
+.btn-accept {
+  background: #00f3ff;
+  color: #000;
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap; /* Não deixa o texto quebrar */
+
+  &:hover { opacity: 0.8; }
+}
+
+/* ☢️ TEMA JONAH (Override Global) */
+:host-context(.mode-jonah) .cookie-banner {
+  background: #111;
+  border-color: #ff5500;
+  color: #ddd;
+
+  .cookie-link { color: #ff5500; }
+  .btn-accept { background: #ff5500; }
+}
+
+/* Animação Keyframes */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translate(-50%, 20px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* Responsivo */
+@media (max-width: 600px) {
+  .cookie-banner {
+    flex-direction: column;
+    text-align: center;
+    bottom: 0;
+    width: 100%;
+    border-radius: 16px 16px 0 0;
+    left: 0;
+    transform: none; /* Remove centralização do desktop */
+  }
+}

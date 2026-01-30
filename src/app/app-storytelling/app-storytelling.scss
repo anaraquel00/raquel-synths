@@ -1,428 +1,258 @@
 /* --- CONTAINER GERAL --- */
 .story-container {
-  padding: 1rem 1rem;
-  background-color: transparent; /* Deixa ver o universo atrás */
+  padding: 0rem 1rem;
+  background-color: transparent;
   color: var(--text-color);
-  max-width: 1200px;
+  max-width: 1100px; /* Largura ideal para leitura (tipo Medium/Blog) */
   margin: 0 auto;
 }
 
 .section-title {
   text-align: center;
   font-family: var(--font-heading);
-  font-size: 2rem;
-  margin-bottom: 3rem;
-  text-shadow: 0 0 10px var(--primary-color);
-  letter-spacing: 3.5px;
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  text-shadow: 0 0 15px var(--primary-color);
+  letter-spacing: 4px;
+  text-transform: uppercase;
 }
 
-/* --- LINHA DO TEMPO (A espinha dorsal) --- */
-.timeline {
-  position: relative;
-  max-width: 1800px;
-  margin: 0 auto;
-}
-
-/* A linha vertical central */
-.timeline::after {
-  content: '';
-  position: absolute;
-  width: 4px;
-  background-color: var(--primary-color);
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  margin-left: -2px;
-  box-shadow: 0 0 10px var(--primary-color);
-}
-
-/* --- OS CARDS (Itens) --- */
-.timeline-item {
-  padding: 10px 40px;
-  position: relative;
-  background-color: inherit;
-  width: 50%;
-  box-sizing: border-box;
-}
-
-/* Lado Esquerdo */
-.timeline-item.left { left: 0; }
-/* Lado Direito */
-.timeline-item.right { left: 50%; }
-
-/* A "Bolinha" na linha central */
-.timeline-item::after {
-  content: '';
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  right: -10px; /* Ajuste para esquerda */
-  background-color: var(--bg-color);
-  border: 3px solid var(--accent-color);
-  top: 25px;
-  border-radius: 50%;
-  z-index: 1;
-  box-shadow: 0 0 10px var(--accent-color);
-}
-
-.timeline-item.right::after {
-  left: -10px; /* Ajuste para direita */
-}
-
-/* --- CAIXA DE CONTEÚDO --- */
-.content-box {
-  padding: 20px;
-  background-color: rgba(0, 0, 0, 0.7); /* Fundo vidro escuro */
-  border: 1px solid var(--primary-color);
-  border-radius: var(--border-radius, 15px); /* Arredondado no Broklin, Quadrado no Jonah */
-  position: relative;
-  backdrop-filter: blur(5px);
-  transition: transform 0.3s ease;
+/* --- A NOVA TIMELINE (Vertical Simples) --- */
+.timeline-vertical {
   display: flex;
-  flex-direction: column; /* Padrão Mobile: Um embaixo do outro */
-  transition: all 0.4s ease-in-out; /* Para animar quando crescer */
+  flex-direction: column;
+  gap: 1px; /* Mais espaço entre um post e outro */
+  width: 100%;
 }
 
-.content-box:hover {
-  transform: scale(1.02);
-  box-shadow: 0 0 20px rgba(98, 0, 234, 0.3);
+/* --- O NOVO CARD (Cheio) --- */
+.log-card-full {
+  width: 100%;
+  background-color: rgb(10, 10, 10);
+  border: 1px solid rgba(0, 255, 204, 0.3);
+  border-radius: 12px;
+  padding: 0; /* IMPORTANTE: Zero padding aqui! */
+  overflow: hidden; /* Corta a imagem se ela passar da borda arredondada */
+  margin-bottom: 40px;
+
+  &:hover {
+    border-color: var(--accent-color);
+    box-shadow: 0 15px 40px rgba(var(--primary-rgb), 0.15);
+  }
+}
+
+/* --- CABEÇALHO DO POST --- */
+.log-header {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 1rem;
 }
 
 .date {
+  display: block;
   color: var(--accent-color);
-  font-weight: bold;
-  font-size: 1.1rem;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  opacity: 0.8;
 }
 
-.img-wrapper img {
+.title {
+  font-size: 1.8rem;
+  margin: 0;
+  line-height: 1.3;
+  color: #fff;
+}
+
+/* --- IMAGEM DESTAQUE --- */
+.img-wrapper-wide {
   width: 100%;
-  border-radius: 8px;
-  margin: 10px 0;
-  border: 1px solid rgba(255,255,255,0.1);
-}
+  height: 350px; /* Altura fixa para ficar cinemático */
+  background-color: #000;
+  position: relative;
 
-/* --- NOVAS CLASSES PARA O LAYOUT DE COLUNAS --- */
-
-.lore-column {
-  width: 100%;
-  /* Garante que o conteúdo da Lore ocupe o espaço */
-}
-
-.tech-column {
-  width: 100%;
-
-  .tech-panel {
-    /* Estilo do painel técnico */
-    border-top: 2px solid #00ffcc; /* Borda em cima no mobile */
-    background: rgba(0, 0, 0, 0.3);
-    padding: 15px;
-    margin-top: 15px;
-    animation: fadeIn 0.5s ease;
-  }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-/* --- O SEGREDO DO MODO JONAH (CAOS) --- */
-
-/* As notas do Jonah ficam invisíveis por padrão */
-.jonah-note {
-  display: none;
-}
-
-/* Quando o BODY tem a classe .mode-jonah... O CAOS REINA! */
-:host-context(body.mode-jonah) {
-
-  .content-box {
-    border-color: #bf360c; /* Laranja Ferrugem */
-    transform: rotate(-1deg); /* Tudo fica torto */
-    background-color: rgba(20, 0, 0, 0.9);
-  }
-
-  /* Mostra os comentários sarcásticos */
-  .jonah-note {
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* A MÁGICA: Isso estica a imagem sem distorcer e remove o preto */
+    object-position: center top; /* Foca no rosto/topo */
     display: block;
-    margin-top: 15px;
-    padding: 10px;
-    border: 1px dashed #ff5722;
-    color: #ff5722;
-    font-family: 'Courier New', monospace;
-    font-size: 0.9rem;
-    background: rgba(0,0,0,0.8);
   }
 
-  /* Risco na descrição "oficial" (Opcional - Efeito de censura) */
-  .description {
-    text-decoration: line-through;
-    opacity: 0.6;
+  &:hover img {
+    opacity: 1;
+    transform: scale(1.02);
   }
+}
+
+/* --- ÁREA DE CONTEÚDO (Onde vai o texto) --- */
+/* Criei essa classe interna para dar o padding só no texto */
+.content-padding {
+  padding: 2rem 3rem; /* [BROKLIN FIX]: Margens laterais generosas para leitura */
+}
+
+/* --- CABEÇALHO DO POST --- */
+.log-header {
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+  margin-left: 1rem;
+  margin-right: 2rem;
+  text-align: left;
+}
+
+.date {
+  display: inline-block;
+  background: rgba(var(--accent-rgb), 0.1);
+  color: var(--accent-color);
+  font-family: 'Fira Code', monospace;
+  font-size: 0.85rem;
+  padding: 4px 10px;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(var(--accent-rgb), 0.2);
+}
+
+.title {
+  font-size: 2.2rem; /* Título maior */
+  margin: 0;
+  line-height: 1.2;
+  color: #fff;
+  font-weight: 700;
+}
+
+/* --- TEXTO DE INTRODUÇÃO --- */
+.description-lead {
+  font-size: 1.25rem; /* Lead grande para prender a atenção */
+  line-height: 1.6;
+  color: #ccc;
+  margin-bottom: 2.5rem;
+  font-weight: 300;
+  border-left: 4px solid var(--accent-color);
+  padding-left: 20px;
+}
+
+
+/* --- COMENTÁRIOS DO JONAH --- */
+.jonah-note {
+  display: none; /* [BROKLIN FIX]: O vírus fica adormecido por padrão */
+}
+
+/* --- BOTÕES --- */
+.action-area {
+  margin-top: 2rem;
+  text-align: center;
 }
 
 .btn-decrypt {
-  background:#0000009a;
-  border: 1px solid #00ffcc; /* Ciano Neon */
-  color: #00ffcc;
-  padding: 8px 16px;
-  margin-top: 8px;
+  background: transparent;
+  border: 1px solid var(--accent-color);
+  color: var(--accent-color);
+  padding: 10px 20px;
   cursor: pointer;
-  font-family: 'Courier New', monospace;
+  font-family: 'Fira Code', monospace;
   font-weight: bold;
   transition: all 0.3s ease;
-  width: 100%;
 
   &:hover {
-    background: rgba(0, 255, 204, 0.1);
-    box-shadow: 0 0 10px #00ffcc;
+    background: rgba(var(--accent-rgb), 0.1);
+    box-shadow: 0 0 15px rgba(var(--accent-rgb), 0.4);
   }
 }
 
-.tech-panel {
-  background-color: #0a0a0a; /* Fundo quase preto */
-  border-left: 3px solid #00ffcc;
-  padding: 15px;
-  margin-top: 10px;
-  font-family: 'Fira Code', 'Consolas', monospace; /* Fonte de código */
-  font-size: 0.9rem;
-  color: #dcdcdc;
-  animation: slideDown 0.3s ease-out;
-
-  /* Estilo para o conteúdo que vem do innerHTML */
-  ::ng-deep h3 {
-    color: #bd93f9;
-    margin-bottom: 10px;
-    font-size: 0.8rem; /* Reduz um pouco no mobile para caber melhor */
-    line-height: 1.4;
-  }
-
-   ::ng-deep p, ::ng-deep li {
-    font-size: 0.9rem;
-    line-height: 1.6;
-  }
-}
-
-/* --- NOVO: BOTÃO DE STREAMING DENTRO DO LOG --- */
-  ::ng-deep .btn-stream-log {
-    display: inline-block;
-    margin-top: 20px;
-    background-color: #1DB954; /* Verde Spotify */
-    color: #000;
-    font-weight: bold;
-    font-family: 'Fira Code', monospace;
-    text-decoration: none;
-    padding: 10px 15px;
-    border-radius: 4px;
-    font-size: 0.85rem;
-    transition: transform 0.2s;
-    border: 1px solid #1ed760;
-
-    &:hover {
-      transform: scale(1.05);
-      background-color: #1ed760;
-      box-shadow: 0 0 10px rgba(29, 185, 84, 0.5);
-    }
-
-    /* Ícone simples com texto */
-    &::before {
-      content: '▶ ';
-    }
-  }
-/* Ajuste para Desktop (Aumenta a fonte se tiver espaço) */
-@media (min-width: 1024px) {
-  .tech-panel ::ng-deep h3 {
-    font-size: 1.2rem;
-  }
-}
-
-@keyframes slideDown {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* --- REGRAS ESPECÍFICAS PARA A TIMELINE ZIG-ZAG (DESKTOP) --- */
-@media (min-width: 1024px) {
-
-  .timeline-item.expanded-mode {
-    /* Traz o item para frente de tudo (inclusive da linha central) */
-    z-index: 100;
-    position: relative;
-
-    .content-box {
-      /* Ativa o modo lado a lado */
-      display: flex;
-      flex-direction: row;
-      gap: 20px;
-
-      /* Força uma largura maior para caber o texto técnico */
-      /* O card vai ficar bem largo, tipo 800px */
-      min-width: 800px;
-    }
-
-    /* --- CENÁRIO 1: O Card está na ESQUERDA --- */
-    &.left .content-box {
-      /* Ele cresce para a direita, invadindo o centro */
-      /* Não precisa de margem negativa, o fluxo natural é p/ direita */
-      margin-right: -600px; /* (Opcional) Se precisar forçar a invasão */
-    }
-
-    /* --- CENÁRIO 2: O Card está na DIREITA --- */
-    &.right .content-box {
-      /* PROBLEMA: Se crescer pra direita, sai da tela. */
-      /* SOLUÇÃO: Forçamos ele a crescer para a ESQUERDA usando margem negativa */
-      margin-left: -600px;
-    }
-
-    /* Ajuste as colunas internas */
-    .lore-column {
-      flex: 1; /* 50% */
-      border-right: 1px solid rgba(0, 255, 204, 0.2);
-      padding-right: 20px;
-    }
-
-    .tech-column {
-      flex: 1; /* 50% */
-      /* Animação suave aparecendo */
-      animation: fadeInRight 0.5s ease;
-    }
-  }
-}
-/* Animação para o texto técnico entrar suave */
-@keyframes fadeInRight {
-  from { opacity: 0; transform: translateX(-20px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-
-/* --- RESPONSIVIDADE MOBILE (TIMELINE VERTICAL OTIMIZADA) --- */
-@media (max-width: 768px) {
-
-  /* 1. Ajuste do Container Geral */
-  .story-container {
-    padding: 2.5rem 0.5rem; /* Menos padding lateral na tela toda */
-  }
-
-  /* 2. A Linha Vertical (Espinha Dorsal) */
-  .timeline::after {
-    left: 20px; /* Move a linha bem para o canto esquerdo (ganha espaço) */
-  }
-
-  /* 3. Os Itens (Cards) */
-  .timeline-item {
-    width: 100%;
-    padding-left: 40px; /* Reduzi de 70px para 45px. Ganho de 25px! */
-    padding-right: 0.1;   /* Remove padding direito desnecessário */
-    margin-bottom: 2rem;
-  }
-
-  /* Remove comportamento de zig-zag (Lado Direito vira Esquerdo) */
-  .timeline-item.right {
-    left: 0;
-  }
-
-  /* 4. A Bolinha (Marcador) */
-  .timeline-item::after {
-    left: 10px; /* Centraliza na nova linha (que está em 20px) */
-    width: 16px; /* Bolinha levemente menor pra ficar delicada */
-    height: 16px;
-    top: 20px;
-  }
-
-  /* Ajuste Fino para o lado direito (se tiver regra específica sobrando) */
-  .timeline-item.right::after {
-    left: 10px;
-  }
-
-  /* 5. O Conteúdo (Box de Vidro) */
-  .content-box {
-    width: 100%; /* Garante que use tudo */
-    padding: 15px; /* Padding interno confortável */
-    font-size: 0.95rem; /* Tamanho de fonte legível */
-  }
-
-  /* Título da Seção */
-  .section-title {
-    font-size: 1.5rem; /* Menor no celular para não quebrar */
-    letter-spacing: 2px;
-  }
-
-  /* Botão Dev Notes no Mobile */
-  .btn-decrypt {
-    padding: 12px; /* Área de toque maior (dedo gordo friendly) */
-    margin-top: 10px;
-  }
-}
-
-/* Estilo Base da Coluna Tech */
-.tech-column {
-  /* Começa "invisível" para o olho humano */
-  max-height: 0;
-  opacity: 0;
-  overflow: hidden;
-  visibility: hidden;
-
-  /* Animação suave (Cyberpunk feel) */
-  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-
-  /* Quando o botão adiciona a classe .is-visible */
-  &.is-visible {
-    max-height: 2000px; /* Altura suficiente para mostrar todo o conteúdo */
-    opacity: 1;
-    visibility: visible;
-    margin-top: 20px; /* Espaço para respirar */
-  }
-
-  /* Opcional: Garante que o painel interno tenha estilo */
-  .tech-panel {
-    border: 1px solid var(--neon-cyan); /* Ajuste com sua cor */
-    background: rgba(0, 0, 0, 0.6);
-    padding: 15px;
-    border-radius: 8px;
-  }
-}
-
-/* Ajuste Mobile para garantir que não quebre */
-@media (max-width: 768px) {
-  .tech-column.is-visible {
-    width: 100%;
-  }
-}
-
-/* --- ESTADOS DE CARREGAMENTO E VAZIO --- */
+/* --- ESTADOS --- */
 .loading-state, .empty-state {
   text-align: center;
-  padding: 60px 20px;
-  font-family: 'Fira Code', monospace;
-  letter-spacing: 2px;
-  animation: pulse 2s infinite;
-}
-
-.loading-state {
-  color: var(--accent-color); /* Verde ou Laranja dependendo do modo */
-}
-
-.empty-state {
+  padding: 4rem;
   color: #888;
-  font-style: italic;
-  border: 1px dashed #444;
-  border-radius: 8px;
-  margin: 20px;
+  font-family: 'Fira Code', monospace;
 }
 
-@keyframes pulse {
-  0% { opacity: 0.6; }
-  50% { opacity: 1; }
-  100% { opacity: 0.6; }
-}
-
-/* --- CARTÃO DE ERRO DE DEBUG --- */
 .error-card {
   background: rgba(50, 0, 0, 0.9);
-  border: 2px solid red;
+  border: 1px solid red;
   color: #ff5555;
   padding: 20px;
-  margin: 20px auto;
+  margin-bottom: 20px;
   text-align: center;
-  max-width: 600px;
-  font-family: monospace;
+}
+
+/* --- RESPONSIVO --- */
+@media (max-width: 768px) {
+  .story-container {
+    padding: 1rem;
+  }
+
+  .content-padding {
+    padding: 1.5rem; /* Padding menor no celular */
+  }
+
+  .img-wrapper-wide {
+    height: 200px; /* Imagem menor no celular */
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .description-lead {
+    font-size: 1.1rem;
+  }
+}
+/* --- ☢️ JONAH MODE OVERRIDE (O CAOS) ☢️ --- */
+/* Esse bloco só ativa quando o body tem a classe .mode-jonah */
+:host-context(body.mode-jonah) {
+
+  .log-card-full {
+    /* Troca o azul/ciano pelo Laranja Industrial/Ferrugem */
+    border-color: #bf360c;
+    background-color: rgb(25, 5, 0); /* Fundo avermelhado sujo */
+
+    /* Leve rotação para dar sensação de instabilidade */
+    transform: rotate(-0.5deg);
+    box-shadow: 5px 5px 0px rgba(191, 54, 12, 0.2);
+  }
+
+  /* Títulos mudam de cor */
+  .title, ::ng-deep h3 {
+    color: #ff5722 !important; /* Laranja Neon Agressivo */
+    text-shadow: 2px 2px 0px #000;
+  }
+
+  /* Data vira um "Erro" */
+  .date {
+    background: #3e2723;
+    color: #ffab91;
+    border-color: #ff5722;
+  }
+
+  /* Mostra o comentário do Jonah (que normalmente fica escondido ou discreto) */
+  .jonah-note {
+    display: block;
+    border: 2px dashed #ff5722;
+    background: #000;
+    color: #ff5722;
+    font-weight: bold;
+    transform: rotate(1deg); /* Nota colada torta */
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.8);
+    margin-top: 2rem;
+    padding: 0.5rem;
+  }
+  /* O texto técnico fica com fonte "Hacker" */
+  .tech-body {
+    font-family: 'Courier New', Courier, monospace;
+
+    ::ng-deep blockquote {
+      border-left-color: #ff5722;
+      background: rgba(255, 87, 34, 0.1);
+    }
+
+    ::ng-deep .code-block {
+      border-left-color: #ff5722;
+    }
+  }
+
+  /* Imagem com filtro de "ferrugem" */
+  .img-wrapper-wide img {
+    filter: sepia(0.5) contrast(1.2) hue-rotate(-30deg);
+  }
 }

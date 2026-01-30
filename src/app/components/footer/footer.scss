@@ -6,6 +6,7 @@
   transition: background-color 0.5s ease, color 0.5s ease;
   border-top: 4px solid var(--primary-color); /* Engrossei a borda para dar peso */
   padding-bottom: 1rem;
+  padding-top: 1rem;
 }
 
 .footer-container {
@@ -90,28 +91,6 @@
   }
 }
 
-/* --- NEWSLETTER --- */
-.newsletter-section {
-  text-align: center;
-  padding: 2rem 1rem;
-  background: rgba(255, 255, 255, 0.05); /* Leve destaque */
-  margin-bottom: 1rem;
-}
-
-.newsletter-section h4 {
-  color: var(--accent-color);
-  font-family: var(--font-heading);
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
-  letter-spacing: 1px;
-}
-
-.newsletter-section p {
-  opacity: 0.8;
-  margin-bottom: 1.5rem;
-  font-size: 0.95rem;
-}
-
 .input-group {
   display: flex;
   justify-content: center;
@@ -135,12 +114,7 @@
   box-shadow: 0 0 10px var(--accent-color);
 }
 
-/* Ajuste no botão do Angular Material dentro da newsletter */
-.newsletter-section button {
-  height: 40px !important; /* Alinha com o input */
-  background-color: var(--primary-color) !important;
-  color: #fff !important;
-}
+
 
 /* Modo Jonah para a Newsletter */
 :host-context(body.mode-jonah) .newsletter-section {

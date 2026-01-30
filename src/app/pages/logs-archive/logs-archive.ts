@@ -9,11 +9,12 @@ import { TranslationService } from '../../services/translation.service';
 import { ContentService } from '../../services/content.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { SafeHtmlPipe } from "../../components/pipes/safe-html.pipe";
 
 @Component({
   selector: 'app-logs-archive',
   standalone: true,
-  imports: [CommonModule, RouterModule, AdBannerComponent],
+  imports: [CommonModule, RouterModule, AdBannerComponent, SafeHtmlPipe],
   templateUrl: './logs-archive.html',
   styleUrls: ['./logs-archive.scss']
 })

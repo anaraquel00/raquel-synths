@@ -3,8 +3,28 @@
 <router-outlet></router-outlet>
 
 <app-ad-banner></app-ad-banner>
-
 <app-footer></app-footer>
+
+@if (!cookiesAccepted) {
+  <div class="cookie-banner fade-in-up">
+    <div class="cookie-content">
+      <span class="cookie-icon">🍪</span>
+      <p>
+        {{ translate.isPt()
+           ? 'Utilizamos cookies do Google e Stripe para melhorar sua experiência e segurança.'
+           : 'We use Google and Stripe cookies to enhance your experience and security.' }}
+        <a [routerLink]="['/compliance']" class="cookie-link">
+          {{ translate.isPt() ? 'Ler Protocolos' : 'Read Protocols' }}
+        </a>
+      </p>
+    </div>
+
+    <button (click)="acceptCookies()" class="btn-accept">
+      {{ translate.isPt() ? 'ACEITAR DADOS' : 'ACCEPT DATA' }}
+    </button>
+  </div>
+}
+
 
 
 

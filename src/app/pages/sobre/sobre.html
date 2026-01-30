@@ -1,12 +1,7 @@
 <section class="bios-container">
   <h2 class="section-title">QUEM SOMOS</h2>
   <div class="manifesto-text">
-
-    <p [innerHTML]="translate.isPt()
-      ? 'A <strong>RaQuel Synths (RQS)</strong> é um projeto de <em>Narrativa Transmedia</em> e <em>Engenharia Musical</em>. Utilizamos Inteligência Artificial (Suno, OpenAI) e frameworks modernos (Angular 20+) para explorar a colisão entre o caos humano e a precisão algorítmica.'
-      : '<strong>RaQuel Synths (RQS)</strong> is a <em>Transmedia Narrative</em> and <em>Musical Engineering</em> project. We use Artificial Intelligence (Suno, OpenAI) and modern frameworks (Angular 20+) to explore the collision between human chaos and algorithmic precision.'">
-    </p>
-
+    <p [innerHTML]="translate.isPt() ? manifestoPt : manifestoEn"(click)="handleClick($event)"></p>
   </div>
 
   <div class="members-grid">

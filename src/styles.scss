@@ -44,6 +44,89 @@ body {
   max-width: 100% !important;
 }
 
+/* --- 🌍 ESTILOS GLOBAIS PARA ARTIGOS TÉCNICOS (Storytelling) --- */
+/* Colocamos aqui para o Angular aceitar o HTML que vem do Firebase */
+
+.tech-body {
+  font-family: 'Open Sans', sans-serif; /* Fonte de leitura limpa */
+  color: #e0e0e0;
+  line-height: 1.8;
+  font-size: 1.1rem;
+  margin-top: 2rem;
+}
+
+/* Títulos Neon */
+.tech-body h3 {
+  color: #00ffcc !important; /* Ciano Neon Forçado */
+  font-size: 1.6rem;
+  margin-top: 3rem;
+  margin-bottom: 1.5rem;
+  font-family: 'Montserrat', sans-serif; /* Fonte de Título */
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 10px;
+  text-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
+}
+
+/* Parágrafos */
+.tech-body p {
+  margin-bottom: 1.5rem;
+}
+
+/* Negritos (Strong) */
+.tech-body strong {
+  color: #fff;
+  font-weight: 700;
+}
+
+/* Listas Hacker com setinha > */
+.tech-body ul {
+  margin-bottom: 2rem;
+  padding-left: 20px;
+  list-style: none !important; /* Tira a bolinha padrão */
+}
+
+.tech-body li {
+  margin-bottom: 0.8rem;
+  padding-left: 25px;
+  position: relative;
+}
+
+.tech-body li::before {
+  content: '>'; /* A seta Hacker */
+  position: absolute;
+  left: 0;
+  color: #00ffcc;
+  font-weight: bold;
+  font-family: monospace;
+}
+
+/* Bloco de Código (Terminal) */
+.tech-body .code-block {
+  background: #0d0d0d;
+  border: 1px solid #333;
+  border-left: 4px solid #bd93f9; /* Roxo */
+  padding: 20px;
+  border-radius: 6px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.95rem;
+  color: #a5d6a7; /* Verde Terminal */
+  margin: 2.5rem 0;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+  overflow-x: auto;
+}
+
+/* Citações */
+.tech-body blockquote {
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 0%, transparent 100%);
+  border-left: 4px solid #ff0055; /* Rosa Neon */
+  margin: 2.5rem 0;
+  padding: 1.5rem 2rem;
+  font-style: italic;
+  font-size: 1.2rem;
+  color: #fff;
+}
+
 /* 👇 Garante que o App Root também obedeça 👇 */
 app-root {
   display: block;
@@ -403,5 +486,63 @@ body.mode-jonah {
   /* Forçando o 'COMUNIDADE' a parar de ser roxo e seguir o tema */
   .mat-mdc-menu-trigger.COMUNIDADE-ROXO-FIX {
     color: var(--accent-color) !important;
+  }
+}
+
+/* ========================================== */
+/* ☁️ BOTÃO SOUNDCLOUD (Injetado via HTML)     */
+/* ========================================== */
+
+.btn-soundcloud {
+  /* Layout do Botão */
+  display: inline-flex !important; /* Força display flex */
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 12px 25px;
+
+  /* Texto */
+  text-decoration: none !important;
+  font-family: 'Oswald', sans-serif, sans-serif;
+  font-weight: bold;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  /* Ícone */
+  i { font-size: 1.2rem; margin-right: 5px; }
+
+  /* --- 💎 ESTILO PADRÃO (BROKLIN) --- */
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid #00f3ff;
+  color: #00f3ff !important; /* Força a cor */
+  box-shadow: 0 0 5px rgba(0, 243, 255, 0.1);
+
+  &:hover {
+    background: rgba(0, 243, 255, 0.15);
+    box-shadow: 0 0 25px rgba(0, 243, 255, 0.5);
+    transform: translateY(-2px);
+    text-shadow: 0 0 8px #00f3ff;
+  }
+}
+
+/* --- ☢️ ESTILO JONAH (Quando o body tem a classe) --- */
+body.mode-jonah .btn-soundcloud {
+  border-color: #ff5500;
+  color: #ff5500 !important;
+  border-style: dashed;
+  font-family: 'Courier New', monospace;
+
+  &:hover {
+    background: #ff5500;
+    color: #000 !important; /* Texto fica preto no hover */
+    border-style: solid;
+    box-shadow: 0 0 30px #ff5500;
+    transform: scale(1.05);
+
+    i { transform: rotate(360deg); transition: 0.5s; }
   }
 }

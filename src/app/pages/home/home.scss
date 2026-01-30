@@ -8,6 +8,39 @@
   position: relative;
 }
 
+.hero-actions {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.btn-uplink {
+  background: transparent;
+  border: 1px solid #00ff00; /* Verde Terminal */
+  color: #00ff00;
+  padding: 15px 35px;
+  font-family: 'Courier New', monospace; /* Fonte Hacker */
+  font-size: 1.1rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 15px;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+
+  &:hover {
+    background: rgba(0, 255, 0, 0.1);
+    box-shadow: 0 0 25px #00ff00; /* Brilho intenso */
+    transform: translateY(-2px);
+    text-shadow: 0 0 5px #00ff00;
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
 /* --- HERO SECTION --- */
 .hero-section {
   flex: 1;
@@ -201,6 +234,30 @@ body.mode-jonah app-home .hero-title::before {
   .empty-player-state {
     border-color: #ff3300;
     color: #ff3300;
+  }
+}
+
+/* 👇 COLE NO FINAL DO home.component.scss */
+
+:host-context(.mode-jonah) {
+
+  .btn-uplink {
+    /* Troca o Verde pelo Laranja */
+    border-color: #ff9900;
+    color: #ff9900;
+
+    /* Estética Industrial: Borda Tracejada */
+    border-style: dashed;
+
+    /* Sombra de Fogo */
+    box-shadow: 0 0 10px rgba(255, 153, 0, 0.3);
+
+    &:hover {
+      background: rgba(255, 153, 0, 0.1); /* Fundo Laranja fraco */
+      box-shadow: 0 0 30px #ff9900; /* Brilho de metal quente */
+      text-shadow: 0 0 8px #ff9900;
+      border-style: solid; /* Fica sólido quando passa o mouse (efeito tátil) */
+    }
   }
 }
 

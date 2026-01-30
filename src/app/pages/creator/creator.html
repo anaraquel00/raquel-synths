@@ -1,7 +1,7 @@
 <div class="nav-bar">
   <button mat-button [routerLink]="['/']" class="back-btn">
     <mat-icon>arrow_back</mat-icon>
-    {{ navText.backToBase }}
+    {{ text.nav.back }}
   </button>
 </div>
 
@@ -15,167 +15,107 @@
       </div>
 
       <div class="profile-bio">
-        <h2 class="dev-name">Ana Raquel de Holanda</h2>
-        <h3 class="dev-role">
-    {{ translate.isPt()
-         ? 'Tecnóloga Criativa & Front-End Developer'
-         : 'Creative Technologist & Front-End Developer' }} 🚀
-        </h3>
-
-        <p class="bio-text">
-        {{ translate.isPt()
-         ? 'Tech Lead e Engenheira de Software no projeto RaQuel Synths. Especialista em unir arquitetura Angular 20+, Automação e IA Generativa para criar produtos digitais escaláveis.'
-         : 'Tech Lead and Software Engineer at RaQuel Synths. Specialist in merging Angular 20+ architecture, Automation, and Generative AI to build scalable digital products.' }}
-        </p>
+        <h2 class="dev-name">{{ text.profile.name }}</h2>
+        <h3 class="dev-role">{{ text.profile.role }}</h3>
+        <p class="bio-text">{{ text.profile.bio }}</p>
 
         <div class="social-links">
           <a href="https://www.linkedin.com/in/ana-raquel-de-holanda" target="_blank" class="social-btn linkedin">
-            LinkedIn
+            {{ text.profile.social.linkedin }}
           </a>
           <a href="https://github.com/anaraquel00" target="_blank" class="social-btn github">
-            GitHub
+            {{ text.profile.social.github }}
           </a>
         </div>
       </div>
     </div>
   </header>
 
+ <section class="manifesto-section fade-in-up">
+    @for (block of text.manifesto; track block.title) {
+      <div class="manifesto-block">
+        <h4>{{ block.title }}</h4>
+        <p>{{ block.content }}</p>
+      </div>
+    }
+  </section>
+
   <hr class="cyber-divider">
 
- <section class="skills-section">
-    <h3><mat-icon>memory</mat-icon> {{ translate.isPt() ? 'ARSENAL TÉCNICO' : 'TECH STACK' }}</h3>
+  <section class="skills-section">
+    <h3><mat-icon>memory</mat-icon> {{ text.skills.title }}</h3>
 
     <div class="skills-grid">
-      <div class="skill-category">
-        <span class="category-label">FRONTEND & UI</span>
-        <div class="chips">
-          <span class="tech-chip angular">Angular 19+</span>
-          <span class="tech-chip">React</span>
-          <span class="tech-chip">TypeScript</span>
-          <span class="tech-chip">HTML5/SCSS</span>
+      @for (category of text.skills.categories; track category.label) {
+        <div class="skill-category">
+          <span class="category-label">{{ category.label }}</span>
+          <div class="chips">
+            @for (tech of category.chips; track tech.name) {
+              <span class="tech-chip" [class]="tech.class" [style]="tech.style || ''">
+                {{ tech.name }}
+              </span>
+            }
+          </div>
         </div>
-      </div>
-
-      <div class="skill-category">
-        <span class="category-label">BACKEND & DATA</span>
-        <div class="chips">
-          <span class="tech-chip java">Java</span>
-          <span class="tech-chip spring">Spring Boot</span>
-          <span class="tech-chip">Python</span>
-          <span class="tech-chip">MySQL/Hibernate</span>
-        </div>
-      </div>
-
-      <div class="skill-category">
-        <span class="category-label">AI & AUTOMATION OPS</span>
-        <div class="chips">
-          <span class="tech-chip n8n">n8n Workflows</span>
-          <span class="tech-chip">Webhooks & APIs</span>
-          <span class="tech-chip" style="border-color: #9c27b0; color: #9c27b0;">GenAI & Prompts</span>
-          <span class="tech-chip">GitHub Copilot</span>
-        </div>
-      </div>
+      }
     </div>
   </section>
 
   <section class="projects-section">
-    <h3><mat-icon>code</mat-icon> {{ translate.isPt() ? 'MISSÕES CUMPRIDAS' : 'DEPLOYED MISSIONS' }}</h3>
+    <h3><mat-icon>code</mat-icon> {{ text.projects.title }}</h3>
 
     <div class="projects-grid">
-
-      <div class="project-card featured-ops">
-        <div class="card-header">
-          <h4>RQS Uplink Protocol</h4>
-          <span class="badge n8n-badge">AUTOMATION</span>
+      @for (project of text.projects.list; track project.title) {
+        <div class="project-card" [class]="project.cardClass">
+          <div class="card-header">
+            <h4>{{ project.title }}</h4>
+            <span class="badge" [class]="project.badgeClass">{{ project.badge }}</span>
+          </div>
+          <p>{{ project.desc }}</p>
+          <div class="card-techs">
+            @for (t of project.techs; track t) { <small>{{ t }}</small> }
+          </div>
+          <a [href]="project.link" target="_blank" class="project-link">{{ project.linkText }}</a>
         </div>
-        <p>
-          {{ translate.isPt()
-             ? 'Ecossistema CI/CD que integra GitHub, Discord e LinkedIn via n8n. Deploy de posts automático via commits.'
-             : 'CI/CD ecosystem integrating GitHub, Discord, and LinkedIn via n8n. Automatic post deployment via commits.' }}
-        </p>
-        <div class="card-techs">
-          <small>n8n</small> <small>Webhooks</small> <small>JSON</small> <small>OAuth2</small>
-        </div>
-        <a href="https://github.com/anaraquel00/raquel-synths" target="_blank" class="project-link">Ver Workflow</a>
-      </div>
-
-      <div class="project-card featured">
-        <div class="card-header">
-          <h4>Gestão de Imóveis (SPA)</h4>
-          <span class="badge">ANGULAR 19</span>
-        </div>
-        <p>
-          {{ translate.isPt()
-             ? 'Sistema completo para gestão do ciclo de vida de aluguéis. Foco em UX limpa e acessibilidade.'
-             : 'Complete system for rental lifecycle management. Focus on clean UX and accessibility.' }}
-        </p>
-        <div class="card-techs">
-          <small>Angular 19</small> <small>Freelance</small> <small>UX/UI</small>
-        </div>
-        <a href="https://github.com/anaraquel00/GESTAO-DE-ALUGUEIS" target="_blank" class="project-link">Ver Código</a>
-      </div>
-
-      <div class="project-card">
-        <div class="card-header">
-          <h4>Virtual Piano + Synth</h4>
-          <span class="badge secondary">AUDIO DEV</span>
-        </div>
-        <p>
-          {{ translate.isPt()
-             ? 'Sintetizador interativo com Arpeggiator e presets (Lead, Pad, Bass). A base da tecnologia musical.'
-             : 'Interactive synthesizer with Arpeggiator and presets. The foundation of music tech.' }}
-        </p>
-        <div class="card-techs">
-          <small>JS</small> <small>Tone.js</small> <small>CSS3</small>
-        </div>
-        <a href="https://github.com/anaraquel00/piano-emulator" target="_blank" class="project-link">Ver Código</a>
-      </div>
-
+      }
     </div>
-
   </section>
-<!-- ... (Sua section projects-section termina aqui) ... -->
 
   <hr class="cyber-divider">
 
-  <!-- NOVA SEÇÃO: BUSINESS CHANNEL -->
   <section class="business-section">
     <h3>
       <mat-icon>business_center</mat-icon>
-      {{ translate.isPt() ? 'CANAL CORPORATIVO' : 'BUSINESS CHANNEL' }}
+      {{ text.business.title }}
     </h3>
 
     <div class="business-terminal">
-      <!-- Cabeçalho do Terminal de Negócios -->
-      <div class="terminal-head">
-        <span class="status-led"></span>
-        <span class="status-text">
-          {{ translate.isPt() ? 'SYSTEM STATUS: DISPONÍVEL PARA PROJETOS' : 'SYSTEM STATUS: OPEN FOR BUSINESS' }}
-        </span>
-      </div>
+     <div class="terminal-head">
+  <span class="status-led"></span>
+
+  <span class="status-text">
+    <span class="msg-broklin">{{ text.business.status }}</span>
+
+    <span class="msg-jonah">{{ text.business.statusJonah }}</span>
+  </span>
+ </div>
 
       <div class="terminal-body">
-        <p>
-          {{ translate.isPt()
-             ? 'Procurando liderança técnica em Angular, automação de processos ou arquitetura de software moderna? Transformo requisitos complexos em código limpo e produtos digitais funcionais.'
-             : 'Looking for technical leadership in Angular, process automation, or modern software architecture? I turn complex requirements into clean code and functional digital products.' }}
-        </p>
+        <p>{{ text.business.desc }}</p>
 
         <div class="biz-actions">
-          <!-- Botão E-mail (Ação Direta) -->
           <a href="mailto:anaraquel00@gmail.com?subject=Business%20Inquiry%20-%20RQS" class="action-btn email">
             <mat-icon>mail</mat-icon>
-            {{ translate.isPt() ? 'Solicitar Consultoria' : 'Contact for Hire' }}
+            {{ text.business.actionEmail }}
           </a>
 
-          <!-- Botão LinkedIn (Validação) -->
           <a href="https://www.linkedin.com/in/ana-raquel-de-holanda" target="_blank" class="action-btn linkedin">
             <mat-icon>work</mat-icon>
-            LinkedIn Profile
+            {{ text.business.actionLinkedin }}
           </a>
         </div>
       </div>
     </div>
   </section>
 
-</div> <!-- Fecha creator-container -->
+</div>

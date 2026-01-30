@@ -6,11 +6,13 @@ import { map, catchError, tap } from 'rxjs/operators';
 
 import { TranslationService } from '../services/translation.service';
 import { ContentService } from '../services/content.service';
+import { SafeHtmlPipe } from '../components/pipes/safe-html.pipe';
+import { AdBannerComponent } from "../components/ad-banner/ad-banner";
 
 @Component({
   selector: 'app-storytelling',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, SafeHtmlPipe, AdBannerComponent],
   templateUrl: './app-storytelling.html',
   styleUrls: ['./app-storytelling.scss']
 })

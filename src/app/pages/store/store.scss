@@ -214,6 +214,23 @@
       box-shadow: 0 0 15px var(--color-accent, #ff00ff);
     }
   }
+  /* 👇 ESTILO DO PRODUTO ESGOTADO (Adicione isso) */
+.btn-neon.sold-out-mode {
+  background: rgba(100, 100, 100, 0.3) !important;
+  border-color: #666 !important;
+  color: #888 !important;
+  cursor: not-allowed; /* Mostra o sinal de proibido no mouse */
+  box-shadow: none !important;
+  text-shadow: none !important;
+
+  /* Remove animações de hover */
+  &:hover {
+    transform: none !important;
+    background: rgba(100, 100, 100, 0.3) !important;
+    letter-spacing: normal !important;
+  }
+}
+
 }
 
 /* =========================================
@@ -280,6 +297,12 @@
       &::before { content: '>> SYSTEM MSG: '; color: #ff0000; }
     }
   }
+}
+/* Ajuste para o Modo Jonah (Sold Out Industrial) */
+:host-context(.mode-jonah) .btn-neon.sold-out-mode {
+  border-style: solid !important; /* Remove o tracejado */
+  background: #222 !important;
+  color: #555 !important;
 }
 
 /* =========================================
@@ -450,4 +473,68 @@
   0% { opacity: 0; transform: translateX(-50px); filter: blur(10px); }
   50% { opacity: 1; transform: translateX(10px); }
   100% { transform: translateX(0); filter: blur(0); }
+}
+
+/* ========================================== */
+/* ⚖️ RODAPÉ LEGAL (Compliance)              */
+/* ========================================== */
+.legal-footer {
+  margin-top: 3rem;          /* Empurra pra baixo do conteúdo */
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1); /* Linha divisória sutil */
+  text-align: right;         /* Alinha à direita como pedido */
+  width: 100%;
+
+  small {
+    display: block;
+    font-size: 0.75rem;      /* Pequeno, mas legível */
+    color: rgba(255, 255, 255, 0.5); /* Cinza translúcido */
+    font-family: 'Roboto', sans-serif;
+    max-width: 600px;        /* Não deixa a linha ficar comprida demais */
+    margin-left: auto;       /* Garante que o bloco fique na direita */
+    line-height: 1.4;
+  }
+  .compliance-link {
+    color: inherit; /* Pega a cor do texto pai (cinza ou laranja) */
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 5px;
+    display: inline-block;
+    border-bottom: 1px dotted rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+
+    &:hover {
+      color: #00f3ff; /* Brilha Ciano no Hover (Broklin) */
+      border-bottom-style: solid;
+      letter-spacing: 1px; /* Expande chique */
+    }
+  }
+}
+
+
+/* --- AJUSTE PARA O MODO JONAH (Pra não sumir no escuro) --- */
+:host-context(.mode-jonah) .legal-footer {
+  border-top-color: rgba(255, 153, 0, 0.2); /* Linha Laranja fraca */
+
+  small {
+    color: rgba(255, 153, 0, 0.6); /* Texto Laranja Industrial translúcido */
+    font-family: 'Courier New', monospace; /* Fonte Hacker */
+  }
+  .compliance-link:hover {
+  color: #ff5500; /* Brilha Laranja no Hover (Jonah) */
+  text-shadow: 0 0 10px #ff5500;
+}
+}
+/* --- RESPONSIVO (No celular centraliza pra ler melhor) --- */
+@media (max-width: 768px) {
+  .legal-footer {
+    text-align: center;
+    margin-top: 2rem;
+
+    small {
+      margin-left: 0;
+      margin-right: 0;
+      max-width: 100%;
+    }
+  }
 }

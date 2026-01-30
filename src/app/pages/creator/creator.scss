@@ -17,9 +17,9 @@
 
 /* 2. O CONTAINER "FOLHA DE PAPEL" (A Mágica da Leitura) */
 .creator-container {
-  max-width: 900px;
-  margin: 20px auto 40px; /* Margem ajustada */
-  padding: 40px;
+  max-width: 1200px;
+  margin: 1px auto 40px; /* Margem ajustada */
+  padding: 30px;
 
   /* 👇 FUNDO BRANCO TRANSLÚCIDO */
   background: rgba(255, 255, 255, 0.5);
@@ -70,10 +70,119 @@
   .photo-jonah { opacity: 0; }
 }
 
+/* MANIFESTO (A História) */
+.manifesto-section {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 0 10px;
+}
+
+.manifesto-block {
+  margin-bottom: 30px;
+
+  h4 {
+    font-family: 'Courier New', monospace; /* Fonte monoespaçada estilo código */
+    color: #161150; /* Usa a cor do tema (Rosa ou Laranja) */
+    font-size: 1.3rem;
+    font-weight: bolder;
+    margin-bottom: 10px;
+    letter-spacing: -0.5px;
+  }
+
+  p {
+    font-size: 1.05rem;
+    line-height: 1.7; /* Bom para leitura */
+    color: #000000; /* Cinza escuro para ler bem no fundo claro */
+    text-align: justify;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+}
+
+    :host-context(.mode-jonah){
+     .profile-bio {
+  flex: 1;
+  /* Título Preto Forte */
+  .dev-name {
+    font-size: 2.5rem;
+    margin: 0;
+    color: #ff5722; /* Preto quase total */
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+  }
+
+  /* Cargo com cor de destaque mas legível */
+  .dev-role {
+    color: #ff5722; /* Azul/Roxo vibrante para ler no branco */
+    margin-bottom: 15px;
+    font-weight: 600;
+  }
+
+  /* Texto Cinza Escuro */
+  .bio-text {
+    line-height: 1.6;
+    font-size: 1.1rem;
+    color: #fa7e11;
+    font-weight: 500;
+  }
+}
+
+ .creator-container {
+  max-width: 1200px;
+  margin: 1px auto 40px; /* Margem ajustada */
+  padding: 30px;
+
+  /* 👇 FUNDO BRANCO TRANSLÚCIDO */
+  background: rgba(0, 0, 0, 0.603);
+  backdrop-filter: blur(15px);
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+
+  /* 👇 TEXTO ESCURO PADRÃO */
+  color: #ff5722;
+}
+h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #ff5722; /* Títulos das seções em preto */
+  font-size: 1.5rem;
+  margin-bottom: 25px;
+  font-weight: bold;
+
+  mat-icon { color: var(--accent-color); } /* Só o ícone colorido */
+}
+.business-section {
+  margin-top: 40px;
+  margin-bottom: 60px;
+
+  h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #ff655a;; /* Verde Matrix */
+    margin-bottom: 20px;
+    //font-family: 'Courier New', monospace;
+    font-weight: bold;
+  }
+}
+    }
+
+
+
+:host-context(.mode-jonah) .manifesto-block h4 {
+  color: #ff5722; /* Laranja Industrial */
+  font-weight: bolder;
+}
+/* Ajuste para o modo escuro/Jonah se necessário */
+:host-context(.mode-jonah) .manifesto-block p {
+  color: #ff9729; /* Texto claro no fundo escuro */
+}
+
 /* Efeito Hover (Modo Jonah) */
 :host-context(.mode-jonah) .profile-photo-container {
-  border-color: #ff4500;
-  box-shadow: 0 0 25px rgba(255, 69, 0, 0.5);
+  border-color: #ff5722;
+  box-shadow: 0 0 25px #ff56228b;
   .photo-broklin { opacity: 0; }
   .photo-jonah { opacity: 1; filter: contrast(1.2); }
 }
@@ -463,7 +572,7 @@ h3 {
 :host-context(body.mode-jonah) {
 
   .business-section h3 {
-    color: #000000; /* Laranja Industrial */
+    color:#ff3d00; /* Laranja Industrial */
   }
 
   .business-terminal {
@@ -501,4 +610,105 @@ h3 {
       &:hover { background-color: rgba(255, 87, 34, 0.1); }
     }
   }
+}
+/* ========================================== */
+/* ☢️ MODO JONAH: BLACKOUT PROTOCOL           */
+/* ========================================== */
+:host-context(.mode-jonah) {
+
+  /* 1. O CONTAINER PRINCIPAL (A Folha de Papel vira Vidro Fumê) */
+  .creator-container {
+    background: rgba(10, 5, 0, 0.85); /* Quase preto */
+    border: 1px solid #ff9900;
+    box-shadow: 0 0 50px rgba(255, 60, 0, 0.3); /* Glow vermelho/laranja */
+  }
+
+  /* Ajuste dos textos principais */
+  .profile-bio {
+    .dev-name { color: #ff9900; text-shadow: 0 0 10px rgba(255, 153, 0, 0.5); }
+    .dev-role { color: #ccc; }
+    .bio-text { color: #bbb; }
+  }
+
+  /* 2. OS CARDS (Skills & Projetos) */
+  .skill-category, .project-card {
+    background: rgba(0, 0, 0, 0.6); /* Fundo escuro */
+    border: 1px dashed #ff5500; /* Borda tracejada agressiva */
+    color: #ddd; /* Texto claro */
+    transition: all 0.3s ease;
+
+    /* Títulos dentro dos cards */
+    h4, .category-label {
+      color: #ff9900 !important;
+      font-family: 'Courier New', monospace;
+    }
+
+    p, small { color: #aaa !important; }
+
+    &:hover {
+      background: rgba(20, 10, 0, 0.9);
+      border-style: solid;
+      border-color: #ff9900;
+      box-shadow: 0 0 20px rgba(255, 153, 0, 0.2);
+      transform: scale(1.02) rotate(1deg); /* Levemente instável */
+    }
+  }
+
+  /* 3. CHIPS E BADGES (As etiquetas) */
+  .tech-chip, .badge {
+    background: transparent !important;
+    border: 1px solid #ff9900 !important;
+    color: #ff9900 !important;
+    font-family: 'Courier New', monospace;
+  }
+
+  /* Exceção para o badge de destaque (Automação) */
+  .badge.n8n-badge {
+    background: #ff3300 !important;
+    color: #000 !important;
+    border: none !important;
+  }
+
+  /* 4. TÍTULOS DAS SEÇÕES */
+  h3 {
+    color: #ff9900;
+    mat-icon { color: #ff3300; animation: blink 2s infinite; }
+  }
+
+  /* 5. DIVISOR */
+  .cyber-divider {
+    background: linear-gradient(90deg, transparent, #ff3300, transparent);
+  }
+}
+/* --- LÓGICA DE TROCA DE TEXTO (Broklin vs Jonah) --- */
+
+/* 1. Estado Normal (Broklin) */
+.msg-jonah {
+  display: none; /* Esconde o texto do Jonah */
+}
+.msg-broklin {
+  display: inline; /* Mostra o texto do Broklin */
+}
+
+/* 2. Estado Caos (Quando o corpo tem .mode-jonah) */
+:host-context(.mode-jonah) {
+
+  .msg-broklin {
+    display: none; /* Esconde o bonzinho */
+  }
+
+  .msg-jonah {
+    display: inline; /* MOSTRA O MALVADÃO */
+    color: #ff5722;   /* Garante que fique laranja */
+    animation: glitchText 0.5s infinite; /* Opcional: Efeito glitch */
+  }
+}
+
+/* Opcional: Animação de Glitch no texto */
+@keyframes glitchText {
+  0% { opacity: 1; }
+  50% { opacity: 0.8; }
+  52% { opacity: 0.2; }
+  54% { opacity: 0.8; }
+  100% { opacity: 1; }
 }

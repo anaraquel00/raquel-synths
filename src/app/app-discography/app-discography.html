@@ -1,70 +1,88 @@
 <section class="disco-container">
-  <h2 class="section-title">DISCOGRAFIA & STREAMS</h2>
+  <h2 class="section-title">{{ translate.isPt() ? 'DISCOGRAFIA E STREAMS' : 'DISCOGRAPHY AND STREAMS' }}</h2>
 
-  <div class="disco-section broklin-side">
-    <h3 class="side-title"><mat-icon>diamond</mat-icon> UNIVERSO RQS (Synthwave)</h3>
-
-    <div class="album-grid">
-      @for (item of visibleBroklin; track item) {
-        <div class="album-card">
-          <img [src]="item.cover" class="cover-img" alt="Capa do Álbum">
-          <div class="album-info">
-            <h4>{{ item.title }}</h4>
-            <span>{{ item.type }}</span>
-            <div class="actions">
-              <button mat-icon-button class="spotify-btn" (click)="openLink(item.spotify)">
-                <i class="fa-brands fa-spotify"></i> <mat-icon>music_note</mat-icon>
-              </button>
-              <button mat-icon-button class="soundcloud-btn" (click)="openLink(item.soundcloud)">
-                <mat-icon>cloud</mat-icon>
-              </button>
-            </div>
-          </div>
-        </div>
-      }
-    </div>
-
-    @if (visibleBroklin.length < allBroklin.length) {
-      <div class="load-more-container">
-        <button mat-stroked-button color="accent" (click)="showMoreBroklin()">
-          <mat-icon>expand_more</mat-icon> VER MAIS LANÇAMENTOS
-        </button>
-      </div>
-    }
+  <div class="disco-intro">
+    <p [innerHTML]="translate.isPt() ? introPT : introEN"></p>
   </div>
 
-  <hr class="divider">
+ <div class="artist-section broklin-theme">
 
-  <div class="disco-section jonah-side">
-    <h3 class="side-title"><mat-icon>warning</mat-icon> JONAH'S REBELLION (Industrial)</h3>
-
-    <div class="album-grid">
-      @for (item of visibleJonah; track item) {
-        <div class="album-card">
-          <img [src]="item.cover" class="cover-img" alt="Capa do Álbum">
-          <div class="album-info">
-            <h4>{{ item.title }}</h4>
-            <span>{{ item.type }}</span>
-            <div class="actions">
-              <button mat-icon-button class="spotify-btn" (click)="openLink(item.spotify)">
-                <mat-icon>music_note</mat-icon>
-              </button>
-              <button mat-icon-button class="soundcloud-btn" (click)="openLink(item.soundcloud)">
-                <mat-icon>cloud</mat-icon>
-              </button>
-            </div>
-          </div>
-        </div>
-      }
-    </div>
-
-    @if (visibleJonah.length < allJonah.length) {
-      <div class="load-more-container">
-        <button mat-stroked-button color="warn" (click)="showMoreJonah()">
-          <mat-icon>expand_more</mat-icon> EXPOSE MORE CHAOS
-        </button>
-      </div>
-    }
+  <div class="section-header">
+    <i class="far fa-gem icon-pulse"></i>
+    <h3>{{ translate.isPt() ? 'PROTOCOLO RQS: LANÇAMENTOS' : 'RQS PROTOCOL: RELEASES' }}</h3>
   </div>
 
-</section>
+  @for (album of featuredBroklin; track album; let last = $last) {
+    <article class="featured-album">
+      <div class="album-cover">
+        <img [src]="album.cover" [alt]="album.title">
+      </div>
+
+      <div class="album-content">
+        <div class="header">
+          <span class="release-type">{{ album.type }}</span>
+          <h4>{{ album.title }}</h4>
+        </div>
+
+        <p class="album-description">{{ album.description }}</p>
+
+        <div class="embed-player">
+          <iframe width="100%" height="166" scrolling="no" frameborder="0" allow="autoplay"
+            [src]="getSafeUrl(album.embedLink)">
+          </iframe>
+        </div>
+
+        <div class="actions">
+          @if (album.spotify) {
+            <button class="btn-spotify" (click)="openLink(album.spotify)">
+              <i class="fab fa-spotify"></i> Spotify
+            </button>
+          }
+        </div>
+      </div>
+    </article>
+    @if (!last) { <hr class="separator neon-line"> }
+  }
+
+  <button class="btn-archive neon-border" (click)="viewFullArchive()">
+    {{ translate.isPt() ? 'VER ARQUIVO COMPLETO (+)' : 'VIEW FULL ARCHIVE (+)' }}
+  </button>
+</div>
+
+
+<div class="artist-section jonah-theme">
+
+  <div class="section-header">
+    <i class="fas fa-exclamation-triangle icon-shake"></i>
+    <h3>{{ translate.isPt() ? 'REBELIÃO DE JONAH: CAOS' : 'JONAH\'S REBELLION: CHAOS' }}</h3>
+  </div>
+
+  @for (album of featuredJonah; track album; let last = $last) {
+    <article class="featured-album">
+      <div class="album-cover">
+        <img [src]="album.cover" [alt]="album.title" class="glitch-effect">
+      </div>
+
+      <div class="album-content">
+        <div class="header">
+          <span class="release-type">{{ album.type }}</span>
+          <h4>{{ album.title }}</h4>
+        </div>
+
+        <p class="album-description">{{ album.description }}</p>
+
+        <div class="embed-player" *ngIf="album.embedLink">
+           <iframe width="100%" height="166" scrolling="no" frameborder="0" allow="autoplay" [src]="getSafeUrl(album.embedLink)"></iframe>
+        </div>
+
+      </div>
+    </article>
+    @if (!last) { <hr class="separator hazard-line"> }
+  }
+
+  <button class="btn-archive hazard-border" (click)="viewFullArchive()">
+    {{ translate.isPt() ? 'EXPOR MAIS DADOS (+)' : 'EXPOSE MORE DATA (+)' }}
+  </button>
+ </div>
+
+ </section>

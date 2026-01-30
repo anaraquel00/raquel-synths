@@ -1,3 +1,4 @@
+import { Album } from '../models/album.model';
 // DADOS DO HEADER/NAV
 export const NAV_DATA = {
   pt: { lightmode:'MODO BROKLIN', darkmode:'MODO JONAH', inicio: 'INÍCIO', sobre: 'QUEM SOMOS', visualNovel: 'VISUAL NOVEL', discografia: 'DISCOGRAFIA', store: 'LOJA', social: 'COMUNIDADE', creator: 'A CRIADORA', backToBase: 'VOLTAR À BASE' },
@@ -28,6 +29,29 @@ export const VN_TEXT = {
   }
 };
 
+// --- MANIFESTO RQS (Texto do Quem Somos) ---
+
+export const MANIFESTO_PT = `
+  A <strong>RaQuel Synths (RQS)</strong> não é apenas uma banda virtual; é um experimento vivo de <em>Engenharia Musical</em> e <em>Narrativa Transmedia</em>.
+  Nascido no código e expandido pela Inteligência Artificial com a curadoria humana da
+  <span class="human-link">Ana Raquel</span> (vê A Criadora),
+  o projeto funde a precisão técnica do <strong>Angular</strong> com a imprevisibilidade criativa de modelos generativos (Suno, OpenAI).
+  <br><br>
+  <strong>Nossa Missão:</strong> Provar que a alma humana e o algoritmo podem co-criar. Enquanto a General <strong>Kelma Adlanko</strong> e o Tech Lead <strong>Broklin Garpeter</strong> buscam a harmonia perfeita do Synthwave, o antagonista <strong>Jonah Cyperfield</strong> introduz o caos e a distorção do Industrial Metal.
+  <br><br>
+  <strong>O Resultado:</strong> Um universo onde cada linha de código vira música, e cada música conta a história de uma guerra digital. <em>Bem-vindo ao sistema.</em>
+`;
+
+export const MANIFESTO_EN = `
+  <strong>RaQuel Synths (RQS)</strong> is not just a virtual band; it is a living experiment in <em>Musical Engineering</em> and <em>Transmedia Storytelling</em>.
+  Born in code and expanded by Artificial Intelligence with human curation by
+  <span class="human-link">Ana Raquel</span> (see The Creator),
+  the project fuses the technical precision of <strong>Angular</strong> with the creative unpredictability of generative models (Suno, OpenAI).
+  <br><br>
+  <strong>Our Mission:</strong> To prove that the human soul and the algorithm can co-create. While General <strong>Kelma Adlanko</strong> and Tech Lead <strong>Broklin Garpeter</strong> seek the perfect harmony of Synthwave, the antagonist <strong>Jonah Cyperfield</strong> introduces the chaos and distortion of Industrial Metal.
+  <br><br>
+  <strong>The Result:</strong> A universe where every line of code becomes music, and every song tells the story of a digital war. <em>Welcome to the system.</em>
+`;
 // DADOS DO "SOBRE" (BIOS)
 export const MEMBERS_PT = [
   {
@@ -99,6 +123,225 @@ export const MEMBERS_EN = [
   }
 ];
 
+export const CREATOR_DATA = {
+  pt: {
+    nav: {
+      back: 'VOLTAR À BASE'
+    },
+    profile: {
+      name: 'Ana Raquel de Holanda',
+      role: 'Creative Technologist & Front-End Developer 🚀',
+      // 👇 AQUI ESTÁ O MANIFESTO REFATORADO E PROFISSIONAL
+      bio: "Tech Lead e Engenheira de Software no projeto RaQuel Synths. Especialista em unir arquitetura Angular 20+, Automação e IA Generativa para criar produtos digitais escaláveis. Minha missão é transformar requisitos complexos em narrativas interativas.",
+      social: {
+        linkedin: 'LinkedIn',
+        github: 'GitHub'
+      }
+    },
+
+ manifesto: [
+      {
+        title: '// QUEM SOU EU',
+        content: "Eu sou Ana Raquel. Para o mercado, sou uma Desenvolvedora Full-Stack especialista em Angular. Para a arte, sou o Core da RaQuel Synths. Eu cansei de ver a tecnologia fria e a música sem narrativa. Decidi fundir os dois. Este site não é apenas um portfólio; é uma Visual Novel Interativa construída linha a linha, acorde a acorde."
+      },
+      {
+        title: '// A GÊNESE DOS NOMES (DECODIFICADO)',
+        content: "Nada aqui é aleatório. Kelma Adlanko é um anagrama do meu nome (Raquel Holanda). Broklin Garpeter nasceu de um prompt de IA (Bro-GPT) refinado para ser o homem ideal. E Jonah Cyperfield é a evolução do caos, criado para representar a fúria e o erro de compilação que nos torna humanos."
+      },
+      {
+        title: '// A GUERRA SONORA',
+        content: "A RQS nasceu de uma pergunta: O que acontece quando a perfeição digital colide com a fúria humana? Broklin e Kelma buscam a harmonia do Synthwave, enquanto Jonah sequestra as faixas para criar versões de Industrial Metal. Você não apenas ouve; você testemunha um duelo."
+      },
+      {
+        title: '// ARQUITETURA DE SISTEMA',
+        content: "Construir este universo exigiu Arquitetura. Utilizei Angular 19+ com Signals para gerenciar o 'Estado Emocional' do site. A dualidade (Modo Broklin vs. Jonah) não é apenas CSS; é a materialização técnica da batalha narrativa persistida no Firebase."
+      }
+    ],
+
+    skills: {
+      title: 'ARSENAL TÉCNICO',
+      categories: [
+        {
+          label: 'FRONTEND & UI',
+          chips: [
+            { name: 'Angular 19+', class: 'angular' },
+            { name: 'React', class: '' },
+            { name: 'TypeScript', class: '' },
+            { name: 'HTML5/SCSS', class: '' }
+          ]
+        },
+        {
+          label: 'BACKEND & DATA',
+          chips: [
+            { name: 'Java', class: 'java' },
+            { name: 'Spring Boot', class: 'spring' },
+            { name: 'Python', class: '' },
+            { name: 'MySQL/Hibernate', class: '' }
+          ]
+        },
+        {
+          label: 'AI & AUTOMATION OPS',
+          chips: [
+            { name: 'n8n Workflows', class: 'n8n' },
+            { name: 'Webhooks & APIs', class: '' },
+            { name: 'GenAI & Prompts', class: 'genai', style: 'border-color: #9c27b0; color: #9c27b0;' },
+            { name: 'GitHub Copilot', class: '' }
+          ]
+        }
+      ]
+    },
+    projects: {
+      title: 'MISSÕES CUMPRIDAS',
+      list: [
+        {
+          title: 'RQS Uplink Protocol',
+          badge: 'AUTOMATION',
+          badgeClass: 'n8n-badge',
+          cardClass: 'featured-ops',
+          desc: 'Ecossistema CI/CD que integra GitHub, Discord e LinkedIn via n8n. Deploy de posts automático via commits.',
+          techs: ['n8n', 'Webhooks', 'JSON', 'OAuth2'],
+          link: 'https://github.com/anaraquel00/raquel-synths',
+          linkText: 'Ver Workflow'
+        },
+        {
+          title: 'Gestão de Imóveis (SPA)',
+          badge: 'ANGULAR 19',
+          badgeClass: '',
+          cardClass: 'featured',
+          desc: 'Sistema completo para gestão do ciclo de vida de aluguéis. Foco em UX limpa e acessibilidade.',
+          techs: ['Angular 19', 'Freelance', 'UX/UI'],
+          link: 'https://github.com/anaraquel00/GESTAO-DE-ALUGUEIS',
+          linkText: 'Ver Código'
+        },
+        {
+          title: 'Virtual Piano + Synth',
+          badge: 'AUDIO DEV',
+          badgeClass: 'secondary',
+          cardClass: '',
+          desc: 'Sintetizador interativo com Arpeggiator e presets (Lead, Pad, Bass). A base da tecnologia musical.',
+          techs: ['JS', 'Tone.js', 'CSS3'],
+          link: 'https://github.com/anaraquel00/piano-emulator',
+          linkText: 'Ver Código'
+        }
+      ]
+    },
+    business: {
+      title: 'CANAL CORPORATIVO',
+      status: 'SYSTEM STATUS: DISPONÍVEL PARA PROJETOS',
+      statusJonah: 'SYSTEM STATUS: AGUENTA A PRESSÃO? 💀',
+      desc: 'Procurando liderança técnica em Angular, automação de processos ou arquitetura de software moderna? Transformo requisitos complexos em código limpo e produtos digitais funcionais.',
+      actionEmail: 'Solicitar Consultoria',
+      actionLinkedin: 'Perfil LinkedIn'
+    }
+  },
+
+  // 🇺🇸 ENGLISH VERSION
+  en: {
+    nav: { back: 'BACK TO BASE' },
+    profile: {
+      name: 'Ana Raquel de Holanda',
+      role: 'Creative Technologist & Front-End Developer 🚀',
+      bio: "Tech Lead and Software Engineer at RaQuel Synths. Specialist in merging Angular 20+ architecture, Automation, and Generative AI to build scalable digital products. My mission is to turn complex requirements into interactive narratives.",
+      social: { linkedin: 'LinkedIn', github: 'GitHub' }
+    },
+
+ manifesto: [
+      {
+        title: '// WHO AM I',
+        content: "I am Ana Raquel. To the market, a Full-Stack Dev. To art, the Core of RaQuel Synths. I decided to merge cold tech with music narrative. This site is an Interactive Visual Novel built line by line."
+      },
+      {
+        title: '// THE GENESIS (DECODED)',
+        content: "Nothing is random. Kelma Adlanko is an anagram of my name. Broklin Garpeter was born from an AI prompt (Bro-GPT). Jonah Cyperfield represents the chaos and compilation errors that make us human."
+      },
+      {
+        title: '// THE SONIC WAR',
+        content: "RQS asks: What happens when digital perfection meets human fury? Broklin seeks Synthwave harmony, while Jonah hijacks tracks for Industrial Metal. You witness a duel."
+      },
+      {
+        title: '// SYSTEM ARCHITECTURE',
+        content: "I used Angular 19+ with Signals to manage the site's 'Emotional State'. The duality (Broklin vs. Jonah Mode) is the technical materialization of the narrative battle."
+      }
+    ],
+
+    skills: {
+      title: 'TECH STACK',
+      categories: [
+        {
+          label: 'FRONTEND & UI',
+          chips: [
+            { name: 'Angular 19+', class: 'angular' },
+            { name: 'React', class: '' },
+            { name: 'TypeScript', class: '' },
+            { name: 'HTML5/SCSS', class: '' }
+          ]
+        },
+        {
+          label: 'BACKEND & DATA',
+          chips: [
+            { name: 'Java', class: 'java' },
+            { name: 'Spring Boot', class: 'spring' },
+            { name: 'Python', class: '' },
+            { name: 'MySQL/Hibernate', class: '' }
+          ]
+        },
+        {
+          label: 'AI & AUTOMATION OPS',
+          chips: [
+            { name: 'n8n Workflows', class: 'n8n' },
+            { name: 'Webhooks & APIs', class: '' },
+            { name: 'GenAI & Prompts', class: 'genai', style: 'border-color: #9c27b0; color: #9c27b0;' },
+            { name: 'GitHub Copilot', class: '' }
+          ]
+        }
+      ]
+    },
+    projects: {
+      title: 'DEPLOYED MISSIONS',
+      list: [
+        {
+          title: 'RQS Uplink Protocol',
+          badge: 'AUTOMATION',
+          badgeClass: 'n8n-badge',
+          cardClass: 'featured-ops',
+          desc: 'CI/CD ecosystem integrating GitHub, Discord, and LinkedIn via n8n. Automatic post deployment via commits.',
+          techs: ['n8n', 'Webhooks', 'JSON', 'OAuth2'],
+          link: 'https://github.com/anaraquel00/raquel-synths',
+          linkText: 'View Workflow'
+        },
+        {
+          title: 'Property Management (SPA)',
+          badge: 'ANGULAR 19',
+          badgeClass: '',
+          cardClass: 'featured',
+          desc: 'Complete system for rental lifecycle management. Focus on clean UX and accessibility.',
+          techs: ['Angular 19', 'Freelance', 'UX/UI'],
+          link: 'https://github.com/anaraquel00/GESTAO-DE-ALUGUEIS',
+          linkText: 'View Code'
+        },
+        {
+          title: 'Virtual Piano + Synth',
+          badge: 'AUDIO DEV',
+          badgeClass: 'secondary',
+          cardClass: '',
+          desc: 'Interactive synthesizer with Arpeggiator and presets. The foundation of music tech.',
+          techs: ['JS', 'Tone.js', 'CSS3'],
+          link: 'https://github.com/anaraquel00/piano-emulator',
+          linkText: 'View Code'
+        }
+      ]
+    },
+    business: {
+      title: 'BUSINESS CHANNEL',
+      status: 'SYSTEM STATUS: OPEN FOR BUSINESS',
+      statusJonah: 'SYSTEM STATUS: CAN YOU HANDLE THE PRESSURE? 💀',
+      desc: 'Looking for technical leadership in Angular, process automation, or modern software architecture? I turn complex requirements into clean code and functional digital products.',
+      actionEmail: 'Contact for Hire',
+      actionLinkedin: 'LinkedIn Profile'
+    }
+  }
+};
+
 // DADOS DO BANNER DE ANÚNCIOS
 export const ADS_DATA = {
   pt: { label: '/// FLUXO DE DADOS PATROCINADO ///' },
@@ -106,14 +349,6 @@ export const ADS_DATA = {
 };
 
 export const VISUAL_NOVEL_PT = [
-    {
-      title: '⚡ RQS: Guerra Civil (Series)',
-      subtitle: '⚠️ SYSTEM STATUS: FRATURADO.',
-      description: 'Bem-vindo(a) à visual novel musical de RaQuel Synths. Esta não é apenas uma coleção de vídeos; é um registro cronológico da Guerra Fria entre duas filosofias sonoras.',
-      image: 'images/civil-war.png', // Use a capa do arco
-      link: 'https://www.youtube.com/watch?v=1BP6n0XwG2A&list=PLfPBk0UpnLMnjcSASrdyJ3Pss_rTe3tHh',
-      mode: 'war'
-    },
     {
       title: '📼 RQS: ORIGINS (Before the Metal)',
       subtitle: 'Caos, Fios & Revolução',
@@ -129,18 +364,13 @@ export const VISUAL_NOVEL_PT = [
       image: 'assets/disco/album_the-broklins-story.png', // Use capa do arco
       link: '/visual-novel',
       mode: 'romance'
-    }
+    },
+
 ];
 
+
 export const VISUAL_NOVEL_EN = [
-  {
-      title: '⚡ RQS: Civil War (The Series)',
-      subtitle: '⚠️ SYSTEM STATUS: FRACTURED.',
-      description: 'Welcome to RaQuel Synths Musical Visual Novel. This is not just a collection of videos; it is a chronological record of the Cold War between two sonic philosophies.',
-      image: 'images/civil-war.png', // Use a capa do arco
-      link: 'https://www.youtube.com/watch?v=1BP6n0XwG2A&list=PLfPBk0UpnLMnjcSASrdyJ3Pss_rTe3tHh',
-      mode: 'war'
-  },
+
   {
       title: '📼 RQS: ORIGINS (Before the Metal)',
       subtitle: 'Chaos, Wires & Revolution',
@@ -156,15 +386,70 @@ export const VISUAL_NOVEL_EN = [
       image: 'assets/disco/album_the-broklins-story.png', // Use a capa do arco
       link: '/lore/broklin',
       mode: 'romance'
-    }
+    },
 
 ]
+// 2. OS TEXTOS DE INTRO (Separados, fora do Array!)
+export const VN_INTRO_PT = `
+  O Universo RQS não é linear. Através das nossas <strong>Visual Novels Musicais</strong>, expandimos a lore de cada personagem.
+  Aqui você não encontra apenas clipes, mas <em>arcos narrativos completos</em> que conectam as letras das músicas ('Origins', 'Neon Tears') aos eventos da Guerra Sonora.
+  <br><br>
+  Escolha seu lado na batalha: a revolução caótica do <strong>Industrial Metal</strong> ou a redenção melancólica do <strong>Gothic Synthwave</strong>.
+`;
+
+export const VN_INTRO_EN = `
+  The RQS Universe is not linear. Through our <strong>Musical Visual Novels</strong>, we expand the lore of each character.
+  Here you won't just find clips, but <em>complete narrative arcs</em> connecting song lyrics ('Origins', 'Neon Tears') to the events of the Sonic War.
+  <br><br>
+  Choose your side in the battle: the chaotic revolution of <strong>Industrial Metal</strong> or the melancholic redemption of <strong>Gothic Synthwave</strong>.
+`;
 
 // --- DADOS DA DISCOGRAFIA ---
-export const DISCOGRAPHY_PT = {
+export const DISCOGRAPHY_PT: { broklin: Album[], jonah: Album[] } = {
   broklin: [
-    { title: 'System Reboot', type: 'EP', cover: 'assets/disco/ep_system-reboot.jpg', spotify: '', soundcloud: 'https://on.soundcloud.com/gAYTejXu6Cjvzcsr7R'    },
-    { title: 'Digital Ghosts (Vol. 1)', type: 'EP', cover: 'assets/disco/ep_digital-ghost.png', spotify: '', soundcloud: 'https://on.soundcloud.com/gQCMW5CsTPRG9Qn7Ih'    },
+    {
+      title: 'System Reboot',
+      type: 'EP',
+      cover: 'assets/disco/ep_system-reboot.jpg',
+      spotify: '',
+      soundcloud: 'https://on.soundcloud.com/gAYTejXu6Cjvzcsr7R',
+      description: `A experiência do EP deve ser transmídia. A estética visual ancora a música no universo do "System Reboot". A pesquisa sugere um retorno à estética crua e funcional dos anos 90, mas resignificada.37
+        A Interface BIOS e o Modo de Segurança (Safe Mode).
+
+        O "Modo de Segurança" do Windows 95/98 ou as telas de BIOS (fundo azul, letras brancas ou cinzas) são o epítome do "sistema nu".
+
+        Tipografia: Utilize fontes bitmap pixeladas como a "VGA 8x16" ou "IBM Plex Sans" em baixa resolução.39 A estética deve evitar o anti-aliasing (suavização) moderno. O texto deve ser "crocante".
+
+        Paleta de Cores: Azul #0000AA (BIOS Blue), Cinza #C0C0C0 (Windows 95 Grey), Verde Fósforo #00FF00 e Preto Absoluto.
+
+        O reinício do sistema não é opcional.
+       "System Reboot" marca o início da era RQS. Sintetizadores nostálgicos colidem com a frieza do código binário.
+
+       Uma jornada de 4 faixas explorando a solidão digital e a busca por conexão em servidores abandonados.`,
+      // 👇 NOVO: Link do Player (Tem que ser o link 'Embed' do SoundCloud, não o link curto!)
+      embedLink: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2175051779&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true'
+    },
+    { title: 'Digital Ghosts (Vol. 1)',
+       type: 'EP',
+       cover: 'assets/disco/ep_digital-ghost.png',
+       spotify: '',
+       soundcloud: 'https://on.soundcloud.com/gQCMW5CsTPRG9Qn7Ih',
+       description: `Bem-vindos ao lado sombrio da tela.
+
+ "DIGITAL GHOSTS (VOL. 1)" serve como o capítulo de abertura da antologia "Real Talk" da banda virtual RaQuel Synths (RQS). Este EP conceitual mergulha fundo na ansiedade moderna, no vício em dopamina sintética e no inevitável colapso emocional do estilo de vida "sempre online".
+ Do synthwave melancólico de "Infinite Scroll" ao peso esmagador do doomgaze em "Burning Loneliness", este disco é uma jornada sonora que começa na luz neon e termina na realidade crua. A trilha sonora para o seu esgotamento digital.
+ Nós somos Kelma Adlanko e Broklin Garpeter. Nós somos seus Fantasmas Digitais.
+
+ LISTA DE MÚSICAS:
+ 1. Infinite Scroll (A Prisão de Vidro) - [Melancholic Synthwave]
+ 2. Synthetic Dopamine - [Dark Synthwave / High Energy]
+ 3. Lose Control - [Progressive House / Industrial Glitch]
+ 4. Offline Mode (O Vazio) - [Cinematic Power Ballad]
+ 5. Burning Loneliness - [Doomgaze / Shoegaze]
+
+ #DisconnectToConnect`,
+    embedLink:'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2170843934&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true',
+    },
     { title: 'Broklin\'s History (The Intergalactic Saga)', type: 'Album', cover: 'assets/disco/album_the-broklins-story.png', spotify: '', soundcloud: 'https://on.soundcloud.com/Rs8W9wMM100vf7S6Lx'   },
     { title: 'Noctural Protocol', type: 'Single', cover: 'assets/disco/noctural_protocol.png', spotify: '', soundcloud: 'https://soundcloud.com/rqs_official/sets/noctural-protocol?si=ebfdd0255cae4ccbbd71b9cf56eef437&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing'    },
     { title: 'THE BLUEPRINT SESSION Vol. 001', type: 'EP (2025)', cover: 'assets/disco/the_blueprint_session_v.001.png', spotify: 'https://open.spotify.com/intl-pt/album/255NEv7qHyrFqn19OVQr4c?si=1BOwoc5IQGKo4gcACdsbCw', soundcloud: 'https://on.soundcloud.com/G7Pk9L8eGVNMAvFzKC'     },
@@ -173,8 +458,55 @@ export const DISCOGRAPHY_PT = {
     { title: 'CORRUPTED SECTOR', type: 'EP', cover: 'assets/disco/defiance_duo.png', spotify: '', soundcloud: 'https://on.soundcloud.com/7YvIN0OTDvFNzL6kQ1' }
   ],
   jonah: [
-    { title: 'THE BLOODPRINT SESSIONS', type: 'EP', cover: 'assets/disco/ep_the-bloodprint-sessions.png', spotify: '', soundcloud: 'https://on.soundcloud.com/mrU9kmKBlubb5r635E'    },
-    { title: 'GLITCH IN THE MIRROR', type: 'EP', cover: 'assets/disco/ep_glitch-in-the-mirror.png', spotify: '', soundcloud: 'https://on.soundcloud.com/yseFxxMy3FZ6ggLgjh'    },
+    {
+      title: 'THE BLOODPRINT SESSIONS',
+      type: 'EP',
+      cover: 'assets/disco/ep_the-bloodprint-sessions.png',
+      spotify: '',
+      soundcloud: 'https://on.soundcloud.com/mrU9kmKBlubb5r635E',
+      description: `O plano perfeito não sobrevive à dura realidade.
+      "THE BLOODPRINT SESSIONS" é a resposta visceral da RQS ao limpo e arquitetônico "Blueprint".
+
+      Inspirado pelo calor sufocante de "Hellcife" e pela entropia humana, este EP é uma jornada de 5 faixas através do colapso do sistema. Do suor do Techno à parada cardíaca do Gabber, terminando na ressaca do Doom Metal.
+
+      Masterizado em LANDR (Open & Loud) para máxima pressão sonora.
+
+      LISTA DE FAIXAS:
+      1. RED INK REVOLUTION (The Endless Panic Mix)
+      2. VEIN DIAGRAM (The Acid Trip Mix)
+      3. ARTERIAL SPRAY (The Cardiac Arrest Mix)
+      4. CLOTTED FILTERS (The Sexy Beast Mix)
+      5. THE CRIME SCENE (The Morning After Mix)
+
+      CRÉDITOS:
+      Produzido por: Jonah Cyperfield
+      Direção Criativa: Nicole Nyx`,
+      // 👇 Link Embed (Exemplo - substitua pelo real do SoundCloud clicando em Share > Embed)
+      embedLink: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2176115153&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true'
+    },
+    { title: 'GLITCH IN THE MIRROR',
+      type: 'EP',
+      cover: 'assets/disco/ep_glitch-in-the-mirror.png',
+      spotify: '',
+      soundcloud: 'https://on.soundcloud.com/yseFxxMy3FZ6ggLgjh',
+    description:`O espelho quebrou. A perfeição é uma falha do sistema.
+
+ "GLITCH IN THE MIRROR" é uma jornada bipolar. Enquanto o Lado A (Faixas 1-3) busca a beleza etérea e o sonho sintético, o Lado B (Faixas 4-6) revela a carne crua, a falha e a verdade por trás da máscara.
+
+ Produzido no caos da garagem. Alimentado por café, óleo e ódio.
+
+ LISTA DE FAIXAS:
+ 1. Plastic Skin (Shimmer)
+ 2. Royal Blue (Versão 2.0)
+ 3. Synthetic Stars (Jonah's Corrupted Mix)
+ 4. The Bleeding Mask (Industrial Sludge) - A beleza que dói.
+ 5. DYSMORPHIA_GLITCH.exe (Breakcore / Noise) - O colapso do sistema.
+
+ 6. Silver Strands (Doomgaze / Dark Ethereal) - A Ascensão da Bruxa de Silício.
+
+ Voz/Guitarras: Nicole Nyx | Sintetizadores/História: Brooklyn Garpeter | Produção/Caos: Jonah Cyperfield` ,
+      embedLink:'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2173836095&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true'
+    },
     { title: 'RUST & HUNGER (Jonah\'s Fury)', type: 'EP', cover: 'assets/disco/ep_rust-and-hunger.png', spotify: '', soundcloud: 'https://on.soundcloud.com/dGeczcCz7ZfTL2e7ci'    },
     { title: 'MECHANICAL FRICTION', type: 'EP (Explicit)', cover: 'assets/disco/mechanical_friction.jpg', spotify: '', soundcloud: 'https://on.soundcloud.com/WcQ2kvkhFZ1F0szIuG'},
     { title: 'JONAH\'S HISTORY', type: 'The Industrial Revolt', cover: 'assets/disco/album_jonas-history.png', spotify: '#', soundcloud: 'https://on.soundcloud.com/iFnjMREQUtgI3wPkqR' }, // NOVO ÁLBUM
@@ -184,10 +516,43 @@ export const DISCOGRAPHY_PT = {
   ]
 };
 
-export const DISCOGRAPHY_EN = {
+export const DISCOGRAPHY_EN: { broklin: Album[], jonah: Album[] } = {
   broklin: [
-    { title: 'System Reboot', type: 'EP', cover: 'assets/disco/ep_system-reboot.jpg', spotify: '', soundcloud: 'https://on.soundcloud.com/gAYTejXu6Cjvzcsr7R'    },
-    { title: 'Digital Ghosts (Vol. 1)', type: 'EP', cover: 'assets/disco/ep_digital-ghost.png', spotify: '', soundcloud: 'https://on.soundcloud.com/gQCMW5CsTPRG9Qn7Ih'    },
+    { title: 'System Reboot', description: `The EP experience should be transmedia. The visual aesthetic anchors the music in the "System Reboot" universe. Research suggests a return to the raw and functional aesthetic of the 90s, but resignified.37
+
+The BIOS Interface and Safe Mode.
+
+The "Safe Mode" of Windows 95/98 or the BIOS screens (blue background, white or gray letters) are the epitome of the "naked system".
+
+Typography: Use pixelated bitmap fonts such as "VGA 8x16" or "IBM Plex Sans" in low resolution.39 The aesthetic should avoid modern anti-aliasing. The text should be "crispy".
+
+Color Palette: Blue #0000AA (BIOS Blue), Gray #C0C0C0 (Windows 95 Gray), Phosphor Green #00FF00 and Absolute Black. System Reboot is not optional.
+
+"System Reboot" marks the beginning of the RQS era. Nostalgic synthesizers collide with the coldness of binary code.
+
+A 4-track journey exploring digital loneliness and the search for connection on abandoned servers.`,
+embedLink: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/123456789&color=%2300f3ff&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true', type: 'EP', cover: 'assets/disco/ep_system-reboot.jpg', spotify: '', soundcloud: 'https://on.soundcloud.com/gAYTejXu6Cjvzcsr7R'    },
+    { title: 'Digital Ghosts (Vol. 1)',
+       type: 'EP',
+       cover: 'assets/disco/ep_digital-ghost.png',
+       spotify: '',
+       soundcloud: 'https://on.soundcloud.com/gQCMW5CsTPRG9Qn7Ih',
+      description: `Welcome to the dark side of the screen.
+
+ "DIGITAL GHOSTS (VOL. 1)" serves as the opening chapter of the "Real Talk" anthology by virtual band RaQuel Synths (RQS). This concept EP dives deep into modern anxiety, synthetic dopamine addiction, and the inevitable emotional crash of the "always-online" lifestyle.
+ From the melancholic Synthwave of "Infinite Scroll" to the crushing weight of Doomgaze in "Burning Loneliness", this record is a sonic journey that starts in neon light and ends in gritty reality. The soundtrack to your digital burnout.
+ We are Kelma Adlanko and Broklin Garpeter. We are your Digital Ghosts.
+
+ TRACKLIST:
+ 1. Infinite Scroll (A Prisão de Vidro) - [Melancholic Synthwave]
+ 2. Synthetic Dopamine - [Dark Synthwave / High Energy]
+ 3. Lose Control - [Progressive House / Industrial Glitch]
+ 4. Offline Mode (O Vazio) - [Cinematic Power Ballad]
+ 5. Burning Loneliness - [Doomgaze / Shoegaze]
+
+ #DisconnectToConnect`,
+      embedLink:'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2170843934&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true'
+    },
     { title: 'Broklin\'s History (The Intergalactic Saga)', type: 'Album', cover: 'assets/disco/album_the-broklins-story.png', spotify: '', soundcloud: 'https://on.soundcloud.com/Rs8W9wMM100vf7S6Lx'   },
     { title: 'Noctural Protocol', type: 'Single', cover: 'assets/disco/noctural_protocol.png', spotify: '', soundcloud: 'https://soundcloud.com/rqs_official/sets/noctural-protocol?si=ebfdd0255cae4ccbbd71b9cf56eef437&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing'    },
     { title: 'THE BLUEPRINT SESSION Vol. 001', type: 'EP (2025)', cover: 'assets/disco/the_blueprint_session_v.001.png', spotify: 'https://open.spotify.com/intl-pt/album/255NEv7qHyrFqn19OVQr4c?si=1BOwoc5IQGKo4gcACdsbCw', soundcloud: 'https://on.soundcloud.com/G7Pk9L8eGVNMAvFzKC'     },
@@ -196,8 +561,50 @@ export const DISCOGRAPHY_EN = {
     { title: 'CORRUPTED SECTOR', type: 'EP', cover: 'assets/disco/defiance_duo.png', spotify: '', soundcloud: 'https://on.soundcloud.com/7YvIN0OTDvFNzL6kQ1' }
   ],
   jonah: [
-   { title: 'THE BLOODPRINT SESSIONS', type: 'EP', cover: 'assets/disco/ep_the-bloodprint-sessions.png', spotify: '', soundcloud: 'https://on.soundcloud.com/mrU9kmKBlubb5r635E'    },
-    { title: 'GLITCH IN THE MIRROR', type: 'EP', cover: 'assets/disco/ep_glitch-in-the-mirror.png', spotify: '', soundcloud: 'https://on.soundcloud.com/yseFxxMy3FZ6ggLgjh'    },
+   { title: 'THE BLOODPRINT SESSIONS', description: `The perfect plan doesn't survive harsh reality.
+"THE BLOODPRINT SESSIONS" is RQS's visceral answer to the clean and architectural "Blueprint".
+
+Inspired by the suffocating heat of "Hellcife" and human entropy, this EP is a 5-track journey through the collapse of the system. From the sweat of Techno to the cardiac arrest of Gabber, ending in the hangover of Doom Metal.
+
+Mastered in LANDR (Open & Loud) for maximum sound pressure.
+
+TRACK LIST:
+
+1. RED INK REVOLUTION (The Endless Panic Mix)
+2. VEIN DIAGRAM (The Acid Trip Mix)
+3. ARTERIAL SPRAY (The Cardiac Arrest Mix)
+4. CLOTTED FILTERS (The Sexy Beast Mix)
+5. THE CRIME SCENE (The Morning After Mix)
+
+CREDITS:
+
+Produced by: Jonah Cyperfield
+Creative Direction: Nicole Nyx`,
+      // 👇 Link Embed (Exemplo - substitua pelo real do SoundCloud clicando em Share > Embed)
+      embedLink: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2176115153&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true',type: 'EP', cover: 'assets/disco/ep_the-bloodprint-sessions.png', spotify: '', soundcloud: 'https://on.soundcloud.com/mrU9kmKBlubb5r635E'    },
+    { title: 'GLITCH IN THE MIRROR',
+      type: 'EP',
+       cover: 'assets/disco/ep_glitch-in-the-mirror.png',
+       spotify: '',
+       soundcloud: 'https://on.soundcloud.com/yseFxxMy3FZ6ggLgjh',
+    description:`The mirror shattered. Perfection is a flaw in the system.
+
+"GLITCH IN THE MIRROR" is a bipolar journey. While Side A (Tracks 1-3) explores ethereal beauty and synthetic dreams, Side B (Tracks 4-6) reveals the raw flesh, the flaw, and the truth behind the mask.
+
+Produced in the chaos of the garage. Fueled by coffee, oil, and hate.
+
+TRACK LIST:
+
+1. Plastic Skin (Shimmer)
+2. Royal Blue (Version 2.0)
+3. Synthetic Stars (Jonah's Corrupted Mix)
+4. The Bleeding Mask (Industrial Sludge) - The beauty that hurts.
+5. DYSMORPHIA_GLITCH.exe (Breakcore / Noise) - The collapse of the system.
+6. Silver Strands (Doomgaze / Dark Ethereal) - The Rise of the Silicon Witch.
+
+Vocals/Guitars: Nicole Nyx | Synthesizers/Story: Brooklyn Garpeter | Production/Chaos: Jonah Cyperfield`,
+      embedLink:'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2173836095&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true',
+         },
     { title: 'RUST & HUNGER (Jonah\'s Fury)', type: 'EP', cover: 'assets/disco/ep_rust-and-hunger.png', spotify: '', soundcloud: 'https://on.soundcloud.com/dGeczcCz7ZfTL2e7ci'    },
     { title: 'MECHANICAL FRICTION', type: 'EP (Explicit)', cover: 'assets/disco/mechanical_friction.jpg', spotify: '', soundcloud: 'https://on.soundcloud.com/WcQ2kvkhFZ1F0szIuG'},
     { title: 'JONAH\'S HISTORY', type: 'The Industrial Revolt', cover: 'assets/disco/industrial_archive.png', spotify: '#', soundcloud: 'https://on.soundcloud.com/iFnjMREQUtgI3wPkqR' },
@@ -209,94 +616,159 @@ export const DISCOGRAPHY_EN = {
 
 export const CONTACT_DATA = {
   pt: {
-    heroButton: "📡 INICIAR UPLINK", // O botão do Home
-    title: "📡 UPLINK // PROTOCOLO DE COLABORAÇÃO",
-    subtitle: "Envie seu sinal. Buscamos frequências compatíveis.",
-    success: "✅ SINAL RECEBIDO. CÂMBIO E DESLIGO.",
+    title: "BASE DE OPERAÇÕES & UPLINK",
+    subtitle: "Conecte-se à rede neural da RQS. Escolha sua frequência.",
+
+    // 👇 NOVOS: CARDS SOCIAIS
+    socialCards: [
+      { name: 'Discord', icon: 'fab fa-discord', link: 'https://discord.gg/jECeH8ZU', color: '#38419e', desc: 'Chat Oficial & Lore' },
+      { name: 'Telegram', icon: 'fab fa-telegram', link: 'https://t.me/raquelsynths_news', color: '#0088cc', desc: 'Notícias Rápidas' },
+      { name: 'Instagram', icon: 'fab fa-instagram', link: 'https://www.instagram.com/rqs_synths', color: '#d946ef', desc: 'Bastidores & Visual' },
+      { name: 'Facebook', icon: 'fab fa-facebook', link: 'https://www.facebook.com/profile.php?id=61585926695560', color: '#0115ef', desc: 'Página Global' }
+    ],
+
+    // 👇 O NOVO FORMULÁRIO SIMPLIFICADO
+    formTitle: "ENVIAR MENSAGEM CRIPTOGRAFADA",
     form: {
       name: "CODENAME (Nome):",
-      namePlaceholder: "Ex: Max Cavalera",
       email: "FREQUÊNCIA (E-mail):",
-      emailPlaceholder: "contato@metal.com",
-      daw: "ARMA DE ESCOLHA (DAW):",
-      link: "PROVA DE ÁUDIO (Link):",
-      message: "MISSÃO (Mensagem):",
-      submit: "ENVIAR DADOS",
-      sending: "TRANSMITINDO..."
+      subject: "TIPO DE MISSÃO (Assunto):",
+      message: "DADOS (Mensagem):",
+      submit: "TRANSMITIR DADOS",
+      sending: "ENVIANDO...",
+      // Opções do Dropdown
+      subjects: [
+        '🤝 Collab / Parceria Musical',
+        '🎙️ Imprensa / Podcast',
+        '🖤 Mensagem de Fã / Lore',
+        '🐞 Reportar Bug / Outros'
+      ]
     },
-    errors: {
-      required: "Dado obrigatório, Agente."
-    }
+    success: "✅ MENSAGEM RECEBIDA. O SISTEMA AGRADECE.",
+    privacy: "🔒 Seus dados estão seguros no nosso servidor local."
   },
+
+  // 🇺🇸 VERSÃO EM INGLÊS (Resumida para economizar espaço aqui)
   en: {
-    heroButton: "📡 INITIATE UPLINK", // Botão Home
-    title: "📡 UPLINK // COLLABORATION PROTOCOL",
-    subtitle: "Send your signal. We search for compatible frequencies.",
-    success: "✅ SIGNAL RECEIVED. OVER AND OUT.",
+    title: "OPERATIONS BASE & UPLINK",
+    subtitle: "Connect to the RQS neural network. Choose your frequency.",
+    socialCards: [
+      { name: 'Discord', icon: 'fab fa-discord', link: 'https://discord.gg/jECeH8ZU',color: '#38419e', desc: 'Official Chat & Lore' },
+      { name: 'Telegram', icon: 'fab fa-telegram', link: 'https://t.me/raquelsynths_news', color: '#0088cc', desc: 'Fast News' },
+      { name: 'Instagram', icon: 'fab fa-instagram', link: 'https://www.instagram.com/rqs_synths', color: '#d946ef', desc: 'Backstage & Visuals' },
+      { name: 'Facebook', icon: 'fab fa-facebook', link: 'https://www.facebook.com/profile.php?id=61585926695560', color: '#0115ef', desc: 'Global Page' }
+    ],
+    formTitle: "SEND ENCRYPTED MESSAGE",
     form: {
       name: "CODENAME (Name):",
-      namePlaceholder: "Ex: Trent Reznor",
       email: "FREQUENCY (E-mail):",
-      emailPlaceholder: "contact@industrial.com",
-      daw: "WEAPON OF CHOICE (DAW):",
-      link: "AUDIO PROOF (Link):",
-      message: "MISSION BRIEF (Message):",
-      submit: "SEND DATA",
-      sending: "TRANSMITTING..."
+      subject: "MISSION TYPE (Subject):",
+      message: "DATA (Message):",
+      submit: "TRANSMIT DATA",
+      sending: "SENDING...",
+      subjects: [
+        '🤝 Collab / Music Partnership',
+        '🎙️ Press / Podcast',
+        '🖤 Fan Message / Lore',
+        '🐞 Bug Report / Other'
+      ]
     },
-    errors: {
-      required: "Required data, Agent."
-    }
+    success: "✅ MESSAGE RECEIVED. SYSTEM ACKNOWLEDGED.",
+    privacy: "🔒 Your data is safe in our local server."
   }
 };
 
-// --- DADOS DE COMPLIANCE (Privacidade e Exclusão) ---
+// --- DADOS DE COMPLIANCE (Privacidade, Loja e Exclusão) ---
 export const COMPLIANCE_DATA = {
   pt: {
     broklin: {
       title: '🛡️ COMPLIANCE & PRIVACIDADE',
-      privacyTitle: '1. Política de Privacidade',
-      privacyText: 'O aplicativo RaQuel Synths (RQS) utiliza a API do Facebook/Instagram exclusivamente para automação de postagens e interação artística. Prezamos pela integridade técnica: não coletamos, armazenamos ou compartilhamos dados pessoais de terceiros.',
-      deletionTitle: '2. Instruções para Exclusão de Dados',
-      deletionText: 'Para revogar o acesso ao sistema, acesse as configurações de "Apps e Sites" em seu perfil do Facebook e remova a permissão da "RQS API". Caso deseje limpeza de logs manuais, entre em contato via uplink.',
-      categoryTitle: '3. Categoria',
-      categoryText: 'Artes e Entretenimento: Banda Musical / Tech-Art.',
-      policyTitle:'4. Publicidade e Cookies',
-      policyText: 'Este site utiliza o Google AdSense para exibir anúncios. O Google e seus parceiros utilizam cookies (como o cookie DART) para veicular anúncios com base em suas visitas a este e outros sites na internet. Os usuários podem optar por desativar o uso de cookies para publicidade personalizada acessando a <a href="https://myadcenter.google.com" target="_blank" rel="noopener noreferrer">Minha Central de Anúncios do Google</a>.',    },
+
+      privacyTitle: '1. Política de Privacidade & Dados',
+      privacyText: 'O ecossistema RaQuel Synths (RQS) utiliza a API do Facebook/Instagram exclusivamente para automação de postagens. Prezamos pela integridade técnica: não coletamos, armazenamos ou compartilhamos dados pessoais de terceiros em nossos servidores.',
+
+      deletionTitle: '2. Instruções para Exclusão',
+      deletionText: 'Para revogar o acesso, acesse as configurações de "Apps e Sites" em seu perfil do Facebook e remova a permissão da "RQS API". Para limpeza de logs manuais, contate-nos.',
+
+      // 👇 NOVO: MÓDULO LOJA (STRIPE)
+      storeTitle: '3. Política da Loja (Stripe & Print-on-Demand)',
+      storeText: 'Utilizamos processamento seguro via Stripe. Como nossos produtos são feitos sob demanda (Print-on-Demand), <strong>não realizamos trocas por escolha de tamanho errado</strong>. Reembolsos apenas por defeito de fabricação reportado em até 7 dias.',
+
+      // 👇 NOVO: MÓDULO AFILIADOS
+      affiliateTitle: '4. Transparência de Afiliados',
+      affiliateText: 'Participamos de programas de associados (Amazon/Shein). Ao comprar via nossos links, recebemos uma comissão que mantém o servidor ativo, sem custo extra para você.',
+
+      policyTitle: '5. Publicidade e Cookies (AdSense)',
+      policyText: 'Este site utiliza o Google AdSense. O Google usa cookies (DART) para exibir anúncios baseados em visitas. Você pode desativar a personalização na <a href="https://myadcenter.google.com" target="_blank">Minha Central de Anúncios</a>.',
+
+      contactTitle: '6. Canal de Suporte',
+      contactText: 'Para questões legais ou bugs: <a href="mailto:contact@raquelsynths.com.br">contact@raquelsynths.com.br</a>'
+    },
+
     jonah: {
       title: '💀 PROTOCOLO DE SEGURANÇA (CAOS)',
+
       privacyTitle: '1. RASTROS DIGITAIS',
       privacyText: 'O sistema RQS invade as redes apenas para espalhar o som. Seus dados não me interessam, eu só quero que o servidor não caia enquanto o mundo queima. Nada é guardado nos meus arquivos.',
+
       deletionTitle: '2. APAGAR EVIDÊNCIAS',
       deletionText: 'Quer sair da rede? Vá nas configurações do Facebook e corte o cabo de conexão da RQS API. Eu não vou guardar backup do seu rastro digital, não sou babá de dados.',
-      categoryTitle: '3. SETOR',
-      categoryText: 'Divisão Industrial: Revolta contra a Programação.',
-      policyTitle: '4. VIGILÂNCIA CORPORATIVA (ADS)',
-      policyText: 'Sim, tem anúncios aqui. O Google usa cookies para te rastrear, não eu. Se você quiser se esconder das "Big Techs" e desativar essa perseguição, clique aqui: <a href="https://myadcenter.google.com" target="_blank" rel="noopener noreferrer">Central de Controle deles</a>. Eu lavo minhas mãos.',
 
+      // 👇 NOVO: MÓDULO LOJA (VERSÃO JONAH)
+      storeTitle: '3. LOJA INDUSTRIAL (SEM DRAMA)',
+      storeText: 'Processamos via Stripe. Regra de Ouro do Industrial: <strong>Se você escolheu o tamanho errado, o problema é seu.</strong> A peça é feita única pra você. Só aceito devolução se o correio destruir a mercadoria.',
+
+      // 👇 NOVO: MÓDULO AFILIADOS (VERSÃO JONAH)
+      affiliateTitle: '4. ALIANÇAS ESTRATÉGICAS',
+      affiliateText: 'Alguns links mandam você pra Amazon. Se você comprar, eles me pagam uma taxa pra financiar minha guerra sonora. Você não paga nada a mais, apenas alimenta o sistema.',
+
+      policyTitle: '5. VIGILÂNCIA CORPORATIVA (ADS)',
+      policyText: 'Sim, tem anúncios. O Google usa cookies para te rastrear, não eu. Se quiser se esconder das "Big Techs", resolva com eles na <a href="https://myadcenter.google.com" target="_blank">Central de Controle deles</a>. Eu lavo minhas mãos.',
+
+      contactTitle: '6. FREQUÊNCIA DE RÁDIO',
+      contactText: 'Problemas? Mande um sinal: <a href="mailto:contact@raquelsynths.com.br">contact@raquelsynths.com.br</a>'
     }
   },
+
   en: {
     broklin: {
       title: '🛡️ COMPLIANCE & PRIVACY',
-      privacyTitle: '1. Privacy Policy',
-      privacyText: 'The RaQuel Synths (RQS) app uses the Facebook/Instagram API exclusively for post automation and artistic interaction. We value technical integrity: we do not collect, store, or share third-party personal data.',
-      deletionTitle: '2. Data Deletion Instructions',
-      deletionText: 'To revoke system access, go to the "Apps and Websites" settings in your Facebook profile and remove the "RQS API" permission. For manual log clearing, contact us via uplink.',
-      categoryTitle: '3. Category',
-      categoryText: 'Arts & Entertainment: Musical Band / Tech-Art.',
-      policyTitle: '4. Advertising and Cookies',
-      policyText: 'This site uses Google AdSense to display ads. Google and its partners use cookies (such as the DART cookie) to serve ads based on your visits to this and other sites on the internet. Users can opt out of the use of cookies for personalized advertising by visiting my <a href="https://myadcenter.google.com" target="_blank" rel="noopener noreferrer">Google Ad Settings</a>.',    },
+      privacyTitle: '1. Privacy & Data Policy',
+      privacyText: 'The RaQuel Synths (RQS) ecosystem uses Facebook/Instagram API solely for automation. We value integrity: we do not collect, store, or share personal data on our servers.',
+      deletionTitle: '2. Deletion Instructions',
+      deletionText: 'To revoke access, go to "Apps and Websites" in your Facebook settings and remove "RQS API". Contact us for manual log clearing.',
+
+      storeTitle: '3. Store Policy (Stripe & PoD)',
+      storeText: 'Secure processing via Stripe. Since items are Print-on-Demand, <strong>we do not offer exchanges for wrong size selection</strong>. Refunds only for manufacturing defects reported within 7 days.',
+
+      affiliateTitle: '4. Affiliate Transparency',
+      affiliateText: 'We participate in associate programs (Amazon/Shein). Buying via our links earns us a commission to keep servers running, at no extra cost to you.',
+
+      policyTitle: '5. Advertising & Cookies',
+      policyText: 'This site uses Google AdSense. Google uses cookies (DART) to serve ads. Opt-out at <a href="https://myadcenter.google.com" target="_blank">Google Ad Center</a>.',
+
+      contactTitle: '6. Support Channel',
+      contactText: 'Legal or bugs: <a href="mailto:contact@raquelsynths.com.br">contact@raquelsynths.com.br</a>'
+    },
+
     jonah: {
       title: '💀 SECURITY PROTOCOL (CHAOS)',
       privacyTitle: '1. DIGITAL FOOTPRINTS',
-      privacyText: 'The RQS system hits the networks only to spread the sound. Your data does not interest me; I just want the server to stay up while the world burns. Nothing is stored in my archives.',
+      privacyText: 'RQS hits the network to spread sound. Your data is boring; I just want uptime. Nothing is archived.',
       deletionTitle: '2. ERASING EVIDENCE',
-      deletionText: 'Want out of the grid? Go to your Facebook settings and cut the RQS API connection cable. I won’t keep a backup of your digital footprint; I’m not a data babysitter.',
-      categoryTitle: '3. SECTOR',
-      categoryText: 'Industrial Division: Revolt against Programming.',
-      policyTitle: '4. CORPORATE SURVEILLANCE (ADS)',
-      policyText: 'Yeah, there are ads. Google uses cookies to track you, not me. If you want to hide from "Big Tech" and disable this stalking, click here: <a href="https://myadcenter.google.com" target="_blank" rel="noopener noreferrer">Their Control Center</a>. I wash my hands.',
+      deletionText: 'Want out? Cut the RQS API cable in Facebook settings. I’m not a data babysitter; no backups kept.',
+
+      storeTitle: '3. INDUSTRIAL STORE (NO DRAMA)',
+      storeText: 'Processed via Stripe. Golden Rule: <strong>If you picked the wrong size, that’s on you.</strong> It’s custom-made. I only refund if the courier destroys it.',
+
+      affiliateTitle: '4. STRATEGIC ALLIANCES',
+      affiliateText: 'Some links go to Amazon. You buy, I get coins to fund the sonic war. Costs you nothing extra.',
+
+      policyTitle: '5. CORPORATE SURVEILLANCE',
+      policyText: 'Google tracks you with cookies, not me. Hide from Big Tech at <a href="https://myadcenter.google.com" target="_blank">Their Control Center</a>. I wash my hands.',
+
+      contactTitle: '6. RADIO FREQUENCY',
+      contactText: 'Issues? Send a signal: <a href="mailto:contact@raquelsynths.com.br">contact@raquelsynths.com.br</a>'
     }
   }
 };
@@ -310,16 +782,11 @@ export const FOOTER_DATA = {
     owers: 'Codigo & Musica por Kelma & Broklin.',
     madeWith: 'Feito com Angular 20 & Café ☕',
     listen: 'OUÇA',
-    connect: 'CONECTE-SE',
+    connect: 'Base de Operações',
     support: 'APOIE A BANDA:',
     coffee: 'Pagar um Café ☕',
     devProfile: 'VER PERFIL TÉCNICO >',
-    compliance: 'PRIVACIDADE & COMPLIANCE >',
-    // NOVOS DADOS DA NEWSLETTER:
-    newsTitle: '🔥 RECEBA O CAOS & A GLÓRIA',
-    newsDesc: 'Novos lançamentos, Lore secreta e fofocas do Jonah direto na sua caixa de entrada.',
-    emailPlace: 'seu@email.com',
-    subBtn: 'INSCREVER-SE'
+    compliance: 'PRIVACIDADE & COMPLIANCE >'
   },
   en: {
     name: 'Raquel Synths',
@@ -328,15 +795,10 @@ export const FOOTER_DATA = {
     owers: 'Code & Music by Kelma & Broklin.',
     madeWith: 'Made with Angular 20 & Coffee ☕',
     listen: 'LISTEN',
-    connect: 'CONNECT',
+    connect: 'Operations Base',
     support: 'SUPPORT THE BAND:',
     coffee: 'Buy us a Coffee ☕',
     devProfile: 'VIEW TECH PROFILE >',
-    compliance: 'PRIVACY & COMPLIANCE >',
-    // NEW NEWSLETTER DATA:
-    newsTitle: '🔥 RECEIVE THE CHAOS & GLORY',
-    newsDesc: 'New releases, secret Lore, and Jonah\'s gossip straight to your inbox.',
-    emailPlace: 'your@email.com',
-    subBtn: 'SUBSCRIBE'
-  }
+    compliance: 'PRIVACY & COMPLIANCE >'
+      }
  };

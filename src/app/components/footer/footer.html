@@ -1,34 +1,4 @@
 <footer class="rqs-footer">
-  <div class="newsletter-section" id="newsletter-target">
-    <h4>{{ t.newsTitle }}</h4>
-    <p>{{ t.newsDesc }}</p>
-
-    <div class="input-group">
-      <input
-        id="email-input"
-        type="email"
-        [placeholder]="t.emailPlace"
-        [ngModel]="email()"
-        (ngModelChange)="email.set($event)"
-        [disabled]="loading()"
-        >
-
-      <button mat-flat-button color="accent" (click)="subscribe()" [disabled]="loading()">
-        @if (!loading()) {
-          <span>{{ t.subBtn }}</span>
-        }
-        @if (loading()) {
-          <span>...</span>
-        }
-        @if (!loading()) {
-          <mat-icon>send</mat-icon>
-        }
-      </button>
-    </div>
-
-  </div>
-  <hr class="footer-divider" />
-
   <div class="footer-container">
 
     <div class="footer-column brand-column">
@@ -79,6 +49,7 @@
         <li><a href="https://www.instagram.com/rqs_synths" target="_blank">Instagram</a></li>
         <li><a href="https://www.tiktok.com/@raquel_holanda_" target="_blank">TikTok</a></li>
         <li><a href="https://x.com/anaraquel00" target="_blank">X / Twitter</a></li>
+        <li><a href="https://www.facebook.com/profile.php?id=61585926695560" target="_blank">Facebook</a></li>
         <li><a href="https://discord.com/channels/1405682092238704753/1440032357431115977" target="_blank">Discord</a></li>
         <li><a href="https://t.me/raquelsynths_news" target="_blank">Telegram</a></li>
 

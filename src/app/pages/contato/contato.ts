@@ -1,71 +1,61 @@
-import { Component, OnInit } from '@angular/core';
- // Importante para o *ngIf
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms'; // O Arsenal de Formulários
-import { CONTACT_DATA } from '../../data/app-data';
+import { Component, inject } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { TranslationService } from '../../services/translation.service';
-import { HttpClient,HttpClientModule } from '@angular/common/http';
+import { CONTACT_DATA } from '../../data/app-data';
 
 @Component({
   selector: 'app-contato',
-  standalone: true, // <--- A MÁGICA ESTÁ AQUI. Diz que ele é independente.
-  imports: [
-    ReactiveFormsModule,
-    HttpClientModule
-],
-  templateUrl: './contato.html', // Ou o nome que você deu
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
+  templateUrl: './contato.html',
   styleUrls: ['./contato.scss']
 })
 export class ContatoComponent {
+  public translate = inject(TranslationService);
+  private fb = inject(FormBuilder);
+
   uplinkForm: FormGroup;
-  isSending: boolean = false;
-  successMessage: boolean = false;
+  isSending = false;
+  successMessage = false;
 
-
-  constructor(private fb: FormBuilder,
-    public translate: TranslationService,
-    private http: HttpClient) {
+  constructor() {
     this.uplinkForm = this.fb.group({
-      agentName: ['', [Validators.required, Validators.minLength(3)]],
+      name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      daw: ['Ableton', Validators.required],
-      demoLink: ['', Validators.required],
-      message: ['', [Validators.required, Validators.maxLength(500)]]
+      subject: ['', Validators.required], // Novo campo
+      message: ['', Validators.required],
+
+      // 🍯 O HONEYPOT (Campo armadilha)
+      // Não tem Validação, pois deve ficar vazio!
+      website: ['']
     });
   }
 
-  // 👇 Getter Mágico para o HTML ler os textos
   get text() {
     return this.translate.isPt() ? CONTACT_DATA.pt : CONTACT_DATA.en;
   }
-  ngOnInit(): void {
-  }
 
   onSubmit() {
+    // 1. Verifica Honeypot (Se tiver valor, é Robô 🤖)
+    if (this.uplinkForm.value.website) {
+      console.log('🍯 Honeypot ativado! Robô capturado.');
+      this.isSending = true;
+      // Finge que enviou para enganar o bot
+      setTimeout(() => { this.successMessage = true; }, 1000);
+      return;
+    }
+
     if (this.uplinkForm.valid) {
       this.isSending = true;
+      console.log('Enviando dados reais:', this.uplinkForm.value);
 
-      // 📡 Preparando o Payload (Os dados da missão)
-      const formData = this.uplinkForm.value;
-
-      // 🚀 DISPARO REAL PARA O FORMSPREE
-      // IMPORTANTE: Troque o link abaixo pelo seu do Formspree!
-      this.http.post('https://formspree.io/f/xanrzygr', formData)
-        .subscribe({
-          next: (response) => {
-            console.log('✅ UPLINK ESTABELECIDO!', response);
-            this.isSending = false;
-            this.successMessage = true;
-            this.uplinkForm.reset();
-          },
-          error: (error) => {
-            console.error('❌ FALHA NO UPLINK:', error);
-            this.isSending = false;
-            alert('Erro na conexão. O servidor deles pode estar Offline.');
-          }
-        });
-
-    } else {
-      this.uplinkForm.markAllAsTouched();
+      // Simulação de envio (Aqui entraria seu serviço de Email/Firebase)
+      setTimeout(() => {
+        this.isSending = false;
+        this.successMessage = true;
+        this.uplinkForm.reset();
+      }, 2000);
     }
   }
 }
