@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Firestore, collection, collectionData, query, orderBy, where } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 // --- IMPORTAÇÃO DAS INTERFACES ---
 import { LoreEpisode } from '../data/lore-data';
@@ -15,23 +15,33 @@ export class ContentService {
     // Retorna o Observable para quem quiser ouvir (subscribe)
     return collectionData(colRef, { idField: 'id' }) as Observable<any[]>;
   }
- getLoreEpisodes(): Observable<any[]> {
+ // 📚 CORREÇÃO FINAL: Mapeamento de Campos e Remoção do OrderBy quebrado
+// 📚 VERSÃO LIMPA (Sem traduções, apenas Ordenação)
+  getEpisodes(mode: 'broklin' | 'jonah'): Observable<LoreEpisode[]> {
     const colRef = collection(this.firestore, 'lore');
 
-    // 🛡️ ADICIONANDO A TRAVA AQUI TAMBÉM:
+    // Query básica
     const q = query(
       colRef,
-      where('published', '==', true),  // <--- O Segredo
-      orderBy('id', 'asc')             // Mantém a ordem
+      where('mode', '==', mode),
+      where('published', '==', true)
     );
 
-    return collectionData(q, { idField: 'id' }) as Observable<any[]>;
+    // Retorna os dados puros, apenas ordenando pelo ID no final
+    return collectionData(q, { idField: 'id' }).pipe(
+      map(episodes => {
+        // Ordenação manual (alfabética: s1-e1, s1-e10, s1-e2...)
+        // Dica: Para ordenar numericamente s1-e1, s1-e2, s1-e10 precisa de lógica extra,
+        // mas por enquanto alfabética resolve se usar s1-e01, s1-e02.
+        return episodes.sort((a, b) => a['id'].localeCompare(b['id'])) as LoreEpisode[];
+      })
+    );
   }
 
   // ✅ INJEÇÃO PURA: O Angular resolve a instância configurada no app.config.ts
   private firestore = inject(Firestore);
-
-  // 📚 1. LORE (Visual Novel)
+/*
+   // 📚 1. LORE (Visual Novel)
   getEpisodes(mode: 'broklin' | 'jonah', lang: 'pt' | 'en'): Observable<LoreEpisode[]> {
     const colRef = collection(this.firestore, 'episodes');
     const q = query(
@@ -42,7 +52,7 @@ export class ContentService {
       orderBy('id')
     );
     return collectionData(q, { idField: 'firebaseId' }) as Observable<LoreEpisode[]>;
-  }
+  } */
 
   // 🛒 2. LOJA (Produtos)
   getProducts(): Observable<Product[]> {

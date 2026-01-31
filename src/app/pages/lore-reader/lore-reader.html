@@ -62,7 +62,9 @@
         <article class="episode-card" [id]="ep.id">
 
           <div class="ep-header">
-            <span class="season-badge">{{ ep.seasonTitle || (translate.isPt() ? 'Temporada 1' : 'Season 1') }}</span>
+            <span class="season-badge">
+  {{ translate.isPt() ? ep.category : (ep.category_en || ep.category) }}
+            </span>
             <span class="date" *ngIf="ep.releaseDate">{{ ep.releaseDate | date:'dd/MM/yyyy' }}</span>
           </div>
 

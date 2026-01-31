@@ -24,7 +24,7 @@ export class LoreReaderComponent implements OnInit, OnDestroy, AfterViewChecked 
 
   // --- VARIÁVEIS DE CONTROLE ---
   currentMode: 'broklin' | 'jonah' = 'broklin';
-  episodes$: Observable<any[]>;
+  episodes$!: Observable<any[]>;
 
   // Variáveis para o Scroll
   private targetId: string | null = null;
@@ -35,32 +35,26 @@ export class LoreReaderComponent implements OnInit, OnDestroy, AfterViewChecked 
   constructor(@Inject(PLATFORM_ID ) private platformId: Object) {
     this.isBrowser = isPlatformBrowser(this.platformId);
     // 1. Configuração Simples do Observable (Sem lógica de scroll aqui!)
-    this.episodes$ = this.contentService.getLoreEpisodes().pipe(
-      map((episodes: any[]) => {
-        return episodes.filter(ep =>
-          !ep.mode || ep.mode.toLowerCase() === this.currentMode.toLowerCase()
-        );
-      })
-    );
   }
 
   ngOnInit() {
-    // 1. SÓ EXECUTA SE FOR NO NAVEGADOR!
     if (this.isBrowser) {
+      this.checkTheme(); // Descobre se é Broklin ou Jonah
+      this.loadEpisodes(); // <--- CHAMA OS DADOS DO FIREBASE
 
-    this.checkTheme();
-
-    // 2. Captura o alvo assim que a página nasce
-    this.targetId = this.route.snapshot.paramMap.get('id');
-    console.log('🧔 Broklin: Alvo definido para:', this.targetId);
-
-    // Observer do Tema (Mantido)
-    this.themeObserver = new MutationObserver(() => {
-      this.checkTheme();
-    });
-    this.themeObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
-  }
+      // Observer do Tema (Se mudar de Broklin pra Jonah, recarrega)
+      this.themeObserver = new MutationObserver(() => {
+        this.checkTheme();
+        this.loadEpisodes(); // <--- RECARREGA SE O TEMA MUDAR
+      });
+      this.themeObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    }
 }
+  // 🔥 NOVA FUNÇÃO: Conecta com o Serviço corrigido
+  loadEpisodes() {
+    // Chama o serviço passando apenas o MODO (sem língua)
+    this.episodes$ = this.contentService.getEpisodes(this.currentMode);
+  }
 
   // 🔥 A MÁGICA NUCLEAR 🔥
   // Esse método roda VÁRIAS vezes. Ele verifica o HTML visualmente.
