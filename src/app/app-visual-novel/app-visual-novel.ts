@@ -4,8 +4,11 @@ import { TranslationService } from '../services/translation.service';
 import { VISUAL_NOVEL_PT, VISUAL_NOVEL_EN, VN_INTRO_PT, VN_INTRO_EN } from '../data/app-data';
 import { Router } from '@angular/router';
 import { MatIconModule } from "@angular/material/icon";
-import { AdBannerComponent } from "../components/ad-banner/ad-banner"; // <--- IMPORTANTE: Importe o Router!
+import { AdBannerComponent } from "../components/ad-banner/ad-banner";
 import { MatButtonModule } from '@angular/material/button';
+import { ContentService } from '../services/content.service'; // 👈 IMPORTANTE
+import { Observable, BehaviorSubject, switchMap } from 'rxjs'; // 👈 IMPORTANTE
+import { LoreEpisode } from '../data/lore-data';
 
 @Component({
   selector: 'app-visual-novel',
@@ -15,19 +18,27 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrls: ['./app-visual-novel.scss']
 })
 export class AppVisualNovel implements OnInit, OnDestroy {
+  // --- INJEÇÕES ---
   translate = inject(TranslationService);
-  private router = inject(Router); // <--- Injeta o GPS
+  private router = inject(Router);
+  private contentService = inject(ContentService); // 👈 INJETE O SERVIÇO AQUI
 
-  // Estado do Modo (Padrão: Broklin)
+  // --- ESTADO REATIVO ---
+  private modeSubject = new BehaviorSubject<'broklin' | 'jonah'>('broklin');
   currentMode: 'broklin' | 'jonah' = 'broklin';
+
+  // Esse Observable vai buscar os episódios do Firebase toda vez que o modo mudar
+  episodes$: Observable<LoreEpisode[]> = this.modeSubject.asObservable().pipe(
+    switchMap(mode => this.contentService.getEpisodes(mode))
+  );
+
   private themeObserver: MutationObserver | null = null;
   introPt = VN_INTRO_PT;
   introEn = VN_INTRO_EN;
-  introPT: any;
-  introEN: any;
 
   ngOnInit() {
     this.checkTheme();
+
     // Vigia o body para mudanças de classe (tema)
     this.themeObserver = new MutationObserver(() => {
       this.checkTheme();
@@ -45,6 +56,8 @@ export class AppVisualNovel implements OnInit, OnDestroy {
   private checkTheme() {
     const isJonah = document.body.classList.contains('mode-jonah');
     this.currentMode = isJonah ? 'jonah' : 'broklin';
+    // Avisa o Observable para buscar novos dados no Firebase
+    this.modeSubject.next(this.currentMode);
   }
 
   get text() {
@@ -53,26 +66,24 @@ export class AppVisualNovel implements OnInit, OnDestroy {
       { title: 'VISUAL NOVEL', subtitle: 'Follow our stories.' };
   }
 
+  // Mantém os arcos estáticos se você ainda usa eles para o menu
   get arcs() {
     return this.translate.isPt() ? VISUAL_NOVEL_PT : VISUAL_NOVEL_EN;
   }
+
   get introText() {
     return this.translate.isPt() ? this.introPt : this.introEn;
   }
 
-  // A Função Mágica de Navegação
   navigate(link: string) {
     if (link.startsWith('/')) {
-      // Se começa com barra, é interno (Lore)
       window.scrollTo(0, 0);
       this.router.navigate([link]);
     } else {
-      // Se não, é externo (YouTube)
       window.open(link, '_blank');
     }
   }
 
-  // Rola a página para o topo (onde fica o botão de tema)
   scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }

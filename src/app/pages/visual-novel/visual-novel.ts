@@ -3,7 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ContentService } from '../../services/content.service';
 import { TranslationService } from '../../services/translation.service';
-import { Observable, BehaviorSubject, combineLatest, map } from 'rxjs'; // 👈 Importações Novas!
+import { Observable, BehaviorSubject, switchMap } from 'rxjs'; // 👈 Importamos o switchMap
 
 @Component({
   selector: 'app-visual-novel',
@@ -17,29 +17,23 @@ export class VisualNovelComponent implements OnInit, OnDestroy {
   private contentService = inject(ContentService);
   public translate = inject(TranslationService);
 
-  // 1. Variável Pública para o HTML ler (Simples e direta)
   public currentMode: 'broklin' | 'jonah' = 'broklin';
+  private modeSubject = new BehaviorSubject<'broklin' | 'jonah'>('broklin');
 
-  private modeSubject = new BehaviorSubject<string>('broklin');
-  episodes$: Observable<any[]>;
+  // 🚀 A MÁGICA: Sempre que o modo mudar, o switchMap pede novos episódios ao Firebase
+  episodes$: Observable<any[]> = this.modeSubject.asObservable().pipe(
+    switchMap(mode => this.contentService.getEpisodes(mode))
+  );
+
   private themeObserver: MutationObserver | null = null;
   isBrowser: boolean;
-  constructor(@Inject(PLATFORM_ID ) private platformId: Object) {
+
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     this.isBrowser = isPlatformBrowser(this.platformId);
-    this.episodes$ = combineLatest([
-      this.contentService.getLoreEpisodes(),
-      this.modeSubject.asObservable()
-    ]).pipe(
-      map(([episodes, currentMode]) => {
-        return episodes.filter(ep =>
-          !ep.mode || ep.mode.toLowerCase() === currentMode.toLowerCase()
-        );
-      })
-    );
+    // Removemos a lógica complexa do constructor e colocamos direto na variável episodes$
   }
 
   ngOnInit() {
-    // 2. SÓ EXECUTA SE FOR NO NAVEGADOR!
     if (this.isBrowser) {
       this.checkTheme();
 
@@ -61,9 +55,8 @@ export class VisualNovelComponent implements OnInit, OnDestroy {
   private checkTheme() {
     if (!this.isBrowser) return;
     const isJonah = document.body.classList.contains('mode-jonah');
-    const newMode = isJonah ? 'jonah' : 'broklin';
+    const newMode: 'broklin' | 'jonah' = isJonah ? 'jonah' : 'broklin';
 
-    // 2. Atualizamos a variável pública aqui!
     this.currentMode = newMode;
 
     if (this.modeSubject.value !== newMode) {

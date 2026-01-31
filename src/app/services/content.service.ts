@@ -29,7 +29,7 @@ export class ContentService {
 
     return collectionData(q, { idField: 'id' }).pipe(
       map(episodes => {
-        // Ordenação manual segura
+        // Ordena por ID (s1-e1, s1-e2...) para não vir bagunçado
         return (episodes as LoreEpisode[]).sort((a, b) => (a.id || '').localeCompare(b.id || ''));
       })
     );
