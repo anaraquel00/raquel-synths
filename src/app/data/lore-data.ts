@@ -6,7 +6,7 @@ export interface LoreBlock {
 export interface LoreEpisode {
   blocks?: LoreBlock[];
   id: string;
-  releaseDate: string; // YYYY-MM-DD
+  releaseDate:string; // YYYY-MM-DD
   published: boolean;  // Se deve aparecer no site
   season: number;
   seasonTitle: string;
@@ -1314,8 +1314,8 @@ export const BROKLIN_ARC_EN: LoreEpisode[] = [
   },
   {
     id: 's1-e7',
-    releaseDate: '2026-02-02',
-    published: true,
+    releaseDate: '2026-02-01',
+    published: false,
     season: 1,
     seasonTitle: 'SEASON 1 — THE FALL',
     title: 'Episode 7 — The Night He Broke',

@@ -30,6 +30,7 @@ export class ContentService {
       colRef,
       where('mode', '==', mode),
       where('lang', '==', lang),
+      where('published', '==', true),
       orderBy('id')
     );
     return collectionData(q, { idField: 'firebaseId' }) as Observable<LoreEpisode[]>;
