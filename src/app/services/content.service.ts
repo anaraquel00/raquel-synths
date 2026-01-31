@@ -15,7 +15,7 @@ export class ContentService {
     // Retorna o Observable para quem quiser ouvir (subscribe)
     return collectionData(colRef, { idField: 'id' }) as Observable<any[]>;
   }
-getLoreEpisodes(): Observable<any[]> {
+ getLoreEpisodes(): Observable<any[]> {
     const colRef = collection(this.firestore, 'lore');
 
     // 🛡️ ADICIONANDO A TRAVA AQUI TAMBÉM:
