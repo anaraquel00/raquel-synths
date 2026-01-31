@@ -15,11 +15,19 @@ export class ContentService {
     // Retorna o Observable para quem quiser ouvir (subscribe)
     return collectionData(colRef, { idField: 'id' }) as Observable<any[]>;
   }
-  getLoreEpisodes(): Observable<any[]> {
-  const colRef = collection(this.firestore, 'lore');
-  //const q = query(colRef, orderBy('id', 'asc')); // Remova filtros complexos por enquanto
-  return collectionData(colRef, { idField: 'id' }) as Observable<any[]>;
-}
+getLoreEpisodes(): Observable<any[]> {
+    const colRef = collection(this.firestore, 'lore');
+
+    // 🛡️ ADICIONANDO A TRAVA AQUI TAMBÉM:
+    const q = query(
+      colRef,
+      where('published', '==', true),  // <--- O Segredo
+      orderBy('id', 'asc')             // Mantém a ordem
+    );
+
+    return collectionData(q, { idField: 'id' }) as Observable<any[]>;
+  }
+
   // ✅ INJEÇÃO PURA: O Angular resolve a instância configurada no app.config.ts
   private firestore = inject(Firestore);
 
