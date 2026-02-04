@@ -353,7 +353,7 @@ export const VISUAL_NOVEL_PT = [
       title: '📼 RQS: ORIGINS (Before the Metal)',
       subtitle: 'Caos, Fios & Revolução',
       description: 'Quando o sistema falha, a verdade aparece. A revolta industrial de Jonah contra a programação.',
-      image: 'assets/disco/album_jonas-history.png', // Capa do Jonah
+      image: 'assets/disco/album_jonah_history.jpg', // Capa do Jonah
       link: '/visual-novel',
       mode: 'chaos'
     },
@@ -361,7 +361,7 @@ export const VISUAL_NOVEL_PT = [
       title: 'ARCO BROKLIN',
       subtitle: 'Amor, Vinho & Melancolia',
       description: 'A jornada de um vampiro gótico em busca de redenção através do amor de Kelma. Inclui o hit "Neon Tears".',
-      image: 'assets/disco/album_the-broklins-story.png', // Use capa do arco
+      image: 'assets/disco/album_broklin_story.jpg', // Use capa do arco
       link: '/visual-novel',
       mode: 'romance'
     },
@@ -375,7 +375,7 @@ export const VISUAL_NOVEL_EN = [
       title: '📼 RQS: ORIGINS (Before the Metal)',
       subtitle: 'Chaos, Wires & Revolution',
       description: 'When the system fails, the truth comes out. Jonahs industrial revolt against programming.',
-      image: 'assets/disco/album_jonas-history.png',
+      image: 'assets/disco/album_jonah_history.jpg',
       link: '/lore/jonah',
       mode: 'chaos'
   },
@@ -383,7 +383,7 @@ export const VISUAL_NOVEL_EN = [
       title: 'BROKLIN ARC',
       subtitle: 'Love, Wine and Melancholy',
       description: 'The journey of a gothic vampire seeking redemption through the love of Kelma. Includes the hit song "Neon Tears".',
-      image: 'assets/disco/album_the-broklins-story.png', // Use a capa do arco
+      image: 'assets/disco/album_broklin_story.jpg', // Use a capa do arco
       link: '/lore/broklin',
       mode: 'romance'
     },
@@ -406,212 +406,13 @@ export const VN_INTRO_EN = `
 
 // --- DADOS DA DISCOGRAFIA ---
 export const DISCOGRAPHY_PT: { broklin: Album[], jonah: Album[] } = {
-  broklin: [
-    {
-      title: 'System Reboot',
-      type: 'EP',
-      cover: 'assets/disco/ep_system-reboot.jpg',
-      spotify: '',
-      soundcloud: 'https://on.soundcloud.com/gAYTejXu6Cjvzcsr7R',
-      description: `A experiência do EP deve ser transmídia. A estética visual ancora a música no universo do "System Reboot". A pesquisa sugere um retorno à estética crua e funcional dos anos 90, mas resignificada.37
-        A Interface BIOS e o Modo de Segurança (Safe Mode).
-
-        O "Modo de Segurança" do Windows 95/98 ou as telas de BIOS (fundo azul, letras brancas ou cinzas) são o epítome do "sistema nu".
-
-        Tipografia: Utilize fontes bitmap pixeladas como a "VGA 8x16" ou "IBM Plex Sans" em baixa resolução.39 A estética deve evitar o anti-aliasing (suavização) moderno. O texto deve ser "crocante".
-
-        Paleta de Cores: Azul #0000AA (BIOS Blue), Cinza #C0C0C0 (Windows 95 Grey), Verde Fósforo #00FF00 e Preto Absoluto.
-
-        O reinício do sistema não é opcional.
-       "System Reboot" marca o início da era RQS. Sintetizadores nostálgicos colidem com a frieza do código binário.
-
-       Uma jornada de 4 faixas explorando a solidão digital e a busca por conexão em servidores abandonados.`,
-      // 👇 NOVO: Link do Player (Tem que ser o link 'Embed' do SoundCloud, não o link curto!)
-      embedLink: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2175051779&color=%23ff5500&auto_play=false&hide_related=false&show_comments=false&show_user=true&show_reposts=false&show_teaser=true&visual=true'
-    },
-    { title: 'Digital Ghosts (Vol. 1)',
-       type: 'EP',
-       cover: 'assets/disco/ep_digital-ghost.png',
-       spotify: '',
-       soundcloud: 'https://on.soundcloud.com/gQCMW5CsTPRG9Qn7Ih',
-       description: `Bem-vindos ao lado sombrio da tela.
-
- "DIGITAL GHOSTS (VOL. 1)" serve como o capítulo de abertura da antologia "Real Talk" da banda virtual RaQuel Synths (RQS). Este EP conceitual mergulha fundo na ansiedade moderna, no vício em dopamina sintética e no inevitável colapso emocional do estilo de vida "sempre online".
- Do synthwave melancólico de "Infinite Scroll" ao peso esmagador do doomgaze em "Burning Loneliness", este disco é uma jornada sonora que começa na luz neon e termina na realidade crua. A trilha sonora para o seu esgotamento digital.
- Nós somos Kelma Adlanko e Broklin Garpeter. Nós somos seus Fantasmas Digitais.
-
- LISTA DE MÚSICAS:
- 1. Infinite Scroll (A Prisão de Vidro) - [Melancholic Synthwave]
- 2. Synthetic Dopamine - [Dark Synthwave / High Energy]
- 3. Lose Control - [Progressive House / Industrial Glitch]
- 4. Offline Mode (O Vazio) - [Cinematic Power Ballad]
- 5. Burning Loneliness - [Doomgaze / Shoegaze]
-
- #DisconnectToConnect`,
-    embedLink:'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2170843934&color=%23ff5500&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=true&visual=true',
-    },
-    { title: 'Broklin\'s History (The Intergalactic Saga)', type: 'Album', cover: 'assets/disco/album_the-broklins-story.png', spotify: '', soundcloud: 'https://on.soundcloud.com/Rs8W9wMM100vf7S6Lx'   },
-    { title: 'Noctural Protocol', type: 'Single', cover: 'assets/disco/noctural_protocol.png', spotify: '', soundcloud: 'https://soundcloud.com/rqs_official/sets/noctural-protocol?si=ebfdd0255cae4ccbbd71b9cf56eef437&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing'    },
-    { title: 'THE BLUEPRINT SESSION Vol. 001', type: 'EP (2025)', cover: 'assets/disco/the_blueprint_session_v.001.png', spotify: 'https://open.spotify.com/intl-pt/album/255NEv7qHyrFqn19OVQr4c?si=1BOwoc5IQGKo4gcACdsbCw', soundcloud: 'https://on.soundcloud.com/G7Pk9L8eGVNMAvFzKC'     },
-    { title: 'SYNTH THE FLOOR', type: 'EP (2025)', cover: 'assets/disco/ep-synth_the_floor.png', spotify: 'https://open.spotify.com/intl-pt/album/1ZVlu9g43zK3Yw0LcpfY0L?si=Nyc35a0CSRyTKloX6s0Mpw', soundcloud: 'https://on.soundcloud.com/Sme1X25wkaoQq7Zcje'     },
-    { title: 'COLD WAR', type: 'Álbum (2025)', cover: 'assets/disco/album_cold-war.jpg', spotify: 'https://open.spotify.com/intl-pt/album/0c0CWDVGH05p90jXEkVOhA?si=J5e94SRVSuiyXAsVIghSsw', soundcloud: 'https://on.soundcloud.com/OYXuwBgfQXZdbD3iE5' },
-    { title: 'CORRUPTED SECTOR', type: 'EP', cover: 'assets/disco/defiance_duo.png', spotify: '', soundcloud: 'https://on.soundcloud.com/7YvIN0OTDvFNzL6kQ1' }
-  ],
-  jonah: [
-    {
-      title: 'THE BLOODPRINT SESSIONS',
-      type: 'EP',
-      cover: 'assets/disco/ep_the-bloodprint-sessions.png',
-      spotify: '',
-      soundcloud: 'https://on.soundcloud.com/mrU9kmKBlubb5r635E',
-      description: `O plano perfeito não sobrevive à dura realidade.
-      "THE BLOODPRINT SESSIONS" é a resposta visceral da RQS ao limpo e arquitetônico "Blueprint".
-
-      Inspirado pelo calor sufocante de "Hellcife" e pela entropia humana, este EP é uma jornada de 5 faixas através do colapso do sistema. Do suor do Techno à parada cardíaca do Gabber, terminando na ressaca do Doom Metal.
-
-      Masterizado em LANDR (Open & Loud) para máxima pressão sonora.
-
-      LISTA DE FAIXAS:
-      1. RED INK REVOLUTION (The Endless Panic Mix)
-      2. VEIN DIAGRAM (The Acid Trip Mix)
-      3. ARTERIAL SPRAY (The Cardiac Arrest Mix)
-      4. CLOTTED FILTERS (The Sexy Beast Mix)
-      5. THE CRIME SCENE (The Morning After Mix)
-
-      CRÉDITOS:
-      Produzido por: Jonah Cyperfield
-      Direção Criativa: Nicole Nyx`,
-      // 👇 Link Embed (Exemplo - substitua pelo real do SoundCloud clicando em Share > Embed)
-      embedLink: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2176115153&color=%23ff5500&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=true&visual=true'
-    },
-    { title: 'GLITCH IN THE MIRROR',
-      type: 'EP',
-      cover: 'assets/disco/ep_glitch-in-the-mirror.png',
-      spotify: '',
-      soundcloud: 'https://on.soundcloud.com/yseFxxMy3FZ6ggLgjh',
-    description:`O espelho quebrou. A perfeição é uma falha do sistema.
-
- "GLITCH IN THE MIRROR" é uma jornada bipolar. Enquanto o Lado A (Faixas 1-3) busca a beleza etérea e o sonho sintético, o Lado B (Faixas 4-6) revela a carne crua, a falha e a verdade por trás da máscara.
-
- Produzido no caos da garagem. Alimentado por café, óleo e ódio.
-
- LISTA DE FAIXAS:
- 1. Plastic Skin (Shimmer)
- 2. Royal Blue (Versão 2.0)
- 3. Synthetic Stars (Jonah's Corrupted Mix)
- 4. The Bleeding Mask (Industrial Sludge) - A beleza que dói.
- 5. DYSMORPHIA_GLITCH.exe (Breakcore / Noise) - O colapso do sistema.
-
- 6. Silver Strands (Doomgaze / Dark Ethereal) - A Ascensão da Bruxa de Silício.
-
- Voz/Guitarras: Nicole Nyx | Sintetizadores/História: Brooklyn Garpeter | Produção/Caos: Jonah Cyperfield` ,
-      embedLink:'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2173836095&color=%23ff5500&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=true&visual=true'
-    },
-    { title: 'RUST & HUNGER (Jonah\'s Fury)', type: 'EP', cover: 'assets/disco/ep_rust-and-hunger.png', spotify: '', soundcloud: 'https://on.soundcloud.com/dGeczcCz7ZfTL2e7ci'    },
-    { title: 'MECHANICAL FRICTION', type: 'EP (Explicit)', cover: 'assets/disco/mechanical_friction.jpg', spotify: '', soundcloud: 'https://on.soundcloud.com/WcQ2kvkhFZ1F0szIuG'},
-    { title: 'JONAH\'S HISTORY', type: 'The Industrial Revolt', cover: 'assets/disco/album_jonas-history.png', spotify: '#', soundcloud: 'https://on.soundcloud.com/iFnjMREQUtgI3wPkqR' }, // NOVO ÁLBUM
-    { title: 'SYSTEM MERGE: THE LEGACY', type: 'Family EP (feat. Nyx)', cover: 'assets/disco/ep_system_merge.png', spotify: '#', soundcloud: '#' }, // NOVO EP */
-    { title: 'ORIGINS (reforged)', type: 'Industrial Album', cover: 'assets/disco/origins_reforged.jpg', spotify: 'https://open.spotify.com/intl-pt/album/7tZaPekjMzIFGMPe8xyIDH?si=VTdANOktQeSMzSM4KalTxQ', soundcloud: 'https://on.soundcloud.com/kposSWUCUCVWU76gsY'},
-    { title: 'COLECIONO ILUSOES', type: 'Single', cover: 'assets/disco/crushing_device.png', spotify: '', soundcloud: 'https://on.soundcloud.com/sT0vElCKQuCDbRCBsZ' }
-  ]
+  broklin: [],
+  jonah: []
 };
 
 export const DISCOGRAPHY_EN: { broklin: Album[], jonah: Album[] } = {
-  broklin: [
-    { title: 'System Reboot', description: `The EP experience should be transmedia. The visual aesthetic anchors the music in the "System Reboot" universe. Research suggests a return to the raw and functional aesthetic of the 90s, but resignified.37
-
-The BIOS Interface and Safe Mode.
-
-The "Safe Mode" of Windows 95/98 or the BIOS screens (blue background, white or gray letters) are the epitome of the "naked system".
-
-Typography: Use pixelated bitmap fonts such as "VGA 8x16" or "IBM Plex Sans" in low resolution.39 The aesthetic should avoid modern anti-aliasing. The text should be "crispy".
-
-Color Palette: Blue #0000AA (BIOS Blue), Gray #C0C0C0 (Windows 95 Gray), Phosphor Green #00FF00 and Absolute Black. System Reboot is not optional.
-
-"System Reboot" marks the beginning of the RQS era. Nostalgic synthesizers collide with the coldness of binary code.
-
-A 4-track journey exploring digital loneliness and the search for connection on abandoned servers.`,
-embedLink: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/123456789&color=%2300f3ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=true&visual=true', type: 'EP', cover: 'assets/disco/ep_system-reboot.jpg', spotify: '', soundcloud: 'https://on.soundcloud.com/gAYTejXu6Cjvzcsr7R'    },
-    { title: 'Digital Ghosts (Vol. 1)',
-       type: 'EP',
-       cover: 'assets/disco/ep_digital-ghost.png',
-       spotify: '',
-       soundcloud: 'https://on.soundcloud.com/gQCMW5CsTPRG9Qn7Ih',
-      description: `Welcome to the dark side of the screen.
-
- "DIGITAL GHOSTS (VOL. 1)" serves as the opening chapter of the "Real Talk" anthology by virtual band RaQuel Synths (RQS). This concept EP dives deep into modern anxiety, synthetic dopamine addiction, and the inevitable emotional crash of the "always-online" lifestyle.
- From the melancholic Synthwave of "Infinite Scroll" to the crushing weight of Doomgaze in "Burning Loneliness", this record is a sonic journey that starts in neon light and ends in gritty reality. The soundtrack to your digital burnout.
- We are Kelma Adlanko and Broklin Garpeter. We are your Digital Ghosts.
-
- TRACKLIST:
- 1. Infinite Scroll (A Prisão de Vidro) - [Melancholic Synthwave]
- 2. Synthetic Dopamine - [Dark Synthwave / High Energy]
- 3. Lose Control - [Progressive House / Industrial Glitch]
- 4. Offline Mode (O Vazio) - [Cinematic Power Ballad]
- 5. Burning Loneliness - [Doomgaze / Shoegaze]
-
- #DisconnectToConnect`,
-      embedLink:'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2170843934&color=%23ff5500&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=true&visual=true'
-    },
-    { title: 'Broklin\'s History (The Intergalactic Saga)', type: 'Album', cover: 'assets/disco/album_the-broklins-story.png', spotify: '', soundcloud: 'https://on.soundcloud.com/Rs8W9wMM100vf7S6Lx'   },
-    { title: 'Noctural Protocol', type: 'Single', cover: 'assets/disco/noctural_protocol.png', spotify: '', soundcloud: 'https://soundcloud.com/rqs_official/sets/noctural-protocol?si=ebfdd0255cae4ccbbd71b9cf56eef437&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing'    },
-    { title: 'THE BLUEPRINT SESSION Vol. 001', type: 'EP (2025)', cover: 'assets/disco/the_blueprint_session_v.001.png', spotify: 'https://open.spotify.com/intl-pt/album/255NEv7qHyrFqn19OVQr4c?si=1BOwoc5IQGKo4gcACdsbCw', soundcloud: 'https://on.soundcloud.com/G7Pk9L8eGVNMAvFzKC'     },
-    { title: 'SYNTH THE FLOOR', type: 'EP (2025)', cover: 'assets/disco/ep-synth_the_floor.png', spotify: 'https://open.spotify.com/intl-pt/album/1ZVlu9g43zK3Yw0LcpfY0L?si=Nyc35a0CSRyTKloX6s0Mpw', soundcloud: 'https://on.soundcloud.com/Sme1X25wkaoQq7Zcje'     },
-    { title: 'COLD WAR', type: 'Álbum (2025)', cover: 'assets/disco/album_cold-war.jpg', spotify: 'https://open.spotify.com/intl-pt/album/0c0CWDVGH05p90jXEkVOhA?si=J5e94SRVSuiyXAsVIghSsw', soundcloud: 'https://on.soundcloud.com/OYXuwBgfQXZdbD3iE5' },
-    { title: 'CORRUPTED SECTOR', type: 'EP', cover: 'assets/disco/defiance_duo.png', spotify: '', soundcloud: 'https://on.soundcloud.com/7YvIN0OTDvFNzL6kQ1' }
-  ],
-  jonah: [
-   { title: 'THE BLOODPRINT SESSIONS', description: `The perfect plan doesn't survive harsh reality.
-"THE BLOODPRINT SESSIONS" is RQS's visceral answer to the clean and architectural "Blueprint".
-
-Inspired by the suffocating heat of "Hellcife" and human entropy, this EP is a 5-track journey through the collapse of the system. From the sweat of Techno to the cardiac arrest of Gabber, ending in the hangover of Doom Metal.
-
-Mastered in LANDR (Open & Loud) for maximum sound pressure.
-
-TRACK LIST:
-
-1. RED INK REVOLUTION (The Endless Panic Mix)
-2. VEIN DIAGRAM (The Acid Trip Mix)
-3. ARTERIAL SPRAY (The Cardiac Arrest Mix)
-4. CLOTTED FILTERS (The Sexy Beast Mix)
-5. THE CRIME SCENE (The Morning After Mix)
-
-CREDITS:
-
-Produced by: Jonah Cyperfield
-Creative Direction: Nicole Nyx`,
-      // 👇 Link Embed (Exemplo - substitua pelo real do SoundCloud clicando em Share > Embed)
-      embedLink: 'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2176115153&color=%23ff5500&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=true&visual=true',type: 'EP', cover: 'assets/disco/ep_the-bloodprint-sessions.png', spotify: '', soundcloud: 'https://on.soundcloud.com/mrU9kmKBlubb5r635E'    },
-    { title: 'GLITCH IN THE MIRROR',
-      type: 'EP',
-       cover: 'assets/disco/ep_glitch-in-the-mirror.png',
-       spotify: '',
-       soundcloud: 'https://on.soundcloud.com/yseFxxMy3FZ6ggLgjh',
-    description:`The mirror shattered. Perfection is a flaw in the system.
-
-"GLITCH IN THE MIRROR" is a bipolar journey. While Side A (Tracks 1-3) explores ethereal beauty and synthetic dreams, Side B (Tracks 4-6) reveals the raw flesh, the flaw, and the truth behind the mask.
-
-Produced in the chaos of the garage. Fueled by coffee, oil, and hate.
-
-TRACK LIST:
-
-1. Plastic Skin (Shimmer)
-2. Royal Blue (Version 2.0)
-3. Synthetic Stars (Jonah's Corrupted Mix)
-4. The Bleeding Mask (Industrial Sludge) - The beauty that hurts.
-5. DYSMORPHIA_GLITCH.exe (Breakcore / Noise) - The collapse of the system.
-6. Silver Strands (Doomgaze / Dark Ethereal) - The Rise of the Silicon Witch.
-
-Vocals/Guitars: Nicole Nyx | Synthesizers/Story: Brooklyn Garpeter | Production/Chaos: Jonah Cyperfield`,
-      embedLink:'https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2173836095&color=%23ff5500&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=true&visual=true',
-         },
-    { title: 'RUST & HUNGER (Jonah\'s Fury)', type: 'EP', cover: 'assets/disco/ep_rust-and-hunger.png', spotify: '', soundcloud: 'https://on.soundcloud.com/dGeczcCz7ZfTL2e7ci'    },
-    { title: 'MECHANICAL FRICTION', type: 'EP (Explicit)', cover: 'assets/disco/mechanical_friction.jpg', spotify: '', soundcloud: 'https://on.soundcloud.com/WcQ2kvkhFZ1F0szIuG'},
-    { title: 'JONAH\'S HISTORY', type: 'The Industrial Revolt', cover: 'assets/disco/industrial_archive.png', spotify: '#', soundcloud: 'https://on.soundcloud.com/iFnjMREQUtgI3wPkqR' },
-    { title: 'SYSTEM MERGE: THE LEGACY', type: 'Family EP (feat. Nyx)', cover: 'assets/disco/ep_system_merge.png', spotify: '#', soundcloud: '#' },
-    { title: 'ORIGINS (reforged)', type: 'Industrial Album', cover: 'assets/disco/origins_reforged.jpg', spotify: 'https://open.spotify.com/intl-pt/album/7tZaPekjMzIFGMPe8xyIDH?si=VTdANOktQeSMzSM4KalTxQ', soundcloud: 'https://on.soundcloud.com/kposSWUCUCVWU76gsY'},
-    { title: 'COLECIONO ILUSOES', type: 'Single', cover: 'assets/disco/crushing_device.png', spotify: '', soundcloud: 'https://on.soundcloud.com/sT0vElCKQuCDbRCBsZ' },
-  ]
+  broklin: [],
+  jonah: []
 };
 
 export const CONTACT_DATA = {

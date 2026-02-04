@@ -4,6 +4,9 @@ import { CommonModule } from '@angular/common';
 import { TranslationService } from '../../services/translation.service';
 import { CONTACT_DATA } from '../../data/app-data';
 
+// 1. IMPORTAR AS FERRAMENTAS DO FIREBASE
+import { Firestore, collection, addDoc } from '@angular/fire/firestore';
+
 @Component({
   selector: 'app-contato',
   standalone: true,
@@ -15,20 +18,21 @@ export class ContatoComponent {
   public translate = inject(TranslationService);
   private fb = inject(FormBuilder);
 
+  // 2. INJETAR O BANCO DE DADOS
+  private firestore = inject(Firestore);
+
   uplinkForm: FormGroup;
   isSending = false;
   successMessage = false;
+  errorMessage = false; // Pra avisar se der ruim
 
   constructor() {
     this.uplinkForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      subject: ['', Validators.required], // Novo campo
+      subject: ['', Validators.required],
       message: ['', Validators.required],
-
-      // 🍯 O HONEYPOT (Campo armadilha)
-      // Não tem Validação, pois deve ficar vazio!
-      website: ['']
+      website: [''] // 🍯 Honeypot
     });
   }
 
@@ -36,26 +40,47 @@ export class ContatoComponent {
     return this.translate.isPt() ? CONTACT_DATA.pt : CONTACT_DATA.en;
   }
 
-  onSubmit() {
-    // 1. Verifica Honeypot (Se tiver valor, é Robô 🤖)
+  // AQUI É ONDE A MÁGICA ACONTECE
+  async onSubmit() {
+    // 1. Defesa Anti-Robô 🤖
     if (this.uplinkForm.value.website) {
-      console.log('🍯 Honeypot ativado! Robô capturado.');
+      console.log('🍯 Honeypot ativado! Robô bloqueado.');
       this.isSending = true;
-      // Finge que enviou para enganar o bot
       setTimeout(() => { this.successMessage = true; }, 1000);
       return;
     }
 
     if (this.uplinkForm.valid) {
       this.isSending = true;
-      console.log('Enviando dados reais:', this.uplinkForm.value);
+      this.errorMessage = false;
 
-      // Simulação de envio (Aqui entraria seu serviço de Email/Firebase)
-      setTimeout(() => {
+      try {
+        // 2. Preparar o Pacote de Dados
+        const mensagemParaSalvar = {
+          name: this.uplinkForm.value.name,
+          email: this.uplinkForm.value.email,
+          subject: this.uplinkForm.value.subject,
+          message: this.uplinkForm.value.message,
+          dataEnvio: new Date().toISOString(), // Carimbo de Data/Hora
+          lida: false // Status pra você controlar depois
+        };
+
+        // 3. Enviar para a coleção 'mensagens' no Firebase
+        const collectionRef = collection(this.firestore, 'mensagens');
+        await addDoc(collectionRef, mensagemParaSalvar);
+
+        // 4. Sucesso!
+        console.log('✅ Mensagem salva no Firebase!');
         this.isSending = false;
         this.successMessage = true;
         this.uplinkForm.reset();
-      }, 2000);
+
+      } catch (error) {
+        // 5. Erro (Sem internet, permissão negada, etc)
+        console.error('❌ Erro ao enviar:', error);
+        this.isSending = false;
+        this.errorMessage = true;
+      }
     }
   }
 }

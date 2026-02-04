@@ -1,0 +1,444 @@
+/* ========================================== */
+/* 📂 MUSICAL ARCHIVES - SCSS (O Museu)       */
+/* ========================================== */
+
+/* --- CONTAINER GERAL --- */
+.disco-container {
+  background: rgba(10, 10, 15, 0.75);
+  backdrop-filter: blur(var(--bg-blur-intensity));
+  -webkit-backdrop-filter: blur(var(--bg-blur-intensity));
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 1rem;
+  border-radius: 15px;
+}
+
+.section-title {
+  font-family: var(--font-heading);
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+  color: #ffffff;
+  text-shadow: 0 0 10px var(--primary-color);
+}
+
+.disco-intro {
+  text-align: center;
+  margin-bottom: 3rem;
+  color: #ddd;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+}
+
+/* --- CLASSE MESTRE DE SEÇÃO --- */
+.artist-section {
+  position: relative;
+  padding: 2.5rem;
+  margin-bottom: 4rem;
+  border-radius: 12px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+}
+
+/* POR PADRÃO: Esconde o Jonah */
+.jonah-theme {
+  display: none;
+}
+
+/* --- CABEÇALHOS --- */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 3rem;
+  width: 100%;
+
+  h3 {
+    margin: 0;
+    font-size: 1.8rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    line-height: 1;
+  }
+
+  mat-icon, i {
+    font-size: 1.8rem;
+    height: auto;
+    width: auto;
+    display: flex;
+  }
+}
+
+/* ========================================== */
+/* 💎 TEMA BROKLIN (Padrão - Azul)            */
+/* ========================================== */
+.broklin-theme {
+  border-left: 5px solid #00f3ff;
+  padding-left: 2rem;
+  margin-left: 1rem;
+
+  .section-header {
+    h3 { color: #00f3ff; }
+    mat-icon, i { color: #00f3ff; text-shadow: 0 0 10px #00f3ff; }
+  }
+
+  .featured-album { border-bottom: 1px solid rgba(0, 243, 255, 0.1); }
+
+  .btn-archive {
+    border: 1px solid #00f3ff;
+    color: #00f3ff;
+    background: transparent;
+    &:hover { background: rgba(0, 243, 255, 0.1); box-shadow: 0 0 20px #00f3ff; }
+  }
+}
+
+/* ========================================== */
+/* ☢️ TEMA JONAH (Ativado via Global)         */
+/* ========================================== */
+/* O SEGREDO: Só ativa se o body tiver .mode-jonah */
+:host-context(.mode-jonah) {
+
+  /* 1. Esconde o Broklin */
+  .broklin-theme { display: none; }
+
+  /* 2. Mostra o Jonah */
+  .jonah-theme {
+    display: block;
+    animation: fadeInRough 0.5s ease-out;
+
+    background: linear-gradient(135deg, rgba(20, 10, 0, 0.95) 0%, rgba(10, 10, 10, 0.9) 100%);
+    border-left: 5px solid #ff9900;
+    border-top: 1px solid rgba(255, 153, 0, 0.2);
+    padding: 2rem 0;
+
+    .section-header {
+      h3 {
+        color: #ff9900;
+        font-family: 'Courier New', monospace;
+        letter-spacing: -1px;
+      }
+      mat-icon, i {
+        color: #ff9900;
+        text-shadow: 0 0 15px #ff5500;
+        animation: shake 3s infinite;
+      }
+    }
+
+    .btn-spotify {
+      background-color: #000;
+      color: #ff9900;
+      border: 1px solid #ff9900;
+    }
+
+    .btn-archive {
+      border: 1px dashed #ff9900;
+      color: #ff9900;
+      &:hover { background: rgba(255, 153, 0, 0.1); box-shadow: 0 0 20px #ff9900; }
+    }
+  }
+
+  /* Efeitos globais do modo Jonah */
+  .icon-shake { animation: shake 0.5s infinite; }
+  .featured-album { border-bottom: 1px dashed rgba(255, 153, 0, 0.3); }
+    // ESTILO DOS BOTÕES (Leves e Performáticos)
+  .actions-bar {
+    margin-top: auto; // Empurra os botões pro final do card se sobrar espaço
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    .btn-listen {
+      flex: 1;
+      min-width: 140px;
+      padding: 12px;
+      text-align: center;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 0.9rem;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+
+      &.soundcloud-btn {
+        background: #ff5500;
+        color: white;
+        border: 1px solid #ff5500;
+        &:hover { background: #d44600; }
+      }
+
+      &.spotify-btn {
+        background: #1db954;
+        color: white;
+        border: 1px solid #1db954;
+        &:hover { background: #1ed760; }
+      }
+    }
+  }
+}
+
+/* Container da Paginação */
+.terminal-pagination {
+  display: flex;
+  justify-content: space-between; /* Espalha os botões */
+  align-items: center;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid #00f3ff; /* Azul Neon Broklin */
+  padding: 10px 20px;
+  margin-top: 20px;
+  font-family: 'Courier New', monospace; /* Fonte Hacker */
+  box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+
+  /* Texto do meio */
+  .cmd-display {
+    color: #00f3ff;
+    font-weight: bold;
+    letter-spacing: 2px;
+    font-size: 0.9rem;
+  }
+
+  /* Botões */
+  .cmd-btn {
+    background: transparent;
+    border: none;
+    color: #00f3ff;
+    font-family: inherit;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover:not(:disabled) {
+      text-shadow: 0 0 8px #00f3ff;
+      transform: scale(1.05);
+    }
+
+    &:disabled {
+      color: #333; /* Cinza morto quando desativado */
+      cursor: not-allowed;
+    }
+  }
+
+  /* --- VARIAÇÃO JONAH (Hazard Mode) --- */
+  &.hazard-mode {
+    border-color: #ff0000; /* Vermelho Jonah */
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
+
+    .cmd-display, .cmd-btn {
+      color: #ff0000;
+    }
+
+    .cmd-btn:hover:not(:disabled) {
+      text-shadow: 0 0 8px #ff0000;
+    }
+  }
+}
+
+/* --- PATCH DE CORREÇÃO MOBILE --- */
+@media (max-width: 600px) {
+  .terminal-pagination {
+    flex-direction: column; /* Empilha tudo verticalmente */
+    gap: 15px; /* Espaço entre os andares */
+    padding: 15px 10px;
+
+    /* O Contador (PAGE 01/04) sobe para o topo */
+    .cmd-display {
+      order: -1;
+      font-size: 1.1rem; /* Aumenta um pouco pra ficar legível */
+      margin-bottom: 5px;
+      border-bottom: 1px dashed rgba(0, 243, 255, 0.3); /* Linha sutil embaixo */
+      padding-bottom: 5px;
+      width: 100%;
+      text-align: center;
+    }
+
+    /* Os botões ocupam a largura toda pra ser fácil de clicar com o dedão */
+    .cmd-btn {
+      width: 100%;
+      padding: 10px;
+      background: rgba(0,0,0,0.3); /* Um fundo leve pra destacar o clique */
+    }
+  }
+
+  /* Ajuste de cor para o modo Jonah no mobile */
+  .terminal-pagination.hazard-mode .cmd-display {
+    border-bottom-color: rgba(255, 0, 0, 0.3);
+  }
+}
+
+.btn-exit {
+  margin-top: 15px; /* Separar dos controles de página */
+  width: 100%;      /* Botão largo pra ser fácil de clicar */
+  padding: 10px;
+  background: transparent;
+  border: 1px dashed #00f3ff; /* Azul padrão Broklin */
+  color: #00f3ff;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(0, 243, 255, 0.1);
+    letter-spacing: 4px; /* Efeito de expansão ao passar o mouse */
+  }
+}
+
+/* Classe que envolve o banner na lista */
+.inter-list-ad {
+  width: 100%;
+
+  /* O TRUQUE DO MESTRE: */
+  /* Se o Jonah estiver apertando demais, forçamos o banner a respirar */
+  margin-left: 0;
+  margin-right: 0;
+
+  /* Centraliza o banner dentro da div */
+
+  justify-content: center;
+}
+
+/* --- BOTÕES GERAIS --- */
+button {
+  cursor: pointer;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-weight: bold;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn-archive {
+  width: 100%;
+  justify-content: center;
+  margin-top: 1rem;
+  padding: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* --- LAYOUT DO ÁLBUM --- */
+.featured-album {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem 0;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+}
+
+.album-cover img {
+  width: 250px;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+  transition: transform 0.3s ease;
+
+  &:hover { transform: scale(1.02); }
+}
+
+.album-content {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; // ✅ ISSO CONSERTA O ESPAÇAMENTO
+  gap: 15px; // ✅ ISSO DÁ RESPIRO ENTRE TÍTULO, TEXTO E BOTÕES
+
+  .header {
+    h4 {
+      font-size: 1.2rem;
+      margin: 0;
+      color: #fff;
+    }
+    .release-type {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      opacity: 0.7;
+    }
+  }
+
+  p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+  }
+
+  // ESTILO DOS BOTÕES (Leves e Performáticos)
+  .actions-bar {
+    margin-top: auto; // Empurra os botões pro final do card se sobrar espaço
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    .btn-listen {
+      flex: 1;
+      min-width: 140px;
+      padding: 12px;
+      text-align: center;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 0.9rem;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+
+      &.soundcloud-btn {
+        background: #ff5500;
+        color: white;
+        border: 1px solid #ff5500;
+        &:hover { background: #d44600; }
+      }
+
+      &.spotify-btn {
+        background: #1db954;
+        color: white;
+        border: 1px solid #1db954;
+        &:hover { background: #1ed760; }
+      }
+    }
+  }
+}
+
+.embed-player {
+  margin-bottom: 1rem;
+}
+
+/* ANIMAÇÕES */
+@keyframes shake {
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  10% { transform: translate(-1px, -2px) rotate(-1deg); }
+  20% { transform: translate(-3px, 0px) rotate(1deg); }
+  30% { transform: translate(3px, 2px) rotate(0deg); }
+  40% { transform: translate(1px, -1px) rotate(1deg); }
+  50% { transform: translate(-1px, 2px) rotate(-1deg); }
+  60% { transform: translate(-3px, 1px) rotate(0deg); }
+  70% { transform: translate(3px, 1px) rotate(-1deg); }
+  80% { transform: translate(-1px, -1px) rotate(1deg); }
+  90% { transform: translate(1px, 2px) rotate(0deg); }
+  100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+@keyframes fadeInRough {
+  from { opacity: 0; transform: translateY(10px) skewX(-5deg); }
+  to { opacity: 1; transform: translateY(0) skewX(0); }
+}
+
+

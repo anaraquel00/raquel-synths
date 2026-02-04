@@ -151,41 +151,43 @@
 }
 
 /* ========================================= */
-/* ☢️ MODO JONAH: REATOR EM FUSÃO (TREMOR + FUMAÇA) */
+/* ☢️ MODO JONAH: CORRIGIDO E SEGURO */
 /* ========================================= */
+
 :host-context(body.mode-jonah) .hero-title {
-  /* --- CONFIGURAÇÕES DO TREMOR (MANTIDAS) --- */
-  background: none !important;
-  -webkit-text-fill-color: initial !important;
-  color: #bf360c !important; /* Laranja Núcleo */
-  text-shadow:
-    3px 3px 0px #000000,
-    0 0 15px rgba(255, 69, 0, 0.6); /* Glow radioativo */
+  /* ... suas cores mantidas ... */
+  color: #bf360c !important;
+  text-shadow: 3px 3px 0px #000000, 0 0 15px rgba(255, 69, 0, 0.6);
   letter-spacing: 5px !important;
+
+  /* O TREMOR (Jonah Mode) */
   animation: panic-shake 0.15s infinite cubic-bezier(.36,.07,.19,.97) both;
-  transform: translate3d(0, 0, 0);
-  position: relative; /* Necessário pra fumaça se prender aqui */
+
+  /* Necessário pra fumaça */
+  position: relative;
   z-index: 1;
+
+  /* 🛡️ SEGURANÇA: Se o usuário pediu pra reduzir movimento, DESLIGA O TREMOR */
+  @media (prefers-reduced-motion: reduce) {
+    animation: none !important;
+  }
 }
 
-/* 3. A FUMAÇA TÓXICA (PSEUDO-ELEMENTO) */
-body.mode-jonah app-home .hero-title::before {
-  content: attr(data-text) !important; /* Pega o texto do HTML */
+/* 3. A FUMAÇA TÓXICA (CORRIGIDA) */
+:host-context(body.mode-jonah) .hero-title::before {
+  content: attr(data-text); /* Certifique-se que o HTML tem data-text="..." */
   position: absolute;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
   z-index: -1;
-
-  /* Visual da Fumaça */
-  color: rgba(100, 255, 0, 0.5) !important; /* VERDE RADIOATIVO */
+  color: rgba(100, 255, 0, 0.5); /* Verde Radioativo */
   filter: blur(5px);
-  transform-origin: bottom center;
   pointer-events: none;
 
-  /* A Animação da Fumaça */
-  animation: global-reactor-smoke 2.5s infinite linear !important;
+  /* ✅ CORREÇÃO DO NOME DA ANIMAÇÃO */
+  animation: reactor-smoke 2.5s infinite linear;
 }
 
 /* O TREMOR (MANTIDO) */

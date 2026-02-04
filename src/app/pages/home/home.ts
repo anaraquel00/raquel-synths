@@ -20,6 +20,7 @@ import { LastReleasesComponent } from '../../components/last-releases/last-relea
   styleUrl: './home.scss'
 })
 export class Home implements OnInit, OnDestroy {
+currentLanguage: any;
   scrollToContact() {
     // Procura o elemento com id 'contact-section' e rola até ele
     const element = document.getElementById('contato');
@@ -109,6 +110,8 @@ export class Home implements OnInit, OnDestroy {
 
   // --- 🎵 FUNÇÕES DO PLAYER (NOVO) ---
 
+  // --- 🎵 FUNÇÕES DO PLAYER (ATUALIZADO COM RANDOM) ---
+
   updatePlayer(isJonahMode?: boolean) {
     if (!this.allMusic.length) return;
 
@@ -116,48 +119,55 @@ export class Home implements OnInit, OnDestroy {
     const isJonah = isJonahMode ?? this.document.body.classList.contains('mode-jonah');
     const faction = isJonah ? 'jonah' : 'broklin';
 
-    // 1. Filtra músicas da facção atual
-    const factionTracks = this.allMusic.filter(t => t.faction === faction);
+    // 1. Filtra músicas da facção atual que tenham link VÁLIDO do Spotify
+    // (Ignoramos músicas que só têm Soundcloud para o player principal)
+    const validTracks = this.allMusic.filter(t =>
+      t.faction === faction && t.spotify && t.spotify.trim() !== ''
+    );
 
-    // 2. A HIERARQUIA DO HYPE:
-    // Prioridade 1: É Lançamento Recente? (Marcado com isLatest: true)
-    // Prioridade 2: É Pre-Save? (Futuro)
-    // Prioridade 3: Pega o primeiro da lista (Fallback)
-    const target = factionTracks.find(t => t.isLatest === true)
-                || factionTracks.find(t => t.isPreSave === true)
-                || factionTracks[0];
+    if (validTracks.length === 0) {
+      this.safeSpotifyUrl = null; // Aciona o fallback visual do SoundCloud
+      return;
+    }
 
-    // 3. Gera URL Segura
+    // 2. ESTRATÉGIA HÍBRIDA:
+    // Tenta achar o Lançamento Recente (Marketing)
+    let target = validTracks.find(t => t.isLatest === true);
+
+    // Se NÃO tiver lançamento recente, ativa o MODO RANDOM
+    if (!target) {
+      const randomIndex = Math.floor(Math.random() * validTracks.length);
+      target = validTracks[randomIndex];
+      console.log(`🎲 Modo Random Ativado para ${faction}: Tocando ${target.title}`);
+    }
+
+    // 3. Renderiza
     if (target) {
       this.featuredTrack = target;
       this.generateSafeUrl(target.spotify);
-      this.cdr.detectChanges(); // Garante atualização da tela
+      this.cdr.detectChanges();
     }
   }
 
- // 🛡️ GERADOR DE LINK SEGURO (CORRIGIDO)
+  // 🛡️ GERADOR DE LINK SEGURO (CORRIGIDO E OTIMIZADO)
   generateSafeUrl(originalUrl: string) {
     if (!originalUrl) {
       this.safeSpotifyUrl = null;
       return;
     }
 
-    let embedUrl = originalUrl;
+    let embedUrl = originalUrl.trim();
 
-    // 1. Verifica se já é um link de embed. Se NÃO for, a gente converte.
-    // Transforma: "open.spotify.com/album/XYZ"
-    // Em:         "open.spotify.com/embed/album/XYZ"
+    // Lógica robusta para transformar link normal em Embed
+    // De: https://open.spotify.com/track/xyz
+    // Para: https://open.spotify.com/embed/track/xyz
     if (!embedUrl.includes('/embed/')) {
       embedUrl = embedUrl.replace('open.spotify.com/', 'open.spotify.com/embed/');
     }
 
-    // 2. Limpa espaços em branco que causam erro 404
-    embedUrl = embedUrl.trim();
-
-    // 3. Sanitiza para o Angular aceitar
+    // Sanitiza para o Angular aceitar o iframe
     this.safeSpotifyUrl = this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl);
   }
-
   // --- SEUS GETTERS E HELPERS ORIGINAIS ---
 
   get navText() { return this.homeSignal(); }

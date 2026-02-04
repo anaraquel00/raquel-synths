@@ -34,12 +34,12 @@ import { ADS_DATA } from '../../data/app-data';
   styles: [`
     .ad-container {
       margin: 40px auto;
-      max-width: 728px; /* Leaderboard Padrão Desktop */
+      max-width: 1076px; /* Leaderboard Padrão Desktop */
       width: 100%;
       min-height: 100px; /* Evita CLS (Layout Shift) pro Google não reclamar */
 
       border: 1px dashed var(--accent-color);
-      background: rgba(0, 0, 0, 0.4); /* Um pouco mais escuro para destacar o banner */
+      background: rgba(0, 0, 0, 0.5); /* Um pouco mais escuro para destacar o banner */
       padding: 10px; /* Reduzi um pouco para dar espaço ao banner */
 
       text-align: center;

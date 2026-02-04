@@ -4,7 +4,7 @@
 
     <div class="title-wrapper">
       <h1 class="hero-title" [attr.data-text]="navText.title">{{ navText.title }}</h1>
-      <app-last-releases class="widget-position"></app-last-releases>
+      <app-last-releases [lang]="translate.isPt() ? 'pt' : 'en'"></app-last-releases>
     </div>
 
     <p class="hero-subtitle">{{ navText.subtitle }}</p>

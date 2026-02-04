@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { MusicalArchives } from './pages/musical-archives/musical-archives';
 
 export const routes: Routes = [
   // 🏠 ROTA 1: A Vitrine (Landing Page)
@@ -14,6 +15,12 @@ export const routes: Routes = [
   {
     path: 'logs-archive',
     loadComponent: () => import('./pages/logs-archive/logs-archive').then(m => m.LogsArchiveComponent)
+  },
+  // ✨ NOVA ROTA 2: O Arquivo Musical (Discografia Completa)
+  {
+    path:'musical-archives',
+    loadComponent: () => import('./pages/musical-archives/musical-archives').then(m => m.MusicalArchives),
+    title: 'RaQuel Synths | Musical Archives'
   },
 
  // ✨ NOVA ROTA 3: O Catálogo (A página que acabamos de criar)
