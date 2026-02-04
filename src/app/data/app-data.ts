@@ -376,7 +376,7 @@ export const VISUAL_NOVEL_EN = [
       subtitle: 'Chaos, Wires & Revolution',
       description: 'When the system fails, the truth comes out. Jonahs industrial revolt against programming.',
       image: 'assets/disco/album_jonah_history.jpg',
-      link: '/lore/jonah',
+      link: '/visual-novel',
       mode: 'chaos'
   },
   {
@@ -384,7 +384,7 @@ export const VISUAL_NOVEL_EN = [
       subtitle: 'Love, Wine and Melancholy',
       description: 'The journey of a gothic vampire seeking redemption through the love of Kelma. Includes the hit song "Neon Tears".',
       image: 'assets/disco/album_broklin_story.jpg', // Use a capa do arco
-      link: '/lore/broklin',
+      link: '/visual-novel',
       mode: 'romance'
     },
 
