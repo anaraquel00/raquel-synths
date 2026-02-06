@@ -220,7 +220,9 @@ export class LastReleasesComponent implements OnInit, OnDestroy {
     if (!this.allMusic || this.allMusic.length === 0) return;
 
     const faction = this.isJonahMode ? 'jonah' : 'broklin';
-    const factionTracks = this.allMusic.filter(t => t.faction === faction);
+    const factionTracks = this.allMusic.filter(t =>
+  t.faction === faction || t.faction === 'hybrid'
+ );
 
     const targetTrack = factionTracks.find(t => t.isPreSave === true)
                      || factionTracks.find(t => t.isLatest === true)

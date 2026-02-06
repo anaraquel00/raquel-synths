@@ -15,4 +15,7 @@ export interface Album {
   releaseDate?: string; // Formato: "YYYY-MM-DD"
   // Data do Streaming (Quando chega no Spotify - O Hype)
   releaseDateStreaming?: string; //
+  isPreSave?: boolean;      // Para ativar a cápsula
+  preSaveLink?: string;     // O link do DistroKid
+  isLatest?: boolean;       // (Ou isFeatured) Para dizer que é o destaque
 }
