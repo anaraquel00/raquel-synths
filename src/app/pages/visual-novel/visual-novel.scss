@@ -31,6 +31,40 @@ $glass-border: rgba(255, 255, 255, 0.1);
     }
   }
 }
+.synopsis-container {
+  /* [BROKLIN FIX]: Vidro localizado (Leve para a GPU) */
+  background: rgba(10, 15, 25, 0.801) !important; /* Opacidade do Modo Broklin */
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 4px solid #d600ff; /* Mantém sua borda neon */
+
+  padding: 20px;
+  margin-top: 5px;
+  margin-bottom: 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.605);
+
+  h3 {
+    color: #00ffcc; /* Ciano Cyberpunk */
+    margin-top: 0;
+  }
+
+  p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #e0e0e0;
+  }
+
+  .neon-divider {
+    border: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #d600ff, transparent);
+    margin-top: 20px;
+  }
+}
 
 // ... o resto do código continua igual
 .visual-novel-catalog {
@@ -52,7 +86,7 @@ $glass-border: rgba(255, 255, 255, 0.1);
 // --- CABEÇALHO DA PÁGINA ---
 .catalog-header {
   text-align: center;
-  margin-bottom: 4rem;
+  margin-bottom: 1rem;
 
   h1 {
     font-size: 3rem;
@@ -273,5 +307,18 @@ button {
     &::before {
       content: ''; // Texto extra via CSS
     }
+  }
+  .synopsis-container{
+    background: rgba(40, 5, 5, 0.75) !important; /* Vermelho Sangue Industrial */
+    border-color: rgba(255, 50, 50, 0.3);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #ff3d00;
+  }
+  .neon-divider {
+    border: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent,#8b0000, transparent);
+    margin-top: 20px;
   }
 }

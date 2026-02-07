@@ -151,81 +151,94 @@
 }
 
 /* ========================================= */
-/* ☢️ MODO JONAH: CORRIGIDO E SEGURO */
+/* 🔥 MODO JONAH: FIRE GOD EDITION */
 /* ========================================= */
 
-:host-context(body.mode-jonah) .hero-title {
-  /* ... suas cores mantidas ... */
-  color: #bf360c !important;
-  text-shadow: 3px 3px 0px #000000, 0 0 15px rgba(255, 69, 0, 0.6);
-  letter-spacing: 5px !important;
-
-  /* O TREMOR (Jonah Mode) */
-  animation: panic-shake 0.15s infinite cubic-bezier(.36,.07,.19,.97) both;
-
-  /* Necessário pra fumaça */
-  position: relative;
-  z-index: 1;
-
-  /* 🛡️ SEGURANÇA: Se o usuário pediu pra reduzir movimento, DESLIGA O TREMOR */
-  @media (prefers-reduced-motion: reduce) {
-    animation: none !important;
-  }
+/* 1. Definimos a animação do fogo correndo */
+@keyframes magma-flow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
 }
 
-/* 3. A FUMAÇA TÓXICA (CORRIGIDA) */
+:host-context(body.mode-jonah) .hero-title {
+  /* RESET: Removemos a cor sólida antiga */
+  color: transparent !important;
+
+  /* A MÁGICA DO DEGRADÊ (Magma/Fogo) */
+  background: linear-gradient(
+    90deg,
+    #ff2a00, /* Vermelho Sangue */
+    #ffcc00, /* Amarelo Núcleo */
+    #ff2a00  /* Vermelho Sangue (Repete pra fechar o loop) */
+  );
+
+  background-size: 200% auto; /* O segredo pro movimento */
+
+  /* RECORTA O FUNDO NO FORMATO DA LETRA */
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  /* O BRILHO EXTERNO (Use drop-shadow em vez de text-shadow aqui) */
+  filter: drop-shadow(0 0 15px rgba(255, 69, 0, 0.8));
+
+  /* ANIMAÇÃO: Troquei o panic-shake pelo magma-flow */
+  animation: magma-flow 2s linear infinite;
+
+  /* Mantendo layout */
+  letter-spacing: 5px !important;
+  position: relative;
+  z-index: 1;
+}
+
+/* A FUMAÇA (AGORA VISÍVEL) */
 :host-context(body.mode-jonah) .hero-title::before {
-  content: attr(data-text); /* Certifique-se que o HTML tem data-text="..." */
+  content: attr(data-text); /* Puxa o texto do HTML */
   position: absolute;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
+
+  /* Z-INDEX: Se o fundo do site for preto, -1 funciona.
+     Se não aparecer, mude para '1' e adicione 'mix-blend-mode: screen' */
   z-index: -1;
-  color: rgba(100, 255, 0, 0.5); /* Verde Radioativo */
-  filter: blur(5px);
+
+ /* COR MAIS FORTE: Começa Verde Radioativo */
+  color: #00ff00;
+
+  /* MENOS BLUR NO INÍCIO para você ver que ela existe */
+  filter: blur(2px);
+
+  /* Duração mais rápida pra gente testar */
+  animation: toxic-smoke 1s infinite linear;
+
+  /* Garante que o mouse não interaja com a fumaça */
   pointer-events: none;
-
-  /* ✅ CORREÇÃO DO NOME DA ANIMAÇÃO */
-  animation: reactor-smoke 2.5s infinite linear;
 }
 
-/* O TREMOR (MANTIDO) */
-@keyframes panic-shake {
-  0% { transform: translate(1px, 1px) rotate(0deg); }
-  10% { transform: translate(-1px, -2px) rotate(-1deg); color: #ff3300; } /* Flash Vermelho */
-  20% { transform: translate(-3px, 0px) rotate(1deg); opacity: 0.9; }
-  30% { transform: translate(3px, 2px) rotate(0deg); }
-  40% { transform: translate(1px, -1px) rotate(1deg); }
-  50% { transform: translate(-1px, 2px) rotate(-1deg); }
-  60% { transform: translate(-3px, 1px) rotate(0deg); }
-  70% { transform: translate(3px, 1px) rotate(-1deg); color: #ff3300; }
-  80% { transform: translate(-1px, -1px) rotate(1deg); }
-  90% { transform: translate(1px, 2px) rotate(0deg); }
-  100% { transform: translate(1px, -2px) rotate(-1deg); }
-}
-
-/* A ANIMAÇÃO DA FUMAÇA SUBINDO (TURBINADA) */
-@keyframes reactor-smoke {
+/* ANIMAÇÃO REFEITA: Sobe e Dissolve */
+@keyframes toxic-smoke {
   0% {
-    opacity: 0;
+    opacity: 0.8; /* Começa quase sólido */
     transform: translate3d(0, 0, 0) scale(1);
-    filter: blur(4px);
+    filter: blur(2px);
+    color: #ff3300; /* Laranja Fogo */
   }
-  20% {
-    opacity: 0.8; /* Aparece rápido */
-    transform: translate3d(0, -20px) scale(1.05); /* Começa a subir */
-    color: rgba(255, 80, 0, 0.6); /* Vira Laranja Fogo no meio */
+  40% {
+    opacity: 0.6;
+    transform: translate3d(0, -15px) scale(1.1); /* Sobe um pouco */
+    color: #555555; /* Vira Fumaça Cinza */
+    filter: blur(6px);
   }
   100% {
     opacity: 0;
-    /* Sobe MUITO mais pra sair de trás da letra */
-    transform: translate3d(0, -150px) scale(1.5) rotate(2deg);
-    filter: blur(20px); /* Dissolve no ar */
-    color: rgba(100, 100, 100, 0); /* Vira cinza e some */
+    transform: translate3d(0, -40px) scale(1.5) rotate(5deg); /* Sobe muito */
+    filter: blur(20px);
   }
-
 }
+
+/* ========================================= */
+
 /* Quando o body tiver a classe mode-jonah */
 :host-context(.mode-jonah) {
   .music-player-container {
