@@ -8,6 +8,7 @@ import { Subscription, combineLatest } from 'rxjs';
 import { ContentService } from '../../services/content.service';
 import { TranslationService } from '../../services/translation.service';
 import { StoreDepartmentsComponent } from './store-departments/store-departments';
+import { url } from 'node:inspector';
 
 @Component({
   selector: 'app-store',
@@ -184,10 +185,16 @@ export class StoreComponent implements OnInit, OnDestroy {
        return;
     }
 
-    const isShein = cleanUrl.toLowerCase().includes('shein');
+    const lowerUrl = cleanUrl.toLowerCase();
+    const isShein = lowerUrl.includes('shein');
+    // ✅ NOVA LÓGICA: Detecta se é link do Stripe
+    const isStripe = lowerUrl.includes('stripe') || lowerUrl.includes('checkout');
 
     if (isShein) {
       this.openSheinCouponModal(cleanUrl);
+    } else if (isStripe) {
+      // 🚀 Redireciona para o novo Modal do Stripe
+      this.openStripeCouponModal(cleanUrl);
     } else {
       this.openGenericPartnerModal(cleanUrl);
     }
@@ -356,4 +363,95 @@ export class StoreComponent implements OnInit, OnDestroy {
     });
     toast.fire({ icon: 'success', title: msg });
   }
+
+
+// --- MODAL ESPECÍFICO PARA STRIPE (CUPOM DEBUG10) ---
+  private openStripeCouponModal(url: string) {
+    const isPt = this.currentLang() === 'pt';
+    const couponCode = 'DEBUG10'; // 🎟️ Cupom Tech Lead
+
+    // Textos
+    const titleText = isPt ? 'ACESSO VIP DETECTADO!' : '⚡ VIP ACCESS DETECTED!';
+    const subtitleText = isPt 
+      ? 'Você desbloqueou um desconto de <strong>10% OFF</strong>!' 
+      : 'You unlocked a <strong>10% OFF</strong> discount!';
+    const footerText = isPt 
+      ? '(Clique em COPIAR e insira no campo "Código Promocional" ao pagar)' 
+      : '(Click COPY and paste in the "Promo Code" field at checkout)';
+    const confirmBtnText = isPt ? 'COPIAR E PAGAR 💳' : 'COPY & PAY 💳';
+    const cancelBtnText = isPt ? 'Voltar' : 'Back';
+
+    Swal.fire({
+      title: `<span style="font-size: 1.6rem; font-weight: 800; color: #fff;">${titleText}</span>`,
+      html: `
+        <div style="text-align: center; color: #e0e0e0; font-family: 'Roboto', sans-serif;">
+          <p style="margin-bottom: 20px; font-size: 1.1rem;">
+            ${subtitleText}
+          </p>
+
+          <div style="
+              background: rgba(0, 255, 136, 0.05);
+              border: 2px dashed #00ff88; /* Verde Neon */
+              padding: 15px;
+              margin: 20px 0;
+              border-radius: 8px;
+              text-align: center;
+              box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+          ">
+            <span style="display: block; font-size: 0.8rem; color: #00ff88; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px;">
+              ${isPt ? 'CÓDIGO HACKER:' : 'HACKER CODE:'}
+            </span>
+            <strong style="
+              display: block;
+              font-size: 1.8rem;
+              color: #fff;
+              font-family: 'Courier New', monospace;
+              letter-spacing: 3px;
+              text-shadow: 0 0 5px #00ff88;
+            ">
+              ${couponCode}
+            </strong>
+          </div>
+
+          <p style="font-size: 0.85rem; color: #aaa; margin-bottom: 0;">
+            ${footerText}
+          </p>
+        </div>
+      `,
+      // Ícone Tech (Verde)
+      iconHtml: '<div style="font-size: 4rem; color: #ff5500; text-shadow: 0 0 20px #ff5500;">⚡</div>',
+      background: '#121212 url("/assets/images/noise-texture.png")',
+      color: '#fff',
+      showCancelButton: true,
+      confirmButtonColor: '#00ff88', // Verde Stripe/Matrix
+      cancelButtonColor: '#333',
+      confirmButtonText: confirmBtnText , // Texto preto no botão verde para contraste
+      cancelButtonText: cancelBtnText,
+      reverseButtons: true,
+      customClass: {
+        confirmButton: 'btn-neon-stripe-confirm' // Nossa classe personalizada
+      },
+      
+      // AÇÃO: COPIAR + ABRIR
+      preConfirm: () => {
+        navigator.clipboard.writeText(couponCode).then(() => {
+            const Toast = Swal.mixin({
+                toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, background: '#00ff88', color: '#000'
+            });
+            Toast.fire({ icon: 'success', title: isPt ? 'Copiado! Redirecionando...' : 'Copied! Redirecting...' });
+        });
+        return true; 
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // 🔗 AQUI ESTÁ A CORREÇÃO: Usamos o URL que veio do clique!
+        window.open(url, '_blank');
+      }
+    });
+  }
+
+
+  
+
+
 }

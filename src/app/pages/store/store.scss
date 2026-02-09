@@ -261,6 +261,25 @@
     .folder-icon { font-size: 1.4rem; } // A pastinha 📂
   }
 
+/* --- OVERRIDE DO SWEETALERT PARA STRIPE (Verde Neon) --- */
+
+/* Força o estado normal */
+.swal2-container .btn-neon-stripe-confirm {
+  background-color: #00ff88 !important; /* Garante o verde */
+  color: #000000 !important; /* Garante texto preto */
+  font-weight: 800 !important; /* Negrito para destacar */
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.4); /* Um brilho extra */
+}
+
+/* Força o estado HOVER (Passar o mouse) */
+.swal2-container .btn-neon-stripe-confirm:hover,
+.swal2-container .btn-neon-stripe-confirm:focus,
+.swal2-container .btn-neon-stripe-confirm:active {
+  background-color: #00cc6a !important; /* Um verde levemente mais escuro */
+  color: #000000 !important; /* CRUCIAL: Mantém o texto preto no hover! */
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.7); /* Aumenta o brilho */
+}
+
   /* -------------------------------------------
      💀 O MODO JONAH (SÓ QUANDO ATIVADO NO SETOR)
      ------------------------------------------- */
