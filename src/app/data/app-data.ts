@@ -422,7 +422,7 @@ export const CONTACT_DATA = {
 
     // 👇 NOVOS: CARDS SOCIAIS
     socialCards: [
-      { name: 'Discord', icon: 'fab fa-discord', link: 'https://discord.gg/jECeH8ZU', color: '#38419e', desc: 'Chat Oficial & Lore' },
+      { name: 'Discord', icon: 'fab fa-discord', link: 'https://discord.gg/mVpzuFtfJh', color: '#38419e', desc: 'Chat Oficial & Lore' },
       { name: 'Telegram', icon: 'fab fa-telegram', link: 'https://t.me/raquelsynths_news', color: '#0088cc', desc: 'Notícias Rápidas' },
       { name: 'Instagram', icon: 'fab fa-instagram', link: 'https://www.instagram.com/rqs_synths', color: '#d946ef', desc: 'Bastidores & Visual' },
       { name: 'Facebook', icon: 'fab fa-facebook', link: 'https://www.facebook.com/profile.php?id=61585926695560', color: '#0115ef', desc: 'Página Global' }
@@ -454,7 +454,7 @@ export const CONTACT_DATA = {
     title: "OPERATIONS BASE & UPLINK",
     subtitle: "Connect to the RQS neural network. Choose your frequency.",
     socialCards: [
-      { name: 'Discord', icon: 'fab fa-discord', link: 'https://discord.gg/jECeH8ZU',color: '#38419e', desc: 'Official Chat & Lore' },
+      { name: 'Discord', icon: 'fab fa-discord', link: 'https://discord.gg/mVpzuFtfJh',color: '#38419e', desc: 'Official Chat & Lore' },
       { name: 'Telegram', icon: 'fab fa-telegram', link: 'https://t.me/raquelsynths_news', color: '#0088cc', desc: 'Fast News' },
       { name: 'Instagram', icon: 'fab fa-instagram', link: 'https://www.instagram.com/rqs_synths', color: '#d946ef', desc: 'Backstage & Visuals' },
       { name: 'Facebook', icon: 'fab fa-facebook', link: 'https://www.facebook.com/profile.php?id=61585926695560', color: '#0115ef', desc: 'Global Page' }
