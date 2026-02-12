@@ -1,0 +1,68 @@
+<div class="alert-wrapper-block">
+
+  @if (isJonah) {
+    <div class="alert-container jonah-style">
+      
+      <div class="alert-text-group">
+        <div class="alert-header">
+          <span class="alert-icon">☢️</span>
+          <span class="log-prefix error-glitch">
+            {{ translate.isPt() ? 'ERRO CRÍTICO:' : 'CRITICAL ERROR:' }}
+          </span>
+        </div>
+
+        <div class="log-message">
+          <span class="corrupted-text">
+            {{ translate.isPt() 
+               ? "ARQUIVOS DE MEMÓRIA CORROMPIDOS. [LIBERAÇÃO EM MARÇO]" 
+               : "MEMORY FILES CORRUPTED. [RELEASING IN MARCH]" 
+            }}
+          </span>
+          <br>
+          <small class="sub-warning">
+            ⚠️ {{ translate.isPt() ? 'Contém: Tensão e Heavy Metal.' : 'Contains: Tension & Heavy Metal.' }}
+          </small>
+        </div>
+      </div>
+
+      <div class="alert-action">
+        <span class="btn-text locked">
+          🔒 {{ translate.isPt() ? 'SINAL BLOQUEADO' : 'SIGNAL LOCKED' }}
+        </span>
+      </div>
+
+    </div>
+  }
+
+  @else {
+    <a routerLink="/lore-reader/s1-e7" class="cyber-alert-link">
+      <div class="alert-container">
+          
+          <div class="alert-text-group">
+              <div class="alert-header">
+                  <span class="alert-icon">⚠️</span>
+                  <span class="log-prefix">
+                      {{ translate.isPt() ? '[LOG DESCRIPTOGRAFADO]:' : '[LOG DECRYPTED]:' }}
+                  </span>
+              </div>
+
+              <div class="log-message">
+                  {{ translate.isPt() 
+                      ? "O Firewall do 14º andar caiu. Acompanhe 'A Rendição' no" 
+                      : "The 14th-floor firewall went down. Follow 'The Surrender' on" 
+                  }} 
+                  <strong class="highlight-ep" [innerHTML]="translate.isPt() ? 'Episódio&nbsp;7' : 'Episode&nbsp;7'"></strong>.
+              </div>
+          </div>
+
+          <div class="alert-action">
+              <span class="btn-text">
+                  {{ translate.isPt() ? '[ LER AGORA 🔓 ]' : '[ READ NOW 🔓 ]' }}
+              </span>
+          </div>
+
+      </div>
+    </a>
+  }
+
+</div>

@@ -14,6 +14,7 @@ import { AdBannerComponent } from "./components/ad-banner/ad-banner";
 import { injectSpeedInsights } from '@vercel/speed-insights';
 import { CommonModule } from '@angular/common';
 import { TranslationService } from './services/translation.service';
+import { SystemAlert } from "./components/system-alert/system-alert";
 
 
 @Component({

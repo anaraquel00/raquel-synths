@@ -11,15 +11,28 @@ import { TranslationService } from '../../services/translation.service';
 import { ContentService } from '../../services/content.service'; // 👈 NOVO (O Serviço do Firebase)
 import { CONTACT_DATA, HOME_DATA } from '../../data/app-data';
 import { LastReleasesComponent } from '../../components/last-releases/last-releases';
+import { SystemAlert } from "../../components/system-alert/system-alert";
+import { UplinkTerminalComponent } from "../../components/uplink-terminal/uplink-terminal";
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, LastReleasesComponent],
+  imports: [CommonModule, MatButtonModule, LastReleasesComponent, SystemAlert, UplinkTerminalComponent, SystemAlert],
   templateUrl: './home.html',
   styleUrl: './home.scss'
 })
 export class Home implements OnInit, OnDestroy {
+  showUplink = false; // Controle do Modal
+
+  // Função que o botão chama
+  triggerUplink() {
+    this.showUplink = true;
+  }
+  
+  // Função que o modal chama quando fecha
+  closeUplink() {
+    this.showUplink = false;
+  }
 currentLanguage: any;
   scrollToContact() {
     // Procura o elemento com id 'contact-section' e rola até ele

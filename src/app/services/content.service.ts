@@ -13,6 +13,7 @@ export class ContentService {
 
   // ⚡ A PEÇA QUE FALTA: Sem isso, nada do Firebase funciona!
   private firestore = inject(Firestore);
+  currentMode!: string;
 
   getDiscography(): Observable<any[]> {
     const colRef = collection(this.firestore, 'discography');

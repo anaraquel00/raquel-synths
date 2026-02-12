@@ -53,18 +53,42 @@ export class LoreReaderComponent implements OnInit, OnDestroy, AfterViewChecked 
     this.episodes$ = this.contentService.getEpisodes(this.currentMode);
   }
 
+// Variável de controle para não entrar em loop eterno
+  // Mude de boolean para number para contar as tentativas
+  private scrollAttempts = 0; 
+
   ngAfterViewChecked() {
     // 🔍 O ELEMENTO SÓ EXISTE DEPOIS QUE O FIREBASE CARREGA
-    if (this.isBrowser && this.targetId && !this.scrollDone) {
+    if (this.isBrowser && this.targetId && this.scrollAttempts < 3) {
+      
       const element = document.getElementById(this.targetId);
+      
       if (element) {
-        const headerOffset = 100;
-        const elementPosition = element.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.scrollY - headerOffset;
-        window.scrollTo({ top: offsetPosition, behavior: "smooth" });
-        this.scrollDone = true;
+        // TÁTICA "DOUBLE TAP" 🔫
+        
+        // 1. Scroll Imediato (Assim que o elemento nasce no DOM)
+        this.scrollToTarget(element);
+        this.scrollAttempts++; // Conta 1
+
+        // 2. Scroll de Correção (500ms depois - Imagens leves carregaram)
+        setTimeout(() => {
+          this.scrollToTarget(element);
+        }, 500);
+
+        // 3. Scroll Final (1.5s depois - Garantia total contra internet lenta)
+        setTimeout(() => {
+          this.scrollToTarget(element);
+        }, 1500);
       }
     }
+  }
+
+  scrollToTarget(element: HTMLElement) {
+    // Como usamos o CSS 'scroll-margin-top', o método nativo funciona melhor!
+    element.scrollIntoView({ 
+      behavior: 'smooth', 
+      block: 'start' // Alinha o topo do elemento com o topo da janela (respeitando o margin css)
+    });
   }
 
   ngOnDestroy() {
