@@ -17,12 +17,13 @@ import { UplinkTerminalComponent } from "../../components/uplink-terminal/uplink
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, LastReleasesComponent, SystemAlert, UplinkTerminalComponent, SystemAlert],
+  imports: [CommonModule, MatButtonModule, LastReleasesComponent, UplinkTerminalComponent, SystemAlert],
   templateUrl: './home.html',
   styleUrl: './home.scss'
 })
 export class Home implements OnInit, OnDestroy {
   showUplink = false; // Controle do Modal
+ isJonahMode = true; // Controle do Modo (Broklin/Jonah)
 
   // Função que o botão chama
   triggerUplink() {
@@ -194,6 +195,5 @@ currentLanguage: any;
       console.warn(`ALERTA: Elemento '${elementId}' não encontrado.`);
     }
   }
-
 
 }

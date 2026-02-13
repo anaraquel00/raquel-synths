@@ -42,9 +42,9 @@
       <button class="btn-uplink" (click)="triggerUplink()">
        {{ translate.isPt() ? '📡 INICIAR UPLINK' : '📡 START UPLINK' }}
       </button>
-      @if (showUplink) {
+   @if (showUplink) {
   <app-uplink-terminal (close)="closeUplink()"></app-uplink-terminal>
-   }
+}
     </div>
 
   </div>

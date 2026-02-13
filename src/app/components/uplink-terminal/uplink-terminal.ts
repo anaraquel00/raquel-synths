@@ -1,8 +1,7 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, OnDestroy, Output, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-// 👇 IMPORTANTE: Importe o seu serviço de tradução (ajuste o caminho se precisar)
-import { TranslationService } from '../../services/translation.service'; 
-
+import { ContentService } from '../../services/content.service';
+import { TranslationService } from '../../services/translation.service';
 
 @Component({
   selector: 'app-uplink-terminal',
@@ -11,13 +10,16 @@ import { TranslationService } from '../../services/translation.service';
   templateUrl: './uplink-terminal.html',
   styleUrl: './uplink-terminal.scss'
 })
-export class UplinkTerminalComponent implements OnInit {
+export class UplinkTerminalComponent implements OnInit, OnDestroy {
   @Output() close = new EventEmitter<void>();
 
   logs: string[] = [];
   isFinished = false;
+  isJonahMode = false; 
+  private themeObserver: MutationObserver | null = null;
 
-  private script = [
+  // 🛡️ SCRIPT BROKLIN (Sempre em Inglês - Tech Standard)
+  private scriptBroklin = [
     "Establishing secure handshake...",
     "Encrypting connection (AES-256)... [OK]",
     "Bypassing Corporate Firewalls...",
@@ -27,32 +29,64 @@ export class UplinkTerminalComponent implements OnInit {
     "Retrieving contact protocols..."
   ];
 
-  // 👇 INJEÇÃO DO SERVIÇO
-  constructor(public translate: TranslationService) {}
+  // ☣️ SCRIPT JONAH (Sempre em Inglês - Industrial Chaos)
+  private scriptJonah = [
+    "> Igniting Kerosene Pumps...",
+    "> Locking Blast Doors... [LOCKED]",
+    "> Overloading Audio Drivers...",
+    "> Bypassing Safety Protocols...",
+    "> Detecting User Pulse... [NERVOUS]",
+    "> Injecting Rust Virus into Local Host...",
+    "> Access Level: MEATBAG [ELEVATED]",
+    "> Preparing for System Failure..."
+  ];
+
+  constructor(
+    public translate: TranslationService,
+    public contentService: ContentService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
+    this.checkMode();
+    this.themeObserver = new MutationObserver(() => this.checkMode());
+    this.themeObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
     this.runHackerScript();
   }
 
+  private checkMode() {
+    const bodyHasJonah = document.body.classList.contains('mode-jonah');
+    const serviceIsJonah = this.contentService.currentMode === 'jonah';
+    const newState = bodyHasJonah || serviceIsJonah;
+
+    if (this.isJonahMode !== newState) {
+      this.isJonahMode = newState;
+      this.cdr.detectChanges();
+    }
+  }
+
   async runHackerScript() {
-    for (const line of this.script) {
-      await this.delay(Math.random() * 400 + 100); // Dei uma acelerada pra não ficar chato
+    // 👇 Agora escolhemos só pelo MODO. A língua é sempre EN no log.
+    const currentScript = this.isJonahMode ? this.scriptJonah : this.scriptBroklin;
+
+    for (const line of currentScript) {
+      const delayTime = this.isJonahMode ? Math.random() * 200 + 50 : Math.random() * 400 + 100;
+      await this.delay(delayTime);
       this.logs.push(line);
       this.scrollToBottom();
     }
     
     await this.delay(500);
     this.isFinished = true;
-    this.scrollToBottom();
+    this.cdr.detectChanges();
   }
 
-  closeTerminal() {
-    this.close.emit();
+  ngOnDestroy() {
+    if (this.themeObserver) this.themeObserver.disconnect();
   }
 
-  private delay(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
+  closeTerminal() { this.close.emit(); }
+  private delay(ms: number) { return new Promise(resolve => setTimeout(resolve, ms)); }
   
   private scrollToBottom() {
     setTimeout(() => {

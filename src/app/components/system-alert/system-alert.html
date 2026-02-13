@@ -35,29 +35,26 @@
   }
 
   @else {
-    <a routerLink="/lore-reader/s1-e7" class="cyber-alert-link">
+    <a routerLink="/visual-novel" class="cyber-alert-link">
       <div class="alert-container">
           
           <div class="alert-text-group">
               <div class="alert-header">
-                  <span class="alert-icon">⚠️</span>
+                  <span class="alert-icon">👁️</span>
                   <span class="log-prefix">
-                      {{ translate.isPt() ? '[LOG DESCRIPTOGRAFADO]:' : '[LOG DECRYPTED]:' }}
+                      {{ translate.isPt() ? 'QUEM QUEBROU O JONAH CYPERFIELD?' : 'WHO BROKE JONAH CYPERFIELD?' }}
                   </span>
               </div>
 
-              <div class="log-message">
-                  {{ translate.isPt() 
-                      ? "O Firewall do 14º andar caiu. Acompanhe 'A Rendição' no" 
-                      : "The 14th-floor firewall went down. Follow 'The Surrender' on" 
-                  }} 
-                  <strong class="highlight-ep" [innerHTML]="translate.isPt() ? 'Episódio&nbsp;7' : 'Episode&nbsp;7'"></strong>.
+              <div class="log-message" [innerHTML]="translate.isPt() 
+                      ? 'Ele era um astro do Alt-Rock. Agora ele grita por vingança.<br>' 
+                      : 'He was an Alt-Rock star. Now he screams for vengeance.<br>'">
+                  <strong class="highlight-ep" [innerHTML]="translate.isPt() ? 'Descubra por quê.' : 'Find out why.'"></strong>.
               </div>
           </div>
 
           <div class="alert-action">
-              <span class="btn-text">
-                  {{ translate.isPt() ? '[ LER AGORA 🔓 ]' : '[ READ NOW 🔓 ]' }}
+              <span class="btn-text" [innerHTML]="translate.isPt() ? '[ 📖 LEIA A HISTÓRIA<br>ORIGINAL ]' : '[📖 READ THE ORIGINAL<br>STORY]'">
               </span>
           </div>
 
