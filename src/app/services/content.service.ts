@@ -25,7 +25,9 @@ export class ContentService {
     const q = query(
       colRef,
       where('mode', '==', mode),
-      where('published', '==', true)
+      where('releaseDate', '<=', new Date().toISOString()), // 🔥 O PULO DO GATO: Só traz se a data já passou!
+      where('published', '==', true), 
+      orderBy('releaseDate', 'desc') // Ordena do mais novo pro mais antigo     
     );
 
     return collectionData(q, { idField: 'id' }).pipe(
