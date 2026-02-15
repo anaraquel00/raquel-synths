@@ -100,29 +100,34 @@
 
   /* --- LAYOUT HÍBRIDO: IMAGEM + TEXTO --- */
   .episode-cover {
-    /* Mobile First: Imagem em cima, centralizada */
+    /* 📱 Mobile First: Imagem em cima, ocupando tudo */
     width: 100%;
     margin-bottom: 25px;
     text-align: center;
 
     img {
       width: 100%;
-      max-width: 100%; /* Garante que não estoure */
-      height: auto;    /* Mantém a proporção correta */
-      max-height: 500px; /* Limite de altura pra não dominar a tela */
+      height: auto;
+      max-height: 500px;
       object-fit: cover;
       border-radius: 4px;
       border: 1px solid #444;
       box-shadow: 0 5px 15px rgba(0,0,0,0.5);
     }
 
-    /* Desktop: Imagem vai para a esquerda, texto abraça ela */
+    /* 💻 Desktop (min-width: 900px):
+       A mágica acontece aqui. Jogamos a imagem para a esquerda
+       e definimos um tamanho fixo de 500px. */
     @media (min-width: 900px) {
-      float: left;       /* Flutua a esquerda */
-      width: 45%;        /* Ocupa um pouco menos da metade */
-      margin-right: 40px; /* Espaço generoso para o texto respirar */
-      margin-bottom: 20px;
-      text-align: left;
+      float: left;          /* Força a imagem a ir para a esquerda */
+      width: 500px;         /* Tamanho fixo e grande como você pediu */
+      max-width: 45%;       /* Segurança para telas médias não quebrarem */
+      
+      margin-right: 30px;   /* Empurra o texto para a direita (respiro) */
+      margin-bottom: 20px;  /* Empurra o texto de baixo caso ele "envolva" a imagem */
+      margin-top: 8px;      /* Pequeno ajuste para alinhar com o topo da letra */
+      
+      display: block;       /* Garante comportamento de bloco */
     }
   }
 
@@ -133,7 +138,7 @@
     // Imagem "Flutuante" (Estilo Revista)
   img.img-side-left {
     float: left;            // Joga para a esquerda
-    width: 250px;           // Tamanho fixo (ou 40% se preferir)
+    width: 500px;           // Tamanho fixo (ou 40% se preferir)
     max-width: 40%;
     margin-right: 1.5rem;   // Espaço para o texto respirar
     margin-bottom: 0.5rem;
@@ -145,10 +150,10 @@
   }
   img.img-side-right {
     float: right;            // Joga para a direita
-    width: 250px;           // Tamanho fixo (ou 40% se preferir)
+    width: 500px;           // Tamanho fixo (ou 40% se preferir)
     max-width: 40%;
     margin-left: 1.5rem;   // Espaço para o texto respirar
-    margin-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
     border-radius: 12px;
     box-shadow: 0 0 15px rgba(0, 243, 255, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -179,11 +184,20 @@
     // Mobile: No celular, a imagem volta a ficar em cima (fica ruim lado a lado)
   @media (max-width: 768px) {
     img.img-side-left {
-      float: none;
-      width: 100%;
-      max-width: 100%;
-      margin-right: 0;
-      margin-bottom: 1rem;
+    width: 100%;          // Força a imagem a usar 100% da largura da tela
+    max-width: 400px;     // (Opcional) Trava um tamanho máximo para não ficar gigante
+    height: auto;         // Mantém a proporção correta
+    margin: 20px 0;       // Dá um respiro em cima e embaixo
+    float: none;          // Garante que ela não tente flutuar para a direita
+    display: block;
+    }
+     img.img-side-right {
+    width: 100%;          // Força a imagem a usar 100% da largura da tela
+    max-width: 400px;     // (Opcional) Trava um tamanho máximo para não ficar gigante
+    height: auto;         // Mantém a proporção correta
+    margin: 20px 0;       // Dá um respiro em cima e embaixo
+    float: none;          // Garante que ela não tente flutuar para a direita
+    display: block;
     }
   }
   }

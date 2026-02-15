@@ -18,6 +18,7 @@
           "builder": "@angular/build:application",
           "options": {
             "outputPath": "dist/raquel-synths",
+            "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
               "zone.js"
@@ -29,6 +30,8 @@
                 "glob": "**/*",
                 "input": "public"
               },
+              "src/favicon.ico",
+              "src/assets",
               "src/sitemap.xml",
               "src/robots.txt",
               "src/manifest.webmanifest",
@@ -37,8 +40,7 @@
             "styles": [
               "src/styles.scss"
             ],
-            "ssr": false,
-            "prerender": false
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -65,6 +67,21 @@
           },
           "defaultConfiguration": "production"
         },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "raquel-synths:build:production"
+            },
+            "development": {
+              "buildTarget": "raquel-synths:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular/build:extract-i18n"
+        },
         "test": {
           "builder": "@angular/build:karma",
           "options": {
@@ -79,6 +96,8 @@
                 "glob": "**/*",
                 "input": "public"
               },
+              "src/favicon.ico",
+              "src/assets",
               "src/sitemap.xml",
               "src/robots.txt",
               "src/manifest.webmanifest",
@@ -86,7 +105,8 @@
             ],
             "styles": [
               "src/styles.scss"
-            ]
+            ],
+            "scripts": []
           }
         }
       }
