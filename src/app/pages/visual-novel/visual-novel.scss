@@ -1,0 +1,407 @@
+// Variáveis de Cores (Se tiver globais, melhor, mas garanto aqui)
+$neon-blue: #00f3ff;
+$neon-pink: #ff00ff;
+$dark-bg: rgba(10, 10, 18, 0.85);
+$glass-bg: rgba(255, 255, 255, 0.05);
+$glass-border: rgba(255, 255, 255, 0.1);
+
+// No topo do arquivo
+.nav-actions {
+  margin-bottom: 2rem;
+
+  .back-link {
+  background: transparent;
+  color: #00f3ff;
+  border: 2px solid #00f3ff;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  padding: 10px 20px;
+
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: auto; // Sobrescreve o width: 100% dos botões gerais
+
+    &:hover {
+      transform: translateX(-5px);
+      text-shadow: 0 0 8px rgba(0, 243, 255, 0.6);
+    }
+  }
+}
+.synopsis-container {
+  /* [BROKLIN FIX]: Vidro localizado (Leve para a GPU) */
+  background: rgba(10, 15, 25, 0.801) !important; /* Opacidade do Modo Broklin */
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 4px solid #d600ff; /* Mantém sua borda neon */
+
+  padding: 20px;
+  margin-top: 5px;
+  margin-bottom: 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.605);
+
+  h3 {
+    color: #00ffcc; /* Ciano Cyberpunk */
+    margin-top: 0;
+  }
+
+  p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #e0e0e0;
+  }
+
+  .neon-divider {
+    border: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #d600ff, transparent);
+    margin-top: 20px;
+  }
+}
+
+// ... o resto do código continua igual
+.visual-novel-catalog {
+  padding: 3rem 1rem;
+  min-height: 100vh;
+  max-width: 1200px;
+  margin: 0 auto;
+  // Um degradê sutil no fundo para dar profundidade sobre o wallpaper global
+  background: hsla(240, 28%, 5%, 0.851);
+  border-radius: 15px;
+  color: #fff;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+// --- CABEÇALHO DA PÁGINA ---
+.catalog-header {
+  text-align: center;
+  margin-bottom: 1rem;
+
+  h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+
+    // Efeito de Texto Neon
+    color: #fff;
+    text-shadow: 0 0 10px $neon-blue, 0 0 20px $neon-blue;
+  }
+
+  p {
+    font-size: 1.2rem;
+    color: #ccc;
+    font-weight: 300;
+  }
+}
+
+// --- GRID DOS EPISÓDIOS ---
+.episode-grid {
+  display: grid;
+  // Cria colunas automáticas (Responsivo nativo!)
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2.5rem;
+}
+
+// --- CARD DO EPISÓDIO ---
+.episode-card {
+  background: $glass-bg;
+  backdrop-filter: blur(10px); // O efeito de vidro embaçado
+  border: 1px solid $glass-border;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+
+  // Efeito Hover (Quando passa o mouse)
+  &:hover {
+    transform: translateY(-10px); // Sobe um pouquinho
+    border-color: $neon-blue;
+    box-shadow: 0 0 25px rgba(0, 243, 255, 0.2); // Brilho azul
+
+    .card-image img {
+      transform: scale(1.05); // Zoom na imagem
+    }
+  }
+
+  // Card Bloqueado (Cinza e sem interação)
+  &.locked {
+    opacity: 0.7;
+    filter: grayscale(100%);
+    cursor: not-allowed;
+
+    &:hover {
+      transform: none;
+      box-shadow: none;
+      border-color: $glass-border;
+    }
+  }
+}
+
+// --- IMAGEM DO CARD ---
+.card-image {
+  height: 200px;
+  position: relative;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; // Garante que a imagem preenche sem distorcer
+    object-position: top center;
+
+    transition: transform 0.5s ease;
+  }
+
+  // A máscara do cadeado
+  .lock-overlay {
+    position: absolute;
+    inset: 0; // Top, left, right, bottom = 0
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.2rem;
+    backdrop-filter: blur(4px);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+
+    &::before {
+      content: '🔒';
+      margin-right: 8px;
+    }
+  }
+}
+
+// --- CONTEÚDO DO CARD ---
+.card-content {
+  padding: 1.5rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+
+  .date {
+    font-size: 0.8rem;
+    color: $neon-blue;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  h3 {
+    font-size: 1.4rem;
+    margin: 0 0 1rem 0;
+    line-height: 1.3;
+    color: #fff;
+  }
+
+  p {
+    font-size: 0.95rem;
+    color: #aaa;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+    flex-grow: 1; // Empurra o botão para baixo
+  }
+}
+
+// --- BOTÕES ---
+button {
+  width: 100%;
+  padding: 1rem;
+  border: none;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit; // Herda a fonte do site
+
+  &.btn-read {
+    background: transparent;
+    border: 1px solid $neon-blue;
+    color: $neon-blue;
+
+    &:hover {
+      background: $neon-blue;
+      color: #000; // Contraste preto no fundo azul
+      box-shadow: 0 0 15px $neon-blue;
+    }
+  }
+
+  &.btn-disabled {
+    background: rgba(255, 255, 255, 0.1);
+    color: #666;
+    cursor: not-allowed;
+    border: 1px solid transparent;
+  }
+}
+
+// --- MOBILE (Ajuste fino) ---
+@media (max-width: 768px) {
+  .visual-novel-catalog {
+    padding: 2rem 1rem;
+  }
+
+  .catalog-header h1 {
+    font-size: 2rem;
+  }
+
+  .episode-grid {
+    grid-template-columns: 1fr; // Uma coluna no celular
+  }
+}
+// ... (Todo o seu CSS atual do Broklin fica aqui em cima)
+
+/* ================================================= */
+  /* 🩸 MODO JONAH: CARDS & GRID (Arestas Afiadas) 🩸 */
+  /* ================================================= */
+
+  // 1. O Fundo da Página (Ambiente Hostil)
+// O :host-context verifica se algum pai (o body) tem essa classe
+:host-context(.mode-jonah) {
+ 
+  .visual-novel-catalog {
+    // Sai o degradê azul, entra o abismo vermelho escuro
+    background: linear-gradient(180deg, #0a0000 0%, #1a0505 100%) !important;
+    border: 1px solid #4a0000;
+  }
+
+  // 2. Os Cards dos Episódios (Chapas de Metal)
+  .episode-card {
+    background-color: rgba(20, 5, 5, 0.95) !important; /* Quase opaco */
+    backdrop-filter: none !important; /* Jonah odeia vidro embaçado */
+    border: 1px solid #5a0000; /* Borda de sangue seco */
+    border-radius: 0 !important; /* ZERO CURVAS. Design Industrial. */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+
+    // Efeito Hover Agressivo
+    &:hover {
+      transform: translateY(-5px);
+      border-color: #ff3d00; /* Laranja Ferrugem acende */
+      box-shadow: 0 0 20px rgba(255, 61, 0, 0.3); /* Glow tóxico */
+
+      .card-image img {
+        transform: scale(1.1) grayscale(0%); // Zoom mais agressivo
+        filter: contrast(1.2);
+      }
+    }
+  }
+
+  // 3. A Imagem do Card
+  .card-image {
+    border-bottom: 2px solid #8a0000; // Separação visual bruta
+
+    img {
+      filter: sepia(20%) contrast(1.1); // Um leve tom de filme velho/sujo
+    }
+    
+    // O Cadeado (Lock Overlay)
+    .lock-overlay {
+        background: rgba(20, 0, 0, 0.8);
+        color: #ff3d00;
+        border: 1px solid #ff3d00;
+        text-shadow: 0 0 5px #ff3d00;
+    }
+  }
+
+  // 4. Tipografia Interna do Card
+  .card-content {
+    .date {
+      color: #ff3d00 !important; // Data em Laranja
+      font-weight: 800;
+    }
+
+    h3 {
+      color: #e0e0e0;
+      font-family: 'Oswald', sans-serif; // Se tiver essa fonte, fica top
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    p {
+      color: #a08080; // Texto cinza avermelhado
+    }
+  }
+
+  // 5. O Botão de Ler (Botão de Detonação)
+  button.btn-read {
+    border: 2px solid #ff3d00 !important; // Borda mais grossa
+    color: #ff3d00 !important;
+    border-radius: 0 !important; // Quadrado
+    background: linear-gradient(45deg, transparent 5%, #ff3d00 5%, #ff3d00 10%, transparent 10%); // Detalhe técnico visual (opcional)
+    background-size: 10px 10px; // Apenas textura
+
+    &:hover {
+      background: #ff3d00 !important; // Preenchimento sólido
+      color: #000 !important; // Texto preto
+      box-shadow: 0 0 15px #ff3d00, inset 0 0 10px #000;
+      font-weight: 900;
+      letter-spacing: 2px; // O texto "abre" no hover
+    }
+  }
+  // 1. Botão de Voltar (Vira Laranja)
+  .nav-actions .back-link {
+    color: #ff4500; // Laranja Industrial
+    border-color: #ff4500;
+
+    &:hover {
+      text-shadow: 0 0 10px #ff4500;
+      transform: translateX(-5px);
+    }
+  }
+
+  // 2. Títulos e Textos
+  .catalog-header {
+    h1 {
+      text-shadow: 0 0 15px #ff0000, 0 0 30px #8b0000; // Brilho Vermelho Sangue
+      color: #fff;
+    }
+    p {
+      color: #fea; // Um tom de pergaminho queimado/amarelado
+    }
+  }
+
+  // 3. A Mensagem de "Vazio/Carregando"
+  .loading-text {
+    color: #ff4500;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: glitch 1s infinite; // Se você tiver animação de glitch, fica top!
+
+    &::before {
+      content: ''; // Texto extra via CSS
+    }
+  }
+  .synopsis-container{
+    background: rgba(40, 5, 5, 0.75) !important; /* Vermelho Sangue Industrial */
+    border-color: rgba(255, 50, 50, 0.3);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #ff3d00;
+  }
+  .neon-divider {
+    border: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent,#8b0000, transparent);
+    margin-top: 20px;
+  }
+}

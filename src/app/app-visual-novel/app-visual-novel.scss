@@ -1,0 +1,243 @@
+.vn-container {
+  background: rgba(10, 10, 15, 0.75);
+
+  backdrop-filter: blur(var(--bg-blur-intensity));
+  -webkit-backdrop-filter: blur(var(--bg-blur-intensity)); /* Pra funcionar no Safari/iPhone */
+  border-radius: 16px; /* Cantos arredondados modernos */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Borda fina e sutil */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); /* Sombra pra dar profundidade */
+
+  padding: 20px;
+  margin-bottom: 20px;
+  padding: 2rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.section-title {
+  font-family: var(--font-heading);
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+  color: #ffffff;
+  text-shadow: 0 0 10px var(--primary-color);
+}
+
+.section-subtitle {
+  color: var(--text-color);
+  opacity: 0.8;
+  margin-bottom: 3rem;
+  font-style: italic;
+}
+
+.intro-box {
+  max-width: 1200px;
+  margin: 0 auto 3rem auto; /* Centraliza e dá espaço embaixo */
+  text-align: justify;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #ccc;
+
+  strong { color: #fff; }
+  em { color: var(--accent-color); }
+}
+
+/* Opcional: Estilo para o botão de bloqueio */
+.lock-mode {
+  background-color: #333 !important; /* Cinza escuro */
+  color: #999 !important;
+  border: 1px dashed #555 !important;
+
+  mat-icon { margin-right: 8px; }
+
+  &:hover {
+    background-color: #444 !important;
+    color: #fff !important;
+  }
+}
+
+.arcs-grid {
+  display: flex;
+  justify-content: center;
+  gap: 10rem;
+  flex-wrap: wrap;
+}
+
+.arc-card {
+  width: 350px;
+  background: rgba(0,0,0,0.8);
+  border: 1px solid var(--primary-color);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.arc-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 30px rgba(98, 0, 234, 0.4);
+}
+
+/* O Pôster */
+.poster {
+  height: 250px;
+  background-size: cover;
+  background-position: center;
+  aspect-ratio: 1 / 1;
+  position: relative;
+  height: auto;
+  object-fit: contain;
+  object-position: top center;
+}
+
+.overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.poster:hover .overlay {
+  opacity: 1;
+}
+
+.play-btn {
+  transform: scale(1.5);
+}
+
+/* Info Text */
+.arc-info {
+  padding: 20px;
+  text-align: justify;
+}
+
+.arc-info h3 {
+  color: var(--accent-color);
+  margin: 0;
+  font-family: var(--font-heading);
+}
+
+.subtitle {
+  display: block;
+  font-size: 0.9rem;
+  color: #aaa;
+  margin-bottom: 10px;
+}
+
+.watch-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 15px;
+  color: var(--text-color);
+  text-decoration: none;
+  font-weight: bold;
+  border-bottom: 2px solid var(--accent-color);
+}
+
+.watch-link:hover {
+  color: var(--accent-color);
+}
+/* ADICIONE ISSO NO FINAL PARA O BOTÃO FICAR BONITO: */
+.btn-watch {
+  background: transparent;
+  color: var(--accent-color);
+  border: 1px solid var(--accent-color);
+  padding: 10px 20px;
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: all 0.3s ease;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px; /* Espaço entre texto e ícone se tiver */
+
+  &:hover {
+    background: var(--accent-color);
+    color: var(--bg-color); /* Inverte a cor: texto preto no fundo neon */
+    box-shadow: 0 0 15px var(--accent-color);
+    transform: scale(1.05);
+  }
+}
+
+/* --- ESTILO DE CHAT / LOG (EPISÓDIO 6) --- */
+::ng-deep .chat-log {
+  font-family: 'Fira Code', 'Consolas', monospace;
+  background: rgba(0, 0, 0, 0.4); /* Fundo escuro terminal */
+  border-left: 3px solid var(--accent-color); /* Verde Neon padrão */
+  padding: 15px 20px;
+  margin: 20px 0;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #e0e0e0;
+  box-shadow: inset 5px 0 15px -5px rgba(0,0,0,0.5);
+
+  /* Destaque para o texto falado */
+  em {
+    color: var(--accent-color);
+    font-style: italic;
+    opacity: 0.9;
+  }
+}
+
+/* --- ESTILOS DO RODAPÉ DO LOG (Substituindo inline styles) --- */
+.log-divider {
+  border-color: var(--primary-color);
+  opacity: 0.3;
+  margin: 20px 0;
+}
+
+.log-footer {
+  text-align: center;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+/* Ajuste específico para o Modo Jonah (opcional, mas recomendado) */
+:host-context(body.mode-jonah) .btn-watch {
+  border-style: dashed;
+}
+
+/* MODO JONAH - EFEITO GLITCH NOS CARDS */
+:host-context(body.mode-jonah) {
+  .vn-container{
+    border-radius: 1px;
+  }
+  .arc-card {
+    border-color: #bf360c;
+    border-radius: 0; /* Quadrado */
+  }
+  .poster {
+    filter: grayscale(100%) contrast(150%);
+  }
+
+  /* Estilo Chat Log no Modo Jonah */
+  ::ng-deep .chat-log {
+    border-left-color: #ff3d00; /* Laranja Sangue */
+    background: rgba(20, 0, 0, 0.6);
+    color: #ffccbc;
+
+    em {
+      color: #ff3d00;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .vn-container, .disco-container {
+    padding: 2rem 1rem; /* Reduz o padding vertical e horizontal */
+  }
+
+  .section-title {
+    font-size: 2rem; /* Título menor */
+  }
+}

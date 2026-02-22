@@ -1,0 +1,51 @@
+<section class="vn-container">
+  <h2 class="section-title">{{ text.title }}</h2>
+  <p class="section-subtitle">{{ text.subtitle }}</p>
+
+  <div class="intro-box">
+  <p [innerHTML]="introText"></p>
+  </div>
+  <div class="arcs-grid">
+    @for (arc of arcs; track arc) {
+      <div class="arc-card" [ngClass]="arc.mode">
+     <div class="poster" [style.backgroundImage]="'url(' + arc.image + ')'">
+          </div>
+        <div class="arc-info">
+          <h3>{{ arc.title }}</h3>
+          <span class="subtitle">{{ arc.subtitle }}</span>
+          <p>{{ arc.description }}</p>
+
+          @if (arc.mode === 'chaos') {
+            @if (currentMode === 'broklin') {
+              <button class="btn-watch lock-mode" (click)="scrollToTop()"> <mat-icon>lock</mat-icon>
+                {{ translate.isPt() ? 'ATIVE O MODO JONAH' : 'ACTIVATE JONAH MODE' }}
+              </button>
+            } @else {
+              <button class="btn-watch" (click)="navigate(arc.link)">
+                <mat-icon>menu_book</mat-icon>
+                {{ translate.isPt() ? 'LER HISTÓRIA' : 'READ STORY' }}
+              </button>
+            }
+          }
+          @else if (arc.mode === 'romance') {
+            @if (currentMode === 'jonah') {
+              <button class="btn-watch lock-mode" (click)="scrollToTop()">
+                <mat-icon>lock</mat-icon>
+                {{ translate.isPt() ? 'ATIVE O MODO BROKLIN' : 'ACTIVATE BROKLIN MODE' }}
+              </button>
+            } @else {
+              <button class="btn-watch" (click)="navigate(arc.link)">
+                <mat-icon>menu_book</mat-icon>
+                {{ translate.isPt() ? 'LER HISTÓRIA' : 'READ STORY' }}
+              </button>
+            }
+          }
+          </div>
+      </div>
+    }
+  </div>
+</section>
+
+<section class="ads-section">
+  <app-ad-banner></app-ad-banner>
+</section>

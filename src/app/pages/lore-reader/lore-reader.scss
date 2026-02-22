@@ -1,0 +1,510 @@
+.lore-container {
+  /* 1. ESTRUTURA (O Esqueleto) */
+  background: rgba(10, 15, 25, 0.651) !important;
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto 20px auto;
+  padding: 2rem; /* Mantém o espaçamento interno */
+  text-align: center;
+
+  /* Mantém o flow-root para segurar os floats internos */
+  display: flow-root !important;
+  margin-bottom: 50px;
+
+  }
+
+
+/* 3. VARIAÇÃO PARA O MODO JONAH (Atacando o ::before) */
+:host-context(body.mode-jonah) {
+  .lore-container {
+  
+  /* 1. O CORPO DO TEXTO (Estancando o vazamento) */
+  .story-content {
+    display: block !important; /* Quebra o flex lateral */
+    width: 100% !important;
+    max-width: 900px; /* Largura confortável para leitura */
+    margin: 0 auto;   /* Centraliza o bloco no meio da tela */
+    padding: 20px;
+    
+    /* Tipografia Industrial */
+    font-family: 'Courier New', monospace; /* Fonte de máquina de escrever/hacker */
+    color: #d0d0d0; /* Cinza claro sujo */
+    line-height: 1.8;
+    text-align: left; /* Jonah não centraliza texto, ele cospe fatos */
+    
+    /* Removemos qualquer margem maluca que esteja empurrando pro lado */
+    .block {
+       margin-bottom: 25px;
+    }
+  }
+
+  /* 2. DIÁLOGOS (Destaque para as falas) */
+  strong { 
+    color: #ff3d00; /* Nomes dos personagens em Laranja */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+ }
+  .lore-container::before {
+  background: rgba(40, 5, 5, 0.75); /* Vermelho Sangue Industrial */
+  border-color: rgba(255, 50, 50, 0.3);
+  /* O Jonah pode querer menos blur ou mais contraste, ajuste aqui se quiser */
+  }
+  .back-btn {
+    border-color: #ff3d00;
+    color: #ff3d00;
+
+    &:hover {
+      color: #fff;
+      background: #ff3d00;
+      text-shadow: 0 0 8px rgba(255, 61, 0, 0.5);
+    }
+ }
+}
+
+/* ================================================= */
+/* 📸 MODO JONAH: IMAGENS "SYSTEM LOG" STYLE         */
+/* ================================================= */
+
+:host-context(.mode-jonah) .episode-cover img, 
+:host-context(.mode-jonah) .story-content img {
+  
+  /* 1. A FORMA (Quadrada e Bruta) */
+  border-radius: 0 !important;
+  border: 2px solid #8a0000; /* Borda Vermelho Sangue Escuro */
+  padding: 5px; /* Um respiro entre a imagem e a borda */
+  background-color: #000; /* Fundo preto no respiro */
+  
+  /* 2. O FILTRO (A mágica do "Óleo e Ferrugem") */
+  /* Isso aumenta o contraste e dá um tom levemente avermelhado/envelhecido */
+  filter: contrast(120%) sepia(30%) hue-rotate(-10deg);
+  
+  /* 3. POSICIONAMENTO */
+  width: 100%;
+  max-width: 100%; /* Garante que não estoure a tela */
+  height: auto;
+  display: block;
+  margin: 30px auto; /* Espaço em cima e embaixo */
+  box-shadow: 0 0 20px rgba(138, 0, 0, 0.2); /* Sombra vermelha difusa */
+
+  /* Efeito Hover (Opcional: Glitch) */
+  transition: all 0.3s ease;
+  &:hover {
+    border-color: #ff3d00; /* Acende o laranja */
+    filter: contrast(140%) sepia(0%); /* Fica "limpa" e brilhante no hover */
+  }
+}
+/* --- AJUSTES MOBILE PARA O MODO JONAH --- */
+@media (max-width: 768px) {
+  
+  :host-context(.mode-jonah) .lore-container {
+    
+    /* 1. O CONTAINER PRINCIPAL (Dando Respiro) */
+    .story-content {
+      padding: 15px 20px !important; /* Margem nas laterais pra não colar na tela */
+      text-align: left; /* Alinhamento à esquerda facilita leitura no mobile */
+      width: 100% !important;
+      box-sizing: border-box; /* Garante que o padding não estoure a tela */
+    }
+
+    /* 2. A IMAGEM NO MOBILE */
+    .story-content img, 
+    .episode-cover img {
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 0 25px 0 !important; /* Empurra o texto pra baixo */
+      float: none !important; /* Remove qualquer flutuação que esteja quebrando o layout */
+      
+      /* Ajuste da Borda Sangrenta no Mobile */
+      border-width: 1px !important; 
+    }
+
+    /* 3. TÍTULOS E DESTAQUES */
+    h3, h2 {
+      font-size: 1.4rem !important; /* Diminui um pouco pra não quebrar linha feio */
+      line-height: 1.3;
+      margin-top: 10px;
+    }
+
+    /* Aquele ícone de pasta 📂 */
+    .visual-novel-entry h3 { 
+        display: flex;
+        flex-direction: column; /* Ícone em cima, texto embaixo se for longo */
+        align-items: flex-start;
+    }
+  }
+}
+
+.back-btn {
+  background: transparent;
+  color: #00f3ff;
+  border: 2px solid #00f3ff;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  padding: 10px 20px;
+
+  cursor: pointer;
+  text-transform: uppercase;
+  font-weight: bold;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateX(-5px); // A setinha "puxa" para a esquerda
+    color: #000000;
+    background: #00f3ff;
+    text-shadow: 0 0 8px rgba(0, 243, 255, 0.5);
+    }
+}
+
+
+.saga-header {
+  text-align: center;
+  margin-bottom: 22px;
+
+  h1 {
+    font-family: var(--font-heading); /* Fonte Cyberpunk */
+    font-size: 2.5rem;
+    color: var(--accent-color);
+    text-shadow: 0 0 10px var(--accent-color);
+    margin-top: 7px;
+  }
+
+  .subtitle {
+    letter-spacing: 4px;
+    opacity: 0.7;
+  }
+}
+
+.episode-card {
+  background: rgba(20, 20, 20, 0.807); /* Opacidade reduzida para o efeito vidro aparecer */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid #333;
+  padding: 30px;
+  margin-bottom: 50px;
+  display: flow-root; /* O Pulo do Gato: Garante que o card cresça para abraçar o float */
+  border-radius: 4px;
+  scroll-margin-top: 100px;
+  //box-shadow: 0 0 20px rgba(0,0,0,0.5);
+
+  .season-badge {
+    display: inline-block;
+    background: var(--primary-color);
+    color: #fff;
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  h2 {
+    font-size: 2rem;
+    margin-bottom: 5px;
+    color: #fff;
+  }
+
+  .meta-date {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 20px;
+  }
+
+  /* --- LAYOUT HÍBRIDO: IMAGEM + TEXTO --- */
+  .episode-cover {
+    /* 📱 Mobile First: Imagem em cima, ocupando tudo */
+    width: 100%;
+    margin-bottom: 25px;
+    text-align: center;
+
+    img {
+      width: 100%;
+      height: auto;
+      max-height: 500px;
+      object-fit: cover;
+      border-radius: 4px;
+      border: 1px solid #444;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    }
+
+    /* 💻 Desktop (min-width: 900px):
+       A mágica acontece aqui. Jogamos a imagem para a esquerda
+       e definimos um tamanho fixo de 500px. */
+    @media (min-width: 900px) {
+      float: left;          /* Força a imagem a ir para a esquerda */
+      width: 500px;         /* Tamanho fixo e grande como você pediu */
+      max-width: 45%;       /* Segurança para telas médias não quebrarem */
+      
+      margin-right: 30px;   /* Empurra o texto para a direita (respiro) */
+      margin-bottom: 20px;  /* Empurra o texto de baixo caso ele "envolva" a imagem */
+      margin-top: 8px;      /* Pequeno ajuste para alinhar com o topo da letra */
+      
+      display: block;       /* Garante comportamento de bloco */
+    }
+  }
+
+  ::ng-deep .story-content {
+    font-size: 1.1rem;
+    line-height: 1.8; /* Importante para leitura confortável */
+    color: #ccc;
+    // Imagem "Flutuante" (Estilo Revista)
+   img.img-side-left {
+    float: left;            // Joga para a esquerda
+    width: 500px;           // Tamanho fixo (ou 40% se preferir)
+    max-width: 40%;
+    margin-right: 1.5rem;   // Espaço para o texto respirar
+    margin-bottom: 0.5rem;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    object-fit: cover;
+    aspect-ratio: 1/1;      // Mantém quadrada (opcional) ou 16/9
+   }
+   img.img-side-right {
+    float: right;            // Joga para a direita
+    width: 500px;           // Tamanho fixo (ou 40% se preferir)
+    max-width: 40%;
+    margin-left: 1.5rem;   // Espaço para o texto respirar
+    margin-bottom: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    object-fit: cover;
+    aspect-ratio: 1/1;      // Mantém quadrada (opcional) ou 16/9
+   }
+
+   // Limpa a flutuação para o próximo bloco não bagunçar
+   .clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+   }
+
+    /* Estilo para os parágrafos que vêm do innerHTML */
+    p {
+      margin-bottom: 20px;
+    }
+
+    strong {
+      color: var(--accent-color); /* Nomes dos personagens brilham */
+    }
+
+    em {
+      color: #aaa;
+      font-style: italic;
+    }
+    // Mobile: No celular, a imagem volta a ficar em cima (fica ruim lado a lado)
+   @media (max-width: 768px) {
+    img.img-side-left {
+    width: 100%;          // Força a imagem a usar 100% da largura da tela
+    max-width: 400px;     // (Opcional) Trava um tamanho máximo para não ficar gigante
+    height: auto;         // Mantém a proporção correta
+    margin: 20px 0;       // Dá um respiro em cima e embaixo
+    float: none;          // Garante que ela não tente flutuar para a direita
+    display: block;
+    }
+     img.img-side-right {
+    width: 100%;          // Força a imagem a usar 100% da largura da tela
+    max-width: 400px;     // (Opcional) Trava um tamanho máximo para não ficar gigante
+    height: auto;         // Mantém a proporção correta
+    margin: 20px 0;       // Dá um respiro em cima e embaixo
+    float: none;          // Garante que ela não tente flutuar para a direita
+    display: block;
+    }
+  }
+  }
+
+  .inner-ad {
+  /* O COMANDO DE SEGURANÇA MÁXIMA: */
+  clear: both; /* Diz ao banner: "Desça se houver imagens flutuando na esquerda ou direita" */
+  
+  display: block;
+  width: 100%;
+  margin: 40px 0; /* Um bom respiro para não grudar no texto */
+  position: relative;
+  z-index: 5; /* Garante que, se houver briga, o banner ganha a prioridade visual */
+  
+  /* Opcional: Animação suave para quando ele aparecer */
+  animation: fadeInAd 0.5s ease-in;
+ }
+
+ @keyframes fadeInAd {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+ }
+
+  .divider {
+    text-align: center;
+    margin-top: 40px;
+    opacity: 0.3;
+    letter-spacing: 10px;
+  }
+}
+
+.cliffhanger {
+  text-align: center;
+  font-style: italic;
+  opacity: 0.5;
+  margin-bottom: 100px;
+}
+
+/* --- ESTILO DE CHAT / LOG (EPISÓDIO 6) --- */
+::ng-deep .chat-log {
+  font-family: 'Fira Code', 'Consolas', monospace;
+  background: rgba(0, 0, 0, 0.4); /* Fundo escuro terminal */
+  border-left: 3px solid var(--accent-color); /* Verde Neon padrão */
+  padding: 15px 20px;
+  margin: 20px 0;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #e0e0e0;
+  box-shadow: inset 5px 0 15px -5px rgba(0,0,0,0.5);
+
+  /* Destaque para o texto falado */
+  em {
+    color: var(--accent-color);
+    font-style: italic;
+    opacity: 0.9;
+  }
+}
+
+/* Estilo Chat Log no Modo Jonah */
+:host-context(body.mode-jonah) ::ng-deep .chat-log {
+  border-left-color: #ff3d00; /* Laranja Sangue */
+  background: rgba(20, 0, 0, 0.6);
+  color: #ffccbc;
+
+  em { color: #ff3d00; }
+}
+
+/* --- ESTILOS DO RODAPÉ DO LOG (Substituindo inline styles) --- */
+.log-divider {
+  border-color: var(--primary-color);
+  opacity: 0.3;
+  margin: 20px 0;
+}
+
+.log-footer {
+  text-align: center;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+:host ::ng-deep {
+  .rqs-credits-terminal {
+    background-color: #050505;
+    font-family: 'Courier New', Courier, monospace;
+    padding: 2rem;
+    border-radius: 8px;
+    border: 1px solid #00ff41;
+    margin-top: 3rem;
+    box-shadow: 0 0 10px rgba(0, 255, 65, 0.2), inset 0 0 15px rgba(0, 255, 65, 0.1);
+    text-align: left !important;
+    display: block;
+    line-height: 1.8;
+
+    span {
+      color: #00ff41 !important;
+      text-shadow: 0 0 5px rgba(0, 255, 65, 0.6);
+    }
+
+    .sys-logout {
+      color: #008f11 !important;
+      font-size: 0.85rem;
+    }
+
+    .sys-init {
+      font-weight: bold;
+    }
+
+    .sys-label {
+      opacity: 0.9;
+    }
+
+    .sys-value {
+      color: #ffffff !important;
+      text-shadow: 0 0 6px rgba(255, 255, 255, 0.5);
+      margin-left: 1.5rem;
+      display: inline-block;
+    }
+
+    .sys-cursor {
+      animation: rqs-blink 1s step-end infinite;
+    }
+
+    @keyframes rqs-blink {
+      50% { opacity: 0; }
+    }
+  }
+    .sys-loading {
+      color: #ffb000 !important; /* Mantém o amarelo de alerta */
+      font-weight: bold;
+      display: inline-block;
+      margin-top: 1.5rem;
+    }
+
+    .matrix-spinner::after {
+      content: '⠋';
+      display: inline-block;
+      margin-left: 8px; /* Dá um espacinho do texto */
+      /* Roda a animação dividida exatamente em 10 passos duros (steps) */
+      animation: angular-cli-spin 0.8s steps(10, end) infinite;
+    }
+
+    /* Os quadros de animação do terminal do Angular! */
+    @keyframes angular-cli-spin {
+      0% { content: '⠋'; }
+      10% { content: '⠙'; }
+      20% { content: '⠹'; }
+      30% { content: '⠸'; }
+      40% { content: '⠼'; }
+      50% { content: '⠴'; }
+      60% { content: '⠦'; }
+      70% { content: '⠧'; }
+      80% { content: '⠇'; }
+      90% { content: '⠏'; }
+      100% { content: '⠋'; }
+    }   
+   
+}
+
+  :host ::ng-deep {
+  .rqs-commercial-footnote {
+    margin-top: 3rem;
+    padding-top: 1rem;
+    border-top: 1px dashed #333;
+    font-family: 'Courier New', Courier, monospace;
+    
+    font-size: 0.75rem; /* 👈 O TRUQUE DE UI: Tamanho clássico de rodapé! */
+    opacity: 0.85; /* 👈 Deixa o texto sutil, não briga com os créditos neon */
+    
+    color: #888;
+    text-align: right;
+    animation: fadeIn 1s ease-in-out;
+
+    .footnote-glitch {
+      color: #b026ff;
+      font-weight: bold;
+      margin-right: 0.5rem;
+           }
+
+    a {
+      color: #00ff41;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: all 0.3s ease;
+      font-weight: bold;
+
+      &:hover {
+        color: #ffffff;
+        border-bottom: 1px solid #b026ff;
+        text-shadow: 0 0 8px #b026ff;
+        background-color: rgba(176, 38, 255, 0.1);
+        opacity: 1; /* Acende tudo no hover */
+      }
+    }
+  }
+}

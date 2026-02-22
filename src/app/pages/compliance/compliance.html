@@ -1,0 +1,34 @@
+<div class="compliance-page" [ngClass]="currentModeClass">
+  <h1>{{ data.title }}</h1>
+
+  <article>
+    <h2>{{ data.privacyTitle }}</h2>
+    <p>{{ data.privacyText }}</p>
+  </article>
+
+  <article>
+    <h2>{{ data.deletionTitle }}</h2>
+    <p>{{ data.deletionText }}</p>
+  </article>
+
+  <article>
+  <h2>{{ data.storeTitle }}</h2>
+  <p [innerHTML]="data.storeText"></p>
+</article>
+
+<article>
+  <h2>{{ data.affiliateTitle }}</h2>
+  <p [innerHTML]="data.affiliateText"></p>
+</article>
+
+   <article>
+    <h2>{{ data.policyTitle }}</h2>
+    <p [innerHTML]="data.policyText"></p>
+  </article>
+
+  <article>
+    <h2>{{ data.contactTitle }}</h2>
+    <p [innerHTML]="data.contactText"></p>
+  </article>
+
+</div>

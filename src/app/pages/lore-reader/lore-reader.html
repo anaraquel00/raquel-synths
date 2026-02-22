@@ -1,0 +1,55 @@
+<div class="lore-container">
+    <button class="back-btn" (click)="goBack()">
+      &larr; {{ translate.isPt() ? 'VOLTAR AO SUMÁRIO' : 'BACK TO LIST' }}
+    </button>
+
+    <header class="saga-header">
+      <h1>{{ translate.isPt() ? 'ECOS DA RQS' : 'RQS ECHOES' }}</h1>
+      <p class="subtitle">
+        {{ currentMode === 'broklin'
+           ? (translate.isPt() ? 'ARCO BROKLIN' : 'BROKLIN ARC')
+           : (translate.isPt() ? 'ARCO JONAH' : 'JONAH ARC')
+        }}
+      </p>
+    </header>
+
+<div class="episodes-list">
+  @for (ep of episodes$ | async; track ep.id) {
+    <article class="episode-card" [id]="ep.id">
+
+      <div class="ep-header">
+        <span class="season-badge">
+          {{ translate.isPt() ? ep.category : (ep.category_en || ep.category) }}
+        </span>
+        <span class="date" *ngIf="ep.releaseDate">{{ ep.releaseDate | date:'dd/MM/yyyy' }}</span>
+      </div>
+
+      <h2>{{ translate.isPt() ? ep.title : (ep.title_en || ep.title) }}</h2>
+
+      <div class="story-content">
+        @if (ep.image) {
+          <div class="episode-cover">
+            <img [src]="ep.image" alt="Capa">
+          </div>
+        }
+
+        @for (block of (translate.isPt() ? ep.content : (ep.content_en || ep.content)) | splitContent; track $index) {
+          <div [innerHTML]="block"></div>
+
+          @if ($index === 1 || $index === 5 || $index === 10) {
+            <div class="inner-ad">
+              <app-ad-article></app-ad-article>
+            </div>
+          }
+        }
+      </div>
+
+      <div class="divider"><span>● ● ●</span></div>
+    </article>
+  } @empty {
+    <p class="loading-text">
+        {{ translate.isPt() ? 'As crônicas estão sendo descriptografadas...' : 'Decrypting echoes...' }}
+    </p>
+  }
+</div>
+</div>

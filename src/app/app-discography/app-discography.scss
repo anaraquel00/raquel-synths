@@ -1,0 +1,301 @@
+/* ========================================== */
+/* 📐 ESTRUTURA (Alinhamento para Ambos)      */
+/* ========================================== */
+.section-header {
+  display: flex;           /* O Pai comanda o Flex */
+  align-items: center;     /* Centraliza verticalmente */
+  justify-content: center; /* Centraliza horizontalmente */
+  gap: 15px;               /* Espaço entre ícone e texto */
+  margin-bottom: 3rem;
+  width: 100%;             /* Garante que o container ocupe a tela toda */
+
+  /* Garante que o H3 não tenha margens estranhas */
+  h3 {
+    margin: 0;
+    font-size: 1.8rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    line-height: 1; /* Remove altura de linha extra */
+  }
+
+  /* Garante tamanho padrão pro ícone */
+  mat-icon, i {
+    font-size: 1.8rem;
+    height: auto;
+    width: auto;
+    display: flex; /* Pra centralizar o svg dentro dele se for mat-icon */
+  }
+}
+
+/* --- CONTAINER GERAL --- */
+
+.disco-container {
+  background: rgba(10, 10, 15, 0.75);
+  backdrop-filter: blur(var(--bg-blur-intensity));
+  -webkit-backdrop-filter: blur(var(--bg-blur-intensity));
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 1rem;
+  border-radius: 15px;
+}
+ .section-title {
+  font-family: var(--font-heading);
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+  color: #ffffff;
+  text-shadow: 0 0 10px var(--primary-color);
+}
+.disco-intro {
+  text-align: center;
+  margin-bottom: 3rem;
+  color: #ddd;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8); /* Sombra para ler melhor */
+}
+
+.album-cover img {
+  width: 250px;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+  transition: transform 0.3s ease;
+
+  &:hover { transform: scale(1.02); }
+}
+
+.album-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 7px;
+
+  h4 {
+    font-size: 2rem;
+    margin: 0.5rem 0;
+    color: #fff;
+  }
+
+  .release-type {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.8rem;
+    opacity: 0.7;
+    color: #fff;
+  }
+
+  .album-description {
+    color: #ccc;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    white-space: pre-line; /* Respeita os Enters do DB */
+  }
+}
+
+.actions-bar {
+    margin-top: auto;
+    padding-top: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    /* Adicionei width: 100% e box-sizing para garantir que ele respeite o pai */
+    width: 100%;
+    box-sizing: border-box; /* Garante largura total */
+  }
+
+  .btn-listen {
+    flex: 1; /* Faz os botões dividirem o espaço igualmente */
+    min-width: 140px;
+    padding: 12px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3); /* Sombra pra destacar */
+
+    /* Estilo SoundCloud */
+    &.soundcloud-btn {
+      background: #ff5500;
+      color: white;
+      border: 1px solid #ff5500;
+      &:hover { background: #d44600; transform: translateY(-2px); }
+    }
+
+    /* Estilo Spotify */
+    &.spotify-btn {
+      background: #1db954;
+      color: white;
+      border: 1px solid #1db954;
+      &:hover { background: #1ed760; transform: translateY(-2px); }
+    }
+  }
+
+  .btn-archive {
+  width: 100%;
+  justify-content: center;
+  margin-top: 1rem;
+  padding: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  }
+
+
+/* --- CLASSE MESTRE DE SEÇÃO (A Base) --- */
+.artist-section {
+  position: relative;
+  padding: 2.5rem;
+  margin-bottom: 4rem;
+  border-radius: 12px;
+  overflow: hidden; /* Para conter brilhos */
+
+  /* 👇 O SEGREDO DA LEITURA: Fundo Escuro + Blur */
+  backdrop-filter: blur(10px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+}
+.jonah-theme {
+  display: none;
+}
+
+/* --- BOTÕES GERAIS --- */
+button {
+  cursor: pointer;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-weight: bold;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+/* Classe que envolve o banner na lista */
+.inter-list-ad {
+  width: 100%;
+
+  /* O TRUQUE DO MESTRE: */
+  /* Se o Jonah estiver apertando demais, forçamos o banner a respirar */
+  margin-left: 0;
+  margin-right: 0;
+
+  /* Centraliza o banner dentro da div */
+  justify-content: center;
+}
+
+
+/* ========================================== */
+/* 💎 TEMA BROKLIN (Padrão)                   */
+/* ========================================== */
+.broklin-theme {
+  border-left: 5px solid #00f3ff; /* A Borda Vertical Ciano */
+  padding-left: 2rem;             /* Afasta o conteúdo da borda */
+  margin-left: 1rem;              /* Um respiro da margem da tela (opcional) */
+
+  .section-header {
+  h3 { color: #00f3ff; }
+  mat-icon, i { color: #00f3ff;
+    text-shadow: 0 0 10px #00f3ff; }
+  }
+  .featured-album { border-bottom: 1px solid rgba(0, 243, 255, 0.1); }
+
+  /* Botões específicos */
+  .btn-archive {
+    border: 1px solid #00f3ff;
+    color: #00f3ff;
+    background: transparent;
+    &:hover { background: rgba(0, 243, 255, 0.1); box-shadow: 0 0 20px #00f3ff; }
+  }
+
+}
+
+
+
+/* ========================================== */
+/* ☢️ TEMA JONAH (Estilo Visual)              */
+/* ========================================== */
+:host-context(.mode-jonah) {
+
+  /* Esconde o Broklin */
+  .broklin-theme { display: none; }
+ .disco-container{
+  border-radius: 1px;
+ }
+  /* Mostra o Jonah com Animação */
+  .jonah-theme {
+    display: block;
+    animation: fadeInRough 0.5s ease-out;
+
+    /* Fundo e Bordas Industriais */
+    background: linear-gradient(135deg, rgba(20, 10, 0, 0.95) 0%, rgba(10, 10, 10, 0.9) 100%);
+    border-left: 5px solid #ff9900;
+    border-top: 1px solid rgba(255, 153, 0, 0.2);
+    padding: 2rem 1rem; /* Espaço interno pra respirar */
+    border-radius: 1px;
+
+    /* Cores Específicas do Header do Jonah */
+    .section-header {
+      h3 {
+        color: #ff9900;
+        font-family: 'Courier New', monospace; /* Fonte Hacker */
+        letter-spacing: -1px;
+      }
+
+      mat-icon, i {
+        color: #ff9900;
+        text-shadow: 0 0 15px #ff5500;
+        animation: shake 3s infinite; /* Tremelique suave */
+      }
+    }
+    .btn-listen.soundcloud-btn {
+      background: transparent;
+      border: 1px solid #ff9900;
+      color: #ff9900;
+      &:hover { background: rgba(255, 153, 0, 0.2); box-shadow: 0 0 15px #ff9900; }
+    }
+  }
+
+  }
+
+ .icon-shake { animation: shake 0.5s infinite; }
+
+  .featured-album {
+  display: flex;
+  gap: 2rem;
+  padding: 1rem 0;
+    border-bottom: 1px dashed rgba(255, 153, 0, 0.3); }
+
+  /* Botões específicos */
+  .btn-spotify {
+    background-color: #000;
+    color: #ff9900;
+    border: 1px solid #ff9900;
+  }
+  .btn-archive {
+    border: 1px dashed #ff9900;
+    color: #ff9900;
+    background: transparent;
+    &:hover { background: rgba(255, 153, 0, 0.1); box-shadow: 0 0 20px #ff9900; }
+  }
+
+
+/* --- LAYOUT DO ÁLBUM (Responsivo) --- */
+.featured-album {
+  display: flex;
+  gap: 2rem;
+  padding: 1rem 0;
+
+  @media (max-width: 768px) {
+    flex-direction: column; /* Empilha no celular */
+  }
+}
+

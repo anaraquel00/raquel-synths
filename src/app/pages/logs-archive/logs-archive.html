@@ -1,0 +1,81 @@
+<main class="archive-container">
+
+  <header class="blog-header">
+    <h1 class="glitch-text">SYSTEM_ARCHIVE_MEMORY</h1>
+    <p class="subtitle">
+      {{ translate.isPt() ? 'Log completo de operações e devaneios da RaQuel Synths' : 'Complete log of operations and daydreams of RaQuel Synths'}}.
+    </p>
+
+    <app-ad-article></app-ad-article>
+  </header>
+
+  <div class="blog-feed">
+
+    @let logs = logs$ | async;
+
+   @if (logs) {
+
+      @for (log of logs; track log.id; let i = $index) {
+
+        @let content = getLogContent(log);
+
+        <article class="blog-post">
+
+          <div class="post-header">
+            <span class="post-date">{{ log.date }}</span>
+            <h2 class="post-title">{{ content?.title }}</h2>
+          </div>
+
+          <div class="post-body">
+
+            @if (log.image) {
+              <div class="post-image">
+                <img [src]="log.image" [alt]="content?.title" loading="lazy">
+              </div>
+            }
+
+            <div class="post-content-wrapper">
+
+              <p class="post-text">{{ content?.description }}</p>
+
+              @if (content?.jonahComment) {
+                <div class="jonah-box">
+                  <strong>[JONAH]:</strong> {{ content.jonahComment }}
+                </div>
+              }
+
+              @if (content?.techContent) {
+                <div class="tech-box">
+                  <span class="tech-label">[ DEV_NOTES ]</span>
+                  <div class="tech-body" [innerHTML]="content.techContent | safeHtml"></div>
+                </div>
+              }
+            </div>
+          </div>
+
+        </article>
+
+        @if ((i + 1) % 2 === 0 && i !== logs.length - 1) {
+          <app-ad-article></app-ad-article>
+        }
+
+        @if ((i + 1) % 2 !== 0 && i < logs.length - 1) {
+          <hr class="cyber-divider">
+        }
+
+      }
+      } @else {
+      <div style="padding: 100px; text-align: center; color: #0f0;">
+        <p>🔄 DOWNLOADING ARCHIVE...</p>
+      </div>
+    }
+
+  </div>
+
+  <footer class="blog-footer">
+    <p>END_OF_LOGS</p>
+    <app-ad-article></app-ad-article>
+    <button class="btn-back" routerLink="/">[ < BACK_TO_HOME ]</button>
+  </footer>
+
+</main>

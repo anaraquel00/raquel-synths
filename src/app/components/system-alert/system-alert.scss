@@ -1,0 +1,240 @@
+// 1. VARIÁVEIS
+$neon-blue: #00f3ff;
+$jonah-orange: #ff3c00;
+$bg-glass: rgba(0, 10, 15, 0.9);
+$jonah-bg: rgba(20, 5, 0, 0.9);
+
+:host {
+    display: block;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box; 
+}
+
+.cyber-alert-link {
+    text-decoration: none;
+    display: block;
+    height: 100%;
+}
+
+// ---------------------------------------------------------
+// 💎 CONTAINER BASE (ESTRUTURA + MODO BROKLIN)
+// ---------------------------------------------------------
+.alert-container {
+    background: $bg-glass;
+    border: 1px solid rgba($neon-blue, 0.3);
+    border-left: 4px solid $neon-blue;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: row; 
+    align-items: center; 
+    justify-content: space-between; 
+    gap: 20px;
+    height: 100%;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    background-image: linear-gradient(transparent 50%, rgba(0, 243, 255, 0.02) 50%);
+    background-size: 100% 4px;
+    box-sizing: border-box; 
+    transition: all 0.3s ease;
+
+    &:hover {
+        border-color: $neon-blue;
+        box-shadow: 0 0 20px rgba($neon-blue, 0.2);
+        transform: translateY(-2px);
+    }
+}
+
+// TEXTO (MODO BROKLIN)
+.alert-text-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.alert-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    .alert-icon { 
+        font-size: 1.2rem; 
+        animation: pulse 2s infinite;
+        flex-shrink: 0;
+    }
+    .log-prefix {
+        color: $neon-blue;
+        font-family: 'Courier New', monospace;
+        font-weight: 800;
+        font-size: 0.95rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+}
+
+.log-message {
+    color: #e0e0e0;
+    font-size: 1rem;
+    line-height: 1.4;
+    strong { 
+        color: white; 
+        font-weight: 700;
+        text-shadow: 0 0 5px rgba($neon-blue, 0.5);
+    }
+}
+
+.alert-action { flex-shrink: 0; }
+
+.btn-text {
+    display: inline-block;
+    background: rgba($neon-blue, 0.1);
+    color: $neon-blue;
+    padding: 12px 20px;
+    border: 1px solid $neon-blue;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.alert-container:hover .btn-text {
+    background: $neon-blue;
+    color: #000;
+    box-shadow: 0 0 15px $neon-blue;
+}
+
+// ---------------------------------------------------------
+// 🔥 MODO JONAH (SOBRESCRIÇÃO SEM QUEBRAR FORMATO)
+// ---------------------------------------------------------
+:host-context(.mode-jonah) {
+    
+    // Forçamos o container a ser laranja no repouso
+    .alert-container.jonah-style {
+        background: $jonah-bg !important;
+        border-color: $jonah-orange !important;
+        border-left: 5px solid $jonah-orange !important;
+        background-image: linear-gradient(transparent 50%, rgba($jonah-orange, 0.05) 50%);
+        animation: dangerPulse 4s infinite alternate;
+        padding: 15px;
+        border-radius: 1px;
+
+        &:hover {
+            box-shadow: 0 0 30px rgba($jonah-orange, 0.3) !important;
+            transform: translateY(-2px); // Mantém o movimento que você criou
+        }
+    }
+
+    .alert-icon {
+        animation: none;
+        text-shadow: 0 0 10px red;
+    }
+
+    .log-prefix.error-glitch {
+        color: $jonah-orange !important;
+    }
+
+    .log-message {
+        color: #ffaa80 !important;
+        strong { 
+            color: white !important;
+            text-shadow: 0 0 8px $jonah-orange !important; 
+        }
+    }
+
+    // Botão Bloqueado (Permanente Laranja)
+    .btn-text.locked {
+       background: rgba($jonah-orange, 0.1) !important; // Mantém fundo transparente/laranja fraco
+                color: $jonah-orange !important; // Mantém texto laranja
+                border-color: $jonah-orange !important; // Mantém borda laranja
+                box-shadow: none !important;
+        
+        &:hover {
+           background: $jonah-orange !important;
+         color: black !important;
+         box-shadow: 0 0 20px $jonah-orange !important;
+        }
+    }
+}
+
+// ---------------------------------------------------------
+// 📱 RESPONSIVIDADE (SEU FORMATO ORIGINAL)
+// ---------------------------------------------------------
+@media (max-width: 768px) {
+    .alert-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        padding: 15px;
+        height: auto;
+    }
+    .alert-text-group { width: 100%; }
+    .alert-action { width: 100%; margin-top: 5px; }
+    .btn-text { width: 95%; padding: 8px; }
+}
+
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+@keyframes dangerPulse {
+    from { box-shadow: 0 0 5px rgba(255, 60, 0, 0.1); }
+    to { box-shadow: 0 0 20px rgba(255, 60, 0, 0.4); }
+}
+
+/* =========================================
+   HACK DO BROKLIN - TERMINAL OVERRIDE 
+   ========================================= */
+.broklin-bypass-terminal {
+  margin-top: 1rem;
+  padding: 12px 15px;
+  background-color: rgba(0, 10, 0, 0.85); /* Fundo quase preto esverdeado */
+  border-left: 4px solid #39ff14; /* Linha neon lateral para chamar atenção */
+  border-radius: 4px;
+  font-family: 'Courier New', Courier, monospace; /* Fonte clássica de código */
+  text-align: left;
+  max-width: 400px; /* Mantém o texto compacto e legível no mobile */
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0px 0px 15px rgba(57, 255, 20, 0.1);
+
+  .warning-glitch {
+    color: #ffcc00;
+    font-weight: bold;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    animation: pulseWarning 2s infinite;
+  }
+
+  .hacker-text {
+    color: #39ff14; /* Verde Neon Matrix */
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin-top: 8px;
+    text-shadow: 0px 0px 5px rgba(57, 255, 20, 0.5); /* Brilho neon sutil */
+  }
+
+  .discord-backdoor {
+    color: #00ffff; /* Ciano para o link se destacar do verde */
+    font-weight: bold;
+    text-decoration: none;
+    text-shadow: 0px 0px 8px rgba(0, 255, 255, 0.7);
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+      color: #ffffff;
+      text-shadow: 0px 0px 12px #00ffff, 0px 0px 20px #00ffff;
+      cursor: pointer;
+    }
+  }
+}
+
+/* Animação para dar vida ao aviso */
+@keyframes pulseWarning {
+  0% { opacity: 1; }
+  50% { opacity: 0.6; }
+  100% { opacity: 1; }
+}

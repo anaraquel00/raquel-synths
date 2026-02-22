@@ -1,0 +1,260 @@
+.bios-container {
+  background: rgba(3, 0, 0, 0.756); /* Fundo quase transparente */
+  backdrop-filter: blur(12px); /* O efeito de embaçamento atrás */
+  -webkit-backdrop-filter: blur(12px); /* Safari support */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 1rem;
+  color: var(--text-color);
+  border-radius: 16px;
+}
+
+.section-title {
+  text-align: center;
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  text-shadow: 0 0 10px var(--primary-color);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.manifesto-text {
+  max-width: 1200px;
+  margin: 0.3rem 2rem auto;
+  text-align: justify; /* Ou 'justify' para ficar quadradinho */
+  font-size: 1.1rem;
+  line-height: 1.8; /* Aumentei o respiro entre linhas */
+  color: #ccc;
+
+
+  /* Estilizando as tags que colocamos no HTML */
+  strong { color: #fff; font-weight: 700; }
+  em { color: var(--accent-color); font-style: normal; }
+}
+/* Responsivo */
+@media (max-width: 768px) {
+  .manifesto-text {
+    text-align: left; /* No celular, justificado ou centro fica ruim de ler */
+    padding: 0 10px;
+  }
+}
+
+/* ========================================== */
+/* 🧬 O DNA DO LINK (Kelma vs Nyx)            */
+/* ========================================== */
+
+/* 1. PADRÃO (Modo Broklin) -> VIBE KELMA 🌸 */
+::ng-deep .human-link {
+  color: #ff00d4; /* Magenta Neon (A assinatura da Kelma) */
+  text-shadow: 0 0 10px rgba(255, 0, 212, 0.5);
+
+  font-weight: 800; /* Negrito extra para destacar */
+  cursor: pointer;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 0, 212, 0.3); /* Sublinhado sutil */
+  transition: all 0.3s ease;
+  padding: 0 2px;
+
+  /* Efeito Hover: Brilho intenso */
+  &:hover {
+    color: #fff; /* Fica branco no miolo */
+    text-shadow: 0 0 20px #ff00d4, 0 0 40px #ff00d4; /* Aura Rosa explosiva */
+    letter-spacing: 1px;
+    background: rgba(255, 0, 212, 0.1);
+    border-bottom-color: #ff00d4;
+  }
+}
+
+/* 2. MODO JONAH -> VIBE NYX 🩸 */
+:host-context(.mode-jonah) ::ng-deep .human-link {
+  color: #ff0040; /* Vermelho Carmesim (A marca da Nyx) */
+  text-shadow: 0 0 10px rgba(255, 0, 64, 0.6);
+
+  font-family: 'Courier New', monospace; /* Fonte Hacker/Industrial */
+  border-bottom: 1px dashed #ff0040; /* Sublinhado tracejado instável */
+
+  &:hover {
+    color: #ffcccc; /* Branco sujo de sangue */
+    text-shadow: 0 0 20px #ff0000;
+    letter-spacing: 2px; /* Expande agressivamente */
+    background: rgba(100, 0, 0, 0.6); /* Fundo escuro de alerta */
+    border-bottom-style: solid;
+  }
+}
+
+/* --- O GRID TÁTICO (2x2) --- */
+.members-grid {
+  display: grid;
+  /* Grid inteligente: Tenta encaixar 2 cards. Se a tela for pequena, vira 1. */
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  gap: 2rem;
+  justify-content: center;
+}
+
+/* --- O CARD (Vidro Fosco + Horizontal) --- */
+.member-card {
+  /* [BROKLIN FIX]: O Vidro Fosco voltou! */
+  background: rgba(10, 0, 0, 0.715); /* Fundo quase transparente */
+
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Borda sutil */
+  border-radius: 16px; /* Bordas mais arredondadas */
+  overflow: hidden;
+
+  display: flex; /* Layout Horizontal */
+  flex-direction: row;
+  align-items: stretch;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  min-height: 240px;
+
+  /* Sombra suave neon ao passar o mouse */
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    border-color: rgba(var(--primary-rgb), 0.5);
+  }
+}
+
+/* --- A MOLDURA DA FOTO --- */
+.image-frame {
+  width: 180px; /* Largura fixa */
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  border-right: 1px solid rgba(255,255,255,0.1);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+  }
+
+  /* Lógica Padrão: Mostra o Broklin (Bonzinho), Esconde o Jonah (Malvado) */
+  .img-broklin { opacity: 1; z-index: 2; }
+  .img-jonah { opacity: 0; z-index: 1; }
+}
+
+/* Hover no Card (Apenas Zoom na foto atual, sem trocar!) */
+.member-card:hover .image-frame img {
+  transform: scale(1.1); /* Zoom elegante */
+}
+
+/* --- AS INFORMAÇÕES --- */
+.info-box {
+  padding: 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1; /* Ocupa o resto do espaço */
+
+  h3 {
+    margin: 0;
+    font-size: 1.6rem;
+    color: #fff;
+    font-family: var(--font-heading);
+    margin-bottom: 0.2rem;
+    background: linear-gradient(90deg, #fff, #aaa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .role {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--accent-color);
+    font-family: 'Fira Code', monospace;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 1rem;
+    opacity: 0.9;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 0.5rem;
+    width: fit-content;
+  }
+
+  /* Textos da Bio */
+  .bio-text {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #e0e0e0;
+    margin: 0;
+    font-weight: 400;
+  }
+
+  /* Esconde o texto do Jonah por padrão */
+  .jonah-text { display: none; }
+  .normal-text { display: block; animation: fadeIn 0.5s ease; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- ☢️ MODO JONAH (O CAOS REAL) ☢️ --- */
+:host-context(body.mode-jonah) {
+
+  .member-card {
+    border-color: #bf360c;
+    background: rgba(10, 0, 0, 0.8); /* Vidro sujo de óleo */
+    backdrop-filter: blur(5px) sepia(0.8); /* Filtro de terror */
+  }
+
+  .image-frame {
+    /* AGORA SIM: Troca as fotos fixamente */
+    .img-jonah { opacity: 1; z-index: 3; }
+    .img-broklin { opacity: 0; }
+
+    img { filter: contrast(1.2) hue-rotate(-10deg); }
+  }
+
+  .info-box {
+    h3 {
+      background: none;
+      -webkit-text-fill-color: #ff5722;
+      text-shadow: 2px 2px 0px #000;
+    }
+
+    .role { color: #ffab91; border-color: #bf360c; }
+
+    /* Troca os textos */
+    .normal-text { display: none; }
+    .jonah-text {
+      display: block;
+      color: #ff5722;
+      font-family: 'Courier New', monospace;
+      font-weight: bold;
+      letter-spacing: -0.5px;
+    }
+  }
+}
+
+/* --- RESPONSIVO (Mobile) --- */
+@media (max-width: 768px) {
+  .members-grid {
+    grid-template-columns: 1fr; /* Um em cima do outro */
+  }
+
+  .member-card {
+    flex-direction: column; /* Foto em cima */
+    min-height: auto;
+  }
+
+  .image-frame {
+    width: 100%;
+    height: 250px;
+    border-right: none;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .info-box {
+    padding: 1.5rem;
+    text-align: center;
+
+    .role { margin: 0 auto 1rem auto; }
+  }
+}

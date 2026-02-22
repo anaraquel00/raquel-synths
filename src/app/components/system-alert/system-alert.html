@@ -1,0 +1,77 @@
+<div class="alert-wrapper-block">
+
+  @if (isJonah) {
+    <div class="alert-container jonah-style">
+      
+      <div class="alert-text-group">
+        <div class="alert-header">
+          <span class="alert-icon">☢️</span>
+          <span class="log-prefix error-glitch">
+            {{ translate.isPt() ? 'ERRO CRÍTICO:' : 'CRITICAL ERROR:' }}
+          </span>
+        </div>
+
+        <div class="log-message">
+          <span class="corrupted-text">
+            {{ translate.isPt() 
+               ? "ARQUIVOS DE MEMÓRIA CORROMPIDOS. [LIBERAÇÃO EM MARÇO]" 
+               : "MEMORY FILES CORRUPTED. [RELEASING IN MARCH]" 
+            }}
+          </span>
+          <br>
+          <small class="sub-warning">
+            ⚠️ {{ translate.isPt() ? 'Contém: Tensão e Heavy Metal.' : 'Contains: Tension & Heavy Metal.' }}
+          </small>
+        </div>
+      </div>
+
+      <div class="alert-action">
+        <span class="btn-text locked">
+          🔒 {{ translate.isPt() ? 'SINAL BLOQUEADO' : 'SIGNAL LOCKED' }}
+        </span>
+        <div class="broklin-bypass-terminal">
+  <span class="warning-glitch">⚠️ SYSTEM OVERRIDE:</span>
+ <p class="hacker-text">
+    {{ translate.isPt() ? 'Broklin 🧔: Jonah tentou trancar a porta,' : 'Broklin 🧔: Jonah tried to lock the door,' }}
+    <br>
+    {{ translate.isPt() ? 'mas eu tenho a chave mestra.' : 'but I have the master key.' }}
+    <br><br>
+    <span class="discord-backdoor" (click)="scrollToDiscord()">
+     {{ translate.isPt() ? '>_ EXECUTAR BYPASS TO DISCORD' : '>_ EXECUTE BYPASS TO DISCORD' }}
+    </span>
+  </p>
+  </div>
+      </div>
+
+    </div>
+  }
+
+  @else {
+    <a routerLink="/visual-novel" class="cyber-alert-link">
+      <div class="alert-container">
+          
+          <div class="alert-text-group">
+              <div class="alert-header">
+                  <span class="alert-icon">📖 </span>
+                  <span class="log-prefix">
+                      {{ translate.isPt() ? 'MERGULHE NA NOSSA VISUAL NOVEL' : 'IMMERSE YOURSELF IN OUR VISUAL NOVEL' }}
+                  </span>
+              </div>
+
+              <div class="log-message" [innerHTML]="translate.isPt() 
+                      ? 'Desbloqueie <strong>Ecos da RQS</strong>, <br>a história cyberpunk interativa que deu origem ao nosso som.' 
+                      : 'Unlock <strong>Echoes of RQS</strong>,<br>the interactive cyberpunk story that gave rise to our sound.'">
+                  <strong class="highlight-ep" [innerHTML]="translate.isPt() ? 'Descubra por quê.' : 'Find out why.'"></strong>.
+              </div>
+          </div>
+
+          <div class="alert-action">
+              <span class="btn-text" [innerHTML]="translate.isPt() ? '🎮 INICIAR EXPERIÊNCIA' : '🎮 START EXPERIENCE'">
+              </span>
+          </div>
+
+      </div>
+    </a>
+  }
+
+</div>

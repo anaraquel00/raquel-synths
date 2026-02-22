@@ -1,0 +1,272 @@
+/* --- CONTAINER GERAL --- */
+.story-container {
+  padding: 0rem 1rem;
+  background-color: transparent;
+  color: var(--text-color);
+  max-width: 1100px; /* Largura ideal para leitura (tipo Medium/Blog) */
+  margin: 0 auto;
+}
+
+.section-title {
+  text-align: center;
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  text-shadow: 0 0 15px var(--primary-color);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+
+/* --- A NOVA TIMELINE (Vertical Simples) --- */
+.timeline-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 1px; /* Mais espaço entre um post e outro */
+  width: 100%;
+}
+
+/* --- O NOVO CARD (Cheio) --- */
+.log-card-full {
+  width: 100%;
+  background-color: rgb(10, 10, 10);
+  border: 1px solid rgba(0, 255, 204, 0.3);
+  border-radius: 12px;
+  padding: 0; /* IMPORTANTE: Zero padding aqui! */
+  overflow: hidden; /* Corta a imagem se ela passar da borda arredondada */
+  margin-bottom: 40px;
+
+  &:hover {
+    border-color: var(--accent-color);
+    box-shadow: 0 15px 40px rgba(var(--primary-rgb), 0.15);
+  }
+}
+
+/* --- CABEÇALHO DO POST --- */
+.log-header {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 1rem;
+}
+
+.date {
+  display: block;
+  color: var(--accent-color);
+  font-family: 'Fira Code', monospace;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  opacity: 0.8;
+}
+
+.title {
+  font-size: 1.8rem;
+  margin: 0;
+  line-height: 1.3;
+  color: #fff;
+}
+
+/* --- IMAGEM DESTAQUE --- */
+.img-wrapper-wide {
+  width: 100%;
+  height: 350px; /* Altura fixa para ficar cinemático */
+  background-color: #000;
+  position: relative;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* A MÁGICA: Isso estica a imagem sem distorcer e remove o preto */
+    object-position: center top; /* Foca no rosto/topo */
+    display: block;
+  }
+
+  &:hover img {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+}
+
+/* --- ÁREA DE CONTEÚDO (Onde vai o texto) --- */
+/* Criei essa classe interna para dar o padding só no texto */
+.content-padding {
+  padding: 2rem 3rem; /* [BROKLIN FIX]: Margens laterais generosas para leitura */
+}
+
+/* --- CABEÇALHO DO POST --- */
+.log-header {
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+  margin-left: 1rem;
+  margin-right: 2rem;
+  text-align: left;
+}
+
+.date {
+  display: inline-block;
+  background: rgba(var(--accent-rgb), 0.1);
+  color: var(--accent-color);
+  font-family: 'Fira Code', monospace;
+  font-size: 0.85rem;
+  padding: 4px 10px;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(var(--accent-rgb), 0.2);
+}
+
+.title {
+  font-size: 2.2rem; /* Título maior */
+  margin: 0;
+  line-height: 1.2;
+  color: #fff;
+  font-weight: 700;
+}
+
+/* --- TEXTO DE INTRODUÇÃO --- */
+.description-lead {
+  font-size: 1.25rem; /* Lead grande para prender a atenção */
+  line-height: 1.6;
+  color: #ccc;
+  margin-bottom: 2.5rem;
+  font-weight: 300;
+  border-left: 4px solid var(--accent-color);
+  padding-left: 20px;
+}
+.disclaimer-note {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.2); /* Uma linha pontilhada discreta */
+  color: #888; /* Cinza hacker */
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+  line-height: 1.4;
+
+  strong {
+    color: #ffaa00; /* Um laranja de "Atenção" ou o verde do Broklin */
+  }
+}
+
+/* --- COMENTÁRIOS DO JONAH --- */
+.jonah-note {
+  display: none; /* [BROKLIN FIX]: O vírus fica adormecido por padrão */
+}
+
+/* --- BOTÕES --- */
+.action-area {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.btn-decrypt {
+  background: transparent;
+  border: 1px solid var(--accent-color);
+  color: var(--accent-color);
+  padding: 10px 20px;
+  cursor: pointer;
+  font-family: 'Fira Code', monospace;
+  font-weight: bold;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(var(--accent-rgb), 0.1);
+    box-shadow: 0 0 15px rgba(var(--accent-rgb), 0.4);
+  }
+}
+
+/* --- ESTADOS --- */
+.loading-state, .empty-state {
+  text-align: center;
+  padding: 4rem;
+  color: #888;
+  font-family: 'Fira Code', monospace;
+}
+
+.error-card {
+  background: rgba(50, 0, 0, 0.9);
+  border: 1px solid red;
+  color: #ff5555;
+  padding: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* --- RESPONSIVO --- */
+@media (max-width: 768px) {
+  .story-container {
+    padding: 1rem;
+  }
+ .section-title {
+    font-size: 2rem;
+  }
+  .content-padding {
+    padding: 1.5rem; /* Padding menor no celular */
+  }
+
+  .img-wrapper-wide {
+    height: 200px; /* Imagem menor no celular */
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .description-lead {
+    font-size: 1.1rem;
+  }
+}
+/* --- ☢️ JONAH MODE OVERRIDE (O CAOS) ☢️ --- */
+/* Esse bloco só ativa quando o body tem a classe .mode-jonah */
+:host-context(body.mode-jonah) {
+
+  .log-card-full {
+    /* Troca o azul/ciano pelo Laranja Industrial/Ferrugem */
+    border-color: #bf360c;
+    background-color: rgb(25, 5, 0); /* Fundo avermelhado sujo */
+    border-radius: 1px;
+    /* Leve rotação para dar sensação de instabilidade */
+    transform: rotate(-0.5deg);
+    box-shadow: 5px 5px 0px rgba(191, 54, 12, 0.2);
+  }
+
+  /* Títulos mudam de cor */
+  .title, ::ng-deep h3 {
+    color: #ff5722 !important; /* Laranja Neon Agressivo */
+    text-shadow: 2px 2px 0px #000;
+  }
+
+  /* Data vira um "Erro" */
+  .date {
+    background: #3e2723;
+    color: #ffab91;
+    border-color: #ff5722;
+  }
+
+  /* Mostra o comentário do Jonah (que normalmente fica escondido ou discreto) */
+  .jonah-note {
+    display: block;
+    border: 2px dashed #ff5722;
+    background: #000;
+    color: #ff5722;
+    font-weight: bold;
+    transform: rotate(1deg); /* Nota colada torta */
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.8);
+    margin-top: 2rem;
+    padding: 0.5rem;
+  }
+  /* O texto técnico fica com fonte "Hacker" */
+  .tech-body {
+    font-family: 'Courier New', Courier, monospace;
+
+    ::ng-deep blockquote {
+      border-left-color: #ff5722;
+      background: rgba(255, 87, 34, 0.1);
+    }
+
+    ::ng-deep .code-block {
+      border-left-color: #ff5722;
+    }
+  }
+
+  /* Imagem com filtro de "ferrugem" */
+  .img-wrapper-wide img {
+    filter: sepia(0.5) contrast(1.2) hue-rotate(-30deg);
+  }
+}

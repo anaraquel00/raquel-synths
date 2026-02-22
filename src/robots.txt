@@ -1,0 +1,11 @@
+# Protocolo de Acesso RQS - RaQuel Synths
+User-agent: *
+Allow: /
+Disallow: /assets/private/ # Se você tiver algo que não quer que apareça na busca
+
+# Prioridade total para o Robô do AdSense
+User-agent: Mediapartners-Google
+Allow: /
+
+# Mapeamento de Infraestrutura
+Sitemap: https://raquelsynths.com.br/sitemap.xml

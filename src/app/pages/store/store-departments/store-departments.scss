@@ -1,0 +1,237 @@
+// ============================================
+// 🎨 VARIÁVEIS DO TEMA (PALETA)
+// ============================================
+$color-broklin-primary: #00f3ff; // Cyan Neon
+$color-broklin-bg: rgba(255, 255, 255, 0.05);
+$color-jonah-primary: #ff3300;   // Laranja Industrial
+$color-jonah-bg: #0f0000;
+
+// ============================================
+// 🏗️ ESTRUTURA GERAL
+// ============================================
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.department-sector {
+  padding: 0rem 1rem;
+  max-width: 1400px;
+  margin: 0 auto;
+
+}
+
+.sector-title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 300;
+  letter-spacing: 4px;
+  margin-bottom: 3rem;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.8);
+
+  // Linha decorativa embaixo do título
+  &::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: var(--accent-color, #fff);
+    margin: 15px auto 0;
+  }
+}
+
+.cards-grid {
+  display: grid;
+  // Grid responsivo mágico (se adapta a qualquer tela)
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2.5rem;
+  padding: 1rem;
+}
+
+// ============================================
+// 💠 O CARD (BASE) - DESIGN HÍBRIDO
+// ============================================
+
+.dept-card {
+  position: relative;
+  height: 450px; // Altura imponente
+  border-radius: 16px; // Curva suave (Broklin style)
+  overflow: hidden;
+  cursor: pointer;
+  background: #000; // Fundo de segurança
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  // --- IMAGEM DE FUNDO ---
+  .card-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+      filter: grayscale(30%) brightness(0.7); // Um pouco dark
+    }
+
+    // Degradê para o texto ficar legível
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.9) 0%,
+        rgba(0, 0, 0, 0.4) 50%,
+        transparent 100%
+      );
+      transition: opacity 0.3s ease;
+    }
+  }
+
+  // --- CONTEÚDO (TEXTOS) ---
+  .card-content {
+    position: relative;
+    z-index: 2; // Fica acima da imagem
+    height: 100%;
+    display: flex;
+    box-sizing: border-box;
+    flex-direction: column;
+    justify-content: flex-end; // Joga tudo pro rodapé
+    padding: 2rem;
+    color: #fff;
+    //transform: translateY(20px); // Leve deslocamento inicial
+    transition: transform 0.4s ease;
+
+    h3 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin: 0;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+
+      // O detalhe colorido no título
+      border-left: 4px solid $color-broklin-primary;
+      padding-left: 15px;
+    }
+
+    p {
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.7);
+      margin-top: 10px;
+      margin-bottom: 25px;
+      line-height: 1.5;
+      max-width: 90%;
+    }
+
+    .shop-btn {
+      align-self: flex-start;
+      background: rgba(255, 255, 255, 0.1); // Vidro
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: #fff;
+      padding: 12px 24px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: $color-broklin-primary;
+        color: #000;
+        border-color: $color-broklin-primary;
+        box-shadow: 0 0 20px rgba(0, 243, 255, 0.6);
+      }
+    }
+  }
+
+  // --- EFEITO HOVER NO CARD (GERAL) ---
+  &:hover {
+    transform: translateY(-10px); // Levita
+    box-shadow: 0 20px 40px rgba(0, 243, 255, 0.15);
+    border-color: $color-broklin-primary;
+
+    .card-image img {
+      transform: scale(1.1); // Zoom na imagem
+      filter: grayscale(0%) brightness(1); // Fica colorida e viva
+    }
+
+    .card-content {
+      transform: translateY(0); // Sobe suave
+    }
+  }
+}
+
+// ============================================
+// 💀 MODO JONAH (A TRANSFORMAÇÃO INDUSTRIAL)
+// ============================================
+// O SCSS detecta se o BODY tem a classe .mode-jonah
+
+:host-context(.mode-jonah) {
+
+  .sector-title {
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    color: $color-jonah-primary;
+    text-shadow: 2px 2px 0px #000;
+
+    &::after { background: $color-jonah-primary; }
+  }
+
+  .dept-card {
+    border-radius: 0 !important; // Canto quadrado agressivo
+    border: 2px solid #330000;
+    background: #000;
+
+    // Tira a saturação e deixa vermelho
+    .card-image img {
+      filter: sepia(100%) hue-rotate(-50deg) contrast(1.2) !important;
+    }
+
+    // Título muda pra fonte 'bruta'
+    .card-content h3 {
+      font-family: 'Courier New', monospace;
+      border-left-color: $color-jonah-primary;
+      color: $color-jonah-primary;
+    }
+
+    .card-content .shop-btn {
+      border: 1px dashed $color-jonah-primary;
+      color: $color-jonah-primary;
+      background: transparent;
+
+      &:hover {
+        background: $color-jonah-primary;
+        color: #000;
+        box-shadow: 0 0 25px $color-jonah-primary;
+        // Efeito de tremor no botão
+        transform: skewX(-10deg);
+      }
+    }
+
+    // --- HOVER AGRESSIVO DO MODO JONAH ---
+    &:hover {
+      transform: translate(-4px, -4px); // Movimento seco
+      border-color: $color-jonah-primary;
+      box-shadow: 5px 5px 0px $color-jonah-primary; // Sombra dura (estilo HQ/Punk)
+
+      .card-image img {
+        // Fica super contrastado no hover
+        filter: contrast(1.5) brightness(1.2) !important;
+      }
+    }
+  }
+}

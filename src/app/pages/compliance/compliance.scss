@@ -1,0 +1,109 @@
+// src/app/pages/compliance/compliance.scss
+// =========================================================
+  // 🍷 MODO BROKLIN (Elegante / Neon Azul / Tech)
+  // =========================================================
+.compliance-page {
+  // --- ESTILOS BASE (O Padrão/Canvas) ---
+  padding: 40px 20px;
+  min-height: 80vh;
+  color: #fff;
+  font-family: 'Courier New', Courier, monospace;
+  transition: background 0.5s ease, color 0.5s ease;
+  background: radial-gradient(circle at center, #1a1a2e 0%, hsla(0, 100%, 2%, 0.853) 100%);
+
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-bottom: 2px solid; // A cor vem do modo
+    padding-bottom: 10px;
+    display: inline-block;
+    transition: all 0.3s ease;
+    color: #00d4ff;
+      border-color: #00d4ff;
+      text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+  }
+
+  article {
+    max-width: 1200px;
+    margin: 0 auto 40px auto;
+    padding: 20px;
+    border-left: 4px solid;
+    background: rgba(0, 0, 0, 0.651);
+    transition: all 0.3s ease;
+
+      border-color: #00d4ff;
+      box-shadow: 0 0 15px rgba(0, 212, 255, 0.1);
+
+    }
+
+
+    h2 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      font-weight: bold;
+      color: #e0e0e0;
+    }
+
+    p {
+      line-height: 1.6;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+    }
+  }
+
+
+  // =========================================================
+  // 💀 MODO JONAH (Caos / Vermelho Industrial / Metal)
+  // =========================================================
+
+  :host-context(body.mode-jonah)
+   .compliance-page{
+    background: hsla(0, 100%, 2%, 0.852);
+
+    h1 {
+      color: #ff2a2a; // Vermelho Sangue
+      border-color: #ff2a2a;
+      text-shadow: 3px 0px 0px rgba(255, 0, 0, 0.7); // Glitch effect
+      font-weight: 900;
+      letter-spacing: 4px; // Mais agressivo
+    }
+
+    article {
+      border-color: #ff2a2a;
+      border-left-width: 6px;
+      border-style: double;   // 'Dashed' é cerca. 'Double' é fiação exposta.
+      background: rgba(10, 0, 0, 0.9); // Mais escuro, mais trevas.
+
+      h2 {
+        color: #ff2a2a;
+        font-family: 'Courier New', Courier, monospace; // MÁQUINA DE ESCREVER
+        text-transform: uppercase;
+        border-bottom: 2px solid #ff2a2a; // Linha sólida de sangue
+        padding-bottom: 10px;
+        letter-spacing: 2px;
+      }
+    
+      p {
+        color: #00ff00; // Mudei pra VERDE TERMINAL ou mantenha o #dcdcdc (Cinza)
+        // Se quiser manter o cinza: color: #dcdcdc;
+        font-family: 'Consolas', 'Monaco', monospace; // FONTE DE HACKER
+        font-size: 1.1rem;
+        line-height: 1.6;
+      }
+  }
+  }
+
+
+
+
+
+// Responsividade
+@media (max-width: 768px) {
+  .compliance-page {
+    h1 { font-size: 1.8rem; }
+    article { padding: 15px; }
+  }
+}

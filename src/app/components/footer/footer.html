@@ -1,0 +1,59 @@
+<footer class="rqs-footer">
+  <div class="footer-container">
+
+    <div class="footer-column brand-column">
+      <h3>{{ t.name }}</h3>
+      <p>{{ t.madeby }}</p>
+      <p>{{ t.rights }}</p>
+      <p>{{ t.owers }}</p>
+      <p>{{t.madeWith}}</p>
+      <p style="margin-top: 10px;">
+     <a [routerLink]="['/creator']" class="tech-link">
+      {{ t.devProfile }}
+     </a>
+      </p>
+      <p style="margin-top: 10px;">
+    <a [routerLink]="['/compliance']" class="compliance-link">
+      {{ t.compliance }}
+    </a>
+    </p>
+    </div>
+
+    <div class="footer-column">
+      <h3>{{ t.listen }}</h3>
+      <ul class="nav-list">
+        <li><a href="https://open.spotify.com/intl-pt/artist/1yrPZaFyIcsCjj876LaHXL?si=Qd2pr8ueQPuF-OwfqKGMUQ" target="_blank">Spotify</a></li>
+        <li><a href="https://soundcloud.com/you/albums" target="_blank">SoundCloud</a></li>
+        <li><a href="https://www.youtube.com/channel/UC4XQ29bhRmhxvYT9-4a9Otw" target="_blank">YouTube</a></li>
+        <!-- <li><a href="https://raquelsynths-rqs.bandcamp.com/music" target="_blank">Bandcamp</a></li> -->
+      <li style="margin-top: 15px; margin-bottom: 5px;">
+          <strong style="color: var(--accent-color); font-size: 0.9rem;">APOIE A BANDA:</strong>
+        </li>
+        <li>
+          <a style="cursor: pointer;" (click)="openPaypal()" class="donate-btn paypal">
+            <mat-icon>public</mat-icon> PayPal (Intl.)
+          </a>
+        </li>
+        <li>
+          <a style="cursor: pointer;" (click)="copyPix()" class="donate-btn pix">
+            <mat-icon>pix</mat-icon> PIX (Brasil)
+          </a>
+        </li>
+      </ul>
+
+    </div>
+
+    <div class="footer-column">
+      <h3>{{ t.connect }}</h3>
+      <ul class="nav-list">
+        <li><a href="https://www.instagram.com/rqs_synths" target="_blank">Instagram</a></li>
+        <li><a href="https://www.tiktok.com/@raquel_holanda_" target="_blank">TikTok</a></li>
+        <li><a href="https://x.com/anaraquel00" target="_blank">X / Twitter</a></li>
+        <li><a href="https://www.facebook.com/profile.php?id=61585926695560" target="_blank">Facebook</a></li>
+        <li><a href="https://discord.com/channels/1405682092238704753/1440032357431115977" target="_blank">Discord</a></li>
+        <li><a href="https://t.me/raquelsynths_news" target="_blank">Telegram</a></li>
+
+      </ul>
+    </div>
+  </div>
+</footer>

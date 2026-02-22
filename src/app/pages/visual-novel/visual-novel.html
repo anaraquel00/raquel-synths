@@ -1,0 +1,140 @@
+<section class="visual-novel-catalog">
+  <div class="container">
+
+    <div class="nav-actions">
+      <button routerLink="/" class="back-link">
+        &larr; {{ translate.isPt() ? 'VOLTAR À BASE' : 'BACK TO BASE' }}
+      </button>
+    </div>
+
+    <header class="catalog-header">
+
+      @if (currentMode === 'broklin') {
+        <h1>
+          {{ translate.isPt() ? '📚 Ecos da RQS' : '📚 RQS Echoes' }}
+        </h1>
+        <p>
+          {{ translate.isPt()
+             ? 'Onde a música encontra o código proibido.'
+             : 'Where music meets the forbidden code.' }}
+        </p>
+      }
+
+      @else {
+        <h1>
+          {{ translate.isPt() ? '🔥 Ecos do Caos' : '🔥 Echoes of Chaos' }}
+        </h1>
+        <p>
+          {{ translate.isPt()
+             ? 'Caos, Ruído e Revolução. Bem-vindo à mente do Lorde Industrial.'
+             : 'Chaos, Noise, and Revolution. Welcome to the Industrial Lord\'s mind.' }}
+        </p>
+      }
+
+    </header>
+
+    <div class="synopsis-container">
+      <div class="synopsis-content">
+
+        @if (currentMode === 'broklin') {
+
+          @if (translate.isPt()) {
+            <p>
+              <strong>Broklin Garpeter</strong>, um produtor Cyberpunk enigmático com estética gótica e aura de "vampiro digital",
+              entra em cena para abalar as estruturas da banda <strong>RaQuel Synths</strong>.
+              Originalmente formada pelo casal <strong>Kelma Adlanko</strong> e <strong>Jonah Cyperfield</strong> (o "Lord do Metal"),
+              a dinâmica muda drasticamente quando Kelma busca um terceiro elemento.
+            </p>
+            <p>
+              O que começa como um encontro em um local sombrio na calada da noite se transforma em algo fatal.
+              <strong>Sedução, paixões e intrigas</strong> vão mudar o rumo dessa história para sempre.
+              Não perca os próximos episódios.
+            </p>
+            <em class="highlight-text">📅 Novos Episódios: Todo Domingo | ⚠️ Contém: Tensão, Romance Dark e Synthwave.</em>
+          }
+
+          @else {
+            <p>
+              <strong>Broklin Garpeter</strong>, an enigmatic Cyberpunk producer with a gothic aesthetic and "digital vampire" aura,
+              arrives to shake the foundations of <strong>RaQuel Synths</strong>.
+              Originally formed by the couple <strong>Kelma Adlanko</strong> and <strong>Jonah Cyperfield</strong> (the "Metal Lord"),
+              the dynamic changes drastically when Kelma seeks a third element.
+            </p>
+            <p>
+              What starts as a shadowy meeting in the dead of night turns into something fatal.
+              <strong>Seduction, passion, and intrigue</strong> will change the course of this story forever.
+              Don't miss the next episodes.
+            </p>
+            <em class="highlight-text">📅 New Episodes: Every Sunday | ⚠️ Contains: Tension, Dark Romance & Synthwave.</em>
+          }
+
+        }
+
+        @else {
+
+          @if (translate.isPt()) {
+            <p>
+              <strong>Jonah Cyperfield</strong> não aceita códigos limpos. Para ele, a música é guerra.
+              Enquanto Broklin tenta organizar o caos, Jonah tenta destruir a ordem.
+              Esta é a história vista pelos olhos de quem segura o ferro de solda e a guitarra distorcida.
+            </p>
+            <em class="highlight-text">⚠️ ALERTA: ARQUIVOS DE MEMÓRIA CORROMPIDOS DETECTADOS. [LIBERAÇÃO EM MARÇO] | ⚠️ Contém: Tensão, Romance Sombrio e Heavy Metal.</em>
+          }
+
+          @else {
+            <p>
+              <strong>Jonah Cyperfield</strong> doesn't accept clean code. For him, music is war.
+              While Broklin tries to organize the chaos, Jonah tries to destroy the order.
+              This is the story seen through the eyes of someone wielding a soldering iron and a distorted guitar.
+            </p>
+            <em class="highlight-text">⚠️ WARNING: CORRUPTED MEMORY FILES DETECTED. [RELEASE IN MARCH] | ⚠️ Contains: Tension, Dark Romance & Heavy Metal.</em>
+          }
+
+        }
+
+      </div>
+      <hr class="neon-divider">
+    </div>
+
+    <div class="episode-grid">
+
+      @for (ep of episodes$ | async; track ep.id) {
+
+        <div class="episode-card">
+
+          <div class="card-image">
+            <img [src]="ep.image || 'assets/images/placeholder.jpg'" [alt]="ep.title">
+          </div>
+
+          <div class="card-content">
+            <span class="date" *ngIf="ep.releaseDate">
+                {{ ep.releaseDate | date:'dd/MM/yyyy' }}
+            </span>
+
+            <h3>
+              {{ translate.isPt() ? ep.title : (ep.title_en || ep.title) }}
+            </h3>
+
+            <p>
+              {{ translate.isPt()
+                 ? (ep.description || 'Clique para ler...')
+                 : (ep.description_en || ep.description || 'Click to read...')
+              }}
+            </p>
+
+            <button [routerLink]="['/lore-reader', ep.id]" class="btn-read">
+              {{ translate.isPt() ? '📖 Ler Episódio' : '📖 Read Episode' }}
+            </button>
+          </div>
+
+        </div>
+
+      } @empty {
+        <p class="loading-text">
+          {{ translate.isPt() ? '⚠ SINAL BLOQUEADO: Carregando dados...' : '⚠ SIGNAL BLOCKED: Loading data...' }}
+        </p>
+      }
+    </div>
+
+  </div>
+</section>

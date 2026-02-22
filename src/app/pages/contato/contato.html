@@ -1,0 +1,66 @@
+<section class="contact-container fade-in" id="contato" >
+
+  <div class="header-center">
+    <h2>{{ text.title }}</h2>
+    <p>{{ text.subtitle }}</p>
+  </div>
+
+  <div class="social-grid">
+    @for (card of text.socialCards; track card.name) {
+      <a [href]="card.link" target="_blank" class="social-card" [style.--hover-color]="card.color">
+        <i [class]="card.icon"></i>
+        <h3>{{ card.name }}</h3>
+        <span>{{ card.desc }}</span>
+      </a>
+    }
+  </div>
+
+  <div class="divider">
+    <span>{{ text.formTitle }}</span>
+  </div>
+
+  @if (successMessage) {
+    <div class="success-box bounce-in">
+      {{ text.success }}
+    </div>
+  } @else {
+    <form [formGroup]="uplinkForm" (ngSubmit)="onSubmit()" class="contact-form">
+
+      <input type="text" formControlName="website" class="hidden-trap" tabindex="-1" autocomplete="off">
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>{{ text.form.name }}</label>
+          <input type="text" formControlName="name" placeholder="Agent 007">
+        </div>
+        <div class="form-group">
+          <label>{{ text.form.email }}</label>
+          <input type="email" formControlName="email" placeholder="mail@server.com">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>{{ text.form.subject }}</label>
+        <select formControlName="subject">
+          <option value="" disabled selected>-- Select --</option>
+          @for (sub of text.form.subjects; track sub) {
+            <option [value]="sub">{{ sub }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>{{ text.form.message }}</label>
+        <textarea formControlName="message" rows="5"></textarea>
+      </div>
+
+      <button type="submit" [disabled]="uplinkForm.invalid || isSending" class="btn-submit">
+        {{ isSending ? text.form.sending : text.form.submit }}
+      </button>
+
+      <p class="privacy"><small>{{ text.privacy }}</small></p>
+
+    </form>
+  }
+
+</section>

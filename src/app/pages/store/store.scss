@@ -1,0 +1,559 @@
+// Variáveis de Fallback (Caso as globais falhem, ele usa essas)
+// Mas a ideia é ele puxar do seu styles.scss principal!
+:host {
+  display: block;
+}
+
+.store-container {
+  /* padding: 1rem 1rem;
+  min-height: 100vh;
+  // Tenta usar a variável global de fundo, senão usa o escuro padrão
+  background-color: var(--bg-color-main, #0a0a12);
+  color: var(--text-main, #ffffff); */
+  text-align: center;
+
+   background: rgba(10, 10, 15, 0.75);
+
+  /* 2. O Pulo do Gato: Borra apenas o que está ATRÁS da caixa */
+  backdrop-filter: blur(var(--bg-blur-intensity));
+  -webkit-backdrop-filter: blur(var(--bg-blur-intensity)); /* Pra funcionar no Safari/iPhone */
+
+  /* 3. Acabamento Premium */
+  border-radius: 16px; /* Cantos arredondados modernos */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Borda fina e sutil */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); /* Sombra pra dar profundidade */
+
+  /* 4. Espaçamento interno (pra o texto não colar na borda) */
+  padding: 20px;
+  margin-bottom: 40px;
+  padding: 2rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  border-radius: 20px;
+}
+
+ .back-btn {
+  background: transparent;
+  border: 1px solid var(--accent-color);
+  color: var(--accent-color);
+  padding: 10px 20px;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-weight: bold;
+  margin-bottom: 20px;
+
+  &:hover {
+    background: var(--accent-color);
+    color: #000000a0;
+  }
+}
+
+/* --- TÍTULO COM EFEITO GLITCH --- */
+.glitch-title {
+  font-size: 3rem;
+  font-weight: 800;
+  letter-spacing: 4px;
+  margin-bottom: 0.5rem;
+  color: var(--color-primary, #00ffff); // Cyan
+  text-transform: uppercase;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+.subtitle {
+  font-family: monospace;
+  opacity: 0.7;
+  margin-bottom: 1rem;
+  letter-spacing: 1px;
+}
+
+.back-to-dept-btn{
+      align-self: flex-start;
+      background: rgba(255, 255, 255, 0.1); // Vidro
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      color: #fff;
+      padding: 12px 24px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background:  #00f3ff;
+        color: #000;
+        border-color:  #00f3ff;
+        box-shadow: 0 0 20px rgba(0, 243, 255, 0.6);
+      }
+    }
+
+
+/* --- GRID DE PRODUTOS --- */
+.product-grid {
+  display: grid;
+  // Cria colunas automáticas (Responsivo)
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* --- O CARD CYBERPUNK --- */
+.product-card {
+  background: rgba(255, 255, 255, 0.03); // Efeito vidro escuro
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden; // Pra imagem não sair da borda
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex;
+  flex-direction: column; // Alinha conteúdo verticalmente
+  position: relative;
+
+  &:hover {
+    transform: translateY(-8px);
+    // Borda brilha na cor primária (Cyan ou Red dependendo do modo)
+    border-color: var(--color-primary, #00ffff);
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5),
+                0 0 15px rgba(0, 255, 255, 0.1);
+
+    // Efeito de zoom na imagem
+    .image-wrapper img {
+      transform: scale(1.05);
+    }
+  }
+}
+
+/* --- ÁREA DA IMAGEM --- */
+.image-wrapper {
+  width: 100%;
+  height: 280px; // Altura fixa pra ficarem iguais
+  overflow: hidden;
+  position: relative;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; // Garante que a foto preencha sem distorcer
+    transition: transform 0.5s ease;
+  }
+
+  // Uma sombra leve pra separar a imagem do texto
+  .overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+  }
+}
+
+/* --- INFORMAÇÕES DO PRODUTO --- */
+.info {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; // Ocupa o espaço restante
+  text-align: left;
+
+  h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .desc {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 1.5rem;
+    line-height: 1.4;
+    flex-grow: 1; // Empurra o preço pra baixo
+  }
+}
+
+/* --- PREÇO E BOTÃO --- */
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto; // Garante que fique no rodapé do card
+  padding-top: 1rem;
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+
+  .price {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #fff;
+    letter-spacing: 1px;
+  }
+
+  .btn-neon {
+    background: transparent;
+    // Usa uma cor de destaque (ex: Magenta ou a Primária)
+    border: 1px solid var(--color-accent, #ff00ff);
+    color: var(--color-accent, #ff00ff);
+    padding: 0.6rem 1.2rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    i { font-size: 1.1rem; }
+
+    &:hover {
+      background: var(--color-accent, #ff00ff);
+      color: #fff; // Texto branco no hover
+      box-shadow: 0 0 15px var(--color-accent, #ff00ff);
+    }
+  }
+  /* 👇 ESTILO DO PRODUTO ESGOTADO (Adicione isso) */
+.btn-neon.sold-out-mode {
+  background: rgba(100, 100, 100, 0.3) !important;
+  border-color: #666 !important;
+  color: #888 !important;
+  cursor: not-allowed; /* Mostra o sinal de proibido no mouse */
+  box-shadow: none !important;
+  text-shadow: none !important;
+
+  /* Remove animações de hover */
+  &:hover {
+    transform: none !important;
+    background: rgba(100, 100, 100, 0.3) !important;
+    letter-spacing: normal !important;
+  }
+}
+
+}
+
+/* =========================================
+   💠 SETOR HEADER: O PADRÃO (BROKLIN STYLE)
+   ========================================= */
+.sector-header {
+  text-align: center;
+  margin: 1rem 0 2rem 0;
+  position: relative;
+  transition: all 0.3s ease;
+
+  // No nosso lado, as faixas de perigo do Jonah ficam invisíveis!
+  .hazard-stripe { display: none; }
+
+  .sector-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.05); // Vidro sutil
+    padding: 0.6rem 1.5rem;
+    border-radius: 8px;
+    color: #00f3ff; // Azul Neon (Broklin)
+    font-size: 1.6rem;
+    font-family: 'Rajdhani', sans-serif; // Ou sua fonte limpa
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+
+    .folder-icon { font-size: 1.4rem; } // A pastinha 📂
+  }
+
+/* --- OVERRIDE DO SWEETALERT PARA STRIPE (Verde Neon) --- */
+
+/* Força o estado normal */
+.swal2-container .btn-neon-stripe-confirm {
+  background-color: #00ff88 !important; /* Garante o verde */
+  color: #000000 !important; /* Garante texto preto */
+  font-weight: 800 !important; /* Negrito para destacar */
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.4); /* Um brilho extra */
+}
+
+/* Força o estado HOVER (Passar o mouse) */
+.swal2-container .btn-neon-stripe-confirm:hover,
+.swal2-container .btn-neon-stripe-confirm:focus,
+.swal2-container .btn-neon-stripe-confirm:active {
+  background-color: #00cc6a !important; /* Um verde levemente mais escuro */
+  color: #000000 !important; /* CRUCIAL: Mantém o texto preto no hover! */
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.7); /* Aumenta o brilho */
+}
+
+  /* -------------------------------------------
+     💀 O MODO JONAH (SÓ QUANDO ATIVADO NO SETOR)
+     ------------------------------------------- */
+  &.jonah-mode {
+    background: rgba(0, 0, 0, 0.8);
+    border-left: 5px solid #ff0000; // Barra vermelha lateral
+    padding: 1rem;
+
+    .hazard-stripe {
+      display: block; // Agora o perigo aparece!
+      height: 10px;
+      width: 100%;
+      background: repeating-linear-gradient(45deg, #ff0000, #ff0000 10px, #000 10px, #000 20px);
+      margin-bottom: 1rem;
+      &.bottom { margin-top: 1rem; margin-bottom: 0; }
+    }
+
+    .sector-label {
+      background: transparent;
+      font-family: 'Stencil', sans-serif;
+      font-size: 2.2rem;
+      color: #fff;
+      text-shadow: 4px 4px 0px #ff0000; // Sombra dura
+      letter-spacing: 5px;
+
+      .folder-icon { display: none; } // Tira a pastinha no caos
+    }
+
+    // Se quiser o texto de "System Msg" que ele inventou
+    .sector-desc {
+      display: block;
+      font-family: 'Courier New', monospace;
+      color: #ccc;
+      &::before { content: '>> SYSTEM MSG: '; color: #ff0000; }
+    }
+  }
+}
+/* Ajuste para o Modo Jonah (Sold Out Industrial) */
+:host-context(.mode-jonah) .btn-neon.sold-out-mode {
+  border-style: solid !important; /* Remove o tracejado */
+  background: #222 !important;
+  color: #555 !important;
+}
+
+/* =========================================
+   🚨 BANNER DE ALERTA DE MODO
+   ========================================= */
+
+.mode-alert-banner {
+  margin: 20px auto 40px auto; /* Espaço bom em cima e embaixo */
+  max-width: 800px;
+  //cursor: pointer;
+  text-align: center;
+  font-family: 'Courier New', monospace;
+
+  /* Animação suave */
+  transition: all 0.3s ease;
+}
+
+.alert-content {
+  padding: 15px;
+  border: 1px dashed;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  align-items: center;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+}
+
+/* --- ESTADO PADRÃO (AZUL / BROKLIN) --- */
+/* Mostra a mensagem de "Ir para o Jonah" */
+.mode-alert-banner {
+  .broklin-msg {
+    display: flex; /* Aparece */
+    color: #ff3300; /* Cinza discreto */
+    border-color: #555;
+
+    strong { color: #ff3300; } /* Destaque vermelho */
+
+    &:hover {
+      background: rgba(255, 50, 0, 0.1);
+      border-color: #ff3300;
+      color: #ff3300;
+    }
+  }
+
+  .jonah-msg {
+    display: none; /* Esconde a outra */
+  }
+}
+
+
+
+/* =========================================
+   💀 MODO JONAH (INDUSTRIAL CHAOS PATCH)
+   ========================================= */
+
+// O Angular usa :host-context para saber se tem uma classe no pai (body)
+:host-context(.mode-jonah) {
+
+  .store-container {
+    // Fundo mais pesado (Industrial Dark)
+    background-color: #0d0202;
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 10px,
+      rgba(255, 50, 0, 0.05) 10px,
+      rgba(255, 50, 0, 0.05) 20px
+    ); // Efeito de "Faixa de Perigo" sutil no fundo
+  }
+
+  .glitch-title {
+    color: #ff3300; // Laranja/Vermelho Fogo
+    text-shadow: 2px 2px 0px #000, -1px -1px 0 #ff0000;
+    font-family: 'Courier New', monospace; // Fonte mais crua
+    letter-spacing: -2px; // Mais apertado e tenso
+  }
+
+  .subtitle {
+    color: #aa4444;
+    font-weight: bold;
+    text-transform: uppercase;
+    &::after { content: " [UNSTABLE]"; } // Adiciona texto extra
+  }
+
+  .product-card {
+    background: rgba(20, 0, 0, 0.8); // Quase preto, opaco
+    border: 2px solid #551111; // Borda de "ferrugem"
+    border-radius: 0; // Canto quadrado (sem curva suave!)
+    box-shadow: none;
+
+    &:hover {
+      transform: translate(-3px, -3px); // Movimento seco
+      border-color: #ff3300; // Brilha vermelho
+      box-shadow: 5px 5px 0px rgba(255, 50, 0, 0.5); // Sombra dura
+    }
+  }
+
+  .info {
+    h3 {
+      font-family: 'Courier New', monospace;
+      text-transform: uppercase;
+    }
+    .desc {
+      color: #bb8888;
+    }
+  }
+
+  .btn-neon {
+    border: 2px solid #ff3300;
+    color: #ff3300;
+    background: #1a0000;
+
+    &:hover {
+      background: #ff3300;
+      color: #000;
+      box-shadow: 0 0 20px #ff3300; // Fogo!
+    }
+  }
+
+  .back-to-dept-btn{
+
+    border: 1px dashed #ff3300;
+    color: #ff3300;
+
+    &:hover {
+      background: #ff3300;
+      color: #000;
+    }
+      }
+
+  // O Botão Voltar vira algo mais agressivo
+  .back-btn {
+    border: 1px dashed #ff3300;
+    color: #ff3300;
+
+    &:hover {
+      background: #ff3300;
+      color: #000;
+    }
+  }
+
+  .mode-alert-banner {
+
+    /* Inverte a visibilidade! */
+    .broklin-msg { display: none; }
+
+    .jonah-msg {
+      display: flex; /* Aparece */
+      color: #00ccff; /* Azul Neon */
+      border-color: #00ccff;
+      background: rgba(0, 20, 40, 0.6);
+
+      strong { color: #fff; }
+
+      &:hover {
+        box-shadow: 0 0 15px #00ccff;
+      }
+    }
+  }
+}
+
+/* =========================================
+   ANIMACÃO EXTRA (Opcional - Charme do Caos)
+   ========================================= */
+@keyframes glitch-anim {
+  0% { opacity: 0; transform: translateX(-50px); filter: blur(10px); }
+  50% { opacity: 1; transform: translateX(10px); }
+  100% { transform: translateX(0); filter: blur(0); }
+}
+
+/* ========================================== */
+/* ⚖️ RODAPÉ LEGAL (Compliance)              */
+/* ========================================== */
+.legal-footer {
+  margin-top: 3rem;          /* Empurra pra baixo do conteúdo */
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1); /* Linha divisória sutil */
+  text-align: right;         /* Alinha à direita como pedido */
+  width: 100%;
+
+  small {
+    display: block;
+    font-size: 0.75rem;      /* Pequeno, mas legível */
+    color: rgba(255, 255, 255, 0.5); /* Cinza translúcido */
+    font-family: 'Roboto', sans-serif;
+    max-width: 600px;        /* Não deixa a linha ficar comprida demais */
+    margin-left: auto;       /* Garante que o bloco fique na direita */
+    line-height: 1.4;
+  }
+  .compliance-link {
+    color: inherit; /* Pega a cor do texto pai (cinza ou laranja) */
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 5px;
+    display: inline-block;
+    border-bottom: 1px dotted rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+
+    &:hover {
+      color: #00f3ff; /* Brilha Ciano no Hover (Broklin) */
+      border-bottom-style: solid;
+      letter-spacing: 1px; /* Expande chique */
+    }
+  }
+}
+
+
+/* --- AJUSTE PARA O MODO JONAH (Pra não sumir no escuro) --- */
+:host-context(.mode-jonah) .legal-footer {
+  border-top-color: rgba(255, 153, 0, 0.2); /* Linha Laranja fraca */
+
+  small {
+    color: rgba(255, 153, 0, 0.6); /* Texto Laranja Industrial translúcido */
+    font-family: 'Courier New', monospace; /* Fonte Hacker */
+  }
+  .compliance-link:hover {
+  color: #ff5500; /* Brilha Laranja no Hover (Jonah) */
+  text-shadow: 0 0 10px #ff5500;
+}
+}
+/* --- RESPONSIVO (No celular centraliza pra ler melhor) --- */
+@media (max-width: 768px) {
+  .legal-footer {
+    text-align: center;
+    margin-top: 2rem;
+
+    small {
+      margin-left: 0;
+      margin-right: 0;
+      max-width: 100%;
+    }
+  }
+}

@@ -1,0 +1,332 @@
+:host {
+  display: block;
+
+  /* 👇 O SEGREDO DA FIXAÇÃO 👇 */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0; /* Isso estica ele de ponta a ponta */
+
+  margin-top: -1px !important;
+
+  width: auto; /* Deixa o left/right decidirem a largura */
+  height: 70px;
+  z-index: 9999;
+
+  /* 👇 ISSO É CRUCIAL: Garante que padding não estoure a tela */
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+
+  /* Trava no iPhone */
+  transform: translateZ(0);
+}
+
+mat-toolbar {
+  /* Fundo escuro vidro */
+  background: rgba(10, 10, 18, 0.95) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  /* 👇 AQUI ESTÁ O VERDE NEON QUE FALTAVA 👇 */
+  border-bottom: 1px solid var(--accent-color); /* A linha sólida */
+  box-shadow: 0 4px 20px rgba(6, 253, 18, 0.2);  /* O brilho espalhado */
+
+  /* Layout */
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 16px;
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+}
+
+/* === BÔNUS: O Logo Brilhando === */
+.brand-logo {
+  /* ... configs de fonte ... */
+  font-family: 'Oswald', sans-serif;
+  font-weight: 800;
+  color: #ffffff;
+  transition: all 0.3s ease;
+
+  /* Quando passa o mouse, ele acende */
+  &:hover {
+    color: var(--accent-color);
+    text-shadow: 0 0 15px var(--accent-color), 0 0 30px var(--accent-color);
+    cursor: pointer;
+  }
+
+  /* Ajuste no mobile pra não quebrar */
+  @media (max-width: 380px) {
+    font-size: 1.1rem;
+  }
+}
+
+.spacer { flex: 1 1 auto; }
+
+/* src/app/components/header/header.scss */
+
+/* === BOTÕES DO DESKTOP (A correção da cor) === */
+.desktop-nav {
+
+  button[mat-button] {
+    /* 👇 AQUI ESTÁ A LUZ! Força branco sempre 👇 */
+    color: #49fa02 !important;
+
+    font-weight: 600;
+    font-size: 0.82rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+
+    /* Ícones dentro dos botões (já começam verdes ou brancos?) */
+    mat-icon {
+      color: var(--accent-color) !important; /* Ícone Verde Neon */
+      margin-right: 2px;
+      vertical-align: middle;
+      padding-bottom: 2px;
+    }
+
+    /* 👇 EFEITO HOVER (Quando passa o mouse) */
+    &:hover {
+      color: var(--accent-color) !important; /* Texto vira Verde */
+      background: rgba(255, 255, 255, 0.05); /* Fundo sutil */
+      text-shadow: 0 0 10px var(--accent-color); /* Brilho neon no texto */
+
+      mat-icon {
+        transform: scale(1.1);
+        text-shadow: 0 0 12px var(--accent-color);
+      }
+    }
+  }
+
+  /* O Botão Especial "Creator" (Borda) */
+  button[mat-button].btn-creator {
+  border: 1px solid var(--accent-color) !important;
+  margin-left: 15px;
+
+  /* Estado Normal */
+  color: #49fa02!important;
+
+    &:hover {
+    /* Fundo Verde Neon */
+    background-color: var(--accent-color) !important;
+
+    /* Texto PRETO SÓLIDO (Sem brilho, pra ler bem) */
+    color: #000000 !important;
+    text-shadow: none !important;
+
+    /* Ícone PRETO SÓLIDO */
+    mat-icon {
+      color: #000000 !important;
+      text-shadow: none !important;
+      transform: scale(1.1);
+    }
+  }
+  }
+}
+
+/* === BOTÃO MOBILE (Hambúrguer) === */
+/* 👇 ESTILO CYBERPUNK PARA O MENU MOBILE 👇 */
+::ng-deep .cyber-menu {
+  /* 1. O Painel Flutuante (A Caixa) */
+  background-color: rgba(10, 10, 18, 0.95) !important; /* Fundo Dark quase opaco */
+  backdrop-filter: blur(12px); /* Desfoque de vidro */
+  border: 1px solid var(--accent-color); /* A Borda Verde Neon */
+  box-shadow: 0 0 25px rgba(6, 253, 18, 0.2); /* O Brilho em volta */
+  border-radius: 0 0 8px 8px !important; /* Cantos arredondados embaixo */
+
+  max-width: 90vw !important; /* Garante que cabe na tela */
+  min-width: 250px;
+  padding: 10px 0;
+
+  /* 2. Os Botões dentro do menu */
+  .mat-mdc-menu-item {
+    color: #ffffff !important; /* Texto Branco */
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    height: 54px; /* Botões um pouco mais altos pro dedo acertar */
+    transition: all 0.2s ease-in-out;
+
+    /* Ícones */
+    mat-icon {
+      color: var(--accent-color) !important; /* Ícone Verde sempre */
+      margin-right: 12px;
+      opacity: 0.8;
+      transition: transform 0.2s;
+    }
+
+    /* Efeito ao Passar o Dedo/Mouse (Hover) */
+    &:hover, &:focus {
+      background: rgba(255, 255, 255, 0.08) !important; /* Cinza bem suave */
+
+      span {
+        color: var(--accent-color) !important; /* Texto acende */
+        text-shadow: 0 0 5px var(--accent-color);
+      }
+
+      mat-icon {
+        opacity: 1;
+        transform: translateX(3px) scale(1.1); /* Ícone move e cresce */
+        text-shadow: 0 0 8px var(--accent-color);
+      }
+    }
+  }
+
+  /* 3. Divisórias */
+  .mat-divider {
+    border-top-color: rgba(255, 255, 255, 0.15) !important;
+    margin: 3px 0;
+  }
+}
+
+/* Botão Especial "Creator" */
+.btn-creator {
+  border: 1px solid var(--accent-color) !important;
+  border-radius: 4px;
+  margin-left: 10px;
+
+  &:hover {
+    background: var(--accent-color) !important;
+    color: #000 !important; /* Texto preto no hover pra leitura */
+
+    mat-icon { color: #000 !important; }
+  }
+}
+
+
+/* --- 1. COMPORTAMENTO PADRÃO (MOBILE FIRST) --- */
+
+/* Por padrão (celular), o menu Desktop SOME */
+.desktop-nav {
+  display: none !important;
+}
+
+/* Por padrão (celular), o botão Hambúrguer APARECE */
+.mobile-menu-btn {
+  display: block !important;
+  color: var(--accent-color) !important; /* Garante que o ícone seja verde */
+}
+
+/* --- 2. QUANDO A TELA FOR GRANDE (PC/Tablet) --- */
+@media (min-width: 900px) {
+
+  /* Agora o Desktop APARECE */
+  .desktop-nav {
+    display: flex !important;
+    align-items: center;
+  }
+
+  /* E o botão Hambúrguer SOME */
+  .mobile-menu-btn {
+    display: none !important;
+  }
+}
+
+/* ========================================= */
+/* 💀 MODO JONAH: INVASÃO DO HEADER 💀       */
+/* ========================================= */
+:host-context(body.mode-jonah) {
+
+  /* 1. A Barra em si (Vermelho Sangue e Sombra Pesada) */
+  mat-toolbar {
+    border-bottom: 2px solid #8a0000 !important;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.9) !important;
+    background: rgba(5, 4, 4, 0.98) !important; /* Quase preto sólido */
+  }
+
+  /* 2. Botões de Navegação (Laranja Rust vs Verde Neon) */
+  /* === ÁREA DA NAVEGAÇÃO DESKTOP (MODO JONAH) === */
+  .desktop-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px; /* Espacinho militar */
+
+    /* 1. OS SOLDADOS COMUNS (Todos, MENOS o Creator) */
+    button[mat-button]:not(.btn-creator) {
+      color: #ff3d00 !important; /* Laranja Rust */
+      font-family: 'Oswald', sans-serif;
+      font-weight: 600;
+      font-size: 0.75rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      transition: all 0.3s ease;
+
+      padding: 0 8px !important;
+      min-width: auto !important;
+      line-height: 36px;
+
+      /* HOVER DOS COMUNS: Brilho Laranja (NÃO PRETO!) */
+      &:hover {
+        background: rgba(255, 61, 0, 0.15); /* Fundo sutil */
+        text-shadow: 0 0 15px #ff3d00;      /* Glow Laranja */
+        color: #ff3d00 !important;          /* Mantém a cor Laranja */
+
+        mat-icon {
+           transform: scale(1.1);
+           text-shadow: 0 0 10px #ff3d00;
+        }
+      }
+
+      mat-icon {
+        color: #ff3d00 !important;
+        margin-right: 4px;
+        transform: scale(0.9);
+        padding-bottom: 2px;
+        transition: transform 0.3s;
+      }
+    }
+
+    /* 2. O GENERAL "CREATOR" (Totalmente Independente) */
+    button[mat-button].btn-creator {
+      /* Base igual, mas com borda */
+      color: #ff3d00 !important;
+      border: 1px solid #ff3d00 !important;
+      font-family: 'Oswald', sans-serif;
+      font-weight: 700; /* Mais grosso */
+      font-size: 0.75rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 0 12px !important; /* Um pouco mais largo */
+      margin-left: 8px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); /* Movimento rápido */
+
+      mat-icon {
+        color: #ff3d00 !important;
+        margin-right: 4px;
+      }
+
+      /* HOVER DO ÓDIO: ALTO CONTRASTE (Aqui vira preto!) */
+      &:hover {
+        background-color: #ff3d00 !important; /* Fundo Sólido */
+        box-shadow: 0 0 25px #ff3d00 !important; /* Brilho Radioativo */
+        border-color: #ff3d00 !important;
+        transform: translateY(-2px); /* Pula pra frente */
+
+        /* AQUI ACONTECE A MÁGICA DO CONTRASTE */
+        /* Força TUDO dentro dele a ficar preto */
+        &, span, .mdc-button__label, mat-icon {
+          color: #000000 !important;
+          text-shadow: none !important; /* Sem brilho pra ler melhor */
+        }
+      }
+    }
+  }
+
+  /* 4. O Logo (Pulsação de Reator) */
+  .brand-logo {
+    color: #ff3d00 !important;
+    text-shadow: 0 0 10px #8a0000;
+
+    /* Vamos manter a pulsação que definimos no global, ou redefinir aqui se quiser */
+  }
+
+  /* 5. Menu Mobile (Hambúrguer) */
+  .mobile-menu-btn {
+    color: #ff3d00 !important;
+  }
+}
+

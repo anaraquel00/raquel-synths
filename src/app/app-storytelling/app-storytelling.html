@@ -1,0 +1,74 @@
+<section class="story-container">
+  <h2 class="section-title">SYSTEM_LOGS<br>LATEST</h2>
+
+  <div class="timeline-vertical">
+
+    @let events = logs$ | async;
+
+    @if (events) {
+
+      @for (event of events; track event.id) {
+
+        @let content = getEventContent(event);
+
+        @if (event._isError) {
+          <div class="error-card">
+            <h3>🔥 SYSTEM FAILURE</h3>
+            <p>CRITICAL ERROR: {{ event.message }}</p>
+          </div>
+        } @else {
+
+          <div class="log-card-full">
+
+            @if (event.image) {
+              <div class="img-wrapper-wide">
+                <img [src]="event.image" [alt]="content?.title">
+              </div>
+            }
+
+            <div class="content-padding">
+
+              <div class="log-header">
+                <span class="date">{{ event.date }}</span>
+                <h3 class="title">{{ content?.title }}</h3>
+              </div>
+
+              <p class="description-lead">{{ content?.description }}</p>
+
+              @if (content?.techContent) {
+                <div class="tech-body" [innerHTML]="content.techContent | safeHtml"></div>
+                  }
+
+              @if (content?.jonahComment) {
+                <div class="jonah-note">
+                  <strong>[JONAH_OVERRIDE]:</strong> {{ content.jonahComment }}
+                </div>
+              }
+
+              @if (event.isArchiveLink) {
+                <div class="action-area">
+                  <button class="btn-decrypt" (click)="navigateToArchive()">
+                    [ 📂 ACCESS_FULL_ARCHIVES ]
+                  </button>
+                </div>
+              }
+            </div> </div> <app-ad-banner></app-ad-banner>}
+      }
+
+      @if (events.length === 0) {
+        <div class="empty-state">
+          <p>⚠️ NO_NEW_LOGS_DETECTED</p>
+          <button class="btn-decrypt" (click)="navigateToArchive()">
+            [ 📂 ACCESS_ARCHIVES ]
+          </button>
+        </div>
+      }
+
+    } @else {
+      <div class="loading-state">
+        <p>📡 ESTABLISHING UPLINK...</p>
+      </div>
+    }
+
+  </div>
+</section>

@@ -1,0 +1,100 @@
+<section class="disco-container">
+  <h2 class="section-title">{{ translate.isPt() ? 'DISCOGRAFIA E STREAMS' : 'DISCOGRAPHY AND STREAMS' }}</h2>
+
+  <div class="disco-intro">
+    <p [innerHTML]="translate.isPt() ? introPT : introEN"></p>
+  </div>
+
+ <div class="artist-section broklin-theme">
+  <div class="section-header">
+    <i class="far fa-gem icon-pulse"></i>
+    <h3>{{ translate.isPt() ? 'PROTOCOLO RQS: LANÇAMENTOS' : 'RQS PROTOCOL: RELEASES' }}</h3>
+  </div>
+
+  @for (album of featuredBroklin; track album; let i = $index; let isLast = $last) {
+    <article class="featured-album">
+      <div class="album-cover">
+        <img [src]="album.cover" [alt]="album.title">
+      </div>
+      <div class="album-content">
+        <div class="header">
+          <span class="release-type">{{ album.type }}</span>
+          <h4>{{ album.title }}</h4>
+        </div>
+        <p [innerHTML]="translate.isPt() ? album.descriptionPT : album.descriptionEN"></p>
+        <div class="actions-bar">
+          <a *ngIf="album.soundcloudUrl || album.soundcloud || album.embedLink"
+             [href]="album.soundcloudUrl ? album.soundcloudUrl : (album.soundcloud ? album.soundcloud : album.embedLink)"
+             target="_blank" class="btn-listen soundcloud-btn">
+             <i class="fab fa-soundcloud"></i> SoundCloud
+          </a>
+          <a *ngIf="album.spotifyUrl || album.spotify"
+             [href]="album.spotifyUrl ? album.spotifyUrl : album.spotify"
+             target="_blank" class="btn-listen spotify-btn">
+             <i class="fab fa-spotify"></i> Spotify
+          </a>
+        </div>
+      </div>
+    </article>
+
+    @if ((i + 1) % 2 === 0 && !isLast) {
+      <div class="inter-list-ad">
+         <app-ad-banner></app-ad-banner>
+      </div>
+    }
+    @else if (!isLast) {
+      <hr class="separator neon-line">
+    }
+
+  } <button routerLink="/musical-archives" class="btn-archive">
+   {{ translate.isPt() ? '[ 📂 ACESSO AOS ARQUIVOS COMPLETOS ]' : '[ 📂 ACCESS_FULL_ARCHIVES ]' }}
+ </button>
+ </div>
+
+ <div class="artist-section jonah-theme">
+  <div class="section-header">
+    <i class="fas fa-exclamation-triangle icon-shake"></i>
+    <h3>{{ translate.isPt() ? 'REBELIÃO DE JONAH: CAOS' : 'JONAH\'S REBELLION: CHAOS' }}</h3>
+  </div>
+
+  @for (album of featuredJonah; track album; let i = $index; let isLast = $last) {
+    <article class="featured-album">
+      <div class="album-cover">
+        <img [src]="album.cover" [alt]="album.title" class="glitch-effect">
+      </div>
+      <div class="album-content">
+          <div class="header">
+          <span class="release-type">{{ album.type }}</span>
+          <h4>{{ album.title }}</h4>
+        </div>
+        <p [innerHTML]="translate.isPt() ? album.descriptionPT : album.descriptionEN"></p>
+        <div class="actions-bar">
+             <a *ngIf="album.soundcloudUrl || album.soundcloud || album.embedLink"
+             [href]="album.soundcloudUrl ? album.soundcloudUrl : (album.soundcloud ? album.soundcloud : album.embedLink)"
+             target="_blank" class="btn-listen soundcloud-btn">
+             <i class="fab fa-soundcloud"></i> SoundCloud
+          </a>
+          <a *ngIf="album.spotifyUrl || album.spotify"
+             [href]="album.spotifyUrl ? album.spotifyUrl : album.spotify"
+             target="_blank" class="btn-listen spotify-btn">
+             <i class="fab fa-spotify"></i> Spotify
+          </a>
+        </div>
+      </div>
+    </article>
+
+    @if ((i + 1) % 2 === 0 && !isLast) {
+      <div class="inter-list-ad">
+         <app-ad-banner></app-ad-banner>
+      </div>
+    }
+    @else if (!isLast) {
+      <hr class="separator hazard-line">
+    }
+  }
+
+  <button class="btn-archive hazard-border" (click)="navigateFullArchive()">
+    {{ translate.isPt() ? 'EXPOR MAIS DADOS (+)' : 'EXPOSE MORE DATA (+)' }}
+  </button>
+ </div>
+</section>

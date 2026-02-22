@@ -1,0 +1,117 @@
+<section class="disco-container">
+  <h2 class="section-title">
+    {{ translate.isPt() ? 'ARQUIVO DE SISTEMA: DISCOGRAFIA' : 'SYSTEM ARCHIVE: DISCOGRAPHY' }}
+  </h2>
+
+  <div class="artist-section broklin-theme" id="broklin-top">
+    <div class="section-header">
+      <i class="far fa-folder-open"></i>
+      <h3>{{ translate.isPt() ? 'PROTOCOLO RQS: LEGADO & REGISTROS' : 'RQS PROTOCOL: LEGACY & RECORDS' }}</h3>
+    </div>
+
+    @for (album of paginatedBroklin; track album; let i = $index; let isLast = $last) {
+      <article class="featured-album">
+        <div class="album-cover">
+             <img [src]="album.cover" [alt]="album.title">
+        </div>
+        <div class="album-content">
+             <div class="header">
+                <span class="release-type">{{ album.type }}</span>
+                <h4>{{ album.title }}</h4>
+             </div>
+             <p [innerHTML]="translate.isPt() ? album.descriptionPT : album.descriptionEN"></p>
+
+             <div class="actions-bar">
+                <a *ngIf="album.soundcloud || album.embedLink"
+                    [href]="album.soundcloud ? album.soundcloud : album.embedLink"
+                    target="_blank" class="btn-listen soundcloud-btn">
+                    <i class="fab fa-soundcloud"></i> SoundCloud
+                 </a>
+             </div>
+        </div>
+      </article>
+      <hr class="separator neon-line">
+      @if ((i + 1) % 2 === 0 && !isLast) {
+
+    <div class="inter-list-ad">
+       <app-ad-article></app-ad-article>
+    </div>
+
+    <hr class="separator neon-line">
+  }
+    }
+
+    <div class="terminal-pagination">
+      <button (click)="prevBroklin()" [disabled]="currentPageBroklin === 1" class="cmd-btn">
+        [ < PREV_LOG ]
+      </button>
+
+      <span class="cmd-display">
+        PAGE: 0{{ currentPageBroklin }} / 0{{ totalPagesBroklin }}
+      </span>
+
+      <button (click)="nextBroklin()" [disabled]="currentPageBroklin === totalPagesBroklin" class="cmd-btn">
+        [ NEXT_LOG > ]
+      </button>
+    </div>
+ <button class="btn-exit" (click)="GoHome()">
+  {{ translate.isPt() ? '[ SAIR DO ARQUIVO ]' : '[ EXIT ARCHIVE ]' }}
+ </button>
+  </div>
+
+  <div class="artist-section jonah-theme" id="jonah-top">
+    <div class="section-header">
+      <i class="fas fa-biohazard icon-shake"></i>
+      <h3>{{ translate.isPt() ? 'DADOS CORROMPIDOS: INCIDENTES' : 'CORRUPTED DATA: INCIDENTS' }}</h3>
+    </div>
+
+    @for (album of paginatedJonah; track album; let i = $index; let isLast = $last) {
+      <article class="featured-album">
+         <div class="album-cover">
+             <img [src]="album.cover" [alt]="album.title">
+        </div>
+        <div class="album-content">
+             <div class="header">
+                <span class="release-type">{{ album.type }}</span>
+                <h4>{{ album.title }}</h4>
+             </div>
+             <p [innerHTML]="translate.isPt() ? album.descriptionPT : album.descriptionEN"></p>
+              <div class="actions-bar">
+                <a *ngIf="album.soundcloud || album.embedLink"
+                    [href]="album.soundcloud ? album.soundcloud : album.embedLink"
+                    target="_blank" class="btn-listen soundcloud-btn">
+                    <i class="fab fa-soundcloud"></i> SoundCloud
+                 </a>
+             </div>
+        </div>
+      </article>
+      <hr class="separator hazard-line">
+      @if ((i + 1) % 2 === 0 && !isLast) {
+
+    <div class="inter-list-ad">
+       <app-ad-article></app-ad-article>
+    </div>
+
+    <hr class="separator hazard-line">
+  }
+
+    }
+
+    <div class="terminal-pagination hazard-mode">
+      <button (click)="prevJonah()" [disabled]="currentPageJonah === 1" class="cmd-btn">
+        [ < REWIND_CRASH ]
+      </button>
+
+      <span class="cmd-display">
+        SECTOR: 0{{ currentPageJonah }} / 0{{ totalPagesJonah }}
+      </span>
+
+      <button (click)="nextJonah()" [disabled]="currentPageJonah === totalPagesJonah" class="cmd-btn">
+        [ SKIP_ERROR > ]
+      </button>
+    </div>
+  <button class="btn-exit hazard-mode-btn" (click)="GoHome()" style="color: #ff0000; border-color: #ff0000;">
+  {{ translate.isPt() ? '[ ABORTAR SISTEMA ]' : '[ ABORT SYSTEM ]' }}
+  </button>
+  </div>
+</section>

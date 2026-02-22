@@ -1,0 +1,23 @@
+<section class="bios-container">
+  <h2 class="section-title">QUEM SOMOS</h2>
+  <div class="manifesto-text">
+    <p [innerHTML]="translate.isPt() ? manifestoPt : manifestoEn"(click)="handleClick($event)"></p>
+  </div>
+
+  <div class="members-grid">
+    @for (member of members; track member) {
+      <div class="member-card">
+        <div class="image-frame">
+          <img [src]="member.imageBroklin" class="img-broklin" alt="Foto Normal">
+          <img [src]="member.imageJonah" class="img-jonah" alt="Foto Glitch">
+        </div>
+        <div class="info-box">
+          <h3>{{ member.name }}</h3>
+          <span class="role">{{ member.role }}</span>
+          <p class="bio-text normal-text">{{ member.bioNormal }}</p>
+          <p class="bio-text jonah-text">{{ member.bioJonah }}</p>
+        </div>
+      </div>
+    }
+  </div>
+</section>

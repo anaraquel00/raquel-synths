@@ -1,0 +1,645 @@
+/* src/styles.scss */
+@use '@angular/material' as mat;
+
+/* 1. RESET CRÍTICO DO HTML */
+html {
+  @include mat.theme((
+    color: (primary: mat.$magenta-palette, tertiary: mat.$violet-palette),
+    typography: Roboto,
+    density: 0,
+  ));
+  scroll-behavior: smooth;
+  height: 100%;
+  /* O SEGREDO 1: O html NÃO PODE ser branco. Tem que ser preto/escuro */
+  background-color: #0a0a12;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+body {
+  margin: 0;
+  padding-top: 70px;
+  font-family: 'Roboto', sans-serif;
+  min-height: 100vh;
+  position: relative;
+
+  /* VARIÁVEIS */
+  --primary-color: #6200ea;
+  --accent-color: #06fd12;
+  --text-color: #ffffff;
+  --bg-color: #0a0a12;
+  --hero-overlay: rgba(0, 0, 0, 0.4);
+  --bg-blur-intensity: 12px; /* 🌫️ Padrão Broklin: Desfoque elegante */
+
+  --footer-bg: #000000;   /* Preto Absoluto para o rodapé */
+  --footer-text: #ffffff; /* Texto branco */
+
+  color: var(--text-color);
+
+  /* Removemos o background-color do body pra ele não tampar nada */
+  background-color: transparent;
+  overflow-x: hidden !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* --- 🌍 ESTILOS GLOBAIS PARA ARTIGOS TÉCNICOS (Storytelling) --- */
+/* Colocamos aqui para o Angular aceitar o HTML que vem do Firebase */
+
+.tech-body {
+  font-family: 'Open Sans', sans-serif; /* Fonte de leitura limpa */
+  color: #e0e0e0;
+  line-height: 1.8;
+  font-size: 1.1rem;
+  margin-top: 2rem;
+}
+
+/* Títulos Neon */
+.tech-body h3 {
+  color: #00ffcc !important; /* Ciano Neon Forçado */
+  font-size: 1.6rem;
+  margin-top: 3rem;
+  margin-bottom: 1.5rem;
+  font-family: 'Montserrat', sans-serif; /* Fonte de Título */
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 10px;
+  text-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
+}
+
+/* Parágrafos */
+.tech-body p {
+  margin-bottom: 1.5rem;
+}
+
+/* Negritos (Strong) */
+.tech-body strong {
+  color: #fff;
+  font-weight: 700;
+}
+
+/* Listas Hacker com setinha > */
+.tech-body ul {
+  margin-bottom: 2rem;
+  padding-left: 20px;
+  list-style: none !important; /* Tira a bolinha padrão */
+}
+
+.tech-body li {
+  margin-bottom: 0.8rem;
+  padding-left: 25px;
+  position: relative;
+}
+
+.tech-body li::before {
+  content: '>'; /* A seta Hacker */
+  position: absolute;
+  left: 0;
+  color: #00ffcc;
+  font-weight: bold;
+  font-family: monospace;
+}
+
+/* Bloco de Código (Terminal) */
+.tech-body .code-block {
+  background: #0d0d0d;
+  border: 1px solid #333;
+  border-left: 4px solid #bd93f9; /* Roxo */
+  padding: 20px;
+  border-radius: 6px;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.95rem;
+  color: #a5d6a7; /* Verde Terminal */
+  margin: 2.5rem 0;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+  overflow-x: auto;
+}
+
+/* Citações */
+.tech-body blockquote {
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 0%, transparent 100%);
+  border-left: 4px solid #ff0055; /* Rosa Neon */
+  margin: 2.5rem 0;
+  padding: 1.5rem 2rem;
+  font-style: italic;
+  font-size: 1.2rem;
+  color: #fff;
+}
+
+/* 👇 Garante que o App Root também obedeça 👇 */
+app-root {
+  display: block;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* ========================================= */
+/* 🖥️ DESKTOP (Acima de 768px)               */
+/* ========================================= */
+@media (min-width: 769px) {
+  body {
+    background-image: url('/images/background3_rqs.webp');
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    /* No desktop, o body pode ter cor de fundo de segurança */
+    background-color: #0a0a12;
+  }
+}
+
+/* ========================================= */
+/* 📱 MOBILE (O Fix da Barra Preta)          */
+/* ========================================= */
+@media (max-width: 768px) {
+
+  /* Garante que body e html não tenham cor tapando a imagem */
+  html, body {
+    background-color: transparent !important;
+    background-image: none !important;
+    /* O html pode ter min-height pra garantir */
+    min-height: 100%;
+  }
+
+  /* O Elemento Fantasma Fixo */
+  body::before {
+    content: "";
+    position: fixed;
+
+    /* 👇 A ANCORAGEM QUÁDRUPLA (O Segredo) */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0; /* Cola no chão e não solta mais! */
+
+    /* Removemos height: 100vh ou 100dvh. A âncora resolve. */
+
+    z-index: -10;
+
+    /* A Imagem */
+    background-image: url('/images/background3_rqs_mobile.webp'); /* Verifique se é .jpg ou .png! */
+
+    /* 👇 VOLTAMOS PRO SEU PREFERIDO: Estica pra caber tudo */
+    background-size: 100% 100%;
+    background-position: center center;
+    background-repeat: no-repeat;
+
+    /* Performance */
+    will-change: transform;
+    pointer-events: none;
+  }
+
+  /* Camada de segurança preta caso a imagem falhe (mas agora deve ficar escondida) */
+  html {
+    background-color: #0a0a12 !important;
+  }
+}
+
+/* ========================================= */
+/* 🔥 MODO JONAH: THE RUST LORD UX 🔥        */
+/* ========================================= */
+body.mode-jonah {
+  /* --- 1. A NOVA PALETA DE CORES (O Coração do Design) --- */
+
+  /* Laranja Ferrugem (Onde bate a luz) -> Usado em Textos, Ícones, Botões */
+  --primary-color: #ff3d00;
+  --accent-color: #ff3d00;
+
+  /* Vermelho Sangue Coagulado (Nas sombras) -> Usado em Bordas, Hover, Detalhes */
+  --warn-color: #8a0000;
+
+  --bg-blur-intensity: 15px; /* 🌫️ Modo Jonah: Desfoque pesado e caótico */
+
+  /* O Abismo Industrial (Fundo) */
+  --bg-color: #050404;       /* Preto quase absoluto */
+  --footer-bg: #0f0202;      /* Um toque de vermelho no fundo do rodapé */
+  --text-color: #e0e0e0;     /* Cinza concreto (branco cansa a vista no escuro) */
+
+  /* Variável Especial: O Sangue nas Bordas */
+  --rust-border: 1px solid #8a0000;
+
+  /* --- 2. CUSTOMIZAÇÃO GLOBAL DE COMPONENTES --- */
+
+  /* Botões (Material Design) viram chapas de metal */
+  .mat-mdc-button, .mat-mdc-raised-button, .mat-mdc-outlined-button {
+    font-family: 'Oswald', sans-serif !important; /* Fonte mais bruta */
+    letter-spacing: 2px !important;
+    text-transform: uppercase !important;
+    border-radius: 0 !important; /* Nada de cantos redondos. Aqui é metal cortado. */
+  }
+
+  /* Cards (Caixas de conteúdo) */
+  .mat-mdc-card {
+    background-color: rgba(20, 5, 5, 0.9) !important; /* Fundo avermelhado escuro */
+    border: 1px solid #4a0000 !important; /* Borda de sangue */
+    border-left: 4px solid #ff3d00 !important; /* Destaque lateral laranja */
+    border-radius: 0 !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,1) !important;
+  }
+
+  /* Barra de Rolagem (Scrollbar) Enferrujada */
+  &::-webkit-scrollbar {
+    width: 12px;
+    background: #0f0202;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #8a0000; /* Sangue */
+    border: 1px solid #ff3d00; /* Contorno Laranja */
+  }
+}
+
+/* --- 🖥️ DESKTOP BACKGROUND (Mantido e Ajustado) --- */
+@media (min-width: 769px) {
+  body.mode-jonah {
+    background-image: url('/images/background_jonah.webp');
+    /* Rebaixamento tático mantido */
+    background-position: center 70px !important;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+
+    /* Filtro de Vignette (Escurece as bordas da tela pra focar no centro) */
+    box-shadow: inset 0 0 200px rgba(0,0,0,0.9);
+  }
+}
+
+/* --- 📱 MOBILE BACKGROUND (Mantido e Ajustado) --- */
+@media (max-width: 768px) {
+  body.mode-jonah::before {
+    background-image: url('/images/background_jonah_mobile.webp') !important;
+    background-position: center 80px !important;
+    background-size: cover !important;
+    filter: contrast(1.2) brightness(0.8); /* Deixa mais dark no celular */
+  }
+
+  html:has(body.mode-jonah) {
+    background-color: #050404 !important;
+  }
+}
+
+/* ========================================= */
+/* ⚡ EFEITOS GLOBAIS (SEM FUMAÇA QUEBRADA)  */
+/* ========================================= */
+
+/* O Logo que Treme (Isso funcionava, vamos manter) */
+body.mode-jonah app-header .brand-logo {
+  color: #ff3d00 !important;
+  text-shadow: 0 0 10px #8a0000;
+  animation: rust-pulse 4s infinite; /* Pulsação lenta de reator */
+}
+
+@keyframes rust-pulse {
+  0% { text-shadow: 0 0 5px #8a0000; opacity: 1; }
+  50% { text-shadow: 0 0 20px #ff3d00; opacity: 0.8; }
+  100% { text-shadow: 0 0 5px #8a0000; opacity: 1; }
+}
+
+// --- SWEETALERT CUSTOMIZATION ---
+
+// Força a fonte do site no alerta
+div:where(.swal2-container) {
+  z-index: 99999 !important; // Garante que fica em cima de tudo
+}
+
+/* MODO BROKLIN (Tech/Ciano) - Pra não ficar sem estilo */
+body.mode-broklin .swal2-confirm {
+  background-color: #000 !important;
+  border: 2px solid #00ffff !important;
+  color: #00ffff !important;
+}
+
+body.mode-broklin .swal2-confirm:hover {
+  background-color: #00ffff !important;
+  color: #000 !important;
+  box-shadow: 0 0 20px #00ffff !important;
+}
+
+/* MODO JONAH (Fogo/Caos) - O estilo que você pediu */
+body.mode-jonah .swal2-confirm {
+  background-color: #1a0000 !important; /* Fundo Escuro Avermelhado */
+  border: 2px solid #ff3300 !important; /* Borda Laranja/Vermelha */
+  color: #ff3300 !important;            /* Texto Laranja/Vermelho */
+  box-shadow: 0 0 10px rgba(255, 51, 0, 0.2) !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Efeito Hover do Jonah (Quando passa o mouse) */
+body.mode-jonah .swal2-confirm:hover {
+  background-color: #ff3300 !important; /* Preenche de Vermelho */
+  color: #000000 !important;            /* Texto fica Preto */
+  box-shadow: 0 0 20px #ff3300 !important; /* Brilho de Fogo */
+  transform: scale(1.05);
+}
+
+// Cor do texto geral
+.swal2-title, .swal2-content, .swal2-html-container {
+  color: #fff !important;
+}
+/* --- RODAPÉ DO POPUP (FOOTER) --- */
+
+/* MODO JONAH (Fogo/Caos) */
+body.mode-jonah .swal2-footer {
+  color: #ff3300 !important;            /* Texto Vermelho/Laranja */
+  border-top: 1px solid #ff3300 !important; /* Linha de separação Vermelha */
+
+  /* Opcional: Um brilho suave no texto */
+  text-shadow: 0 0 5px rgba(255, 51, 0, 0.5);
+}
+
+/* MODO BROKLIN (Tech/Ciano) */
+body.mode-broklin .swal2-footer {
+  color: #00ffff !important;            /* Texto Ciano */
+  border-top: 1px solid #00ffff !important; /* Linha de separação Ciano */
+
+  /* Opcional: Um brilho suave no texto */
+  text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+}
+/* --- ÍCONE DO POPUP (O Círculo de Informação) --- */
+
+/* Regra Geral para centralizar e preparar o brilho */
+.swal2-icon {
+  border-width: 3px !important; /* Deixa a borda do círculo mais grossa */
+  /* Remove a animação padrão chata pra gente por a nossa */
+  animation: none !important;
+}
+
+/* MODO JONAH (Fogo/Caos - Vermelho #ff3300) */
+body.mode-jonah .swal2-icon.swal2-info {
+  border-color: #ff3300 !important; /* Borda do círculo */
+  color: #ff3300 !important;        /* O traço/letra 'i' dentro */
+
+  /* O BRILHO NEON DE FOGO */
+  box-shadow: 0 0 25px rgba(255, 51, 0, 0.6), inset 0 0 10px rgba(255, 51, 0, 0.4) !important;
+
+  /* Uma animaçãozinha de pulsação para parecer vivo */
+  animation: neon-pulse-jonah 1.5s infinite alternate ease-in-out !important;
+}
+
+/* MODO BROKLIN (Tech/Ciano - Azul #00ffff) */
+body.mode-broklin .swal2-icon.swal2-info {
+  border-color: #00ffff !important;
+  color: #00ffff !important;
+
+  /* O BRILHO NEON CIANO */
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.6), inset 0 0 10px rgba(0, 255, 255, 0.4) !important;
+
+  /* Animação de pulsação */
+  animation: neon-pulse-broklin 1.5s infinite alternate ease-in-out !important;
+}
+
+/* --- ANIMAÇÕES DE PULSAÇÃO (Para dar vida ao ícone) --- */
+
+@keyframes neon-pulse-jonah {
+  from { box-shadow: 0 0 20px rgba(255, 51, 0, 0.5), inset 0 0 5px rgba(255, 51, 0, 0.3); }
+  to   { box-shadow: 0 0 35px rgba(255, 51, 0, 0.8), inset 0 0 15px rgba(255, 51, 0, 0.6); transform: scale(1.05); }
+}
+
+@keyframes neon-pulse-broklin {
+  from { box-shadow: 0 0 20px rgba(0, 255, 255, 0.5), inset 0 0 5px rgba(0, 255, 255, 0.3); }
+  to   { box-shadow: 0 0 35px rgba(0, 255, 255, 0.8), inset 0 0 15px rgba(0, 255, 255, 0.6); transform: scale(1.05); }
+}
+
+
+/* =======================================================
+   💣 OPERAÇÃO QUEBRA-BARREIRA (OVERLAY GLOBAL)
+   ======================================================= */
+
+/* 1. ATACANDO A RAIZ: O container que segura todos os menus do site.
+      Ele PRECISA ser maior que o 9999 do seu Header. */
+.cdk-overlay-container {
+  z-index: 12000 !important;
+}
+
+/* 2. FORÇANDO A SUBIDA: Se o margin-top falhou, usamos TRANSFORM.
+      O Transform é mais forte que o posicionamento do JavaScript. */
+.cdk-overlay-panel {
+  /* Sobe 4 pixels para garantir que ele 'atropele' a borda do header */
+  transform: translateY(-60px,-1px) !important;
+
+}
+
+/* 3. A FUSÃO VISUAL (MODO BROKLIN - VERDE) */
+.mat-mdc-menu-panel.cyber-menu {
+  background: rgba(10, 10, 18, 0.98) !important;
+  backdrop-filter: blur(12px);
+
+  /* Borda Verde Neon (sem a de cima) */
+  border: 1px solid #06fd12 !important;
+  border-top: 1px solid #06fd12 !important;
+  border-radius: 8px 8px 8px 8px !important;
+
+  box-shadow: 0 10px 10px rgba(6, 253, 18, 0.3) !important;
+  overflow: hidden !important;
+}
+
+/* =======================================================
+   🦊 MODO JONAH: INVASÃO LARANJA (SPECIFICITY MAX)
+   ======================================================= */
+
+body.mode-jonah {
+  /* O Painel fica Laranja e sobe igual */
+  .mat-mdc-menu-panel.cyber-menu {
+    border-color: #ff3d00 !important;
+    box-shadow: 0 10px 20px rgba(255, 61, 0, 0.4) !important;
+  }
+
+  /* Itens e Ícones Laranja */
+  .mat-mdc-menu-item {
+    .mat-icon { color: #ff3d00 !important; }
+
+    &:hover {
+      background-color: rgba(255, 61, 0, 0.15) !important;
+      .mat-icon {
+        color: #ffffff !important;
+        filter: drop-shadow(0 0 8px #ff3d00);
+      }
+    }
+  }
+}
+/* =======================================================
+   📱 AJUSTE RESPONSIVO DO SUBMENU (PC vs CELULAR)
+   ======================================================= */
+
+/* --- 1. CONFIGURAÇÃO PARA PC (Telas Maiores) --- */
+@media (min-width: 901px) {
+  .cdk-overlay-pane {
+    /* Mantém o alinhamento que a gente amou no Desktop */
+    transform: translate(-7px, -3px) !important;
+    z-index: 12000 !important;
+  }
+}
+
+/* --- 2. CONFIGURAÇÃO PARA MOBILE (Telas Menores) --- */
+@media (max-width: 900px) {
+  .cdk-overlay-pane {
+    /* No celular, não empurramos pra direita!
+       Deixamos o transform em 0 ou apenas um ajuste leve de altura. */
+    transform: translateY(-2px) !important;
+
+    /* Garante que o menu não saia da tela */
+    max-width: 95vw !important;
+    left: 10px !important; /* Margem de segurança na esquerda */
+    z-index: 12000 !important;
+  }
+
+  /* Forçando o 'COMUNIDADE' a parar de ser roxo e seguir o tema */
+  .mat-mdc-menu-trigger.COMUNIDADE-ROXO-FIX {
+    color: var(--accent-color) !important;
+  }
+}
+
+/* ========================================== */
+/* ☁️ BOTÃO SOUNDCLOUD (Injetado via HTML)     */
+/* ========================================== */
+
+.btn-soundcloud {
+  /* Layout do Botão */
+  display: inline-flex !important; /* Força display flex */
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 12px 25px;
+
+  /* Texto */
+  text-decoration: none !important;
+  font-family: 'Oswald', sans-serif, sans-serif;
+  font-weight: bold;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  /* Ícone */
+  i { font-size: 1.2rem; margin-right: 5px; }
+
+  /* --- 💎 ESTILO PADRÃO (BROKLIN) --- */
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid #00f3ff;
+  color: #00f3ff !important; /* Força a cor */
+  box-shadow: 0 0 5px rgba(0, 243, 255, 0.1);
+
+  &:hover {
+    background: rgba(0, 243, 255, 0.15);
+    box-shadow: 0 0 25px rgba(0, 243, 255, 0.5);
+    transform: translateY(-2px);
+    text-shadow: 0 0 8px #00f3ff;
+  }
+}
+
+/* --- ☢️ ESTILO JONAH (Quando o body tem a classe) --- */
+body.mode-jonah .btn-soundcloud {
+  border-color: #ff5500;
+  color: #ff5500 !important;
+  border-style: dashed;
+  font-family: 'Courier New', monospace;
+
+  &:hover {
+    background: #ff5500;
+    color: #000 !important; /* Texto fica preto no hover */
+    border-style: solid;
+    box-shadow: 0 0 30px #ff5500;
+    transform: scale(1.05);
+
+    i { transform: rotate(360deg); transition: 0.5s; }
+  }
+}
+
+/* --- RQS SYSTEM LOG: BROKLIN NATIVE THEME --- */
+/* Usando as variáveis globais para consistência total */
+
+.rqs-system-log-box {
+  margin-top: 40px;
+  padding: 30px;
+  
+  /* Fundo sutilmente transparente baseado no --bg-color para dar profundidade */
+  background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.2) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  
+  /* A Identidade do Broklin: A borda lateral Neon */
+  border-left: 5px solid var(--accent-color); 
+  
+  font-family: 'Courier New', monospace;
+  border-radius: 8px;
+  position: relative; /* Para elementos absolutos se precisar */
+  backdrop-filter: blur(5px); /* Um leve desfoque se o fundo permitir */
+
+  h3 {
+    color: var(--accent-color) !important; /* O Verde Neon (#06fd12) */
+    margin-top: 0;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 1.4em;
+    font-weight: 800;
+    text-shadow: 0 0 10px rgba(6, 253, 18, 0.4); /* Glow no título */
+    
+    &::before {
+      content: ">_ "; 
+      color: var(--primary-color); /* O Roxo (#6200ea) como detalhe sutil */
+    }
+  }
+
+  p {
+    color: var(--text-color); /* Branco (#ffffff) */
+    opacity: 0.9; /* Leve transparência para não cansar a vista */
+    font-size: 1.1em;
+    line-height: 1.7;
+    margin-bottom: 20px;
+
+    &.highlight {
+      color: var(--text-color);
+      border-bottom: 1px dashed var(--accent-color);
+      padding-bottom: 2px;
+      display: inline;
+    }
+
+    &.footer-note {
+      font-size: 0.85em;
+      opacity: 0.6;
+      text-align: center;
+      margin-top: 30px;
+      font-style: italic;
+    }
+  }
+}
+
+/* O BOTÃO NATIVO */
+a.rqs-archive-button {
+  display: inline-block !important;
+  background-color: transparent !important;
+  
+  color: var(--accent-color) !important; /* Texto Verde Neon */
+  border: 1px solid var(--accent-color) !important; /* Borda Verde Neon */
+  
+  padding: 14px 35px !important;
+  text-decoration: none !important;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  cursor: pointer;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+
+  /* Efeito Hover: Inverte as cores e brilha */
+  &:hover {
+    background-color: var(--accent-color) !important; /* Fundo Verde Neon */
+    color: var(--bg-color) !important; /* Texto Preto/Escuro (para contraste) */
+    box-shadow: 0 0 25px rgba(6, 253, 18, 0.5); /* O Brilho do Neon */
+    transform: translateY(-2px);
+  }
+}
+
+/* Container para centralizar */
+.rqs-button-center {
+    display: flex;
+    justify-content: center;
+    margin: 35px 0 10px 0;
+}
+
+

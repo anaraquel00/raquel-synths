@@ -1,0 +1,121 @@
+<div class="nav-bar">
+  <button mat-button [routerLink]="['/']" class="back-btn">
+    <mat-icon>arrow_back</mat-icon>
+    {{ text.nav.back }}
+  </button>
+</div>
+
+<div class="creator-container">
+
+  <header class="profile-header">
+    <div class="profile-grid">
+      <div class="profile-photo-container">
+        <img src="images/foto_perfil.jpeg" alt="Ana Raquel Dev" class="photo-broklin">
+        <img src="images/general_perfil.jpg" alt="General Kelma" class="photo-jonah">
+      </div>
+
+      <div class="profile-bio">
+        <h2 class="dev-name">{{ text.profile.name }}</h2>
+        <h3 class="dev-role">{{ text.profile.role }}</h3>
+        <p class="bio-text">{{ text.profile.bio }}</p>
+
+        <div class="social-links">
+          <a href="https://www.linkedin.com/in/ana-raquel-de-holanda" target="_blank" class="social-btn linkedin">
+            {{ text.profile.social.linkedin }}
+          </a>
+          <a href="https://github.com/anaraquel00" target="_blank" class="social-btn github">
+            {{ text.profile.social.github }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+ <section class="manifesto-section fade-in-up">
+    @for (block of text.manifesto; track block.title) {
+      <div class="manifesto-block">
+        <h4>{{ block.title }}</h4>
+        <p>{{ block.content }}</p>
+      </div>
+    }
+  </section>
+
+  <hr class="cyber-divider">
+
+  <section class="skills-section">
+    <h3><mat-icon>memory</mat-icon> {{ text.skills.title }}</h3>
+
+    <div class="skills-grid">
+      @for (category of text.skills.categories; track category.label) {
+        <div class="skill-category">
+          <span class="category-label">{{ category.label }}</span>
+          <div class="chips">
+            @for (tech of category.chips; track tech.name) {
+              <span class="tech-chip" [class]="tech.class" [style]="tech.style || ''">
+                {{ tech.name }}
+              </span>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+
+  <section class="projects-section">
+    <h3><mat-icon>code</mat-icon> {{ text.projects.title }}</h3>
+
+    <div class="projects-grid">
+      @for (project of text.projects.list; track project.title) {
+        <div class="project-card" [class]="project.cardClass">
+          <div class="card-header">
+            <h4>{{ project.title }}</h4>
+            <span class="badge" [class]="project.badgeClass">{{ project.badge }}</span>
+          </div>
+          <p>{{ project.desc }}</p>
+          <div class="card-techs">
+            @for (t of project.techs; track t) { <small>{{ t }}</small> }
+          </div>
+          <a [href]="project.link" target="_blank" class="project-link">{{ project.linkText }}</a>
+        </div>
+      }
+    </div>
+  </section>
+
+  <hr class="cyber-divider">
+
+  <section class="business-section">
+    <h3>
+      <mat-icon>business_center</mat-icon>
+      {{ text.business.title }}
+    </h3>
+
+    <div class="business-terminal">
+     <div class="terminal-head">
+  <span class="status-led"></span>
+
+  <span class="status-text">
+    <span class="msg-broklin">{{ text.business.status }}</span>
+
+    <span class="msg-jonah">{{ text.business.statusJonah }}</span>
+  </span>
+ </div>
+
+      <div class="terminal-body">
+        <p>{{ text.business.desc }}</p>
+
+        <div class="biz-actions">
+          <a href="mailto:anaraquel00@gmail.com?subject=Business%20Inquiry%20-%20RQS" class="action-btn email">
+            <mat-icon>mail</mat-icon>
+            {{ text.business.actionEmail }}
+          </a>
+
+          <a href="https://www.linkedin.com/in/ana-raquel-de-holanda" target="_blank" class="action-btn linkedin">
+            <mat-icon>work</mat-icon>
+            {{ text.business.actionLinkedin }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>

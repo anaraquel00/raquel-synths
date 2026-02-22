@@ -1,0 +1,565 @@
+/* src/app/pages/home/home.scss */
+@use '@angular/material' as mat;
+
+.home-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.hero-actions {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+// Container do Grid
+// Container que divide a tela
+.hero-split-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; // 50% para cada lado
+  gap: 25px; // Espaço entre eles
+  max-width: 1110px; // Largura máxima para não ficar gigante
+  margin: 30px auto; // Centraliza e dá espaço do título
+  align-items: stretch; // Força ambos a terem a mesma altura visual
+  width: 100%;
+  padding: 0 20px; // Margem de segurança nas laterais
+
+  // RESPONSIVIDADE (Celular fica um embaixo do outro)
+  @media (max-width: 850px) {
+    grid-template-columns: 1fr; // Um embaixo do outro
+    gap: 30px;
+    
+    // Se quiser que o Spotify apareça ANTES do Banner no celular, descomente:
+    // .right-col { order: 1; }
+    // .left-col { order: 2; }
+  }
+}
+
+// Garante que o conteúdo preencha a coluna
+.grid-col {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+// Ajuste Fino para o Alerta preencher o espaço
+.alert-wrapper {
+  width: 100%;
+  height: 100%; // Garante que ele estique
+  
+  // Força o componente angular a preencher a div
+  app-system-alert {
+    display: block;
+    height: 100%;
+  }
+}
+
+/* =========================================
+   SMART CARD SPOTIFY (Deep Link) 
+   ========================================= */
+.rqs-spotify-card {
+  background: linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(10, 10, 10, 0.95));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 400px; /* Mantém o card elegante na grid */
+  margin: 0 auto; 
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border-left: 4px solid #1DB954; /* Linha de energia verde do Spotify */
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: rgba(29, 185, 84, 0.6);
+  }
+
+  
+  .card-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    .icon-pulse {
+      font-size: 2.2rem;
+      animation: pulseSpotify 2s infinite;
+    }
+
+    .text-data {
+      h3 {
+        color: #00f3ff;
+        font-size: 1.2rem;
+        margin: 0 0 5px 0;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: bolder;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      p {
+        color: #ffffff;
+        font-size: 0.95rem;
+        font-weight: bold;
+        line-height: 1.4;
+        margin: 0;      
+      }
+    }
+  }
+
+  .btn-spotify-deep {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    background-color: #1DB954; /* Verde Oficial */
+    color: #000; /* Texto preto no botão verde para contraste letal */
+    text-decoration: none;
+    padding: 12px 20px;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+
+    /* AQUI ESTÁ A COLEIRA DO KRAKEN AZUL */
+    .spotify-logo {
+      width: 22px; 
+      height: 22px;
+      fill: #000; /* Força o ícone a ficar preto */
+    }
+
+    &:hover {
+      background-color: #1ed760;
+      box-shadow: 0px 0px 15px rgba(29, 185, 84, 0.4);
+      transform: scale(1.02);
+    }
+  }
+}
+
+@keyframes pulseSpotify {
+  0% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.1); opacity: 1; text-shadow: 0 0 10px #1DB954; }
+  100% { transform: scale(1); opacity: 0.8; }
+}
+
+/* =========================================
+   2. O MODIFICADOR DE DESTAQUE (Modo Ordem/Broklin)
+   ========================================= */
+.card-broklin {
+  /* Mantém o domínio do Ciano sobre o Verde do Spotify */
+  border-color: rgba(0, 255, 255, 0.4) !important;
+  border-left-color: #00ffff !important; 
+  
+  /* O MOTOR DE LEVITAÇÃO DO CARD INTEIRO */
+  animation: floatCard 4s ease-in-out infinite;
+
+  /* Estilo do Texto Destacado que você sublinhou no HTML */
+  .text-highlight {
+    color: #00ffff;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+  }
+
+  /* O Hover foca o card no usuário (pausa a levitação e aumenta o brilho) */
+  &:hover {
+    animation-play-state: paused; /* Trava o card no ar para facilitar o clique */
+    transform: translateY(-8px) scale(1.02); /* Eleva e aproxima levemente */
+    border-color: #00ffff !important;
+    box-shadow: 0 15px 35px rgba(0, 255, 255, 0.3),
+                inset 0 0 15px rgba(0, 255, 255, 0.1) !important;
+  }
+}
+
+/* =========================================
+   A FÍSICA DA ANIMAÇÃO (Levitação)
+   ========================================= */
+@keyframes floatCard {
+  0% { 
+    transform: translateY(0px);
+    box-shadow: 0 10px 20px rgba(0, 255, 255, 0.1); 
+  }
+  50% { 
+    transform: translateY(-10px); /* O card sobe 10 pixels */
+    box-shadow: 0 25px 40px rgba(0, 255, 255, 0.3); /* A sombra espalha no chão */
+    border-color: rgba(0, 255, 255, 0.8) !important;
+  }
+  100% { 
+    transform: translateY(0px); /* O card desce suavemente */
+    box-shadow: 0 10px 20px rgba(0, 255, 255, 0.1); 
+  }
+}
+
+.btn-uplink {
+  background: transparent;
+  border: 1px solid #00ff00; /* Verde Terminal */
+  color: #00ff00;
+  padding: 15px 35px;
+  font-family: 'Courier New', monospace; /* Fonte Hacker */
+  font-size: 1.1rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 15px;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+
+  &:hover {
+    background: rgba(0, 255, 0, 0.1);
+    box-shadow: 0 0 25px #00ff00; /* Brilho intenso */
+    transform: translateY(-2px);
+    text-shadow: 0 0 5px #00ff00;
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+/* --- HERO SECTION --- */
+.hero-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
+  background: var(--hero-overlay);
+  backdrop-filter: blur(2px);
+
+  /* CONTAINER DO TÍTULO + WIDGET */
+  .title-wrapper {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 65px;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+
+    /* 👇 A CORREÇÃO: Sincronizado com o Header (1280px) */
+    @media (max-width: 1280px) {
+      flex-direction: column; /* Um em cima do outro */
+      align-items: center;
+      gap: 30px;
+    }
+  }
+
+  .hero-title {
+    font-size: 5rem;
+    font-weight: 900;
+    margin-bottom: 0;
+    font-family: var(--font-heading);
+
+    /* Gradiente Animado */
+    background: linear-gradient(90deg, #ffffff 0%, var(--primary-color) 50%, #ffffff 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    animation: shine 6s linear infinite;
+    filter: drop-shadow(0 0 15px rgba(var(--primary-rgb), 0.4));
+
+    /* Ajustes Responsivos */
+    @media (max-width: 1280px) {
+      font-size: 3.5rem; /* Menor em Laptops/Tablets */
+    }
+
+    @media (max-width: 768px) {
+      font-size: 2.5rem; /* Menor ainda em Celulares */
+      letter-spacing: 2px;
+    }
+  }
+
+  /* Animação */
+  @keyframes shine { to { background-position: 200% center; } }
+
+  /* Subtítulo */
+  .hero-subtitle {
+    font-size: 1.5rem;
+    max-width: 600px;
+    margin-bottom: 2rem;
+    color: var(--text-color);
+    opacity: 0.9;
+
+    @media (max-width: 768px) { font-size: 1.1rem; }
+  }
+
+  /* Botão CTA */
+  .hero-cta {
+     /* Estilos do botão (mantidos iguais para não quebrar) */
+     font-size: 1.2rem !important;
+     letter-spacing: 3px;
+     text-transform: uppercase;
+     font-weight: 900;
+     padding: 15px 40px !important;
+     border: 2px solid var(--accent-color) !important;
+     color: var(--accent-color);
+     background: transparent;
+
+     &:hover {
+       background-color: var(--accent-color);
+       color: #000;
+     }
+  }
+}
+
+.music-player-container {
+
+  width: 100%;
+  max-width: 500px; /* Não deixa ficar muito largo em telas grandes */
+  margin: 1.5rem 0; /* Espaço em cima e embaixo para respirar */
+  z-index: 10; /* Garante que fique clicável */
+
+  iframe {
+    background-color: #000;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); /* Sombra Cyberpunk */
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.02); /* Leve zoom quando passa o mouse */
+    }
+  }
+}
+
+/* ========================================= */
+/* 🔥 MODO JONAH: FIRE GOD EDITION */
+/* ========================================= */
+
+/* 1. Definimos a animação do fogo correndo */
+@keyframes magma-flow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+:host-context(body.mode-jonah) .hero-title {
+  /* RESET: Removemos a cor sólida antiga */
+  color: transparent !important;
+
+  /* A MÁGICA DO DEGRADÊ (Magma/Fogo) */
+  background: linear-gradient(
+    90deg,
+    #ff2a00, /* Vermelho Sangue */
+    #ffcc00, /* Amarelo Núcleo */
+    #ff2a00  /* Vermelho Sangue (Repete pra fechar o loop) */
+  );
+
+  background-size: 200% auto; /* O segredo pro movimento */
+
+  /* RECORTA O FUNDO NO FORMATO DA LETRA */
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  /* O BRILHO EXTERNO (Use drop-shadow em vez de text-shadow aqui) */
+  filter: drop-shadow(0 0 15px rgba(255, 69, 0, 0.8));
+
+  /* ANIMAÇÃO: Troquei o panic-shake pelo magma-flow */
+  animation: magma-flow 2s linear infinite;
+
+  /* Mantendo layout */
+  letter-spacing: 5px !important;
+  position: relative;
+  z-index: 1;
+}
+
+/* A FUMAÇA (AGORA VISÍVEL) */
+:host-context(body.mode-jonah) .hero-title::before {
+  content: attr(data-text); /* Puxa o texto do HTML */
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+
+  /* Z-INDEX: Se o fundo do site for preto, -1 funciona.
+     Se não aparecer, mude para '1' e adicione 'mix-blend-mode: screen' */
+  z-index: -1;
+
+ /* COR MAIS FORTE: Começa Verde Radioativo */
+  color: #00ff00;
+
+  /* MENOS BLUR NO INÍCIO para você ver que ela existe */
+  filter: blur(2px);
+
+  /* Duração mais rápida pra gente testar */
+  animation: toxic-smoke 1s infinite linear;
+
+  /* Garante que o mouse não interaja com a fumaça */
+  pointer-events: none;
+}
+
+/* ANIMAÇÃO REFEITA: Sobe e Dissolve */
+@keyframes toxic-smoke {
+  0% {
+    opacity: 0.8; /* Começa quase sólido */
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(2px);
+    color: #ff3300; /* Laranja Fogo */
+  }
+  40% {
+    opacity: 0.6;
+    transform: translate3d(0, -15px) scale(1.1); /* Sobe um pouco */
+    color: #555555; /* Vira Fumaça Cinza */
+    filter: blur(6px);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(0, -40px) scale(1.5) rotate(5deg); /* Sobe muito */
+    filter: blur(20px);
+  }
+}
+
+/* ========================================= */
+
+/* ESTADO PADRÃO (Modo Ordem / Broklin Ativo) */
+.card-jonah {
+  display: none !important; /* Esconde o Jonah por padrão */
+}
+
+/* ESTADO HACKEADO (Modo Caos / Jonah Ativo) */
+:host-context(.mode-jonah) {
+  
+  .card-broklin {
+    display: none !important;
+  }
+
+  .card-jonah {
+    display: flex !important;
+    border-left: 4px solid #ff3300; /* Vermelho Cyberpunk Agressivo */
+    background: linear-gradient(135deg, rgba(30, 0, 0, 0.9), rgba(10, 10, 10, 0.95)); /* Fundo com tom de sangue oxidado */
+    box-shadow: 0 10px 30px rgba(255, 51, 0, 0.15); /* Brilho vermelho de fundo */
+    border-radius: 1px;
+    &:hover {
+      border-color: #ff3300; /* Vermelho intenso translúcido */
+      /* Opcional: Aumenta o brilho vermelho no hover para mais agressividade */
+      box-shadow: 0 15px 40px rgba(255, 51, 0, 0.3);
+      transform: translateY(-3px) scale(1.01);
+    }
+
+    /* Sobrescrevendo a Fonte do Título para parecer um Terminal Corrompido */
+    h3 {
+      color: #ffcc00 !important; /* Amarelo Radioativo para combinar com o ícone */
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-shadow: 0px 0px 8px rgba(255, 204, 0, 0.5);
+    }
+
+    .warning-icon {
+      color: #ffcc00;
+      text-shadow: 0 0 15px rgba(255, 204, 0, 0.8);
+      animation: pulseRadioactive 2s infinite;
+    }
+
+    /* O BOTÃO DE AUTODESTRUIÇÃO (CTA Otimizado) */
+    .btn-spotify-deep {
+      background-color: #ff3300; 
+      color: #ffffff;
+      border: 1px solid #ff3300;
+      border-radius: 1px;
+      font-family: 'Courier New', Courier, monospace; /* Tipografia de Código */
+      font-weight: bold;
+      letter-spacing: 1.5px;
+      box-shadow: 0px 0px 15px rgba(255, 51, 0, 0.4);
+
+      .spotify-logo {
+        fill: #ffffff; /* Logo branco para contraste máximo */
+      }
+
+      /* Efeito de Curto-Circuito no Hover */
+      &:hover {
+        background-color: transparent; 
+        border-color: rgba(255, 51, 0, 0.8);
+        color: rgb(255, 51, 0);
+        box-shadow: 0 15px 40px rgba(255, 51, 0, 0.3);
+        transform: translateY(-3px) scale(1.01);
+
+        .spotify-logo {
+          fill: #ff3300; /* Logo fica vermelho quando passa o mouse */
+        }
+      }
+    }
+  }
+}
+
+/* Animação para a área global do CSS */
+@keyframes pulseRadioactive {
+  0% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.1); opacity: 1; text-shadow: 0 0 20px #ffcc00; }
+  100% { transform: scale(1); opacity: 0.8; }
+}
+
+/* 👇 COLE NO FINAL DO home.component.scss */
+
+:host-context(.mode-jonah) {
+
+  .btn-uplink {
+    /* Troca o Verde pelo Laranja */
+    border-color: #ff9900;
+    color: #ff9900;
+
+    /* Estética Industrial: Borda Tracejada */
+    border-style: dashed;
+
+    /* Sombra de Fogo */
+    box-shadow: 0 0 10px rgba(255, 153, 0, 0.3);
+
+    &:hover {
+      background: rgba(255, 153, 0, 0.1); /* Fundo Laranja fraco */
+      box-shadow: 0 0 30px #ff9900; /* Brilho de metal quente */
+      text-shadow: 0 0 8px #ff9900;
+      border-style: solid; /* Fica sólido quando passa o mouse (efeito tátil) */
+    }
+  }
+}
+
+/* ========================================= */
+
+// No final do home.component.scss
+
+// RESPONSIVIDADE (Celular)
+@media (max-width: 850px) {
+  .hero-section {
+      // GARANTIA 1: Remove padding lateral excessivo do pai no mobile
+      padding-left: 10px;
+      padding-right: 10px;
+      overflow-x: hidden; // Impede que o que vazar crie barra de rolagem
+  }
+
+  .hero-split-grid {
+    grid-template-columns: 1fr; // Um embaixo do outro
+    gap: 35px; // Aumentei o respiro entre eles
+    
+    // GARANTIA 2: Força a largura a ser 100% do espaço disponível, nem um pixel a mais.
+    width: 100%; 
+    max-width: 100vw; // Viewport Width
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0; // Remove padding interno do grid se houver
+  }
+
+  // O Alerta (Card de cima)
+  .left-col {
+    margin-bottom: 10px;
+    // GARANTIA 3: Certifica que o card não seja maior que a tela
+    max-width: 100%; 
+  }
+  
+  // O Spotify (Card de baixo)
+  .right-col {
+      max-width: 100%;
+      iframe {
+          // Garante que o iframe não estoure
+          max-width: 100%; 
+      }
+  }
+}

@@ -1,0 +1,105 @@
+<section class="store-container">
+
+  <div class="store-header">
+    <button class="back-btn" (click)="goBackHome()">
+      &larr; {{ currentLang() === 'pt' ? 'VOLTAR À BASE' : 'BACK TO BASE' }}
+    </button>
+
+    <div class="mode-alert-banner">
+      <div class="alert-content broklin-msg">
+        <span>{{ currentLang() === 'pt' ? '⚠️ Procurando a butique do Rust & Lord?' : '⚠️ Looking for the Rust & Lord boutique?' }}</span>
+        <strong>{{ currentLang() === 'pt' ? 'ATIVE O MODO JONAH! 💀' : 'TURN ON JONAH MODE! 💀' }}</strong>
+      </div>
+      <div class="alert-content jonah-msg">
+        <span>{{ currentLang() === 'pt' ? '🛡️ Muito pesado pra você?' : '🛡️ Too heavy for you?' }}</span>
+        <strong>{{ currentLang() === 'pt' ? 'VOLTE PARA A SEGURANÇA! 💠' : 'RETURN TO SAFETY! 💠' }}</strong>
+      </div>
+    </div>
+
+    <h1 class="glitch-title" data-text="NEON STORE">NEON STORE</h1>
+    <p class="subtitle">Official Merch // Print-on-Demand Protocol</p>
+  </div>
+
+  @if (currentView === 'LOBBY') {
+    <app-store-departments
+      [departments]="visibleDepartments"
+      [currentLang]="currentLang()"
+      (selectDept)="onDepartmentSelected($event)">
+    </app-store-departments>
+  }
+
+  @if (currentView === 'MINI_STORE') {
+
+    <div class="mini-store-container">
+
+      <div class="sub-nav">
+  <button class="back-to-dept-btn" (click)="backToLobby()">
+    &larr; {{ currentLang() === 'pt' ? 'ESCOLHER OUTRO SETOR' : 'CHOOSE ANOTHER SECTOR' }}
+  </button>
+
+  <div class="sector-header" [class.jonah-mode]="isJonahSector(selectedDepartmentId)">
+
+    <div class="hazard-stripe"></div>
+
+    <h2 class="sector-label">
+       <span class="folder-icon">📂</span> {{ selectedDepartmentId | uppercase }}
+    </h2>
+
+    <div class="hazard-stripe bottom"></div>
+  </div>
+ </div>
+
+      <div class="product-grid">
+
+        <div class="product-card" *ngFor="let item of filteredProducts" [class]="item.faction">
+          <div class="image-wrapper">
+            <img [src]="item.image" [alt]="item.content[currentLang()].name">
+            <div class="overlay"></div>
+          </div>
+
+          <div class="info">
+            <h3>{{ item.content[currentLang()]?.name }}</h3>
+
+            <p class="desc" [innerHTML]="item.content[currentLang()]?.description"></p>
+
+            <div class="price-row">
+              <span class="price">{{ item.content[currentLang()]?.price }}</span>
+
+              <button
+  (click)="handleShopClick(item.stripeUrl)"
+  class="btn-neon"
+  [disabled]="item.status === 'sold_out'"
+  [class.sold-out-mode]="item.status === 'sold_out'">
+
+  @if (item.status === 'sold_out') {
+     {{ currentLang() === 'pt' ? 'ESGOTADO 🚫' : 'SOLD OUT 🚫' }}
+  } @else {
+     {{ currentLang() === 'pt' ? 'DECODIFICAR ACESSO 🔓' : 'DECODE ACCESS 🔓' }}
+     <i class="ph-tag"></i>
+  }
+
+             </button>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="filteredProducts.length === 0" class="empty-state">
+          <p>⚠️ {{ currentLang() === 'pt' ? 'Nenhum item encontrado neste setor.' : 'No items found in this sector.' }}</p>
+        </div>
+
+      </div>
+    </div>
+  }
+ <div class="legal-footer">
+    <small>
+      {{ currentLang() === 'pt'
+         ? '* Nota de Transparência: Loja Híbrida. Alguns itens são links afiliados e outros são Merch Oficial (Stripe/PoD). Ao comprar, você apoia o projeto RaQuel Synths sem custo extra.'
+         : '* Transparency Note: Hybrid Store. Some items are affiliate links, others are Official Merch (Stripe/PoD). By purchasing, you support the RaQuel Synths project at no extra cost.'
+      }}
+      <br>
+      <a [routerLink]="['/compliance']" class="compliance-link">
+        {{ currentLang() === 'pt' ? '>> VER PROTOCOLOS DE COMPLIANCE' : '>> VIEW COMPLIANCE PROTOCOLS' }}
+      </a>
+    </small>
+  </div>
+</section>

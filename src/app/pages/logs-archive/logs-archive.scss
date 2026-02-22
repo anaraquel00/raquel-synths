@@ -1,0 +1,363 @@
+ /* --- CONTÊINER PRINCIPAL --- */
+ .archive-container {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 40px;
+  color: #e0e0e0;
+  background: hsla(240, 13%, 5%, 0.839); /* Fundo mais sólido para leitura */
+  border-radius: 16px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(var(--neon-cyan-rgb), 0.2);
+ }
+
+ /* --- CABEÇALHO --- */
+ .blog-header {
+  text-align: center;
+  margin-bottom: 60px;
+  padding-bottom: 30px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+
+  h1 {
+    font-size: 3rem;
+    color: var(--neon-cyan);
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    word-wrap: break-word;
+  }
+  .subtitle { font-size: 1.2rem; opacity: 0.8; }
+ }
+
+ /* --- O POST (CARTÃO) --- */
+ .blog-post {
+  background: rgba(0, 0, 0, 0.78);
+  padding: 40px;
+  border-radius: 12px;
+  margin-bottom: 50px;
+  border: 1px solid #2a2a2a;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+
+  /* Cabeçalho do post (Data e Título) */
+  .post-header {
+    margin-bottom: 30px;
+    border-left: 5px solid var(--neon-purple);
+    padding-left: 20px;
+
+    .post-date {
+      font-size: 0.9rem;
+      color: var(--neon-cyan);
+      font-weight: bold;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .post-title {
+      font-size: 2.2rem;
+      margin: 0;
+      color: #fff;
+      line-height: 1.2;
+      word-wrap: break-word;
+    }
+  }
+
+  /* --- IMAGEM (ESTILO GERAL) --- */
+  .post-image {
+     border-radius: 8px;
+     overflow: hidden;
+     border: 1px solid #333;
+     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+     margin-bottom: 25px;
+
+     /* 🛠️ CORREÇÃO MOBILE: Altura Automática */
+     height: auto;
+     width: 100%;
+
+     img {
+       width: 100%;
+       height: 100%;
+       /* Garante que a foto apareça INTEIRA, sem cortar nada */
+       object-fit: contain;
+       display: block;
+       transition: transform 0.5s ease;
+     }
+     &:hover img { transform: scale(1.02); }
+  }
+
+  /* --- TEXTO --- */
+  .post-content-wrapper {
+     .post-text {
+        font-size: 1.15rem;
+        line-height: 1.8;
+        color: #d0d0d0;
+        margin-bottom: 25px;
+      }
+  }
+
+  /* --- LAYOUT DESKTOP (LADO A LADO) --- */
+  @media (min-width: 900px) { /* Aumentei um pouco o breakpoint para tablets verem coluna única */
+    /*
+     🔥 OPERAÇÃO DEMOLIÇÃO 🔥
+     Nós REMOVEMOS o 'display: flex' da .post-body.
+     Agora, os elementos vão empilhar naturalmente (bloco sobre bloco),
+     criando o visual de "Jornal" onde a imagem fica grande acima do texto.
+  */
+
+  /* Apenas garantimos que a imagem tenha um respiro embaixo dela antes do texto começar */
+  .post-image {
+    margin-bottom: 40px; /* Aumentei um pouco para dar mais elegância no desktop */
+    /* Se a imagem ficar ALTA demais no desktop, você pode limitar aqui.
+       Descomente a linha abaixo se precisar: */
+     max-height: 350px; object-fit: cover; 
+  }
+
+  /* Opcional: Aumentar um pouco a fonte no desktop para leitura mais confortável */
+  .post-content-wrapper .post-text {
+      font-size: 1.25rem;
+  }
+
+    /* .post-image {
+      flex: 1 1 45%;
+      margin-bottom: 0;
+      /* No desktop, fixamos uma altura máxima elegante, mas sem cortar o conteúdo vital */
+     
+
+      img {
+        /* No desktop, 'cover' fica mais bonito para preencher o quadro,
+           mas se preferir ver tudo, mude para 'contain' aqui também */
+        object-fit: cover;
+      }
+    }
+    
+  }
+ 
+
+ /* --- CAIXAS AUXILIARES --- */
+ .jonah-box {
+  background: rgba(255, 69, 0, 0.1);
+  border-left: 4px solid #ff4500;
+  border-radius: 1px;
+  padding: 20px;
+  margin: 30px 0;
+  font-style: italic;
+  color: #ffdac1;
+  font-size: 1.05rem;
+ }
+
+ .tech-box {
+  ::ng-deep .btn-stream-log {
+  display: inline-block;
+  margin-top: 20px; /* Um pouco mais de ar em cima */
+  padding: 12px 25px; /* Botão mais gordinho clicável */
+
+  /* Estilo Base (Repouso) */
+  background: rgba(0, 0, 0, 0.3); /* Fundo levemente escuro */
+  border: 1px solid var(--neon-cyan);
+  color: var(--neon-cyan);
+  text-decoration: none;
+  font-family: 'Orbitron', sans-serif; /* Se tiver, senão usa a padrão */
+  font-weight: bold;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Transição elástica */
+
+  /* Efeito de Ícone antes do texto (Opcional, mas fica chique) */
+  &::before {
+    content: '▶'; /* Símbolo de Play */
+    margin-right: 8px;
+    font-size: 0.7rem;
+    transition: transform 0.3s ease;
+  }
+
+  /* --- O HOVER QUE ACENDE TUDO --- */
+  &:hover {
+    /* Preenche com a cor Neon (O "Verde" do Header) */
+    background: var(--neon-cyan);
+
+    /* Texto vira Branco Puro para "clarear" ao máximo */
+    color: #ffffff;
+
+    /* Adiciona um brilho no próprio texto para ele não sumir */
+    text-shadow: 0 0 2px #000, 0 0 5px #000;
+
+    /* O Brilho externo explode na cor Neon */
+    box-shadow:
+      0 0 15px var(--neon-cyan),
+      0 0 40px var(--neon-cyan);
+
+    border-color: #fff; /* Borda branca (núcleo de energia) */
+    transform: translateY(-3px);
+    letter-spacing: 2px;
+  }
+
+  /* Animaçãozinha na seta de play */
+  &:hover::before {
+    transform: translateX(3px); /* A setinha anda pro lado */
+  }
+
+  /* Efeito de clique (Active) */
+  &:active {
+    transform: translateY(-1px);
+    box-shadow: 0 0 5px var(--neon-cyan);
+  }
+ }
+
+ }
+
+ /* --- FOOTER E EXTRAS --- */
+ .cyber-divider {
+  border: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--neon-purple), transparent);
+  margin: 60px 0; opacity: 0.5;
+}
+
+ .blog-footer {
+  text-align: center; margin-top: 60px; border-top: 1px solid #333; padding-top: 30px;
+  .btn-back {
+    background: transparent; border: 2px solid var(--neon-cyan); color: var(--neon-cyan);
+    padding: 15px 30px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 20px;
+    &:hover { background: var(--neon-cyan); color: #06fd12; box-shadow: 0 0 20px var(--neon-cyan); }
+  }
+ }
+
+ /* =========================================
+   REDEFINIÇÃO TOTAL: O MANIFESTO INDUSTRIAL (Modo Jonah)
+   Meta: Igualar a estética agressiva dos System Logs da Home
+   ========================================= */
+ :host-context(.mode-jonah) {
+  .archive-container {
+    background: rgba(30, 0, 0, 0.95) !important; /* Fundo de metal escuro e quente */
+    border: 2px solid #ff0000 !important; /* Borda vermelha agressiva */
+    box-shadow: 0 0 30px rgba(255, 0, 0, 0.8) !important; /* Brilho vermelho de fundo */
+    border-radius: 1px !important; /* Cantos vivos, industriais */
+  }
+  .blog-post{
+    background: rgba(30, 0, 0, 0.95) !important; /* Fundo de metal escuro e quente */
+    border: 0px solid #ff0000 !important; /* Borda vermelha agressiva */
+    border-left: 1px solid rgb(255, 0, 0) !important; /* Barra lateral de perigo extrema */
+    box-shadow: 0 5px 15px rgba(255, 0,0.15) !important; /* Brilho vermelho de fundo */
+    border-radius: 0px !important; /* Cantos vivos, industriais */
+  }
+  .post-title {
+    color: #ff0000 !important; /* Vermelho Sangue */
+    text-shadow: 0 0 5px rgba(255, 0, 0, 0.7);
+  }
+ 
+  .blog-header h1 {
+    color: #ff0000; /* Vermelho Sangue */
+    text-shadow: 0 0 5px rgba(255, 0, 0, 0.7);
+  }
+
+  /* --- A CAIXA PRINCIPAL (.tech-box) --- */
+  .tech-box {
+    /* Fundo: Um painel de metal escuro e quente, não mais preto total */
+    background: linear-gradient(135deg, rgba(30, 0, 0, 0.95), rgba(10, 0, 0, 0.98)) !important;
+
+    /* Borda: Agressiva, vermelho-sangue */
+    border: 2px solid #ff0000 !important;
+    /* A barra lateral grossa de perigo extrema */
+    border-left: 1px solid rgb(255, 0, 0) !important;
+
+    box-shadow: 0 5px 15px rgba(255, 0,0.15) !important;
+    border-radius: 0px !important; /* Cantos vivos, industriais */
+    padding: 0 !important; /* Remove padding externo para o cabeçalho encostar na borda */
+    margin-top: 15px !important;
+    overflow: hidden; /* Garante que o cabeçalho não vaze */
+  }
+
+  /* --- O CABEÇALHO DA CAIXA ([ DEV_NOTES ]) --- */
+  /* Transformamos isso numa barra de alerta sólida */
+  .tech-label {
+    display: block !important;
+    background-color: #ff0000 !important; /* Fundo Vermelho Sólido */
+    color: #000000 !important; /* Texto Preto para contraste máximo e agressivo */
+    font-family: 'Courier New', Courier, monospace !important;
+    font-weight: 1000 !important;
+    letter-spacing: 3px !important;
+    padding: 6px 10px !important;
+    text-transform: uppercase !important;
+    border-bottom: 1px solid #800000 !important; /* Sombra da barra */
+
+    /* (Opcional) Adiciona um ícone de perigo via CSS antes do texto */
+    &::before {
+        content: '⚠️ ALERTA DO SISTEMA // ';
+        font-weight: 1000 !important;
+    }
+  }
+
+  /* --- O CORPO DO TEXTO (Vindo do Firebase) --- */
+  .tech-box ::ng-deep .tech-body {
+    padding: 15px !important; /* Recoloca o espaço interno */
+    padding-top: 0px !important; /* Dá um respiro extra em cima para o texto não colar na barra vermelha */
+    
+    /* Uma textura sutil de metal arranhado no fundo do texto */
+    background-image: repeating-linear-gradient(
+      45deg, transparent, transparent 5px, rgba(255,0,0,0.05) 5px, rgba(255,0,0,0.05) 10px
+    ) !important;
+
+    /* O texto em si */
+    * {
+        font-family: 'Courier New', Courier, monospace !important;
+        color: #00ff00 !important;
+        text-shadow: 0 0 10px rgba(0, 255, 0, 0.6) !important;
+        line-height: 1.5 !important;
+        font-size: 1.05rem !important;
+    }
+
+    /* Títulos e negritos internos do Firebase */
+    h1, h2, strong, b {
+        color: #ff0000 !important; /* Vermelho para destaques */
+        font-weight: 900 !important;
+        text-transform: uppercase !important;
+    }
+    h3{
+        color: #ff4500 !important; /* Laranja para subtítulos */
+        font-weight: bold !important;
+        font-size: 2rem !important;
+    }
+
+    /* Links dentro do texto */
+    a {
+      color: #ffffff !important;
+      text-decoration: underline;
+      background-color: #ff0000;
+      padding: 2px 5px;
+      &:hover { color: #000 !important; background-color:#ff0000 !important; }
+    }
+  }
+
+  .blog-footer {
+    border-top: 1px solid #ff4500; // Mudei a borda superior também pra combinar!
+    border-radius: 1px;
+
+    .btn-back {
+      border: 2px solid #ff4500;
+      color: #ff4500;
+
+      &:hover {
+        background: #320000e6; // Aquele vermelho sangue escuro
+        color: #ff4500;
+        box-shadow: 0 0 20px #ff4500; // Brilho Laranja
+        border-color: #ff4500;
+      }
+    }
+  }
+ }
+
+/* --- MOBILE FINE TUNING --- */
+ @media (max-width: 768px) {
+  .archive-container { width: 95%; padding: 15px 15px; margin: 20px auto; }
+  .blog-header h1 { font-size: 2.3rem; }
+  .blog-post { padding: 18px; }
+  .blog-post .post-title { font-size: 1.6rem; }
+
+  /* Garante que a imagem não corte em baixo no celular */
+  .blog-post .post-image {
+    height: auto !important;
+    max-height: none !important;
+  }
+}

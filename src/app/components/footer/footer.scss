@@ -1,0 +1,148 @@
+.rqs-footer {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--footer-bg);
+  color: var(--footer-text);
+  transition: background-color 0.5s ease, color 0.5s ease;
+  border-top: 4px solid var(--primary-color); /* Engrossei a borda para dar peso */
+  padding-bottom: 1rem;
+  padding-top: 1rem;
+}
+
+.footer-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap; /* Garante que não quebre no celular */
+  justify-content: space-between;
+  max-width: 1000px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.footer-divider {
+  border: none;
+  /* Efeito de brilho na linha separadora */
+  background: radial-gradient(circle, var(--primary-color) 0%, transparent 100%);
+  height: 1px;
+  width: 80%;
+  margin: 0 auto 2rem auto;
+  opacity: 0.5;
+}
+
+.footer-column {
+  flex: 1;
+  padding: 1rem;
+  min-width: 200px;
+  text-align: center; /* Centralizado fica mais elegante */
+}
+
+/* Títulos das Colunas */
+.footer-column h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-family: var(--font-heading);
+  color: var(--accent-color);
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+}
+
+.nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-list li {
+  margin-bottom: 8px;
+}
+
+/* Links */
+.footer-column a {
+  color: var(--footer-text);
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 0.95rem;
+  transition: all 0.3s;
+  opacity: 0.8;
+}
+
+.footer-column a:hover {
+  color: var(--accent-color);
+  opacity: 1;
+  text-shadow: 0 0 8px var(--accent-color); /* Brilho neon no hover */
+  letter-spacing: 1px; /* Efeito sutil de expansão */
+}
+
+.copyright-line {
+  margin: 5px 0;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+/* MODO JONAH - Rodapé Industrial */
+:host-context(body.mode-jonah) {
+  .rqs-footer {
+    border-top-style: dashed; /* Linha tracejada industrial */
+  }
+  .footer-column h3 {
+    text-transform: uppercase;
+    border-bottom: 2px solid #bf360c;
+    display: inline-block;
+  }
+}
+
+.input-group {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap; /* Para mobile */
+}
+
+.input-group input {
+  padding: 10px 15px;
+  border-radius: 4px;
+  border: 1px solid var(--primary-color);
+  background: rgba(0,0,0,0.5);
+  color: #fff;
+  width: 250px;
+  outline: none;
+  font-family: 'Roboto', sans-serif;
+}
+
+.input-group input:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 10px var(--accent-color);
+}
+
+
+
+/* Modo Jonah para a Newsletter */
+:host-context(body.mode-jonah) .newsletter-section {
+  border-bottom: 2px dashed #bf360c;
+  background: rgba(20, 0, 0, 0.8);
+}
+
+/* --- RESPONSIVIDADE MOBILE --- */
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column; /* Empilha as colunas */
+    align-items: center; /* Centraliza tudo */
+    gap: 2rem; /* Espaço entre os blocos */
+  }
+
+  .footer-column {
+    text-align: center; /* Texto centralizado */
+    min-width: 100%; /* Ocupa a largura toda */
+    padding: 0;
+  }
+
+  .nav-list li {
+    margin-bottom: 12px; /* Mais espaço para o dedo clicar */
+  }
+
+  /* Ajuste dos botões de doação para não ficarem grudados */
+  .donate-btn {
+    width: 80%;
+    margin: 5px auto;
+  }
+}
