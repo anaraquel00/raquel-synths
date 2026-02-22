@@ -130,7 +130,7 @@ export const CREATOR_DATA = {
     },
     profile: {
       name: 'Ana Raquel de Holanda',
-      role: 'Creative Technologist & Front-End Developer 🚀',
+      role: 'AI Music Designer & Front-End Developer 🚀',
       // 👇 AQUI ESTÁ O MANIFESTO REFATORADO E PROFISSIONAL
       bio: "Tech Lead e Engenheira de Software no projeto RaQuel Synths. Especialista em unir arquitetura Angular 20+, Automação e IA Generativa para criar produtos digitais escaláveis. Minha missão é transformar requisitos complexos em narrativas interativas.",
       social: {
@@ -240,7 +240,7 @@ export const CREATOR_DATA = {
     nav: { back: 'BACK TO BASE' },
     profile: {
       name: 'Ana Raquel de Holanda',
-      role: 'Creative Technologist & Front-End Developer 🚀',
+      role: 'AI Music Designer & Front-End Developer 🚀',
       bio: "Tech Lead and Software Engineer at RaQuel Synths. Specialist in merging Angular 20+ architecture, Automation, and Generative AI to build scalable digital products. My mission is to turn complex requirements into interactive narratives.",
       social: { linkedin: 'LinkedIn', github: 'GitHub' }
     },

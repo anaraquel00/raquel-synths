@@ -36,39 +36,23 @@ Nossa história não tem fronteiras. O sistema foi construído nativamente para 
 - **Monetização:** Google AdSense Integration (`ads.txt` & Slots Dinâmicos).
 - **Deploy:** Ready for Vercel/Netlify.
 
-# RQS Uplink Protocol 🚀
+# ☁️ Arquitetura Serverless & Data Flow (RQS Cloud)
 
-> Sistema de Automação e CI/CD para Mídias Sociais.
+> Ecossistema de dados dinâmicos impulsionado por Firebase (Cloud Firestore).
 
-Este projeto é o motor de automação que conecta meu desenvolvimento de código diretamente às minhas redes profissionais. Utilizando **n8n** como orquestrador, criei um pipeline que transforma commits do GitHub em conteúdo publicado.
+A RaQuel Synths não depende de back-ends monolíticos ou código legado. Toda a nossa infraestrutura de dados opera em uma arquitetura **100% Serverless**, garantindo latência zero e escalabilidade global para a Horda.
 
-## 🛠️ Como Funciona (Arquitetura)
+## 🛠️ Como Funciona (O Motor de Dados)
 
-O fluxo é disparado automaticamente a cada `git push` neste repositório. O sistema analisa a mensagem do commit em busca de **Tags Inteligentes**:
+Em vez de hardcodar informações estáticas, o nosso front-end em Angular 19+ consome dados reativos (Signals/RxJS) diretamente do nosso banco de dados NoSQL na nuvem (Firebase). 
 
-- `#general`: Define a persona que assina a mensagem (KelmaGeneral).
-- `#linkedin`: Autoriza a publicação externa na rede profissional.
+O nosso *database* é estrategicamente dividido em coleções independentes que alimentam o *Dual Mode Engine* em tempo real:
 
-Se as condições lógicas forem atendidas, o conteúdo é formatado e distribuído em paralelo para:
-1.  **Discord (RQS System):** Para log interno e notificação da equipe.
-2.  **LinkedIn (Perfil Profissional):** Publicação pública via API OAuth2.
+- **`/lore` & `/lore-jonah`:** O sistema puxa os textos narrativos instantaneamente da nuvem, injetando a história correta dependendo se o usuário está no lado Broklin (Ordem) ou Jonah (Caos).
+- **`/discography`:** O nosso catálogo musical é escalável e pode ser atualizado via *database* sem a necessidade de engatilhar novos deploys no front-end.
+- **`/departments` & `/products`:** A estrutura da nossa Neon Store e categorias (como o *Neon Witch*) puxam imagens, links de afiliados e suportam o nosso sistema global nativamente na árvore de dados (ex: campos separados para `pt` e `en`).
 
-## 📸 Visualização do Workflow (n8n)
-
-Abaixo está o diagrama real do fluxo de automação em execução, demonstrando o caminho bem-sucedido do GitHub até o LinkedIn.
-
-![Diagrama do Workflow n8n](public/assets/n8n-workflow-final.png)
-
----
-
-### 🧰 Tech Stack
-
-* **Orquestração:** n8n (Workflow Automation)
-* **Infraestrutura:** Servidor Linux (Ubuntu) + Ngrok (Tunneling)
-* **Integrações (APIs):** GitHub Webhooks, Discord Bot API, LinkedIn API (OAuth 2.0)
-* **Lógica:** JavaScript (Node.js) e JSON manipulation.
-
----
+Esta abordagem *API-First* e *Serverless* garante que a Visual Novel, a loja e a discografia estejam sempre sincronizadas com o nosso *mainframe* central, permitindo atualizações de conteúdo *Over-The-Air* com performance impecável.
 
 ## 🛍️ Módulo: Neon Store (E-Commerce & Afiliados)
 
@@ -86,23 +70,6 @@ Um módulo desenvolvido para monetizar a marca RQS através de **Marketing de Af
 
 O módulo segue os princípios de **Clean Architecture**, separando estritamente a camada de dados da camada de apresentação.
 
-#### 1. Camada de Dados (`store-data.ts`)
-Atua como a **Single Source of Truth** (Fonte Única de Verdade). Contém IDs, conteúdo localizado e Deep Links de afiliados. Isso permite manutenção do catálogo sem tocar na lógica do componente.
-
-```typescript
-export const STORE_DATA = [
-  {
-    id: 'blazer-tech-lead',
-    image: 'assets/store/blazer.png',
-    // Link de Afiliado gerado via API/Painel
-    stripeUrl: 'https://s.click.aliexpress.com/...', 
-    content: {
-      pt: { name: "Broklin's Executive Shell", price: "VER NA LOJA" },
-      en: { name: "Broklin's Executive Shell", price: "CHECK STORE" }
-    }
-  }
-];
-```
 
 ## 👥 The Squad (Personas & Creators)
 
