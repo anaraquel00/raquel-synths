@@ -3,18 +3,18 @@ import { RenderMode, ServerRoute } from '@angular/ssr';
 export const serverRoutes: ServerRoute[] = [
   {
     path: 'lore-reader/:id',
-    renderMode: RenderMode.Client, // Mantemos CSR aqui, pois rotas dinâmicas com ID são complexas no Firebase Hosting
+    renderMode: RenderMode.Client, // Mantém os episódios individuais vivos!
   },
   {
-    path: 'store', 
-    renderMode: RenderMode.Client, // Loja pode ficar dinâmica
+    path: 'visual-novel', // 👈 ROTA DA LISTA DE EPISÓDIOS
+    renderMode: RenderMode.Client, // 🔥 DEVOLVE A AUTOMAÇÃO DA GENERAL! O `new Date()` volta a funcionar ao vivo.
   },
   {
-    path: '', // 👈 A NOSSA VITRINE PRINCIPAL (Home)
-    renderMode: RenderMode.Prerender, // 🔥 PATCH: Força o Angular a gerar o HTML completo com os Logs!
+    path: '', // 👈 A HOME 
+    renderMode: RenderMode.Prerender, // Deixa a Home congelada SÓ até o dia 2 de março para enganar o AdSense.
   },
   {
-    path: '**', // 👈 Qualquer outra página (Sobre, Contato, etc)
-    renderMode: RenderMode.Prerender // 🔥 PATCH: Tudo será HTML estático para o AdSense ler.
+    path: '**',
+    renderMode: RenderMode.Prerender
   }
 ];
