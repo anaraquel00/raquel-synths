@@ -11,6 +11,7 @@ import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { provideAnalytics, getAnalytics } from '@angular/fire/analytics';
 import { environment } from '../environments/environment';
 
+
 export const appConfig: ApplicationConfig = {
   providers: [
     // Liga o Roteador com transições bonitas e binding de input

@@ -1,5 +1,5 @@
 export const environment = {
-  production: true,
+  production: false,
   firebase: {
     apiKey: "AIzaSyACoel6pTAVvMY--wC1m2aR1BravXVRbnc",
     authDomain:  "raquel-synths-platform.firebaseapp.com",
@@ -10,4 +10,3 @@ export const environment = {
     measurementId: "G-R8E02PM4TL"
   }
 };
-
