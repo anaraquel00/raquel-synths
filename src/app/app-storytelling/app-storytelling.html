@@ -33,7 +33,7 @@
                 <h3 class="title">{{ content?.title }}</h3>
               </div>
 
-              <p class="description-lead">{{ content?.description }}</p>
+              <p class="description-lead" [innerHTML]="content.description | safeHtml"></p>
 
               @if (content?.techContent) {
                 <div class="tech-body" [innerHTML]="content.techContent | safeHtml"></div>
