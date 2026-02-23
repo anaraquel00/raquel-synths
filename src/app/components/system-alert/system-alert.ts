@@ -12,16 +12,6 @@ import { TranslationService } from '../../services/translation.service';
   styleUrl: './system-alert.scss'
 })
 export class SystemAlert implements OnInit, OnDestroy {
-scrollToDiscord() {
-const contatoSection = document.getElementById('contato');
-  
-  if (contatoSection) {
-    // O behavior: 'smooth' cria o efeito de rolagem cinematográfica
-    contatoSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  } else {
-    console.warn('Alvo não encontrado. O sistema de navegação falhou.');
-  }
-}
   
   isJonah = false; // Variável local que controla o template
   private themeObserver: MutationObserver | null = null;

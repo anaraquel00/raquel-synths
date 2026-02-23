@@ -72,6 +72,7 @@ import { Subscription } from 'rxjs';
       background: rgba(20, 0, 0, 0.9);
       box-shadow: 0 0 15px rgba(255, 50, 0, 0.3);
       border-radius: 1px;
+      margin-top:-1rem; ;
 
       &:hover {
         box-shadow: 0 0 30px rgba(255, 50, 0, 0.6);

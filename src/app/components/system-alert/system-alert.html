@@ -1,6 +1,7 @@
 <div class="alert-wrapper-block">
 
   @if (isJonah) {
+    <a routerLink="/visual-novel" class="cyber-alert-link"></a>
     <div class="alert-container jonah-style">
       
       <div class="alert-text-group">
@@ -25,22 +26,30 @@
         </div>
       </div>
 
-      <div class="alert-action">
-        <span class="btn-text locked">
-          🔒 {{ translate.isPt() ? 'SINAL BLOQUEADO' : 'SIGNAL LOCKED' }}
-        </span>
-        <div class="broklin-bypass-terminal">
-  <span class="warning-glitch">⚠️ SYSTEM OVERRIDE:</span>
- <p class="hacker-text">
-    {{ translate.isPt() ? 'Broklin 🧔: Jonah tentou trancar a porta,' : 'Broklin 🧔: Jonah tried to lock the door,' }}
-    <br>
-    {{ translate.isPt() ? 'mas eu tenho a chave mestra.' : 'but I have the master key.' }}
-    <br><br>
-    <span class="discord-backdoor" (click)="scrollToDiscord()">
-     {{ translate.isPt() ? '>_ EXECUTAR BYPASS TO DISCORD' : '>_ EXECUTE BYPASS TO DISCORD' }}
-    </span>
-  </p>
-  </div>
+      <div class="alert-action forensic-mode">
+       <!--  <span class="btn-text">
+           📂 {{ translate.isPt() ? 'ARQUIVO CONFIDENCIAL' : 'CONFIDENTIAL FILE' }}
+        </span> -->
+       <div class="jonah-counter-hack">
+        <span class="warning-glitch">☢️ DATA LEAK DETECTED:</span>
+        <p class="hacker-text">
+       {{ translate.isPt() 
+        ? 'Broklin tentou esconder o passado, mas a ferrugem sempre aparece.' 
+        : 'Broklin tried to hide the past, but rust always shows through.' 
+        }}
+        <br>
+       <span class="highlight-red">
+        {{ translate.isPt() ? 'A SAGA COMEÇA DOMINGO.' : 'THE SAGA BEGINS SUNDAY.' }}
+       </span>
+         <br><br>
+        </p>
+        <span class="discord-backdoor" [routerLink]="['/visual-novel']">
+        {{ translate.isPt() 
+          ? '>_ ACESSO LIBERADO PARA INVESTIGAÇÃO' 
+          : '>_ ACCESS GRANTED FOR INVESTIGATION' 
+        }}
+      </span>
+         </div>
       </div>
 
     </div>

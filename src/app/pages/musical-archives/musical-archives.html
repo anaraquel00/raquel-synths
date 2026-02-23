@@ -28,6 +28,11 @@
                     <i class="fab fa-soundcloud"></i> SoundCloud
                  </a>
              </div>
+             <div class="actions-bar"><a *ngIf="album.spotify || album.embedLink"
+                    [href]="album.spotify ? album.spotify : album.embedLink"
+                    target="_blank" class="btn-listen spotify-btn">
+                    <i class="fab fa-spotify"></i> Spotify
+                 </a></div>
         </div>
       </article>
       <hr class="separator neon-line">
@@ -83,6 +88,11 @@
                     <i class="fab fa-soundcloud"></i> SoundCloud
                  </a>
              </div>
+             <div class="actions-bar"><a *ngIf="album.spotify || album.embedLink"
+                    [href]="album.spotify ? album.spotify : album.embedLink"
+                    target="_blank" class="btn-listen spotify-btn">
+                    <i class="fab fa-spotify"></i> Spotify
+                 </a></div>
         </div>
       </article>
       <hr class="separator hazard-line">

@@ -26,6 +26,7 @@ $jonah-bg: rgba(20, 5, 0, 0.9);
     border-left: 4px solid $neon-blue;
     border-radius: 12px;
     padding: 20px;
+    margin-top: -2rem;
     display: flex;
     flex-direction: row; 
     align-items: center; 
@@ -110,13 +111,51 @@ $jonah-bg: rgba(20, 5, 0, 0.9);
 }
 
 // ---------------------------------------------------------
+// 📱 RESPONSIVIDADE CORRIGIDA (O PATCH DA GENERAL)
+// ---------------------------------------------------------
+@media (max-width: 768px) {
+    // 1. O Container Principal
+    .alert-container {
+        flex-direction: column; // 🛡️ RQS CORE: Empilha texto em cima, botão embaixo
+        align-items: stretch;   // Estica os elementos para preencher a caixa
+        gap: 15px;
+        padding: 15px;
+        height: auto;
+        margin-top: -2.0rem;    // Mantive o seu recuo magnético
+        margin-bottom: -1rem;
+    }
+    
+    .alert-text-group { 
+        width: 100%; 
+    }
+    
+    // 2. O Botão do Modo Broklin
+    .alert-action { 
+        width: 100%; // 🔥 CORREÇÃO: Cortado o 160% que estourava a tela
+        margin-top: 5px; 
+    }
+    .btn-text { 
+        width: 95%; // O botão ocupa a linha inteira no mobile, muito mais clicável
+        padding: 12px; 
+    }
+
+    // 3. 🔥 OS AJUSTES DO MODO JONAH PARA MOBILE
+    :host-context(.mode-jonah) {
+        .jonah-counter-hack {
+            width: 100%; /* No celular, o cofre do Jonah precisa ocupar 100%, senão a fonte quebra */
+        }
+        .btn-text {
+            width: 100% !important; /* Sobrescreve os 60% que o Jonah tinha no desktop */
+        }
+    }
+}
+
+// ---------------------------------------------------------
 // 🔥 MODO JONAH (SOBRESCRIÇÃO SEM QUEBRAR FORMATO)
 // ---------------------------------------------------------
-:host-context(.mode-jonah) {
-    
-    // Forçamos o container a ser laranja no repouso
+:host-context(.mode-jonah) {// Forçamos o container a ser laranja no repouso
     .alert-container.jonah-style {
-        background: $jonah-bg !important;
+        background: $jonah-bg;
         border-color: $jonah-orange !important;
         border-left: 5px solid $jonah-orange !important;
         background-image: linear-gradient(transparent 50%, rgba($jonah-orange, 0.05) 50%);
@@ -127,6 +166,11 @@ $jonah-bg: rgba(20, 5, 0, 0.9);
         &:hover {
             box-shadow: 0 0 30px rgba($jonah-orange, 0.3) !important;
             transform: translateY(-2px); // Mantém o movimento que você criou
+        }
+        @media (max-width: 768px) {
+            padding: 10px; // Ajusta o padding para mobile
+            margin-top: -2.5rem; // Dá um respiro extra no mobile, já que o conteúdo é mais compacto
+            margin-bottom: 1rem; // Evita que fique colado no próximo elemento no mobile
         }
     }
 
@@ -147,12 +191,14 @@ $jonah-bg: rgba(20, 5, 0, 0.9);
         }
     }
 
-    // Botão Bloqueado (Permanente Laranja)
-    .btn-text.locked {
+    // Botão (Permanente Laranja)
+    .btn-text {
        background: rgba($jonah-orange, 0.1) !important; // Mantém fundo transparente/laranja fraco
                 color: $jonah-orange !important; // Mantém texto laranja
                 border-color: $jonah-orange !important; // Mantém borda laranja
                 box-shadow: none !important;
+                width: 60%;
+                padding: 8px;
         
         &:hover {
            background: $jonah-orange !important;
@@ -160,23 +206,88 @@ $jonah-bg: rgba(20, 5, 0, 0.9);
          box-shadow: 0 0 20px $jonah-orange !important;
         }
     }
-}
+ /* =========================================
+   JONAH'S EVIDENCE LOCKER (THE REAL HACK) 
+   ========================================= */
+ .jonah-counter-hack {
+  /* --- TRAVAS DE SEGURANÇA ADICIONADAS --- */
+  width: 63%;               /* Ocupa 100% do espaço disponível, não mais */
+  max-width: 100%;           /* Garante que não estoure nunca */
+  box-sizing: border-box;    /* Inclui o padding no cálculo do tamanho */
+  word-wrap: break-word;     /* Quebra o texto se for muito longo */
+  /* --------------------------------------- */
+ 
+  padding: 15px;
+  background-color: #050505;
+  border: 2px dashed #ff3300;
+  border-left: 5px solid #ff3300;
+  
+  font-family: 'Courier New', Courier, monospace;
+  text-align: left;
+  position: relative;
+  
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(255, 51, 0, 0.05) 10px,
+    rgba(255, 51, 0, 0.05) 20px
+  );
 
-// ---------------------------------------------------------
-// 📱 RESPONSIVIDADE (SEU FORMATO ORIGINAL)
-// ---------------------------------------------------------
-@media (max-width: 768px) {
-    .alert-container {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-        padding: 15px;
-        height: auto;
+  .warning-glitch {
+    color: #ff3300; /* Vermelho Sangue */
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    animation: dangerPulse 0.5s infinite alternate; /* Pisca rápido de alerta */
+  }
+
+  .hacker-text {
+    color: #cccccc; /* Cinza Concreto (Legibilidade) */
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-top: 10px;
+    
+    .highlight-red {
+      color: #ffaa00; /* Laranja Fogo para o destaque da data */
+      font-weight: bold;
+      text-decoration: underline;
+      text-decoration-style: wavy; /* Sublinhado onduado de erro */
     }
-    .alert-text-group { width: 100%; }
-    .alert-action { width: 100%; margin-top: 5px; }
-    .btn-text { width: 95%; padding: 8px; }
-}
+  }
+
+  .discord-backdoor {
+    display: block; /* Botão em linha nova */
+    margin-top: 15px;
+    color: #000;
+    background: #ff3300; /* Fundo Vermelho */
+    padding: 5px 10px;
+    font-weight: bold;
+    text-align: center;
+    clip-path: polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%); /* Corte agressivo */
+    transition: all 0.2s ease-in-out;
+    margin-top: -1rem;
+
+    &:hover {
+      background: #fff; /* Inverte pra branco no hover */
+      color: #ff0000;
+      cursor: crosshair; /* Cursor de mira */
+      box-shadow: 0 0 15px #ff0000;
+      transform: scale(1.02);
+    }
+  }
+  @media (max-width: 768px) {    
+      width: 100%; /* No celular, o cofre do Jonah precisa ocupar 100%, senão a fonte quebra */
+      margin-top: -0.9rem;
+          }
+ }
+ /* Animação para dar vida ao aviso */
+ @keyframes pulseWarning {
+  0% { opacity: 1; }
+  50% { opacity: 0.6; }
+  100% { opacity: 1; }
+ }
+
 
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
@@ -184,57 +295,6 @@ $jonah-bg: rgba(20, 5, 0, 0.9);
     from { box-shadow: 0 0 5px rgba(255, 60, 0, 0.1); }
     to { box-shadow: 0 0 20px rgba(255, 60, 0, 0.4); }
 }
-
-/* =========================================
-   HACK DO BROKLIN - TERMINAL OVERRIDE 
-   ========================================= */
-.broklin-bypass-terminal {
-  margin-top: 1rem;
-  padding: 12px 15px;
-  background-color: rgba(0, 10, 0, 0.85); /* Fundo quase preto esverdeado */
-  border-left: 4px solid #39ff14; /* Linha neon lateral para chamar atenção */
-  border-radius: 4px;
-  font-family: 'Courier New', Courier, monospace; /* Fonte clássica de código */
-  text-align: left;
-  max-width: 400px; /* Mantém o texto compacto e legível no mobile */
-  margin-left: auto;
-  margin-right: auto;
-  box-shadow: 0px 0px 15px rgba(57, 255, 20, 0.1);
-
-  .warning-glitch {
-    color: #ffcc00;
-    font-weight: bold;
-    font-size: 0.9rem;
-    letter-spacing: 1px;
-    animation: pulseWarning 2s infinite;
-  }
-
-  .hacker-text {
-    color: #39ff14; /* Verde Neon Matrix */
-    font-size: 0.85rem;
-    line-height: 1.5;
-    margin-top: 8px;
-    text-shadow: 0px 0px 5px rgba(57, 255, 20, 0.5); /* Brilho neon sutil */
-  }
-
-  .discord-backdoor {
-    color: #00ffff; /* Ciano para o link se destacar do verde */
-    font-weight: bold;
-    text-decoration: none;
-    text-shadow: 0px 0px 8px rgba(0, 255, 255, 0.7);
-    transition: all 0.3s ease-in-out;
-
-    &:hover {
-      color: #ffffff;
-      text-shadow: 0px 0px 12px #00ffff, 0px 0px 20px #00ffff;
-      cursor: pointer;
-    }
-  }
 }
-
-/* Animação para dar vida ao aviso */
-@keyframes pulseWarning {
-  0% { opacity: 1; }
-  50% { opacity: 0.6; }
-  100% { opacity: 1; }
-}
+    
+    

@@ -107,11 +107,11 @@ $glass-border: rgba(255, 255, 255, 0.1);
   }
 }
 
-// --- GRID DOS EPISÓDIOS ---
+// --- GRID DOS EPISÓDIOS (PLANO B: FLEXBOX HOLOGRÁFICO) ---
 .episode-grid {
-  display: grid;
-  // Cria colunas automáticas (Responsivo nativo!)
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* 🔥 A mágica: centraliza os órfãos da última linha */
   gap: 2.5rem;
 }
 
@@ -126,6 +126,8 @@ $glass-border: rgba(255, 255, 255, 0.1);
   position: relative;
   display: flex;
   flex-direction: column;
+  flex: 1 1 300px; /* Cresce, encolhe, mas a base mínima é 300px (igual seu minmax) */
+  max-width: 380px; /* Trava de segurança: impede que o card do Ep 10 fique largo como uma TV quando estiver sozinho no centro */
 
   // Efeito Hover (Quando passa o mouse)
   &:hover {
