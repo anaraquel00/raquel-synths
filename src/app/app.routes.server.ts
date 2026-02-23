@@ -11,10 +11,10 @@ export const serverRoutes: ServerRoute[] = [
   },
   {
     path: '', // 👈 A HOME 
-    renderMode: RenderMode.Prerender, // Deixa a Home congelada SÓ até o dia 2 de março para enganar o AdSense.
+    renderMode: RenderMode.Client, // Deixa a Home congelada SÓ até o dia 2 de março para enganar o AdSense.
   },
   {
-    path: '**',
-    renderMode: RenderMode.Prerender
+    path: '**', // (Sobre, Compliance, Creator)
+    renderMode: RenderMode.Prerender // Essas continuam como estátuas de concreto para o SEO
   }
 ];
