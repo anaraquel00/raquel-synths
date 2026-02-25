@@ -8,12 +8,12 @@ export const routes: Routes = [
     data: { 
       seo: { 
         title: {
-          pt: 'RaQuel Synths | Cyberpunk Visual Novel & Virtual Band',
-          en: 'RaQuel Synths | Cyberpunk Visual Novel & Virtual Band'
+          pt: 'RaQuel Synths | Cyberpunk Sagas & Virtual Band',
+          en: 'RaQuel Synths | Cyberpunk Sagas & Virtual Band'
         },
         description: {
-          pt: 'A guerra digital entre a precisão técnica e o caos. Um experimento musical e narrativa transmídia.',
-          en: 'Broklin\'s Tech vs. Jonah\'s Chaos. A Visual Novel & Musical Experiment. The saga has begun.'
+          pt: 'A guerra digital entre a precisão técnica e o caos. Uma Saga Literária Cyberpunk e experimento musical transmídia.',
+          en: 'Broklin\'s Tech vs. Jonah\'s Chaos. A Cyberpunk Literary Saga & Musical Experiment. The story has begun.'
         }
       } 
     }
