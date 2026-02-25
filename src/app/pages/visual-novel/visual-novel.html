@@ -22,12 +22,12 @@
 
       @else {
         <h1>
-          {{ translate.isPt() ? '🔥 Ecos do Caos' : '🔥 Echoes of Chaos' }}
+          {{ translate.isPt() ? '🔥 ECOS DO CAOS: A ORIGEM' : '🔥 ECHOES OF CHAOS: THE ORIGIN' }}
         </h1>
         <p>
           {{ translate.isPt()
-             ? 'Caos, Ruído e Revolução. Bem-vindo à mente do Lorde Industrial.'
-             : 'Chaos, Noise, and Revolution. Welcome to the Industrial Lord\'s mind.' }}
+             ? 'Antes da Armadura. Antes do Ódio. Descubra como o homem morreu para o monstro nascer.'
+             : 'Before the Armor. Before the Hatred. Discover how man died so that monster could be born.' }}
         </p>
       }
 
@@ -74,20 +74,24 @@
 
           @if (translate.isPt()) {
             <p>
-              <strong>Jonah Cyperfield</strong> não aceita códigos limpos. Para ele, a música é guerra.
-              Enquanto Broklin tenta organizar o caos, Jonah tenta destruir a ordem.
-              Esta é a história vista pelos olhos de quem segura o ferro de solda e a guitarra distorcida.
+              Você conhece o <strong> Lorde Industrial</strong>. Você conhece o grito, a ferrugem e a distorção.
+              Mas você conhece o <strong>Jo Cyborg</strong>?
+              O Broklin contou a versão dele (o romance). A Kelma contou a versão dela (a dúvida).
+              Agora, nós vamos abrir os <strong>ARQUIVOS CORROMPIDOS</strong>.
+              Esta é a história da traição que fundiu carne e metal. A história de como um coração partido se tornou um reator nuclear.
             </p>
-            <em class="highlight-text">⚠️ ALERTA: ARQUIVOS DE MEMÓRIA CORROMPIDOS DETECTADOS. [LIBERAÇÃO EM MARÇO] | ⚠️ Contém: Tensão, Romance Sombrio e Heavy Metal.</em>
+            <em class="highlight-text">⚠️ ALERTA: ARQUIVOS DE MEMÓRIA INSTÁVEIS. [LIBERAÇÃO EM MARÇO] |  ⚠️ Contém: Humilhação, Colapso Nervoso e o Nascimento da Fúria.</em>
           }
 
           @else {
             <p>
-              <strong>Jonah Cyperfield</strong> doesn't accept clean code. For him, music is war.
-              While Broklin tries to organize the chaos, Jonah tries to destroy the order.
-              This is the story seen through the eyes of someone wielding a soldering iron and a distorted guitar.
+              You know the <strong>Industrial Lord</strong>. You know the scream, the rust, and the distortion.
+              But do you know the <strong>Jo Cyborg</strong>?
+              Broklin told his version (the romance). Kelma told her version (the doubt).
+              Now, we're going to open the <strong>CORRUPTED FILES</strong>.
+              This is the story of the betrayal that fused flesh and metal. The story of how a broken heart became a nuclear reactor.
             </p>
-            <em class="highlight-text">⚠️ WARNING: CORRUPTED MEMORY FILES DETECTED. [RELEASE IN MARCH] | ⚠️ Contains: Tension, Dark Romance & Heavy Metal.</em>
+            <em class="highlight-text">⚠️ WARNING: UNSTABLE MEMORY FILES. [RELEASE IN MARCH]  |  ⚠️ Contains: Humiliation, Nervous Breakdown, and the Birth of Fury.</em>
           }
 
         }
@@ -131,7 +135,7 @@
 
       } @empty {
         <p class="loading-text">
-          {{ translate.isPt() ? '⚠ SINAL BLOQUEADO: Carregando dados...' : '⚠ SIGNAL BLOCKED: Loading data...' }}
+          {{ translate.isPt() ? '⚠️ SINAL BLOQUEADO: A VERDADE SERÁ REVELADA NESTE DOMINGO...' : '⚠️ SIGNAL BLOCKED: THE TRUTH WILL BE REVEALED THIS SUNDAY...' }}
         </p>
       }
     </div>

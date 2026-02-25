@@ -212,7 +212,7 @@ $jonah-bg: rgba(20, 5, 0, 0.9);
    ========================================= */
  .jonah-counter-hack {
   /* --- TRAVAS DE SEGURANÇA ADICIONADAS --- */
-  width: 63%;               /* Ocupa 100% do espaço disponível, não mais */
+  width: 60%;               /* Ocupa 100% do espaço disponível, não mais */
   max-width: 100%;           /* Garante que não estoure nunca */
   box-sizing: border-box;    /* Inclui o padding no cálculo do tamanho */
   word-wrap: break-word;     /* Quebra o texto se for muito longo */
