@@ -8,8 +8,8 @@ export const routes: Routes = [
     data: { 
       seo: { 
         title: {
-          pt: 'RaQuel Synths | Cyberpunk Sagas & Virtual Band',
-          en: 'RaQuel Synths | Cyberpunk Sagas & Virtual Band'
+          pt: 'Cyberpunk Sagas & Virtual Band',
+          en: 'Cyberpunk Sagas & Virtual Band'
         },
         description: {
           pt: 'A guerra digital entre a precisão técnica e o caos. Uma Saga Literária Cyberpunk e experimento musical transmídia.',
