@@ -62,8 +62,8 @@ export class AppVisualNovel implements OnInit, OnDestroy {
 
   get text() {
     return this.translate.isPt() ?
-      { title: 'VISUAL NOVEL', subtitle: 'Acompanhe as nossas histórias.' } :
-      { title: 'VISUAL NOVEL', subtitle: 'Follow our stories.' };
+      { title: 'SAGAS LITERÁRIAS', subtitle: 'Acompanhe as nossas histórias.' } :
+      { title: 'LITERARY SAGAS', subtitle: 'Follow our stories.' };
   }
 
   // Mantém os arcos estáticos se você ainda usa eles para o menu

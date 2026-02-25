@@ -55,7 +55,7 @@ export const routes: Routes = [
     }
   },
 
-  // ✨ NOVA ROTA 3: O Catálogo (Episódios da Visual Novel)
+  // ✨ NOVA ROTA 3: O Catálogo (Episódios da Saga)
   {
     path: 'visual-novel',
     loadComponent: () => import('./pages/visual-novel/visual-novel').then(m => m.VisualNovelComponent),

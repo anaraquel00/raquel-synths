@@ -62,20 +62,21 @@
           <div class="alert-text-group">
               <div class="alert-header">
                   <span class="alert-icon">📖 </span>
-                  <span class="log-prefix">
-                      {{ translate.isPt() ? 'MERGULHE NA NOSSA VISUAL NOVEL' : 'IMMERSE YOURSELF IN OUR VISUAL NOVEL' }}
+                  <span class="log-prefix" [innerHTML]="translate.isPt() 
+                    ? 'SAGA LITERÁRIA ECOS DA RQS' 
+                    : 'LITERARY SAGA RQS ECHOES'">
                   </span>
               </div>
 
               <div class="log-message" [innerHTML]="translate.isPt() 
-                      ? 'Desbloqueie <strong>Ecos da RQS</strong>, <br>a história cyberpunk interativa que deu origem ao nosso som.' 
-                      : 'Unlock <strong>Echoes of RQS</strong>,<br>the interactive cyberpunk story that gave rise to our sound.'">
+                      ? 'Uma narrativa cyberpunk <strong>envolvente</strong>.<br>Descubra a traição, os segredos e os bastidores que deram origem ao nosso som.' 
+                      : 'An <strong>engaging</strong> cyberpunk narrative.<br>Discover the betrayal, the secrets, and the behind-the-scenes events<br>that gave rise our sound.'">
                   <strong class="highlight-ep" [innerHTML]="translate.isPt() ? 'Descubra por quê.' : 'Find out why.'"></strong>.
               </div>
           </div>
 
           <div class="alert-action">
-              <span class="btn-text" [innerHTML]="translate.isPt() ? '🎮 INICIAR EXPERIÊNCIA' : '🎮 START EXPERIENCE'">
+              <span class="btn-text" [innerHTML]="translate.isPt() ? '📖 INICIAR LEITURA' : '📖 START READING'">
               </span>
           </div>
 

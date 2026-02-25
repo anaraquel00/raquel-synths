@@ -1,8 +1,8 @@
 import { Album } from '../models/album.model';
 // DADOS DO HEADER/NAV
 export const NAV_DATA = {
-  pt: { lightmode:'MODO BROKLIN', darkmode:'MODO JONAH', inicio: 'INÍCIO', sobre: 'QUEM SOMOS', visualNovel: 'VISUAL NOVEL', discografia: 'DISCOGRAFIA', store: 'LOJA', social: 'COMUNIDADE', creator: 'A CRIADORA', backToBase: 'VOLTAR À BASE' },
-  en: { lightmode:'BROKLIN MODE', darkmode:'JONAH MODE', inicio: 'HOME', sobre: 'WHO WE ARE', visualNovel: 'VISUAL NOVEL', discografia: 'DISCOGRAPHY', store: 'STORE', social: 'COMMUNITY', creator: 'THE CREATOR', backToBase: 'BACK TO BASE' }
+  pt: { lightmode:'MODO BROKLIN', darkmode:'MODO JONAH', inicio: 'INÍCIO', sobre: 'QUEM SOMOS', visualNovel: 'SAGAS', discografia: 'DISCOGRAFIA', store: 'LOJA', social: 'COMUNIDADE', creator: 'A CRIADORA', backToBase: 'VOLTAR À BASE' },
+  en: { lightmode:'BROKLIN MODE', darkmode:'JONAH MODE', inicio: 'HOME', sobre: 'WHO WE ARE', visualNovel: 'SAGAS', discografia: 'DISCOGRAPHY', store: 'STORE', social: 'COMMUNITY', creator: 'THE CREATOR', backToBase: 'BACK TO BASE' }
 };
 
 // DADOS DA HOME
@@ -391,15 +391,15 @@ export const VISUAL_NOVEL_EN = [
 ]
 // 2. OS TEXTOS DE INTRO (Separados, fora do Array!)
 export const VN_INTRO_PT = `
-  O Universo RQS não é linear. Através das nossas <strong>Visual Novels Musicais</strong>, expandimos a lore de cada personagem.
-  Aqui você não encontra apenas clipes, mas <em>arcos narrativos completos</em> que conectam as letras das músicas ('Origins', 'Neon Tears') aos eventos da Guerra Sonora.
+  O Universo RQS não é linear. Através das nossas <strong>Sagas Literárias Musicais</strong>, expandimos a história de cada personagem.
+  Aqui você não encontra apenas clipes, mas <em>arcos narrativos completos</em> para ler e ouvir, que conectam as letras das músicas aos eventos da Guerra Sonora.
   <br><br>
   Escolha seu lado na batalha: a revolução caótica do <strong>Industrial Metal</strong> ou a redenção melancólica do <strong>Gothic Synthwave</strong>.
 `;
 
 export const VN_INTRO_EN = `
-  The RQS Universe is not linear. Through our <strong>Musical Visual Novels</strong>, we expand the lore of each character.
-  Here you won't just find clips, but <em>complete narrative arcs</em> connecting song lyrics ('Origins', 'Neon Tears') to the events of the Sonic War.
+  The RQS Universe is not linear. Through our <strong>Musical Literary Sagas</strong>, we expand the story of each character.
+  Here you won't just find music videos, but <em>complete narrative arcs</em> to read and listen to, connecting the song lyrics to the events of the Sonic War.
   <br><br>
   Choose your side in the battle: the chaotic revolution of <strong>Industrial Metal</strong> or the melancholic redemption of <strong>Gothic Synthwave</strong>.
 `;
