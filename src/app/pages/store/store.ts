@@ -66,14 +66,14 @@ export class StoreComponent implements OnInit, OnDestroy {
     // 2. Verifica tema inicial
     this.checkCurrentMode();
 
-    // 3. 📡 CHAMA O FIREBASE! (Sem isso, nada baixa)
+        // 3. 📡 CHAMA O FIREBASE! (Sem isso, nada baixa)
     this.loadData();
 
     // 4. Inicia vigilância do tema
     this.setupThemeObserver();
     setInterval(() => {
-  const newLang = this.translate.isPt() ? 'pt' : 'en';
-  if (this.currentLang() !== newLang) {
+   const newLang = this.translate.isPt() ? 'pt' : 'en';
+   if (this.currentLang() !== newLang) {
     this.currentLang.set(newLang);
     this.cdr.detectChanges(); // Pinta a tela de novo
   }
@@ -112,15 +112,13 @@ export class StoreComponent implements OnInit, OnDestroy {
   }
 
   // --- LÓGICA DE TEMA ---
-  checkCurrentMode()   {
+checkCurrentMode() {
     if (!this.isBrowser) return;
-    const saved = localStorage.getItem('rqs-theme') as 'broklin' | 'jonah';
-    this.activeMode = saved || (document.body.classList.contains('mode-jonah') ? 'jonah' : 'broklin');
-
-    if (!document.body.classList.contains(`mode-${this.activeMode}`)) {
-      document.body.classList.remove('mode-broklin', 'mode-jonah');
-      document.body.classList.add(`mode-${this.activeMode}`);
-    }
+    
+    // A Loja não dita mais as regras. Ela apenas lê a classe global que o Header já definiu.
+    const isJonahActive = document.body.classList.contains('mode-jonah');
+    this.activeMode = isJonahActive ? 'jonah' : 'broklin';
+   
   }
 
 
