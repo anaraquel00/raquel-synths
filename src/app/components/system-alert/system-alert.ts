@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ContentService } from '../../services/content.service';
 import { TranslationService } from '../../services/translation.service';
 
@@ -12,9 +12,10 @@ import { TranslationService } from '../../services/translation.service';
   styleUrl: './system-alert.scss'
 })
 export class SystemAlert implements OnInit, OnDestroy {
-  
+    
   isJonah = false; // Variável local que controla o template
   private themeObserver: MutationObserver | null = null;
+   
 
   constructor(
     public translate: TranslationService,

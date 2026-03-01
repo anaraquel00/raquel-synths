@@ -22,6 +22,7 @@ import { MatDividerModule } from '@angular/material/divider';
   styleUrl: './header.scss'
 })
 export class Header {
+isJonahMode: boolean = false; // Variável para controlar o estado do modo Jonah
 
   constructor(
     @Inject(DOCUMENT) private document: Document,

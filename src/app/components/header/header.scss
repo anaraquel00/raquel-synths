@@ -1,5 +1,6 @@
 :host {
   display: block;
+  
 
   /* 👇 O SEGREDO DA FIXAÇÃO 👇 */
   position: fixed;
@@ -70,8 +71,12 @@ mat-toolbar {
 
 /* === BOTÕES DO DESKTOP (A correção da cor) === */
 .desktop-nav {
+  .broklin-escape {
+    display: none !important; /* Esconde o botão de fuga do Broklin, porque ele só aparece no modo Jonah */
+  }
 
   button[mat-button] {
+   
     /* 👇 AQUI ESTÁ A LUZ! Força branco sempre 👇 */
     color: #49fa02 !important;
 
@@ -101,7 +106,7 @@ mat-toolbar {
       }
     }
   }
-
+  
   /* O Botão Especial "Creator" (Borda) */
   button[mat-button].btn-creator {
   border: 1px solid var(--accent-color) !important;
@@ -125,6 +130,43 @@ mat-toolbar {
       transform: scale(1.1);
     }
   }
+  }
+}
+
+/* --- O BOTÃO DO PÂNICO --- */
+.jonah-trigger {
+  /* Força bruta para sobrescrever o Material */
+  color: #ff0000 !important; /* Texto Vermelho Sangue */
+  border: 1px solid #ff0000 !important; /* Borda de Alerta */
+  background: #ff0000;
+  color: #000;
+  font-weight: 900;
+  border: none;
+  
+  /* O PULO DO GATO: */
+  animation: heartbeat 1.5s infinite; 
+  cursor: pointer;
+
+  &:hover {
+    animation: none; /* Para de pulsar quando passa o mouse pra focar */
+    transform: scale(1.1);
+    box-shadow: 0 0 20px #ff0000;
+  }
+}
+
+/* ANIMAÇÃO DE BATIMENTO CARDÍACO DE EMERGÊNCIA */
+@keyframes heartbeat {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7);
+  }
+  70% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(255, 0, 0, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
   }
 }
 
@@ -154,7 +196,7 @@ mat-toolbar {
     /* Ícones */
     mat-icon {
       color: var(--accent-color) !important; /* Ícone Verde sempre */
-      margin-right: 12px;
+      margin-right: 8px;
       opacity: 0.8;
       transition: transform 0.2s;
     }
@@ -175,13 +217,33 @@ mat-toolbar {
       }
     }
   }
-
+   
   /* 3. Divisórias */
   .mat-divider {
     border-top-color: rgba(255, 255, 255, 0.15) !important;
     margin: 3px 0;
   }
+/* 2. O BOTÃO AZUL (FUGA PRO BROKLIN) 
+   Só aplica estilo NESTE botão específico. */
+  .nav-item-broklin {
+  background: rgba(0, 255, 255, 0.05) !important;
+  border: 1px solid #00ffff !important;
+  border-radius: 4px !important;
+
+  span, mat-icon {
+    color: #00ffff !important;
+    font-weight: 500 !important;
+  }
+
+  &:hover {
+    background: #00ffff !important;
+    span, mat-icon { color: #000 !important; }
+    box-shadow: 0 0 15px #00ffff;
+  }
 }
+
+}
+
 
 /* Botão Especial "Creator" */
 .btn-creator {
@@ -197,6 +259,77 @@ mat-toolbar {
   }
 }
 
+/* ================================================= */
+/* 🛡️ CONTENÇÃO DE DANOS: MENU MOBILE BLINDADO       */
+/* ================================================= */
+
+/* 1. O BOTÃO VERMELHO (GATILHO DO JONAH) 
+   Só aplica estilo NESTE botão específico. Não vaza pro resto. */
+::ng-deep .nav-item-jonah {
+  background: rgba(255, 0, 0, 0.1) !important; /* Fundo leve */
+  border: 1px solid #ff0000 !important;
+  border-radius: 4px !important;
+
+  /* O Texto e Ícone */
+  mat-icon {
+      display: inline-block !important; /* Força ele a ocupar espaço */
+      color: #ff0000 !important;       /* Vermelho Sangue */
+      
+      /* Dimensões Fixas (Pro celular não esmagar) */
+      width: 24px !important;
+      height: 24px !important;
+      min-width: 24px !important; 
+      
+      /* Margem tática */
+      margin-right: 12px !important; 
+      
+      /* Força a Fonte do Material (Caso o Roboto esteja atropelando) */
+      font-family: 'Material Icons' !important;
+      font-feature-settings: 'liga' !important;
+      
+      /* Alinhamento */
+      line-height: 1 !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+
+    span {
+      /* Garante que o texto não "atropele" o ícone */
+      flex: 1;
+      text-align: left;
+    }
+  
+
+ /* Animação só aqui */
+  animation: heartbeat 1.5s infinite; 
+
+  &:hover {
+    background: #ff0000 !important;
+    span, mat-icon { color: #000 !important; } /* Inverte no hover */
+    box-shadow: 0 0 15px #ff0000;
+  }
+}
+
+/* 3. LÓGICA DE EXIBIÇÃO (QUEM APARECE QUANDO) */
+
+/* Se o site está no MODO JONAH (Vermelho) -> Esconde o botão Jonah, Mostra Broklin */
+::ng-deep body.mode-jonah {
+  .nav-item-jonah { display: none !important; }
+  .nav-item-broklin { display: flex !important; }
+}
+
+/* Se o site está no MODO BROKLIN (Azul/Padrão) -> Esconde Broklin, Mostra Jonah */
+::ng-deep body:not(.mode-jonah) {
+  .nav-item-broklin { display: none !important; }
+  .nav-item-jonah { display: flex !important; }
+}
+
+/* Mantenha sua animação de heartbeat aqui embaixo */
+@keyframes heartbeat {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7); }
+  70% { transform: scale(1.02); box-shadow: 0 0 0 10px rgba(255, 0, 0, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); }
+}
 
 /* --- 1. COMPORTAMENTO PADRÃO (MOBILE FIRST) --- */
 
@@ -230,6 +363,13 @@ mat-toolbar {
 /* 💀 MODO JONAH: INVASÃO DO HEADER 💀       */
 /* ========================================= */
 :host-context(body.mode-jonah) {
+  .jonah-trigger {
+    display: none !important; /* Esconde o botão de ativar o modo Jonah, porque já estamos no modo Jonah */
+  }
+ .nav-item-jonah{
+  display: none !important; /* Esconde o botão de Jonah, porque ele só aparece no modo normal */
+ }
+      
 
   /* 1. A Barra em si (Vermelho Sangue e Sombra Pesada) */
   mat-toolbar {
@@ -244,6 +384,7 @@ mat-toolbar {
     display: flex;
     align-items: center;
     gap: 4px; /* Espacinho militar */
+
 
     /* 1. OS SOLDADOS COMUNS (Todos, MENOS o Creator) */
     button[mat-button]:not(.btn-creator) {
@@ -327,6 +468,67 @@ mat-toolbar {
   /* 5. Menu Mobile (Hambúrguer) */
   .mobile-menu-btn {
     color: #ff3d00 !important;
+  
+    }
+@media (min-width: 768px) {
+  :host-context(.mode-jonah) {
+  .nav-item-jonah {
+    display: none !important;
   }
 }
+}
+}
 
+/* --- FORÇA BRUTA: O BOTÃO DE FUGA DO BROKLIN --- */
+/* Isso está no global para garantir que o Material Design obedeça */
+
+:host-context(.mode-jonah) .broklin-escape {
+    /* Garante que o botão tenha tamanho e visibilidade */
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    z-index: 9999 !important; /* Fica em cima de tudo */
+
+    /* O Estilo Cyber-Azul */
+    color: #00ffff !important; /* Cyan Neon */
+    border: 1px solid #00ffff !important;
+    background: rgba(0, 255, 255, 0.1) !important;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3) !important;
+    
+    font-family: 'Courier New', monospace !important;
+    font-weight: bold !important;
+    letter-spacing: 1px !important;
+    
+    padding: 0 16px !important;
+    height: 36px !important;
+    border-radius: 4px !important;
+    
+    transition: all 0.3s ease !important;
+    cursor: pointer !important;
+
+    /* O Ícone do Material */
+    mat-icon {
+      color: #00ffff !important;
+      margin-right: 8px !important;
+    }
+
+    /* O Hover (Quando passa o mouse) */
+    &:hover {
+      background: #00ffff !important;
+      color: #000 !important; /* Texto fica preto */
+      box-shadow: 0 0 25px #00ffff, 0 0 50px #00ffff !important;
+      
+      mat-icon {
+        color: #000 !important;
+      }
+    }
+     }
+    @media(min-width: 768px) {
+      .broklin-escape {
+        display: none !important; /* Esconde o botão de fuga do Broklin no desktop, porque ele só aparece no modo Jonah */
+      }   
+     
+      }     
+    

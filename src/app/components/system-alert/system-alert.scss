@@ -297,5 +297,56 @@ $jonah-bg: rgba(20, 5, 0, 0.9);
     to { box-shadow: 0 0 20px rgba(255, 60, 0, 0.4); }
 }
 }
-    
-    
+
+ /* --- MATAR O BANNER NO MODO JONAH --- */
+:host-context(.mode-jonah) {
+  .saga-interceptor {
+    display: none !important; /* A marretada final */
+  }
+}   
+.saga-interceptor {
+  background: #000;
+  border-bottom: 3px solid #ff0000;
+  padding: 10px;
+  text-align: center;
+  position: relative;
+  z-index: 9999; /* Fica em cima de tudo do Broklin */
+  animation: slideDown 0.5s ease-out;
+
+  .interceptor-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    color: #fff;
+    font-family: 'Courier New', monospace;
+  }
+
+  .pulse-icon {
+    animation: blink 1s infinite;
+  }
+
+  strong {
+    color: #ff0000;
+    text-transform: uppercase;
+  }
+
+  .btn-read-saga {
+    background: #ff0000;
+    color: #000;
+    border: none;
+    padding: 5px 15px;
+    font-weight: bold;
+    cursor: pointer;
+    clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+    transition: transform 0.2s;
+
+    &:hover {
+      transform: scale(1.1);
+      background: #fff;
+    }
+  }
+}
+
+@keyframes blink { 50% { opacity: 0; } }
+@keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }

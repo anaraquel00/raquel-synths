@@ -39,7 +39,7 @@
         }}
         <br>
        <span class="highlight-red">
-        {{ translate.isPt() ? 'A SAGA COMEÇA DOMINGO.' : 'THE SAGA BEGINS SUNDAY.' }}
+        {{ translate.isPt() ? 'A SAGA COMEÇOU.' : 'THE SAGA HAS BEGUN.' }}
        </span>
          <br><br>
         </p>
@@ -79,9 +79,26 @@
               <span class="btn-text" [innerHTML]="translate.isPt() ? '📖 INICIAR LEITURA' : '📖 START READING'">
               </span>
           </div>
-
+     
       </div>
     </a>
   }
+ <div class="saga-interceptor">
+  <div class="glitch-bar"></div>
+  <div class="interceptor-content">
+    <span class="pulse-icon">🔴</span>
+    
+    <!-- TEXTO DO AVISO COM TRADUÇÃO -->
+    <p [innerHTML]="translate.isPt() 
+      ? '<strong>SYSTEM BREACH:</strong> A SAGA \'ORIGINS\' FOI VAZADA. O LADO AZUL É UMA MENTIRA.' 
+      : '<strong>SYSTEM BREACH:</strong> THE \'ORIGINS\' SAGA HAS LEAKED. THE BLUE SIDE IS A LIE.'">
+    </p>
 
+    <!-- BOTÃO COM TRADUÇÃO -->
+    <button class="btn-read-saga" [routerLink]="['/visual-novel']">
+      {{ translate.isPt() ? 'ATIVE O MODO JONAH AGORA >' : 'ACTIVATE JONAH MODE NOW >' }}
+    </button>
+    
+  </div>
+</div>
 </div>
