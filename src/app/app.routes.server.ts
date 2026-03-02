@@ -11,7 +11,7 @@ export const serverRoutes: ServerRoute[] = [
   },
   {
     path: '', // 👈 A HOME 
-    renderMode: RenderMode.Client, // Deixa a Home congelada SÓ até o dia 2 de março para enganar o AdSense.
+    renderMode: RenderMode.Prerender, // Deixa a Home congelada SÓ até o dia 2 de março para enganar o AdSense.
   },
   {
     path: '**', // (Sobre, Compliance, Creator)
