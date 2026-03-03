@@ -100,40 +100,55 @@
       <hr class="neon-divider">
     </div>
 
-    <div class="episode-grid">
+     <div class="season-tabs">
+      <button class="neon-tab" 
+              [class.active]="temporadaAtiva === 1" 
+              (click)="setTemporada(1)">
+        {{ translate.isPt() ? 'Temporada 1' : 'Season 1' }}
+      </button>
+      
+      <button class="neon-tab" 
+              [class.active]="temporadaAtiva === 2" 
+              (click)="setTemporada(2)">
+        {{ translate.isPt() ? 'Temporada 2' : 'Season 2' }}
+      </button>
+     </div>
+     <div class="episode-grid">
 
       @for (ep of episodes$ | async; track ep.id) {
 
-        <div class="episode-card">
+       @if (ep.id && ep.id.startsWith('s' + temporadaAtiva + '-')) {
+          
+          <div class="episode-card">
 
-          <div class="card-image">
-            <img [src]="ep.image || 'assets/images/placeholder.jpg'" [alt]="ep.title">
+            <div class="card-image">
+              <img [src]="ep.image || 'assets/images/placeholder.jpg'" [alt]="ep.title">
+            </div>
+
+            <div class="card-content">
+              <span class="date" *ngIf="ep.releaseDate">
+                  {{ ep.releaseDate | date:'dd/MM/yyyy' }}
+              </span>
+
+              <h3>
+                {{ translate.isPt() ? ep.title : (ep.title_en || ep.title) }}
+              </h3>
+
+              <p>
+                {{ translate.isPt()
+                   ? (ep.description || 'Clique para ler...')
+                   : (ep.description_en || ep.description || 'Click to read...')
+                }}
+              </p>
+
+              <button [routerLink]="['/lore-reader', ep.id]" class="btn-read">
+                {{ translate.isPt() ? '📖 Ler Episódio' : '📖 Read Episode' }}
+              </button>
+            </div>
+
           </div>
-
-          <div class="card-content">
-            <span class="date" *ngIf="ep.releaseDate">
-                {{ ep.releaseDate | date:'dd/MM/yyyy' }}
-            </span>
-
-            <h3>
-              {{ translate.isPt() ? ep.title : (ep.title_en || ep.title) }}
-            </h3>
-
-            <p>
-              {{ translate.isPt()
-                 ? (ep.description || 'Clique para ler...')
-                 : (ep.description_en || ep.description || 'Click to read...')
-              }}
-            </p>
-
-            <button [routerLink]="['/lore-reader', ep.id]" class="btn-read">
-              {{ translate.isPt() ? '📖 Ler Episódio' : '📖 Read Episode' }}
-            </button>
-          </div>
-
-        </div>
-
-      } @empty {
+        
+        } } @empty {
         <p class="loading-text">
           {{ translate.isPt() ? '⚠️ SINAL BLOQUEADO: A VERDADE SERÁ REVELADA NESTE DOMINGO...' : '⚠️ SIGNAL BLOCKED: THE TRUTH WILL BE REVEALED THIS SUNDAY...' }}
         </p>

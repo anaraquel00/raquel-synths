@@ -20,6 +20,14 @@ export class VisualNovelComponent implements OnInit, OnDestroy {
   public currentMode: 'broklin' | 'jonah' = 'broklin';
   private modeSubject = new BehaviorSubject<'broklin' | 'jonah'>('broklin');
 
+  // 🚀 AQUI ESTÁ A NOSSA VARIÁVEL DE ESTADO DAS ABAS
+  public temporadaAtiva: number = 1; 
+
+  // ⚡ FUNÇÃO PARA TROCAR DE TEMPORADA
+  public setTemporada(numeroDaTemporada: number): void {
+    this.temporadaAtiva = numeroDaTemporada;
+  }
+
   // 🚀 A MÁGICA: Sempre que o modo mudar, o switchMap pede novos episódios ao Firebase
   episodes$: Observable<any[]> = this.modeSubject.asObservable().pipe(
     switchMap(mode => this.contentService.getEpisodes(mode))

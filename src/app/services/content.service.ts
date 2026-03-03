@@ -39,7 +39,7 @@ export class ContentService {
     );
 
     return collectionData(q, { idField: 'id' }).pipe(
-  map(episodes => {
+   map(episodes => {
     // A MÁGICA ESTÁ AQUI: { numeric: true }
     // Isso diz: "Compare 10 como maior que 2, por favor."
     return (episodes as LoreEpisode[]).sort((a, b) => 
