@@ -14,6 +14,7 @@ import { LastReleasesComponent } from '../../components/last-releases/last-relea
 import { SystemAlert } from "../../components/system-alert/system-alert";
 import { UplinkTerminalComponent } from "../../components/uplink-terminal/uplink-terminal";
 
+
 @Component({
   selector: 'app-home',
   standalone: true,

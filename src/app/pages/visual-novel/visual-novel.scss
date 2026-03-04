@@ -9,7 +9,7 @@ $glass-border: rgba(255, 255, 255, 0.1);
 .nav-actions {
   margin-bottom: 2rem;
 
-  .back-link {
+  a.back-link {
   background: transparent;
   color: #00f3ff;
   border: 2px solid #00f3ff;
@@ -23,7 +23,7 @@ $glass-border: rgba(255, 255, 255, 0.1);
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    width: auto; // Sobrescreve o width: 100% dos botões gerais
+    width: fit-content; // Sobrescreve o width: 100% dos botões gerais
 
     &:hover {
       transform: translateX(-5px);
@@ -223,8 +223,16 @@ $glass-border: rgba(255, 255, 255, 0.1);
   }
 }
 
-// --- BOTÕES ---
-button {
+// --- BOTÕES GLOBAIS ---
+// Adicionamos os links que agora funcionam como botões (separados por vírgula)
+button, a.btn-read, a.back-link, a.btn-decrypt, a.btn-watch {
+  /* 🚀 INJEÇÕES DE SEGURANÇA PARA A TAG <a> */
+  display: inline-block;  // Garante que o <a> respeite o width e padding
+  box-sizing: border-box; // Impede que o padding estoure a largura de 100%
+  text-align: center;     // Centraliza o texto do link
+  text-decoration: none;  // Remove o sublinhado padrão de links
+  /* ----------------------------------------- */
+
   width: 100%;
   padding: 1rem;
   border: none;
@@ -403,7 +411,7 @@ button {
   }
 
   // 5. O Botão de Ler (Botão de Detonação)
-  button.btn-read {
+  a.btn-read {
     border: 2px solid #ff3d00 !important; // Borda mais grossa
     color: #ff3d00 !important;
     border-radius: 0 !important; // Quadrado

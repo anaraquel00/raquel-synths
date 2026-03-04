@@ -1,17 +1,18 @@
 import { Component, OnInit, OnDestroy, AfterViewChecked, inject, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslationService } from '../../services/translation.service';
 import { ContentService } from '../../services/content.service';
 import { Observable } from 'rxjs';
 import { SplitContentPipe } from "../../components/pipes/content-splitter.pipe";
 import { LoreEpisode } from '../../data/lore-data';
 import { AdArticleComponent } from "../../components/ad-article/ad-article";
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-lore-reader',
   standalone: true,
-  imports: [CommonModule, SplitContentPipe, AdArticleComponent],
+  imports: [CommonModule, SplitContentPipe, AdArticleComponent, RouterLink, NgOptimizedImage],
   templateUrl: './lore-reader.html',
   styleUrls: ['./lore-reader.scss']
 })

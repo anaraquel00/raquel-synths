@@ -135,7 +135,7 @@
   }
 }
 
-.back-btn {
+ a.back-btn {
   background: transparent;
   color: #00f3ff;
   border: 2px solid #00f3ff;
@@ -168,7 +168,7 @@
     font-size: 2.5rem;
     color: var(--accent-color);
     text-shadow: 0 0 10px var(--accent-color);
-    margin-top: 7px;
+    margin-top: 25px;
   }
 
   .subtitle {

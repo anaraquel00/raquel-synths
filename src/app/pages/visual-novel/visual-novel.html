@@ -2,9 +2,9 @@
   <div class="container">
 
     <div class="nav-actions">
-      <button routerLink="/" class="back-link">
+      <a routerLink="/" class="back-link">
         &larr; {{ translate.isPt() ? 'VOLTAR À BASE' : 'BACK TO BASE' }}
-      </button>
+      </a>
     </div>
 
     <header class="catalog-header">
@@ -122,7 +122,10 @@
           <div class="episode-card">
 
             <div class="card-image">
-              <img [src]="ep.image || 'assets/images/placeholder.jpg'" [alt]="ep.title">
+              <img [ngSrc]="ep.image || 'assets/images/placeholder.jpg'" 
+                   width="600" 
+                   height="400" 
+                   [alt]="ep.title">
             </div>
 
             <div class="card-content">
@@ -141,9 +144,9 @@
                 }}
               </p>
 
-              <button [routerLink]="['/lore-reader', ep.id]" class="btn-read">
+              <a [routerLink]="['/lore-reader', ep.id]" class="btn-read">
                 {{ translate.isPt() ? '📖 Ler Episódio' : '📖 Read Episode' }}
-              </button>
+              </a>
             </div>
 
           </div>

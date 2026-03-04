@@ -59,9 +59,9 @@
         [ NEXT_LOG > ]
       </button>
     </div>
- <button class="btn-exit" (click)="GoHome()">
+ <a class="btn-exit" routerLink="/">
   {{ translate.isPt() ? '[ SAIR DO ARQUIVO ]' : '[ EXIT ARCHIVE ]' }}
- </button>
+ </a>
   </div>
 
   <div class="artist-section jonah-theme" id="jonah-top">
@@ -120,8 +120,8 @@
         [ SKIP_ERROR > ]
       </button>
     </div>
-  <button class="btn-exit hazard-mode-btn" (click)="GoHome()" style="color: #ff0000; border-color: #ff0000;">
+  <a class="btn-exit hazard-mode-btn" routerLink="/" style="color: #ff0000; border-color: #ff0000;">
   {{ translate.isPt() ? '[ ABORTAR SISTEMA ]' : '[ ABORT SYSTEM ]' }}
-  </button>
+  </a>
   </div>
 </section>

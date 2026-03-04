@@ -1,7 +1,7 @@
 <div class="lore-container">
-    <button class="back-btn" (click)="goBack()">
+    <a class="back-btn" routerLink="/visual-novel">
       &larr; {{ translate.isPt() ? 'VOLTAR AO SUMÁRIO' : 'BACK TO LIST' }}
-    </button>
+    </a>
 
     <header class="saga-header">
       <h1>{{ translate.isPt() ? 'ECOS DA RQS' : 'RQS ECHOES' }}</h1>
@@ -29,7 +29,11 @@
       <div class="story-content">
         @if (ep.image) {
           <div class="episode-cover">
-            <img [src]="ep.image" alt="Capa">
+            <img [ngSrc]="ep.image" 
+            width="1200" 
+            height="600" 
+            priority 
+            alt="Capa">
           </div>
         }
 

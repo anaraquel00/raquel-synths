@@ -8,11 +8,12 @@ import { TranslationService } from '../services/translation.service';
 import { ContentService } from '../services/content.service';
 import { SafeHtmlPipe } from '../components/pipes/safe-html.pipe';
 import { AdBannerComponent } from "../components/ad-banner/ad-banner";
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-storytelling',
   standalone: true,
-  imports: [CommonModule, RouterModule, SafeHtmlPipe, AdBannerComponent],
+  imports: [CommonModule, RouterModule, SafeHtmlPipe, AdBannerComponent, NgOptimizedImage],
   templateUrl: './app-storytelling.html',
   styleUrls: ['./app-storytelling.scss']
 })

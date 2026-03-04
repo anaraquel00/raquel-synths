@@ -4,11 +4,12 @@ import { RouterLink } from '@angular/router';
 import { ContentService } from '../../services/content.service';
 import { TranslationService } from '../../services/translation.service';
 import { Observable, BehaviorSubject, switchMap } from 'rxjs'; // 👈 Importamos o switchMap
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-visual-novel',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, NgOptimizedImage],
   templateUrl: './visual-novel.html',
   styleUrl: './visual-novel.scss'
 })

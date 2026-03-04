@@ -22,7 +22,7 @@
 
             @if (event.image) {
               <div class="img-wrapper-wide">
-                <img [src]="event.image" [alt]="content?.title">
+                <img [ngSrc]="event.image" width="800" height="450" [alt]="content?.title">
               </div>
             }
 
@@ -47,9 +47,9 @@
 
               @if (event.isArchiveLink) {
                 <div class="action-area">
-                  <button class="btn-decrypt" (click)="navigateToArchive()">
+                  <a routerLink="/logs-archive" class="btn-decrypt">
                     [ 📂 ACCESS_FULL_ARCHIVES ]
-                  </button>
+                  </a>
                 </div>
               }
             </div> </div> <app-ad-banner></app-ad-banner>}
@@ -58,9 +58,9 @@
       @if (events.length === 0) {
         <div class="empty-state">
           <p>⚠️ NO_NEW_LOGS_DETECTED</p>
-          <button class="btn-decrypt" (click)="navigateToArchive()">
+          <a routerLink="/logs-archive" class="btn-decrypt">
             [ 📂 ACCESS_ARCHIVES ]
-          </button>
+          </a>
         </div>
       }
 
