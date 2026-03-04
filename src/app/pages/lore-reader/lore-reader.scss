@@ -190,14 +190,14 @@
   //box-shadow: 0 0 20px rgba(0,0,0,0.5);
 
   .season-badge {
-    display: inline-block;
-    background: var(--primary-color);
-    color: #fff;
-    padding: 4px 8px;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    font-weight: bold;
-    margin-bottom: 10px;
+  background-color: #00ffff1c;
+  color: #00ffff;
+  border: 1px solid #00ffff;
+  box-shadow: 0 0 10px #00ffff52;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin-right: 7px;
+  padding-left: 7px;
   }
 
   h2 {
@@ -211,6 +211,28 @@
     color: #666;
     margin-bottom: 20px;
   }
+
+/* =========================================
+   🔥 OVERRIDE: DESIGN DA TEMPORADA 2
+   ========================================= */
+
+/* Muda a borda e o fundo suave do card inteiro */
+.episode-card.season-two {
+  border-left: 4px solid #ff0055; /* Rosa/Vermelho Neon de Alerta */
+  background: linear-gradient(to bottom, rgba(255, 0, 85, 0.03), transparent);
+}
+
+/* Deixa o crachá da temporada gritando na tela */
+.season-badge.badge-s2 {
+  background-color: rgba(255, 0, 85, 0.1);
+  color: #ff0055;
+  border: 1px solid #ff0055;
+  box-shadow: 0 0 10px rgba(255, 0, 85, 0.4);
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin-right: 7px;
+  padding-left: 7px;
+}
 
   /* --- LAYOUT HÍBRIDO: IMAGEM + TEXTO --- */
   .episode-cover {
@@ -377,7 +399,30 @@
   background: rgba(20, 0, 0, 0.6);
   color: #ffccbc;
 
-  em { color: #ff3d00; }
+  em { color: #ff3d00; } 
+}
+
+:host-context(body.mode-jonah) {
+   .season-badge {
+    background-color: rgba(255, 61, 0, 0.1);
+    color: #ff3d00;
+    border: 1px solid #ff3d00;
+    box-shadow: 0 0 10px rgba(255, 61, 0, 0.4);
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-right: 7px;
+    padding-left: 7px;
+  }
+  .season-badge.badge-s2 {
+    background-color: #ffb0001a;
+    color: #ffb000;
+    border: 1px solid #ffb000;
+    box-shadow: 0 0 10px #ffb00066;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-right: 7px;
+    padding-left: 7px;
+   }
 }
 
 /* --- ESTILOS DO RODAPÉ DO LOG (Substituindo inline styles) --- */
