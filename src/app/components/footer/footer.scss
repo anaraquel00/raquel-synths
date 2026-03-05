@@ -52,21 +52,34 @@
   margin: 0;
 }
 
-.nav-list li {
+.nav-list li,
+button.donate-btn {
   margin-bottom: 8px;
 }
 
 /* Links */
-.footer-column a {
+.footer-column a, 
+.footer-column button.donate-btn {
   color: var(--footer-text);
   text-decoration: none;
   font-weight: bold;
   font-size: 0.95rem;
   transition: all 0.3s;
   opacity: 0.8;
+  
+  /* Reset do botão para ficar igual a um link */
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  cursor: pointer;
+  display: inline-flex; /* Ajuda a alinhar o ícone com o texto */
+  align-items: center;
+  gap: 5px;
 }
 
-.footer-column a:hover {
+.footer-column a:hover,
+.footer-column button.donate-btn:hover {
   color: var(--accent-color);
   opacity: 1;
   text-shadow: 0 0 8px var(--accent-color); /* Brilho neon no hover */
