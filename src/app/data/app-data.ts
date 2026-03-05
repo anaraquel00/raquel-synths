@@ -57,32 +57,32 @@ export const MEMBERS_PT = [
   {
     name: 'Broklin Garpeter',
     role: 'CTO, Tech Lead & Music Producer',
-    imageBroklin: 'images/broklin_perfil.png',
-    imageJonah: 'images/gothic_bro.png',
+    imageBroklin: 'images/broklin_perfil.webp',
+    imageJonah: 'images/gothic_bro.webp',
     bioNormal: 'O arquiteto do sistema. Com 25 anos de experiência em produção e código, ele garante que a infraestrutura suporte a inovação. Especialista em mixagem técnica, orquestração de IA e em manter o servidor de pé quando o Jonah surta.',
     bioJonah: 'O VELHO. Ele fica tentando colocar "grid" na minha distorção e chama isso de "masterização". Um burocrata digital que precisa de mais café e menos regras.',
   },
   {
     name: 'Jonah Cyperfield',
     role: 'Head of Sound Design (Chaos Ops)',
-    imageBroklin: 'images/jonah_profil.png',
-    imageJonah: 'images/jonah_metal-skull.png',
+    imageBroklin: 'images/jonah_profil.webp',
+    imageJonah: 'images/jonah_metal-skull.webp',
     bioNormal: 'O elemento de entropia. Responsável pela texturização industrial e pelos "happy accidents" do algoritmo. Ele força os modelos de IA ao limite para extrair sonoridades que simulam falhas de hardware e angústia digital.',
     bioJonah: 'EU SOU O ERRO NO SEU CÓDIGO. Enquanto eles brincam de "música bonita", eu estou aqui soldando cabos enferrujados no processador. Nu-Metal não é um estilo, é um aviso de falha.', // ATUALIZADO
   },
   {
     name: 'Kelma Adlanko',
     role: 'Founder, Lead Developer & Vocalist',
-    imageBroklin: 'images/kelma_profil.png',
-    imageJonah: 'images/kelma_evil.png',
+    imageBroklin: 'images/kelma_profil.webp',
+    imageJonah: 'images/kelma_evil.webp',
     bioNormal: 'A visionária por trás da RQS. Desenvolvedora Full-Stack que transformou linhas de código em partituras. Ela gerencia a arquitetura do projeto e define a direção criativa, unindo a precisão do Angular com a emoção do Synthwave.',
     bioJonah: 'A CHEFE. Ela acha que pode controlar o caos com planilhas e commits organizados. Spoiler: ela não pode. Mas é a única pessoa que eu respeito o suficiente para não deletar do servidor.',
   },
   {
     name: 'Nicole Nyx',
     role: 'Vocalist & Visual Arts Lead',
-    imageBroklin: 'images/nyx_profil.png',
-    imageJonah: 'images/nyx_evil.png',
+    imageBroklin: 'images/nyx_profil.webp',
+    imageJonah: 'images/nyx_evil.webp',
     bioNormal: 'A voz do abismo. Traz a estética Gótica/Industrial para o visual da banda. Sua colaboração foca na profundidade lírica e na identidade visual sombria que contrasta com o pop sintético da Kelma.',
     bioJonah: 'MINHA RAINHA. A única frequência que acalma o ruído na minha cabeça. Se ela pedir, eu formato o mundo inteiro só pra instalar um jardim pra ela.',
   }
@@ -92,32 +92,32 @@ export const MEMBERS_EN = [
   {
     name: 'Broklin Garpeter',
     role: 'CTO, Tech Lead & Music Producer',
-    imageBroklin: 'images/broklin_perfil.png',
-    imageJonah: 'images/gothic_bro.png',
+    imageBroklin: 'images/broklin_perfil.webp',
+    imageJonah: 'images/gothic_bro.webp',
     bioNormal: 'The system architect. With 25 years of experience in production and code, he ensures the infrastructure supports innovation. Specialist in technical mixing, AI orchestration, and keeping the server running when Jonah freaks out.',
     bioJonah: 'THE OLD MAN. He tries to put a "grid" on my distortion and calls it "mastering." A digital bureaucrat who needs more coffee and fewer rules.',
   },
   {
     name: 'Jonah Cyperfield',
     role: 'Head of Sound Design (Chaos Ops)',
-    imageBroklin: 'images/jonah_profil.png',
-    imageJonah: 'images/jonah_metal-skull.png',
+    imageBroklin: 'images/jonah_profil.webp',
+    imageJonah: 'images/jonah_metal-skull.webp',
     bioNormal: 'The entropy element. Responsible for industrial texturing and algorithmic "happy accidents." He pushes AI models to their limit to extract sounds that simulate hardware failure and digital anguish.',
     bioJonah: 'I AM THE ERROR IN YOUR CODE. While they play "pretty music," I am soldering rusty cables to the processor. Nu-Metal is not a style; it is a crash report.',
   },
   {
     name: 'Kelma Adlanko',
     role: 'Founder, Lead Developer & Vocalist',
-    imageBroklin: 'images/kelma_profil.png',
-    imageJonah: 'images/kelma_evil.png',
+    imageBroklin: 'images/kelma_profil.webp',
+    imageJonah: 'images/kelma_evil.webp',
     bioNormal: 'The visionary behind RQS. A Full-Stack Developer who turned lines of code into musical scores. She manages the project architecture and defines the creative direction, merging Angular precision with Synthwave emotion.',
     bioJonah: 'THE BOSS. She thinks she can control chaos with spreadsheets and clean commits. Spoiler: she can\'t. But she is the only person I respect enough not to delete from the server.',
   },
   {
     name: 'Nicole Nyx',
     role: 'Vocalist & Visual Arts Lead',
-    imageBroklin: 'images/nyx_profil.png',
-    imageJonah: 'images/nyx_evil.png',
+    imageBroklin: 'images/nyx_profil.webp',
+    imageJonah: 'images/nyx_evil.webp',
     bioNormal: 'The voice of the abyss. Brings the Gothic/Industrial aesthetic to the band\'s visuals. Her collaboration focuses on lyrical depth and the dark visual identity that contrasts with Kelma\'s synthetic pop.',
     bioJonah: 'MY QUEEN. The only frequency that calms the noise in my head. If she asks, I\'ll format the entire world just to install a garden for her.',// UPDATED
   }
@@ -353,7 +353,7 @@ export const VISUAL_NOVEL_PT = [
       title: '📼 RQS: ORIGINS (Before the Metal)',
       subtitle: 'Caos, Fios & Revolução',
       description: 'Quando o sistema falha, a verdade aparece. A revolta industrial de Jonah contra a programação.',
-      image: 'assets/disco/album_jonah_history.jpg', // Capa do Jonah
+      image: 'assets/disco/album_jonah_history.webp', // Capa do Jonah
       link: '/visual-novel',
       mode: 'chaos'
     },
@@ -361,7 +361,7 @@ export const VISUAL_NOVEL_PT = [
       title: 'ARCO BROKLIN',
       subtitle: 'Amor, Vinho & Melancolia',
       description: 'A jornada de um vampiro gótico em busca de redenção através do amor de Kelma. Inclui o hit "Neon Tears".',
-      image: 'assets/disco/album_broklin_story.jpg', // Use capa do arco
+      image: 'assets/disco/album_broklin_story.webp', // Use capa do arco
       link: '/visual-novel',
       mode: 'romance'
     },
@@ -375,7 +375,7 @@ export const VISUAL_NOVEL_EN = [
       title: '📼 RQS: ORIGINS (Before the Metal)',
       subtitle: 'Chaos, Wires & Revolution',
       description: 'When the system fails, the truth comes out. Jonahs industrial revolt against programming.',
-      image: 'assets/disco/album_jonah_history.jpg',
+      image: 'assets/disco/album_jonah_history.webp',
       link: '/visual-novel',
       mode: 'chaos'
   },
@@ -383,7 +383,7 @@ export const VISUAL_NOVEL_EN = [
       title: 'BROKLIN ARC',
       subtitle: 'Love, Wine and Melancholy',
       description: 'The journey of a gothic vampire seeking redemption through the love of Kelma. Includes the hit song "Neon Tears".',
-      image: 'assets/disco/album_broklin_story.jpg', // Use a capa do arco
+      image: 'assets/disco/album_broklin_story.webp', // Use a capa do arco
       link: '/visual-novel',
       mode: 'romance'
     },

@@ -35,7 +35,7 @@ export const DEPARTMENTS_DATA: Department[] = [
   {
     id: 'rust-riot',
     owners: ['jonah'],
-    image: 'assets/store/rust-riot-bg.jpg',
+    image: 'assets/store/rust-riot-bg.webp',
     title: 'RUST & RIOT', // O Setor do Jonah
 
     description: { pt: 'Industrial / Caos / Metal', en: 'Industrial / Chaos / Metal' },
@@ -44,7 +44,7 @@ export const DEPARTMENTS_DATA: Department[] = [
   {
     id: 'neon-witch',
     owners: ['jonah'],
-    image: 'assets/store/neon-witch-bg.jpg',
+    image: 'assets/store/neon-witch-bg.webp',
     title: 'NEON WITCH', // O Setor da Nyx
     description: { pt: 'Cyber / Goth / Feitiçaria', en: 'Cyber / Goth / Sorcery' },
     buttonText: { pt: 'CONJURAR LOOK', en: 'CONJURE LOOK' }
@@ -54,7 +54,7 @@ export const DEPARTMENTS_DATA: Department[] = [
   {
     id: 'tech-lead', // <--- NOVO DEPARTAMENTO!
     owners: ['broklin'],
-    image: 'assets/store/tech-lead-bg.jpg', // Uma foto clean do escritório
+    image: 'assets/store/tech-lead-bg.webp', // Uma foto clean do escritório
     title: 'TECH LEAD LABS',
     description: { pt: 'Minimalismo / Dev / Clean', en: 'Minimalism / Dev / Clean' },
     buttonText: { pt: 'COMPILAR ESTILO', en: 'COMPILE STYLE' }
@@ -62,7 +62,7 @@ export const DEPARTMENTS_DATA: Department[] = [
   {
     id: 'synth-general', // <--- NOVO DEPARTAMENTO!
     owners: ['broklin'],
-    image: 'assets/store/kelma-atelier.jpg', // Uma foto elegante
+    image: 'assets/store/kelma-atelier.webp', // Uma foto elegante
     title: "RAQUEL'S ECHO",
     description: {
       pt: 'O Eco da Criadora // Dream Pop & Soul',
@@ -75,7 +75,7 @@ export const DEPARTMENTS_DATA: Department[] = [
   {
     id: 'sonic-arsenal',
     owners: ['broklin', 'jonah'],
-    image: 'assets/store/sonic-gear.jpg',
+    image: 'assets/store/sonic-gear.webp',
     title: 'SONIC ARSENAL',
     description: { pt: 'Equipamentos & Gear', en: 'Equipment & Gear' },
     buttonText: { pt: 'EQUIPAR', en: 'EQUIP' }
