@@ -30,12 +30,12 @@
           <strong style="color: var(--accent-color); font-size: 0.9rem;">APOIE A BANDA:</strong>
         </li>
         <li>
-          <a style="cursor: pointer;" (click)="openPaypal()" class="donate-btn paypal">
+          <a [href]="paypalLink" target="_blank" rel="noopener noreferrer" class="donate-btn paypal" style="cursor: pointer; text-decoration: none;">
             <mat-icon>public</mat-icon> PayPal (Intl.)
           </a>
         </li>
         <li>
-          <a style="cursor: pointer;" (click)="copyPix()" class="donate-btn pix">
+          <a (click)="copyPix()" class="donate-btn pix" style="cursor: pointer; text-decoration: none;">
             <mat-icon>pix</mat-icon> PIX (Brasil)
           </a>
         </li>
