@@ -23,40 +23,25 @@ export class StorytellingComponent {
   public translate = inject(TranslationService);
   private contentService = inject(ContentService);
 
-  // 🔥 O FLUXO DE DADOS (COM LIMITADOR DE QUANTIDADE)
+// 🔥 HOME: Corta os 4 primeiros e não liga pro ano!
   logs$: Observable<any[]> = this.contentService.getLogs().pipe(
     map(logs => {
       if (!logs) return [];
 
-      // 1º PASSO: RESGATAR O BOTÃO "VER MAIS" (Se existir no DB)
-      // Precisamos separá-lo para ele não ser cortado pelo slice
       const archiveLinkDoc = logs.find(log => log.isArchiveLink);
 
-      // 2º PASSO: FILTRAR E ORDENAR APENAS CONTEÚDO REAL
-      let contentLogs = logs.filter(log => {
-        const dateStr = String(log.date || '');
-        const isOld = dateStr.includes('2025'); // Filtra legado
-        const isLink = !!log.isArchiveLink;     // Remove o botão dessa lista
-        return !isOld && !isLink;               // Só passa conteúdo de 2026+
-      });
+      // DELETA AQUELE FILTRO DE '2025'. Tira só o botão.
+      let contentLogs = logs.filter(log => !log.isArchiveLink);
 
-      // Ordenação (JavaScript Date)
-      contentLogs.sort((a, b) => {
-        const dateA = new Date(a.date).getTime();
-        const dateB = new Date(b.date).getTime();
-        return dateB - dateA; // Decrescente (Mais novo no topo)
-      });
+      // Ordena por data (Mais novo no topo)
+      contentLogs.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-      // 3º PASSO: A GUILHOTINA (LIMITAR A 4 LOGS) ✂️
-      // Aqui definimos quantos logs aparecem na Home.
+      // Pega do 0 ao 4 (Os 4 mais recentes)
       const recentLogs = contentLogs.slice(0, 4);
 
-      // 4º PASSO: MONTAGEM FINAL
-      // Retornamos os 4 recentes + o botão de arquivo no final
       if (archiveLinkDoc) {
         return [...recentLogs, archiveLinkDoc];
       }
-
       return recentLogs;
     }),
     catchError(error => {
