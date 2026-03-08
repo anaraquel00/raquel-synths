@@ -2,19 +2,23 @@ import { RenderMode, ServerRoute } from '@angular/ssr';
 
 export const serverRoutes: ServerRoute[] = [
   {
+    path: '',
+    renderMode: RenderMode.Prerender // A vitrine blindada e super rápida
+  },
+  {
+    path: 'compliance',
+    renderMode: RenderMode.Prerender // O túnel VIP pro compliance legal
+  },
+  {
+    path: 'visual-novel',
+    renderMode: RenderMode.Server // Renderiza o HTML no nosso servidor antes de entregar ao AdBot
+  },
+  {
     path: 'lore-reader/:id',
-    renderMode: RenderMode.Client, // Mantém os episódios individuais vivos!
+    renderMode: RenderMode.Server // Garante que o texto da saga já chegue mastigado para o AdSense ler
   },
   {
-    path: 'visual-novel', // 👈 ROTA DA LISTA DE EPISÓDIOS
-    renderMode: RenderMode.Client, // 🔥 DEVOLVE A AUTOMAÇÃO DA GENERAL! O `new Date()` volta a funcionar ao vivo.
-  },
-  {
-    path: '', // 👈 A HOME 
-    renderMode: RenderMode.Prerender, // Deixa a Home congelada SÓ até o dia 2 de março para enganar o AdSense.
-  },
-  {
-    path: '**', // (Sobre, Compliance, Creator)
-    renderMode: RenderMode.Prerender // Essas continuam como estátuas de concreto para o SEO
+    path: '**',
+    renderMode: RenderMode.Prerender
   }
 ];
