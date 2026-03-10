@@ -353,15 +353,15 @@ export const VISUAL_NOVEL_PT = [
       title: '📼 RQS: ORIGINS (Before the Metal)',
       subtitle: 'Caos, Fios & Revolução',
       description: 'Quando o sistema falha, a verdade aparece. A revolta industrial de Jonah contra a programação.',
-      image: 'assets/disco/album_jonah_history.webp', // Capa do Jonah
+      image: 'images/lore_jonah_cover.webp', // Capa do Jonah
       link: '/visual-novel',
       mode: 'chaos'
     },
     {
       title: 'ARCO BROKLIN',
       subtitle: 'Amor, Vinho & Melancolia',
-      description: 'A jornada de um vampiro gótico em busca de redenção através do amor de Kelma. Inclui o hit "Neon Tears".',
-      image: 'assets/disco/album_broklin_story.webp', // Use capa do arco
+      description: 'A jornada de um vampiro gótico em busca de redenção através do amor de Kelma.',
+      image: 'images/lore_broklin_cover.webp', // Use capa do arco
       link: '/visual-novel',
       mode: 'romance'
     },
