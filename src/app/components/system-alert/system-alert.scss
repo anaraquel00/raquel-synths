@@ -67,7 +67,7 @@ $jonah-bg: rgba(20, 5, 0, 0.9);
         color: $neon-blue;
         font-family: 'Courier New', monospace;
         font-weight: 800;
-        font-size: 0.95rem;
+        font-size: 1.4rem;
         letter-spacing: 1px;
         align-items: center;
         text-transform: uppercase;
@@ -76,7 +76,7 @@ $jonah-bg: rgba(20, 5, 0, 0.9);
 
 .log-message {
     color: #e0e0e0;
-    font-size: 1rem;
+    font-size: 1.5rem;
     line-height: 1.4;
     strong { 
         color: white; 
@@ -88,7 +88,7 @@ $jonah-bg: rgba(20, 5, 0, 0.9);
 .alert-action { flex-shrink: 0; }
 
 .btn-text {
-    max-width: 50px;
+    max-width: 115px;
     text-align: center;
     line-height: 1.2;
     display: inline-flex;
@@ -102,7 +102,7 @@ $jonah-bg: rgba(20, 5, 0, 0.9);
     border-radius: 6px;
     font-size: 0.85rem;
     font-weight: bold;
-    white-space: normal;
+    white-space: nowrap;
     text-transform: uppercase;
     letter-spacing: 1px;
     transition: all 0.3s ease;
@@ -261,7 +261,7 @@ $jonah-bg: rgba(20, 5, 0, 0.9);
    ========================================= */
  .jonah-counter-hack {
   /* --- TRAVAS DE SEGURANÇA ADICIONADAS --- */
-  width: 60%;               /* Ocupa 100% do espaço disponível, não mais */
+  width: 101%;               /* Ocupa 100% do espaço disponível, não mais */
   max-width: 100%;           /* Garante que não estoure nunca */
   box-sizing: border-box;    /* Inclui o padding no cálculo do tamanho */
   word-wrap: break-word;     /* Quebra o texto se for muito longo */

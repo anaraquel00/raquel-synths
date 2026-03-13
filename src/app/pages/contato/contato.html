@@ -26,22 +26,22 @@
   } @else {
     <form [formGroup]="uplinkForm" (ngSubmit)="onSubmit()" class="contact-form">
 
-      <input type="text" formControlName="website" class="hidden-trap" tabindex="-1" autocomplete="off">
+      <input type="text" id="trap-website" formControlName="website" class="hidden-trap" tabindex="-1" autocomplete="off" aria-hidden="true">
 
       <div class="form-row">
         <div class="form-group">
-          <label>{{ text.form.name }}</label>
-          <input type="text" formControlName="name" placeholder="Agent 007">
+          <label for="agent-name">{{ text.form.name }}</label>
+          <input type="text" id="agent-name" formControlName="name" placeholder="Agent 007">
         </div>
         <div class="form-group">
-          <label>{{ text.form.email }}</label>
-          <input type="email" formControlName="email" placeholder="mail@server.com">
+          <label for="agent-email">{{ text.form.email }}</label>
+          <input type="email" id="agent-email" formControlName="email" placeholder="mail@server.com">
         </div>
       </div>
 
       <div class="form-group">
-        <label>{{ text.form.subject }}</label>
-        <select formControlName="subject">
+        <label for="agent-subject">{{ text.form.subject }}</label>
+        <select id="agent-subject" formControlName="subject">
           <option value="" disabled selected>-- Select --</option>
           @for (sub of text.form.subjects; track sub) {
             <option [value]="sub">{{ sub }}</option>
@@ -50,11 +50,11 @@
       </div>
 
       <div class="form-group">
-        <label>{{ text.form.message }}</label>
-        <textarea formControlName="message" rows="5"></textarea>
+        <label for="agent-message">{{ text.form.message }}</label>
+        <textarea id="agent-message" formControlName="message" rows="5"></textarea>
       </div>
 
-      <button type="submit" [disabled]="uplinkForm.invalid || isSending" class="btn-submit">
+      <button type="submit" [disabled]="uplinkForm.invalid || isSending" class="btn-submit" [attr.aria-busy]="isSending">
         {{ isSending ? text.form.sending : text.form.submit }}
       </button>
 

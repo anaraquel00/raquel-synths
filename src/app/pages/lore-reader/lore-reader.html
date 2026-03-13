@@ -14,46 +14,60 @@
     </header>
 
 <div class="episodes-list">
-  @for (ep of episodes$ | async; track ep.id) {
-   <article class="episode-card" [id]="ep.id" [class.season-two]="ep.id && ep.id.startsWith('s2-')">
+  
+  @if (episodes$ | async; as episodes) {
+    
+    @for (ep of episodes | slice:0:displayLimit; track ep.id) {
+      <article class="episode-card" [id]="ep.id" [class.season-two]="ep.id && ep.id.startsWith('s2-')">
+        
+        <div class="ep-header">
+          <span class="season-badge" [class.badge-s2]="ep.id && ep.id.startsWith('s2-')">
+            {{ translate.isPt() ? ep.category : (ep.category_en || ep.category) }}
+          </span>
+          <span class="date" *ngIf="ep.releaseDate">{{ ep.releaseDate | date:'dd/MM/yyyy' }}</span>
+        </div>
 
-      <div class="ep-header">
-        <span class="season-badge" [class.badge-s2]="ep.id && ep.id.startsWith('s2-')">
-          {{ translate.isPt() ? ep.category : (ep.category_en || ep.category) }}
-        </span>
-        <span class="date" *ngIf="ep.releaseDate">{{ ep.releaseDate | date:'dd/MM/yyyy' }}</span>
-      </div>
+        <h2>{{ translate.isPt() ? ep.title : (ep.title_en || ep.title) }}</h2>
 
-      <h2>{{ translate.isPt() ? ep.title : (ep.title_en || ep.title) }}</h2>
-
-      <div class="story-content">
-        @if (ep.image) {
-          <div class="episode-cover">
-            <img [ngSrc]="ep.image" 
-            width="1200" 
-            height="600" 
-            priority 
-            alt="Capa">
-          </div>
-        }
-
-        @for (block of (translate.isPt() ? ep.content : (ep.content_en || ep.content)) | splitContent; track $index) {
-          <div [innerHTML]="block"></div>
-
-          @if ($index === 1 || $index === 5 || $index === 10) {
-            <div class="inner-ad">
-              <app-ad-article></app-ad-article>
+        <div class="story-content">
+          @if (ep.image) {
+            <div class="episode-cover">
+              <img [ngSrc]="ep.image" width="1200" height="600" priority alt="Capa">
             </div>
           }
-        }
-      </div>
 
-      <div class="divider"><span>● ● ●</span></div>
-    </article>
-  } @empty {
+          @for (block of (translate.isPt() ? ep.content : (ep.content_en || ep.content)) | splitContent; track $index) {
+            <div [innerHTML]="block"></div>
+
+            @if ($index === 1 || $index === 5 || $index === 10) {
+              <div class="inner-ad">
+                <app-ad-article></app-ad-article>
+              </div>
+            }
+          }
+        </div>
+
+        <div class="divider"><span>● ● ●</span></div>
+      </article>
+    }
+
+    @if (displayLimit < episodes.length) {
+      <div class="decript-action-bar">
+        <button class="btn-decriptar" (click)="decriptarMais()">
+          {{ translate.isPt() ? '[ 📂 DECRIPTAR MAIS ARQUIVOS ]' : '[ 📂 DECRYPT MORE FILES ]' }}
+        </button>
+      </div>
+    }
+    
+  } @else {
     <p class="loading-text">
         {{ translate.isPt() ? 'As crônicas estão sendo descriptografadas...' : 'Decrypting echoes...' }}
     </p>
   }
+   <div class="bottom-back-action">
+    <a class="back-btn bottom-btn" routerLink="/visual-novel">
+      &larr; {{ translate.isPt() ? 'VOLTAR AO SUMÁRIO' : 'BACK TO LIST' }}
+    </a>
+  </div>
 </div>
 </div>

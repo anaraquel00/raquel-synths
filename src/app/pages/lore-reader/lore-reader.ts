@@ -8,6 +8,7 @@ import { SplitContentPipe } from "../../components/pipes/content-splitter.pipe";
 import { LoreEpisode } from '../../data/lore-data';
 import { AdArticleComponent } from "../../components/ad-article/ad-article";
 import { NgOptimizedImage } from '@angular/common';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-lore-reader',
@@ -49,9 +50,24 @@ export class LoreReaderComponent implements OnInit, OnDestroy, AfterViewChecked 
     }
   }
 
-  loadEpisodes() {
-    // 🔌 Conecta o cano no lugar certo
-    this.episodes$ = this.contentService.getEpisodes(this.currentMode);
+ loadEpisodes() {
+    // 🔌 Conecta o cano no lugar certo e coloca um "grampo" (tap) na linha
+    this.episodes$ = this.contentService.getEpisodes(this.currentMode).pipe(
+      tap((episodes) => {
+        // Antes do HTML desenhar a tela, o sistema verifica se temos um alvo (ex: ep-6)
+        if (this.targetId && episodes) {
+          
+          // Rastreamos em qual índice do array (posição) esse episódio está
+          const targetIndex = episodes.findIndex(ep => ep.id === this.targetId);
+          
+          // Se o episódio estiver escondido atrás do nosso escudo de limite (5)...
+          if (targetIndex >= this.displayLimit) {
+            // 🛑 HACK DE SISTEMA: Destravamos o limite para caber o episódio alvo + folga!
+            this.displayLimit = targetIndex + 2; 
+          }
+        }
+      })
+    );
   }
 
 // Variável de controle para não entrar em loop eterno
@@ -104,5 +120,13 @@ export class LoreReaderComponent implements OnInit, OnDestroy, AfterViewChecked 
 
   goBack() {
     this.router.navigate(['/visual-novel']);
+  }
+
+  // 1. Limite de renderização do DOM (Inicia com 5 arquivos)
+  displayLimit: number = 5;
+
+  // 2. A função que o botão vai chamar para liberar mais pacotes de dados
+  decriptarMais() {
+    this.displayLimit += 5;
   }
 }

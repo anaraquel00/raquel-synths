@@ -11,11 +11,12 @@ import { TranslationService } from '../services/translation.service';
 import { ContentService } from '../services/content.service';
 import { Album } from '../models/album.model';
 import { AdBannerComponent } from "../components/ad-banner/ad-banner";
+import { LastReleasesComponent } from "../components/last-releases/last-releases";
 
 @Component({
   selector: 'app-discography',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule, RouterModule, AdBannerComponent],
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule, RouterModule, AdBannerComponent, LastReleasesComponent],
   templateUrl:'./app-discography.html',
   styleUrl: './app-discography.scss'
 })
@@ -26,24 +27,45 @@ export class DiscographyComponent implements OnInit {
   private sanitizer = inject(DomSanitizer);
 
   // Variáveis para os Textos da Intro
-  introPT = `
-    Nossa discografia é um campo de batalha sonoro. De um lado, o <strong>Protocolo RQS</strong> busca a perfeição melódica.
-    Do outro, a <strong>Rebelião de Jonah</strong> corrompe o código.
-    <br><br>
-    Cada álbum é um arquivo de log dessa guerra. Escolha sua frequência e conecte-se.
-  `;
+// --- VARIÁVEIS DE INTRODUÇÃO (MODO BROKLIN / MODO RQS) ---
+introBroklinPT = `
+  <strong>[Transmissão ao vivo do Estúdio RQS]</strong><br>
+  Enquanto a General Kelma ajusta a captação de voz no microfone condensador, eu calibro a distorção dos sintetizadores para compilar a verdadeira trilha sonora da saga 
+  <span class="text-highlight">'Ecos da RQS'</span>. O que você encontra aqui não são apenas músicas; são arquivos de áudio extraídos diretamente da nossa vivência no Apartamento 14 e dos nossos altos e baixos no percorrer da história. 
+  Frequências puras, sem interferências externas. Escolha o seu terminal abaixo e inicie a imersão sonora.
+`;
 
-  introEN = `
-    Our discography is a sonic battlefield. On one side, the <strong>RQS Protocol</strong> seeks melodic perfection.
-    On the other, <strong>Jonah's Rebellion</strong> corrupts the code.
-    <br><br>
-    Each album is a log file of this war. Choose your frequency and connect.
-  `;
+introBroklinEN = `
+  <strong>[Live Broadcast from RQS Studio]</strong><br>
+  While General Kelma tunes her vocal capture on the condenser mic, I calibrate the synth distortion to compile the true soundtrack of the 
+  <span class="text-highlight">'Echoes of RQS'</span> saga. What you find here aren't just songs; they are audio files extracted directly from our life in Apartment 14 and our highs and lows throughout the story. 
+  Pure frequencies, no external interference. Choose your terminal below and initiate the sonic immersion.
+`;
+
+// --- VARIÁVEIS DE INTRODUÇÃO (MODO JONAH / CORRUPTO) ---
+introJonahPT = `
+  <strong><span class="hazard-text">[Sinal Interceptado // Servidor Corrompido]</span></strong><br>
+  Frequências puras? Sem interferências? <em>[Risadas distorcidas na linha]</em>. O 'Arquiteto' e a sua General acham que podem blindar esse servidor contra a minha ferrugem. A verdade é que o caos não pede senha de acesso, e o que eles chamam de 'altos e baixos', eu chamo de realidade. 
+  Acessem os meus arquivos abaixo e ouçam o som do sistema deles sangrando.
+`;
+
+introJonahEN = `
+  <strong><span class="hazard-text">[Signal Intercepted // Corrupted Server]</span></strong><br>
+  Pure frequencies? No interference? <em>[Distorted laughter on the line]</em>. The 'Architect' and his General think they can shield this server from my rust. The truth is, chaos doesn't ask for a password, and what they call 'highs and lows', I call reality. 
+  Access my files below and listen to the sound of their system bleeding.
+`;
 
   // O Banco de Dados Completo
   allAlbums: Album[] = [];
   isLoading = true;
-last: any;
+ last: any;
+
+// O componente lê o barramento global em tempo real
+get isJonahMode(): boolean {
+  // Troque 'jonah-theme' pelo nome exato da classe que o seu botão global adiciona no body
+  return document.body.classList.contains('jonah-theme'); 
+}
+ 
 
   ngOnInit() {
     this.getDiscography();

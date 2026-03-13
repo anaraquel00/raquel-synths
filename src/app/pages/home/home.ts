@@ -18,7 +18,7 @@ import { UplinkTerminalComponent } from "../../components/uplink-terminal/uplink
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, LastReleasesComponent, UplinkTerminalComponent, SystemAlert],
+  imports: [CommonModule, MatButtonModule, UplinkTerminalComponent, SystemAlert],
   templateUrl: './home.html',
   styleUrl: './home.scss'
 })
