@@ -672,3 +672,21 @@
   }
 }
 
+:host-context(body.mode-jonah){
+  ::ng-deep .cyber-video-box {
+    border-color: #ff3d00;
+    box-shadow: 0px 0px 20px rgba(255, 61, 0, 0.4);
+
+    .cyber-play-btn {
+      background-color: rgba(30, 5, 5, 0.8);
+      color: #ff3d00;
+      border-color: #ff3d00;
+      box-shadow: 0px 0px 20px #ff3d00;
+
+      &:hover {
+        box-shadow: 0px 0px 30px #ff3d00, inset 0px 0px 10px #ff3d00;
+        background-color: rgba(30, 5, 5, 0.95);
+      }
+    }
+   }
+}
