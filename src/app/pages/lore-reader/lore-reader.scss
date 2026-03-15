@@ -11,6 +11,7 @@
   display: flow-root !important;
   margin-bottom: 50px;
 
+ 
   }
 
   /* --- O CONTAINER DO BOTÃO --- */
@@ -411,6 +412,31 @@
     display: block;
     }
   }
+
+/* 🎛️ AS DIVS FLUTUANTES (A Solução da General) */
+   .div-side-left {
+    float: left;
+    width: 48%; /* Quase metade, deixando um respiro no meio */
+    margin-right: 2%;
+    margin-bottom: 2rem;
+   }
+   
+   .div-side-right {
+    float: right;
+    width: 48%;
+    margin-bottom: 2rem;
+   }
+
+   /* Desativa o float no celular para empilhar bonitinho */
+   @media (max-width: 850px) {
+     .div-side-left, .div-side-right {
+       float: none !important;
+       width: 100% !important;
+       margin: 0 0 2rem 0 !important;
+       display: block !important;
+     }
+   }
+
   }
 
   .inner-ad {
@@ -438,6 +464,7 @@
     opacity: 0.3;
     letter-spacing: 10px;
   }
+  
 }
 
 .cliffhanger {
@@ -629,7 +656,9 @@
   }
 }
 
-/* O Hack do ng-deep para perfurar o [innerHTML] */
+/* ================================================= */
+/* 🎧 O HACK DO VÍDEO (Perfurando o innerHTML)       */
+/* ================================================= */
 ::ng-deep .cyber-video-box {
   display: block;
   position: relative;
@@ -663,31 +692,113 @@
     box-shadow: 0px 0px 20px #00e5ff;
     pointer-events: none;
     transition: all 0.3s ease;
-    }
+  }
+
   /* Efeito de zoom quando passar o mouse */
   &:hover .cyber-play-btn {
     transform: translate(-50%, -50%) scale(1.15);
     box-shadow: 0px 0px 30px #00e5ff, inset 0px 0px 10px #00e5ff;
     background-color: rgba(10, 10, 15, 0.95);
   }
+} /* 🛑 AQUI FECHA O CYBER-VIDEO-BOX! (O erro estava aqui) */
+
+
+/* ================================================= */
+/* 🛒 ESTILOS BLINDADOS DA NEON STORE                */
+/* ================================================= */
+::ng-deep .neon-store-image {
+  display: inline-block;
+  border: 2px solid #00ffcc;
+  box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
+  border-radius: 8px;
+  overflow: hidden;
+  max-width: 240px;
+  transition: all 0.3s ease;
+
+  img {
+    width: 100%;
+    display: block;
+    filter: brightness(0.9);
+  }
+
+  &:hover {
+    box-shadow: 0 0 25px rgba(0, 255, 204, 0.6);
+    transform: translateY(-2px);
+    img { filter: brightness(1); }
+  }
 }
 
-:host-context(body.mode-jonah){
+::ng-deep .neon-store-btn {
+  display: inline-block;
+  padding: 15px 30px;
+  background: rgba(0, 255, 204, 0.1);
+  border: 2px solid #00ffcc;
+  color: #00ffcc !important;
+  text-decoration: none;
+  font-size: 1.1em;
+  font-weight: bold;
+  letter-spacing: 2px;
+  box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
+  text-shadow: 0 0 8px #00ffcc;
+  border-radius: 4px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  margin-left: -232px;
+  margin-right: 311px;
+
+  &:hover {
+    background: rgba(0, 255, 204, 0.2);
+    box-shadow: 0 0 25px rgba(0, 255, 204, 0.6), inset 0 0 10px rgba(0, 255, 204, 0.2);
+    color: #fff !important;
+    text-shadow: 0 0 10px #fff, 0 0 20px #00ffcc;
+  }
+}
+
+
+/* ================================================= */
+/* ☢️ CORRUPÇÃO DE SISTEMA (Modo Jonah)              */
+/* ================================================= */
+:host-context(body.mode-jonah) {
+  
+  /* 1. Corrompendo a Loja */
+  ::ng-deep .neon-store-image {
+    border-color: #ff3d00 !important;
+    box-shadow: 0 0 15px rgba(255, 61, 0, 0.3) !important;
+    &:hover { box-shadow: 0 0 25px rgba(255, 61, 0, 0.6) !important; }
+  }
+  
+  ::ng-deep .neon-store-btn {
+    background: rgba(255, 61, 0, 0.1) !important;
+    border-color: #ff3d00 !important;
+    color: #ff3d00 !important;
+    box-shadow: 0 0 15px rgba(255, 61, 0, 0.4) !important;
+    text-shadow: 0 0 8px #ff3d00 !important;
+    
+    &:hover {
+      background: rgba(255, 61, 0, 0.2) !important;
+      box-shadow: 0 0 25px rgba(255, 61, 0, 0.6), inset 0 0 10px rgba(255, 61, 0, 0.2) !important;
+      color: #fff !important;
+      text-shadow: 0 0 10px #fff, 0 0 20px #ff3d00 !important;
+    }
+  }
+
+  /* 2. Corrompendo o Vídeo */
   ::ng-deep .cyber-video-box {
-    border-color: #ff3d00;
-    box-shadow: 0px 0px 20px rgba(255, 61, 0, 0.4);
-    border-radius: 1px;
+    border-color: #ff3d00 !important;
+    box-shadow: 0px 0px 20px rgba(255, 61, 0, 0.4) !important;
+    border-radius: 1px !important;
 
     .cyber-play-btn {
-      background-color: rgba(30, 5, 5, 0.8);
-      color: #ff3d00;
-      border-color: #ff3d00;
-      box-shadow: 0px 0px 20px #ff3d00;
-
-      &:hover {
-        box-shadow: 0px 0px 30px #ff3d00, inset 0px 0px 10px #ff3d00;
-        background-color: rgba(30, 5, 5, 0.95);
-      }
+      background-color: rgba(30, 5, 5, 0.8) !important;
+      color: #ff3d00 !important;
+      border-color: #ff3d00 !important;
+      box-shadow: 0px 0px 20px #ff3d00 !important;
     }
-   }
+
+    &:hover .cyber-play-btn {
+      box-shadow: 0px 0px 30px #ff3d00, inset 0px 0px 10px #ff3d00 !important;
+      background-color: rgba(30, 5, 5, 0.95) !important;
+    }
+  }
 }
+

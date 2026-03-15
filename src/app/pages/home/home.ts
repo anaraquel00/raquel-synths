@@ -2,7 +2,7 @@ import { Component, Inject, OnInit, OnDestroy, signal, effect, HostListener, inj
 import { DOCUMENT, CommonModule, isPlatformBrowser } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser'; // 👈 NOVO
 import { MatButtonModule } from '@angular/material/button';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import Swal from 'sweetalert2';
 import { Subscription } from 'rxjs'; // 👈 NOVO
 
@@ -18,11 +18,48 @@ import { UplinkTerminalComponent } from "../../components/uplink-terminal/uplink
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, UplinkTerminalComponent, SystemAlert],
+  imports: [CommonModule, MatButtonModule, UplinkTerminalComponent, RouterLink],
   templateUrl: './home.html',
   styleUrl: './home.scss'
 })
 export class Home implements OnInit, OnDestroy {
+  isBrowser: any;
+
+// 2. A porta dos fundos tática atualizada
+  forcarModoJonah() {
+    if (typeof document !== 'undefined') {
+      // Injeta ou remove a ferrugem do sistema
+      document.body.classList.toggle('mode-jonah');
+      
+      // Atualiza a nossa variável de controle instantaneamente
+      this.isJonahMode = document.body.classList.contains('mode-jonah');
+      
+      // O log do console atualizado
+      if (this.isJonahMode) {
+        console.warn('⚠️ [ALERTA DE SISTEMA] O arquivo corrompido MODO_JONAH.bat comprometeu a interface.');
+      } else {
+        console.log('🛡️ [SISTEMA RESTAURADO] Ameaça isolada. Protocolo Neon reativado.');
+      }
+    }
+  }
+
+executarQuickhack(targetId: string) {
+    // 1. Hack nativo para garantir que o código só rode no Navegador (não no Servidor/Firebase)
+    if (typeof document !== 'undefined') {
+      
+      // 2. O radar varre a árvore do DOM inteiro procurando a etiqueta
+      const element = document.getElementById(targetId);
+      
+      if (element) {
+        // 3. Alvo travado. Rola suavemente até lá.
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        // 4. Se falhar, nós vamos ver exatamente quem está faltando no painel do F12 (Console)
+        console.error(`[FALHA DE SISTEMA] O módulo com id="${targetId}" não foi encontrado na placa-mãe!`);
+      }
+    }
+  }
+
   showUplink = false; // Controle do Modal
  isJonahMode = true; // Controle do Modo (Broklin/Jonah)
  public currentMode: 'broklin' | 'jonah' = 'broklin';
@@ -79,6 +116,10 @@ currentLanguage: any;
   }
 
   ngOnInit() {
+    if (typeof document !== 'undefined') {
+      this.isJonahMode = document.body.classList.contains('mode-jonah');
+    }
+    
     // 👇 1. BAIXA A DISCOGRAFIA (NOVO)
     this.musicSub = this.contentService.getDiscography().subscribe(data => {
       this.allMusic = data;

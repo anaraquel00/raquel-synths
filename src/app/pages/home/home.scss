@@ -1,6 +1,248 @@
 /* src/app/pages/home/home.scss */
 @use '@angular/material' as mat;
 
+/* --- O TERMINAL NETRUNNER --- */
+.netrunner-terminal {
+  position: relative;
+  /* Cria uma malha de radar cyberpunk usando 0 bytes de imagem */
+  background: linear-gradient(rgba(0, 20, 20, 0.95), rgba(0, 10, 10, 0.95)),
+              linear-gradient(90deg, rgba(0, 255, 204, 0.05) 1px, transparent 1px),
+              linear-gradient(rgba(0, 255, 204, 0.05) 1px, transparent 1px);
+  background-size: 100% 100%, 30px 30px, 30px 30px;
+  border: 1px solid rgba(0, 255, 204, 0.3);
+  padding: 3rem 2rem;
+  margin: 2rem auto 4rem auto;
+  max-width: 1000px;
+  overflow: hidden;
+  box-shadow: inset 0 0 30px rgba(0, 255, 204, 0.05);
+
+  /* O efeito de tela antiga descendo */
+  .scanline {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(to bottom, transparent 50%, rgba(0, 255, 204, 0.02) 51%);
+    background-size: 100% 4px;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .terminal-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    position: relative;
+    z-index: 3;
+    
+    h2 {
+      color: #00ffcc;
+      font-family: 'Courier New', Courier, monospace;
+      text-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+      letter-spacing: 2px;
+      margin: 0;
+    }
+
+    .blink {
+      color: #aaa;
+      font-family: 'Courier New', Courier, monospace;
+      animation: blinker 1s step-end infinite;
+      margin-top: 10px;
+    }
+  }
+
+  .quickhacks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
+    position: relative;
+    z-index: 3;
+
+   /* Animação do Cursor Piscante */
+/* A Base que segura as colunas (Caso precise confirmar o lado a lado) */
+.hero-layout-split {
+  display: flex;
+  flex-direction: row; /* Força Lado a Lado */
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  width: 100%;
+  
+  .hero-left { flex: 1; }
+  .hero-right { flex: 1; max-width: 550px; } /* Limita a largura do terminal para não esmagar o texto */
+}
+
+@media (max-width: 900px) {
+  .hero-layout-split {
+    flex-direction: column; /* No celular ele empilha */
+    .hero-right { max-width: 100%; }
+  }
+}
+
+/* ================================================= */
+/* 🖥️ A BLINDAGEM DOS BOTÕES DO TERMINAL             */
+/* ================================================= */
+
+@keyframes rqs-cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.hack-btn {
+  /* MATANDO O FUNDO BRANCO DO NAVEGADOR */
+  background: rgba(10, 15, 25, 0.8) !important;
+  color: var(--accent-color, #00ffcc) !important;
+  border: 1px solid rgba(0, 255, 204, 0.3) !important;
+  
+  text-align: left; 
+  width: 100%; 
+  padding: 12px 20px;
+  position: relative;
+  font-family: 'Courier New', Courier, monospace;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  .cmd-arrow {
+    color: #666;
+    margin-right: 5px;
+    font-weight: bold;
+    transition: color 0.3s;
+  }
+
+  &::after {
+    content: '█'; 
+    margin-left: 10px;
+    color: var(--accent-color, #00ffcc); 
+    display: inline-block;
+    opacity: 0; 
+    transition: opacity 0.2s;
+  }
+
+  &:hover {
+    transform: translateX(5px); 
+    background: rgba(0, 255, 204, 0.1) !important; /* Brilho suave no hover */
+    border-color: var(--accent-color, #00ffcc) !important;
+    box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
+    
+    .cmd-arrow { color: var(--accent-color, #00ffcc); }
+
+    &::after {
+      opacity: 1; 
+      animation: rqs-cursor-blink 1s step-end infinite; 
+    }
+  }
+}
+
+/* Modo Jonah Blindado */
+:host-context(body.mode-jonah) .hack-btn {
+  color: #ff3d00 !important;
+  border-color: rgba(255, 61, 0, 0.3) !important;
+
+  &::after { color: #ff3d00; }
+  
+  &:hover {
+    background: rgba(255, 61, 0, 0.1) !important;
+    border-color: #ff3d00 !important;
+    box-shadow: 0 0 15px rgba(255, 61, 0, 0.2);
+    .cmd-arrow { color: #ff3d00; }
+  }
+}
+
+    /* Cores de destaque para Loja e Criadora */
+    
+    /* --- O Botão de Comunidade (Uplink) --- */
+.uplink-hack {
+  border-color: #0088ff;
+  color: #0088ff;
+  background: rgba(0, 136, 255, 0.05);
+  font-weight: bold;
+  
+  &:hover {
+    background: rgba(0, 136, 255, 0.2);
+    box-shadow: 0 0 15px rgba(0, 136, 255, 0.4);
+    text-shadow: 0 0 10px #0088ff;
+  }
+}
+
+    /* A quarentena do Malware */
+    .jonah-hack {
+      border-color: #ff3333;
+      color: #ff3333;
+      background: rgba(255, 51, 51, 0.05);
+
+      &:hover {
+        background: rgba(255, 51, 51, 0.2);
+        box-shadow: 0 0 15px rgba(255, 51, 51, 0.3);
+        text-shadow: 0 0 8px #ff3333;
+      }
+    }
+  }
+}
+
+@keyframes blinker {
+  50% { opacity: 0; }
+}
+
+/* ☢️ O VÍRUS DO JONAH (Injeção de Força Bruta com !important) */
+:host-context(body.mode-jonah) {
+  
+  .netrunner-terminal {
+    /* Corrompe o fundo do radar para vermelho escuro */
+    background: linear-gradient(rgba(20, 0, 0, 0.95), rgba(10, 0, 0, 0.95)),
+                linear-gradient(90deg, rgba(255, 51, 51, 0.05) 1px, transparent 1px),
+                linear-gradient(rgba(255, 51, 51, 0.05) 1px, transparent 1px) !important;
+    border-color: rgba(255, 51, 51, 0.5) !important;
+    box-shadow: inset 0 0 30px rgba(255, 51, 51, 0.1) !important;
+    
+    /* Sangra o texto do cabeçalho */
+    .terminal-header h2 { 
+      color: #ff3333 !important; 
+      text-shadow: 0 0 10px rgba(255, 51, 51, 0.5) !important; 
+    }
+
+    /* O grid de hackeamento corrompido */
+    .quickhacks-grid {
+      
+      /* Todos os botões base viram vermelho/ferrugem */
+      .hack-btn { 
+        color: #ff3333 !important; 
+        border-color: rgba(255, 51, 51, 0.4) !important; 
+        background: rgba(255, 51, 51, 0.05) !important;
+
+        &:hover { 
+          background: rgba(255, 51, 51, 0.2) !important; 
+          text-shadow: 0 0 8px #ff3333 !important; 
+          border-color: #ff3333 !important;
+        }
+      }
+
+      /* Mantém a Loja e a Criadora visíveis (Laranja), mas sob tensão */
+      .store-hack, .creator-hack {
+        border-color: #ffaa00 !important;
+        color: #ffaa00 !important;
+        background: rgba(255, 170, 0, 0.05) !important;
+
+        &:hover {
+          background: rgba(255, 170, 0, 0.2) !important;
+          box-shadow: 0 0 15px rgba(255, 170, 0, 0.3) !important;
+        }
+      }
+
+      /* O Uplink da Comunidade corrompe de Azul para Roxo Tóxico */
+      .uplink-hack {
+        border-color: #aa00ff !important;
+        color: #aa00ff !important;
+        background: rgba(170, 0, 255, 0.05) !important;
+        
+        &:hover {
+          background: rgba(170, 0, 255, 0.2) !important;
+          box-shadow: 0 0 15px rgba(170, 0, 255, 0.4) !important;
+          text-shadow: 0 0 10px #aa00ff !important;
+        }
+      }
+    }
+  }
+}
+
+
+
 .home-container {
   min-height: 100vh;
   display: flex;
@@ -117,11 +359,11 @@
 .hero-section {
   flex: 1;
   display: flex;
-  flex-direction: column;
+  flex-direction:row;
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 2rem;
+  padding: 0rem;
   background: var(--hero-overlay);
   backdrop-filter: blur(2px);
 
@@ -146,6 +388,7 @@
     font-size: 5rem;
     font-weight: 900;
     margin-bottom: 0;
+    margin-right: 30px;
     font-family: var(--font-heading);
 
     /* Gradiente Animado */
@@ -170,7 +413,7 @@
     text-align: center;
     width: 100%;
     line-height: 1.1;
-    margin-bottom: 1rem;
+    margin-bottom: 0rem;
     
     /* Caso a tela seja minúscula (ex: iPhone SE), forçamos uma quebra elegante por palavra, e não por letra */
     word-break: keep-all; 
@@ -185,11 +428,14 @@
   .hero-subtitle {
     font-size: 1.5rem;
     max-width: 600px;
-    margin-bottom: 2rem;
+    margin-bottom: -1rem;
     color: var(--text-color);
     opacity: 0.9;
+    text-align: center;
+    margin-left: 65px;
+    
 
-    @media (max-width: 768px) { font-size: 0.9rem;          }
+    @media (max-width: 768px) { font-size: 0.9rem; margin-left: 5px;         }
   }
 
   /* Botão CTA */
@@ -232,7 +478,7 @@
     @media (max-width: 768px) {
       font-size: 2.5rem; /* Menor ainda em Celulares */
       letter-spacing: 2px;
-      margin-top: -0.5rem;
+      margin-top: 2.5rem;
     }
 
   /* A MÁGICA DO DEGRADÊ (Magma/Fogo) */
@@ -344,7 +590,10 @@
       // GARANTIA 1: Remove padding lateral excessivo do pai no mobile
       padding-left: 10px;
       padding-right: 10px;
-      overflow-x: hidden; // Impede que o que vazar crie barra de rolagem     
+      overflow-x: hidden; // Impede que o que vazar crie barra de rolagem 
+      flex-direction: column; // Empilha os elementos verticalmente
+      gap: 0px; // Aumenta o espaço entre eles para evitar que fi
+      margin-top: 1px;
   }
 
   .hero-split-grid {

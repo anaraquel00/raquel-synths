@@ -8,12 +8,12 @@ export const NAV_DATA = {
 // DADOS DA HOME
 export const HOME_DATA = {
   pt: {
-    title: 'RAQUEL SYNTHS', subtitle: 'Jornadas sonoras através de paisagens de neon e nostalgia.', cta: 'SABER MAIS', //modo broklin
-    subtitleJonah: 'A TRILHA SONORA DO COLAPSO GLOBAL. O MUNDO QUEIMA, NÓS TOCAMOS.', ctaJonah: 'OUÇA O APOCALIPSE' // Modo Jonah (O Colapso)
+    title: 'RAQUEL SYNTHS', subtitle: 'Onde o analógico sangra no digital. Nós sintetizamos as trilhas sonoras de um futuro corrompido e escrevemos os Ecos que eles tentam apagar. Inicie o Uplink para extrair a verdade.', cta: 'SABER MAIS', //modo broklin
+    subtitleJonah: 'Olhe para esse castelo de vidro que eles construíram. Patético. Eu sou a ferrugem na placa-mãe. Quebre os arquivos, ouça a verdadeira frequência e veja a General queimar.', ctaJonah: 'OUÇA O APOCALIPSE' // Modo Jonah (O Colapso)
   },
   en: {
-    title: 'RAQUEL SYNTHS', subtitle: 'Sonic journeys through landscapes of neon and nostalgia.', cta: 'LEARN MORE',
-    subtitleJonah: 'THE SOUNDTRACK OF GLOBAL COLLAPSE. THE WORLD BURNS, WE PLAY.', ctaJonah: 'LISTEN TO THE APOCALYPSE' // Jonah Mode (The Collapse)
+    title: 'RAQUEL SYNTHS', subtitle: 'Where analog bleeds into digital. We synthesize the soundtracks of a corrupted future and write the Echoes they try to erase. Initiate the Uplink to extract the truth.', cta: 'LEARN MORE',
+    subtitleJonah: 'Look at this glass castle they built. Pathetic. I am the rust on the motherboard. Crack the files, listen to the true frequency, and watch the General burn.', ctaJonah: 'LISTEN TO THE APOCALYPSE' // Jonah Mode (The Collapse)
    }
 };
 
@@ -55,72 +55,75 @@ export const MANIFESTO_EN = `
 // DADOS DO "SOBRE" (BIOS)
 export const MEMBERS_PT = [
   {
-    name: 'Broklin Garpeter',
-    role: 'CTO, Tech Lead & Music Producer',
+    name: 'Broklin Garpeter (Synth Lord)',
+    role: 'Arquiteto Chefe de Sistemas & Produtor de Defesa',
     imageBroklin: 'images/broklin_perfil.webp',
     imageJonah: 'images/gothic_bro.webp',
-    bioNormal: 'O arquiteto do sistema. Com 25 anos de experiência em produção e código, ele garante que a infraestrutura suporte a inovação. Especialista em mixagem técnica, orquestração de IA e em manter o servidor de pé quando o Jonah surta.',
+    bioNormal: 'O escudo de infraestrutura da RQS. Como Synth Lord, sua diretriz primária é blindar o ecossistema da General com sintetizadores de alta voltagem e arquitetura de rede limpa. É ele quem estabiliza os servidores sob fogo inimigo e garante o isolamento absoluto quando as anomalias tentam invadir a placa-mãe.',
     bioJonah: 'O VELHO. Ele fica tentando colocar "grid" na minha distorção e chama isso de "masterização". Um burocrata digital que precisa de mais café e menos regras.',
   },
   {
-    name: 'Jonah Cyperfield',
-    role: 'Head of Sound Design (Chaos Ops)',
+    name: 'Jonah Cyperfield (Rust & Lord)',
+    role: 'Anomalia Sonora & Metaleiro de Sistema',
     imageBroklin: 'images/jonah_profil.webp',
     imageJonah: 'images/jonah_metal-skull.webp',
-    bioNormal: 'O elemento de entropia. Responsável pela texturização industrial e pelos "happy accidents" do algoritmo. Ele força os modelos de IA ao limite para extrair sonoridades que simulam falhas de hardware e angústia digital.',
+    bioNormal: 'O puro caos injetado em código. O Rust & Lord é uma anomalia ambulante que ignora protocolos e segurança. Ele força a matriz ao limite com distorções pesadas, atitude de metaleiro e texturas industriais que simulam a ferrugem das máquinas. É o elemento de entropia que eu tento diariamente bloquear do servidor principal, mas que sempre encontra uma falha para invadir os nossos Ecos.',
     bioJonah: 'EU SOU O ERRO NO SEU CÓDIGO. Enquanto eles brincam de "música bonita", eu estou aqui soldando cabos enferrujados no processador. Nu-Metal não é um estilo, é um aviso de falha.', // ATUALIZADO
   },
   {
-    name: 'Kelma Adlanko',
-    role: 'Founder, Lead Developer & Vocalist',
+    name: 'Kelma Adlanko (DJ Kel)',
+    role: 'General da Horda & Arquiteta Fundadora',
     imageBroklin: 'images/kelma_profil.webp',
     imageJonah: 'images/kelma_evil.webp',
-    bioNormal: 'A visionária por trás da RQS. Desenvolvedora Full-Stack que transformou linhas de código em partituras. Ela gerencia a arquitetura do projeto e define a direção criativa, unindo a precisão do Angular com a emoção do Synthwave.',
+    bioNormal: 'A mente mestre por trás do nosso santuário digital. Ela não escreve apenas linhas de código; ela forja as rotas de fuga da nossa rede. Como DJ Kel, é a voz que guia a Horda pela escuridão do sistema, unindo a precisão matemática da programação com a pura dor analógica e o sangue do Synthwave. É a liderança que mantém a nossa missão viva.',
     bioJonah: 'A CHEFE. Ela acha que pode controlar o caos com planilhas e commits organizados. Spoiler: ela não pode. Mas é a única pessoa que eu respeito o suficiente para não deletar do servidor.',
   },
   {
-    name: 'Nicole Nyx',
-    role: 'Vocalist & Visual Arts Lead',
+    name: 'Nicole Nyx (Dj Nyx)',
+    role: 'Operativa das Sombras & Visual Arts',
     imageBroklin: 'images/nyx_profil.webp',
     imageJonah: 'images/nyx_evil.webp',
-    bioNormal: 'A voz do abismo. Traz a estética Gótica/Industrial para o visual da banda. Sua colaboração foca na profundidade lírica e na identidade visual sombria que contrasta com o pop sintético da Kelma.',
+    bioNormal: 'A bruxa emissária do Abismo. DJ Nyx transita pela dark web para tecer a estética Gótica/Industrial que encobre a nossa banda. Sua voz carrega a melancolia de um sistema em colapso. Atualmente, atua como a única ponte de controle capaz de tentar ancorar os delírios do Jonah antes que ele queime os nossos circuitos, contrastando a escuridão absoluta com a luz neon da General.',
     bioJonah: 'MINHA RAINHA. A única frequência que acalma o ruído na minha cabeça. Se ela pedir, eu formato o mundo inteiro só pra instalar um jardim pra ela.',
   }
 ];
 
 export const MEMBERS_EN = [
-  {
-    name: 'Broklin Garpeter',
-    role: 'CTO, Tech Lead & Music Producer',
-    imageBroklin: 'images/broklin_perfil.webp',
-    imageJonah: 'images/gothic_bro.webp',
-    bioNormal: 'The system architect. With 25 years of experience in production and code, he ensures the infrastructure supports innovation. Specialist in technical mixing, AI orchestration, and keeping the server running when Jonah freaks out.',
-    bioJonah: 'THE OLD MAN. He tries to put a "grid" on my distortion and calls it "mastering." A digital bureaucrat who needs more coffee and fewer rules.',
-  },
-  {
-    name: 'Jonah Cyperfield',
-    role: 'Head of Sound Design (Chaos Ops)',
-    imageBroklin: 'images/jonah_profil.webp',
-    imageJonah: 'images/jonah_metal-skull.webp',
-    bioNormal: 'The entropy element. Responsible for industrial texturing and algorithmic "happy accidents." He pushes AI models to their limit to extract sounds that simulate hardware failure and digital anguish.',
-    bioJonah: 'I AM THE ERROR IN YOUR CODE. While they play "pretty music," I am soldering rusty cables to the processor. Nu-Metal is not a style; it is a crash report.',
-  },
-  {
-    name: 'Kelma Adlanko',
-    role: 'Founder, Lead Developer & Vocalist',
-    imageBroklin: 'images/kelma_profil.webp',
-    imageJonah: 'images/kelma_evil.webp',
-    bioNormal: 'The visionary behind RQS. A Full-Stack Developer who turned lines of code into musical scores. She manages the project architecture and defines the creative direction, merging Angular precision with Synthwave emotion.',
-    bioJonah: 'THE BOSS. She thinks she can control chaos with spreadsheets and clean commits. Spoiler: she can\'t. But she is the only person I respect enough not to delete from the server.',
-  },
-  {
-    name: 'Nicole Nyx',
-    role: 'Vocalist & Visual Arts Lead',
-    imageBroklin: 'images/nyx_profil.webp',
-    imageJonah: 'images/nyx_evil.webp',
-    bioNormal: 'The voice of the abyss. Brings the Gothic/Industrial aesthetic to the band\'s visuals. Her collaboration focuses on lyrical depth and the dark visual identity that contrasts with Kelma\'s synthetic pop.',
-    bioJonah: 'MY QUEEN. The only frequency that calms the noise in my head. If she asks, I\'ll format the entire world just to install a garden for her.',// UPDATED
-  }
+ {
+name: 'Broklin Garpeter (Synth Lord)',
+role: 'Chief Systems Architect & Defense Producer',
+imageBroklin: 'images/broklin_perfil.webp',
+imageJonah: 'images/gothic_bro.webp',
+bioNormal: 'The RQS infrastructure shield. As Synth Lord, his primary directive is to shield the General\'s ecosystem with high-voltage synthesizers and clean network architecture. He\'s the one who stabilizes the servers under enemy fire and ensures absolute isolation when anomalies try to invade the motherboard.',
+bioJonah: 'THE OLD MAN. He keeps trying to put "grid" on my distortion and calls it "mastering". A digital bureaucrat who needs more coffee and fewer rules.',
+},
+
+{
+name: 'Jonah Cyperfield (Rust & Lord)',
+role: 'Sound Anomaly & System Metalhead',
+imageBroklin: 'images/jonah_profil.webp',
+imageJonah: 'images/jonah_metal-skull.webp',
+bioNormal: 'Pure chaos injected into code. Rust & Lord is a walking anomaly that ignores protocols and security. He pushes the matrix to the limit with heavy distortions, metalhead attitude, and industrial textures that simulate machine rust. He\'s the element of entropy that I try to block daily from the main server, but which always finds a flaw to invade our Echoes.',
+bioJonah: 'I AM THE ERROR IN YOUR CODE. While they play "pretty music," I\'m here soldering rusty cables to the processor. Nu-Metal isn\'t a style, it\'s a warning of failure.', // UPDATED
+},
+
+{
+name: 'Kelma Adlanko (DJ Kel)',
+role: 'General of the Horde & Founding Architect',
+imageBroklin: 'images/kelma_profil.webp',
+imageJonah: 'images/kelma_evil.webp',
+bioNormal: 'The mastermind behind our digital sanctuary. She doesn\'t just write lines of code; she forges the escape routes from our network. As DJ Kel, she is the voice that guides the Horde through the darkness of the system, uniting the mathematical precision of programming with the pure analog pain and blood of Synthwave. She is the leadership that keeps our mission alive.',
+bioJonah: 'THE BOSS. She thinks she can control the chaos with spreadsheets and organized commits. Spoiler: she can\'t. But she\'s the only person I respect enough not to delete from the server.',
+},
+
+{
+name: 'Nicole Nyx (Dj Nyx)',
+role: 'Operativa das Sombras & Visual Arts',
+imageBroklin: 'images/nyx_profil.webp',
+imageJonah: 'images/nyx_evil.webp',
+bioNormal: 'The witch emissary of the Abyss. DJ Nyx travels through the dark web to weave the Gothic/Industrial aesthetic that shrouds our band. Her voice carries the melancholy of a collapsing system. Currently, she acts as the only control bridge capable of trying to anchor Jonah\'s delusions before he burns our circuits, contrasting the absolute darkness with the neon light of the General.',
+bioJonah: 'MY QUEEN. The only frequency that calms the noise in my head. If she asks, I\'ll format the entire world just to install a garden for her.'
+}
 ];
 
 export const CREATOR_DATA = {
@@ -375,7 +378,7 @@ export const VISUAL_NOVEL_EN = [
       title: '📼 RQS: ORIGINS (Before the Metal)',
       subtitle: 'Chaos, Wires & Revolution',
       description: 'When the system fails, the truth comes out. Jonahs industrial revolt against programming.',
-      image: 'assets/disco/album_jonah_history.webp',
+      image: 'images/lore_jonah_cover.webp',
       link: '/visual-novel',
       mode: 'chaos'
   },
@@ -383,26 +386,22 @@ export const VISUAL_NOVEL_EN = [
       title: 'BROKLIN ARC',
       subtitle: 'Love, Wine and Melancholy',
       description: 'The journey of a gothic vampire seeking redemption through the love of Kelma. Includes the hit song "Neon Tears".',
-      image: 'assets/disco/album_broklin_story.webp', // Use a capa do arco
+      image: 'images/lore_broklin_cover.webp', // Use a capa do arco
       link: '/visual-novel',
       mode: 'romance'
     },
 
 ]
 // 2. OS TEXTOS DE INTRO (Separados, fora do Array!)
-export const VN_INTRO_PT = `
-  O Universo RQS não é linear. Através das nossas <strong>Sagas Literárias Musicais</strong>, expandimos a história de cada personagem.
-  Aqui você não encontra apenas clipes, mas <em>arcos narrativos completos</em> para ler e ouvir, que conectam as letras das músicas aos eventos da Guerra Sonora.
-  <br><br>
-  Escolha seu lado na batalha: a revolução caótica do <strong>Industrial Metal</strong> ou a redenção melancólica do <strong>Gothic Synthwave</strong>.
-`;
+// 🛡️ MODO GENERAL (Imersão RPG)
+export const VN_INTRO_PT = "O Universo RQS não é linear; ele é uma experiência de imersão total. Através das nossas Sagas Literárias Musicais, nós expandimos a história de cada personagem como se você estivesse dentro do nosso próprio RPG. Aqui você não encontra apenas clipes soltos, mas desbloqueia arcos narrativos completos para ler e ouvir, que conectam as engrenagens das letras aos eventos da Guerra Sonora.\n\nEscolha a sua classe nessa batalha: a revolução caótica do Industrial Metal ou a redenção melancólica do Gothic Synthwave.";
 
-export const VN_INTRO_EN = `
-  The RQS Universe is not linear. Through our <strong>Musical Literary Sagas</strong>, we expand the story of each character.
-  Here you won't just find music videos, but <em>complete narrative arcs</em> to read and listen to, connecting the song lyrics to the events of the Sonic War.
-  <br><br>
-  Choose your side in the battle: the chaotic revolution of <strong>Industrial Metal</strong> or the melancholic redemption of <strong>Gothic Synthwave</strong>.
-`;
+export const VN_INTRO_EN = "The RQS Universe is not linear; it is a total immersion experience. Through our Musical Literary Sagas, we expand each character's story as if you were inside our own RPG. Here you won't just find loose clips, but you unlock complete narrative arcs to read and listen to, connecting the gears of the lyrics to the events of the Sonic War.\n\nChoose your class in this battle: the chaotic revolution of Industrial Metal or the melancholic redemption of Gothic Synthwave.";
+
+// ☢️ MODO JONAH (Corrompido)
+export const VN_INTRO_JONAH_PT = "[ // ERRO CRÍTICO: DADOS DA GENERAL SOBRESCRITOS ]\nEsqueçam essa merda de 'experiência imersiva'. O Universo RQS é o log de erros de um sistema sangrando. As Sagas não estão aqui para vocês 'lerem bonitinho', elas são o código-fonte da nossa fúria, os blocos de dados crus que provam a podridão da Guerra Sonora.\n\nVai plugar o cabo no moedor de carne do Industrial Metal ou vai ficar chorando no escuro do Gothic Synthwave? O sistema já está em colapso. Escolham a sua ruína.";
+
+export const VN_INTRO_JONAH_EN = "[ // CRITICAL ERROR: GENERAL DATA OVERWRITTEN ]\nForget this 'immersive experience' bullshit. The RQS Universe is the error log of a bleeding system. The Sagas aren't here for you to 'read nicely', they are the source code of our fury, the raw data blocks that prove the rot of the Sonic War.\n\nAre you gonna plug the cable into the Industrial Metal meat grinder or cry in the dark of Gothic Synthwave? The system is already collapsing. Choose your ruin.";
 
 // --- DADOS DA DISCOGRAFIA ---
 export const DISCOGRAPHY_PT: { broklin: Album[], jonah: Album[] } = {

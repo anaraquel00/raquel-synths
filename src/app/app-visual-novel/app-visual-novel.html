@@ -1,9 +1,22 @@
 <section class="vn-container">
   <h2 class="section-title">{{ text.title }}</h2>
   <p class="section-subtitle">{{ text.subtitle }}</p>
+ <div class="sagas-container">
+  
+  @defer (on viewport) {
+    <div style="margin-bottom: 3rem;">
+      <app-system-alert></app-system-alert> 
+    </div>
+  } @placeholder {
+    <div style="min-height: 250px;"></div>
+  }
 
+  <header class="saga-header">
+    </header>
+  </div>
   <div class="intro-box">
-  <p [innerHTML]="introText"></p>
+  <p class="text-general" style="white-space: pre-line;">{{ introGeneral }}</p>  
+  <p class="text-jonah" style="white-space: pre-line;">{{ introJonah }}</p>
   </div>
   <div class="arcs-grid">
     @for (arc of arcs; track arc) {

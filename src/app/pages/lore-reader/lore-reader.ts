@@ -10,6 +10,7 @@ import { AdArticleComponent } from "../../components/ad-article/ad-article";
 import { NgOptimizedImage } from '@angular/common';
 import { tap } from 'rxjs/operators';
 
+
 @Component({
   selector: 'app-lore-reader',
   standalone: true,
@@ -67,7 +68,7 @@ export class LoreReaderComponent implements OnInit, OnDestroy, AfterViewChecked 
           }
         }
       })
-    );
+   );
   }
 
 // Variável de controle para não entrar em loop eterno

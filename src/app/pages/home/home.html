@@ -1,32 +1,63 @@
 <div class="home-container">
-  <div class="hero-section">
+  
+  <div class="hero-section hero-layout-split">
 
-    <div class="title-wrapper">
-      <h1 class="hero-title" [attr.data-text]="navText.title">{{ navText.title }}</h1>
-     
-    </div>
-
-    <p class="hero-subtitle">{{ navText.subtitle }}</p>
-
-    <div class="hero-split-grid">
-      
-      <div class="grid-col left-col">
-        @defer (on viewport) {
-          <app-system-alert></app-system-alert> 
-        } @placeholder {
-          <div style="min-height: 250px;"></div>
-        }
+    <div class="hero-left fade-in-up" style="text-align: left;">
+      <div class="title-wrapper">
+        <h1 class="hero-title" [attr.data-text]="navText.title">{{ navText.title }}</h1>
       </div>
-
-    </div>
-    <div class="hero-actions fade-in-up">
-      <button class="btn-uplink" (click)="triggerUplink()">
-       {{ translate.isPt() ? '📡 INICIAR UPLINK' : '📡 START UPLINK' }}
-      </button>
-      @if (showUplink) {
-        <app-uplink-terminal (close)="closeUplink()"></app-uplink-terminal>
-      }
+      <p class="hero-subtitle" style="max-width: 500px;">{{ navText.subtitle }}</p>
     </div>
 
+    <div class="hero-right">
+      <section class="netrunner-terminal">
+        <div class="scanline"></div>
+        <div class="terminal-header">
+          <h2>{{ translate.isPt() ? '[ TERMINAL UPLINK RQS // ACESSO ROOT ]' : '[ RQS UPLINK TERMINAL // ROOT ACCESS ]' }}</h2>
+          <p class="blink">{{ translate.isPt() ? '_AGUARDANDO COMANDO DA HORDA...' : '_AWAITING HORDE COMMAND...' }}</p>
+        </div>
+
+        <div class="quickhacks-grid" style="display: flex; flex-direction: column; gap: 8px;">
+          
+          <button class="hack-btn uplink-hack" (click)="triggerUplink()">
+            <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ NET: ACESSAR_COMUNIDADE.sh ]' : '[ NET: ACCESS_COMMUNITY.sh ]' }}
+          </button>
+
+          <button class="hack-btn" (click)="executarQuickhack('storytelling')">
+            <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ EXE: SYSTEM_LOGS.sh ]' : '[ EXE: SYSTEM_LOGS.sh ]' }}
+          </button>
+          <button class="hack-btn" (click)="executarQuickhack('sobre')">
+            <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ EXE: QUEM_SOMOS.sh ]' : '[ EXE: WHO_WE_ARE.sh ]' }}
+          </button>
+          <button class="hack-btn" (click)="executarQuickhack('visual-novel')">
+            <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ EXE: SAGAS_LITERARIAS.sh ]' : '[ EXE: LITERARY_SAGAS.sh ]' }}
+          </button>
+          <button class="hack-btn" (click)="executarQuickhack('discografia')">
+            <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ EXE: DISCOGRAFIA.exe ]' : '[ EXE: DISCOGRAPHY.exe ]' }}
+          </button>
+          <button class="hack-btn" (click)="executarQuickhack('contato')">
+            <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ EXE: BASE_OPERATIVA.exe ]' : '[ EXE: OPERATING_BASE.exe ]' }}
+          </button>
+
+          <button class="hack-btn store-hack" routerLink="/store">
+            <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ DIR: LOJA_NEON.sys ]' : '[ DIR: NEON_STORE.sys ]' }}
+          </button>
+          <button class="hack-btn creator-hack" routerLink="/creator">
+            <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ DIR: A_CRIADORA.sys ]' : '[ DIR: THE_CREATOR.sys ]' }}
+          </button>
+          <button class="hack-btn jonah-hack" (click)="forcarModoJonah()">
+            <span class="cmd-arrow">> </span>{{ isJonahMode 
+               ? (translate.isPt() ? '[ OVR: MODO_BROKLIN.bat ]' : '[ OVR: BROKLIN_MODE.bat ]') 
+               : (translate.isPt() ? '[ OVR: MODO_JONAH.bat ]' : '[ OVR: JONAH_MODE.bat ]') 
+            }}
+          </button>
+        </div>
+      </section>
+    </div>
   </div>
+
+  @if (showUplink) {
+    <app-uplink-terminal (close)="closeUplink()"></app-uplink-terminal>
+  }
+
 </div>

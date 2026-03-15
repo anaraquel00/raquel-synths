@@ -1,5 +1,5 @@
 <section class="bios-container">
-  <h2 class="section-title">QUEM SOMOS</h2>
+  <h2 class="section-title">{{ translate.isPt() ? 'QUEM SOMOS' : 'WHO WE ARE' }}</h2>
   <div class="manifesto-text">
     <p [innerHTML]="translate.isPt() ? manifestoPt : manifestoEn"(click)="handleClick($event)"></p>
   </div>
