@@ -753,7 +753,16 @@
     text-shadow: 0 0 10px #fff, 0 0 20px #00ffcc;
   }
 }
-
+ @media (max-width: 850px) {
+  ::ng-deep .neon-store-btn {
+    font-size: 0.9rem; 
+    margin-left: 0;
+    margin-right: 0;
+    display: block;
+    width: fit-content;
+    margin: 5px auto;
+  }
+ }
 
 /* ================================================= */
 /* ☢️ CORRUPÇÃO DE SISTEMA (Modo Jonah)              */
