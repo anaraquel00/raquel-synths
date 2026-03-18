@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -25,6 +25,7 @@ export class DiscographyComponent implements OnInit {
   private contentService = inject(ContentService);
   public translate = inject(TranslationService);
   private sanitizer = inject(DomSanitizer);
+  @Input() limitToHome?: number;
 
   // Variáveis para os Textos da Intro
 // --- VARIÁVEIS DE INTRODUÇÃO (MODO BROKLIN / MODO RQS) ---
@@ -101,31 +102,32 @@ get isJonahMode(): boolean {
     releaseDate.getFullYear() === today.getFullYear();
   }
 
-  // --- GETTERS CORRIGIDOS ---
-// ✅ BROKLIN: Mostra TUDO de 2026 (Janeiro, Fev, Março...)
+// ✅ BROKLIN: Mostra TUDO de 2026 (ou fatiado se o limite for passado)
   get featuredBroklin(): Album[] {
-    return this.allAlbums
+    const filtered = this.allAlbums
       .filter(a => a.faction === 'broklin' || a.faction === 'hybrid')
-      // 👇 FILTRO DE ANO: Se tiver "2026" na data, fica na Home.
       .filter(a => a.releaseDate && a.releaseDate.includes('2026'))
       .sort((a, b) => {
          const dateA = a.releaseDate ? new Date(a.releaseDate).getTime() : 0;
          const dateB = b.releaseDate ? new Date(b.releaseDate).getTime() : 0;
          return dateB - dateA;
       });
+      
+    return this.limitToHome ? filtered.slice(0, this.limitToHome) : filtered;
   }
 
-  // ✅ JONAH: Mostra TUDO de 2026
+  // ✅ JONAH: Mostra TUDO de 2026 (ou fatiado se o limite for passado)
   get featuredJonah(): Album[] {
-    return this.allAlbums
+    const filtered = this.allAlbums
       .filter(a => a.faction === 'jonah' || a.faction === 'hybrid')
-      // 👇 FILTRO DE ANO
       .filter(a => a.releaseDate && a.releaseDate.includes('2026'))
       .sort((a, b) => {
          const dateA = a.releaseDate ? new Date(a.releaseDate).getTime() : 0;
          const dateB = b.releaseDate ? new Date(b.releaseDate).getTime() : 0;
          return dateB - dateA;
       });
+
+    return this.limitToHome ? filtered.slice(0, this.limitToHome) : filtered;
   }
 
   // --- FUNÇÕES DO HTML ---

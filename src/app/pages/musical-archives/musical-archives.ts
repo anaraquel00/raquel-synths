@@ -40,32 +40,32 @@ getArchives() {
       next: (data: any[]) => {
         const albums = data as Album[];
 
-        // 🛡️ LÓGICA DO ARQUIVO:
-        // Se a data NÃO tiver "2026", entra no arquivo.
-        // (Isso pega 2025, 2024, ou álbuns sem data definida)
-        const archiveData = albums.filter(album => {
-          if (!album.releaseDate) return true; // Sem data = Velho
-          return !album.releaseDate.includes('2026');
-        });
-
-        // Ordena do mais recente (Dez/2025) para o mais antigo
-        const sortedData = archiveData.sort((a, b) => {
+        // 1. Ordena o banco de dados COMPLETO do mais novo pro mais velho
+        const sortedData = albums.sort((a, b) => {
            const dateA = a.releaseDate ? new Date(a.releaseDate).getTime() : 0;
            const dateB = b.releaseDate ? new Date(b.releaseDate).getTime() : 0;
            return dateB - dateA;
         });
 
-        this.featuredJonah = sortedData.filter(album => album.faction === 'jonah' || album.faction === 'hybrid');
-        this.featuredBroklin = sortedData.filter(album => album.faction === 'broklin' || album.faction === 'hybrid');
+        // 2. Filtra todos os EPs de cada facção
+        const broklinFull = sortedData.filter(album => album.faction === 'broklin' || album.faction === 'hybrid');
+        const jonahFull = sortedData.filter(album => album.faction === 'jonah' || album.faction === 'hybrid');
 
-        this.legacyReleases = sortedData;
+        // 🛡️ 3. O GOLPE DE MISERICÓRDIA: .slice(5)
+        // Isso diz ao Angular: "Pule os 5 primeiros (que já estão na Home) e me dê todo o resto!"
+        this.featuredBroklin = broklinFull.slice(5);
+        this.featuredJonah = jonahFull.slice(5);
+
+        // Se você usar a variável legacyReleases globalmente, aplique o corte nela também:
+        this.legacyReleases = sortedData.slice(5); 
+        
         this.isLoading = false;
       }
     });
   }
 
   // Configurações de Paginação
-pageSize = 4; // Mostra 4 álbuns por vez (ajuste se quiser mais ou menos)
+pageSize = 5; // Mostra 5 álbuns por vez (ajuste se quiser mais ou menos)
 currentPageBroklin = 1;
 currentPageJonah = 1;
 
