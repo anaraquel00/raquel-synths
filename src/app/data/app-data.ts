@@ -356,7 +356,7 @@ export const VISUAL_NOVEL_PT = [
       title: '📼 RQS: ORIGINS (Before the Metal)',
       subtitle: 'Caos, Fios & Revolução',
       description: 'Quando o sistema falha, a verdade aparece. A revolta industrial de Jonah contra a programação.',
-      image: 'images/lore_jonah_cover.webp', // Capa do Jonah
+      image: 'images/lore_jonah.webp', // Capa do Jonah
       link: '/visual-novel',
       mode: 'chaos'
     },
@@ -364,7 +364,7 @@ export const VISUAL_NOVEL_PT = [
       title: 'ARCO BROKLIN',
       subtitle: 'Amor, Vinho & Melancolia',
       description: 'A jornada de um vampiro gótico em busca de redenção através do amor de Kelma.',
-      image: 'images/lore_broklin_cover.webp', // Use capa do arco
+      image: 'images/saga_cover.webp', // Use capa do arco
       link: '/visual-novel',
       mode: 'romance'
     },
@@ -378,7 +378,7 @@ export const VISUAL_NOVEL_EN = [
       title: '📼 RQS: ORIGINS (Before the Metal)',
       subtitle: 'Chaos, Wires & Revolution',
       description: 'When the system fails, the truth comes out. Jonahs industrial revolt against programming.',
-      image: 'images/lore_jonah_cover.webp',
+      image: 'images/lore_jonah.webp',
       link: '/visual-novel',
       mode: 'chaos'
   },
@@ -386,7 +386,7 @@ export const VISUAL_NOVEL_EN = [
       title: 'BROKLIN ARC',
       subtitle: 'Love, Wine and Melancholy',
       description: 'The journey of a gothic vampire seeking redemption through the love of Kelma. Includes the hit song "Neon Tears".',
-      image: 'images/lore_broklin_cover.webp', // Use a capa do arco
+      image: 'images/saga_cover.webp', // Use a capa do arco
       link: '/visual-novel',
       mode: 'romance'
     },
