@@ -39,17 +39,17 @@
           </p>
           
           <div class="action-buttons">
-            <a href="https://open.spotify.com/intl-pt/artist/1yrPZaFyIcsCjj876LaHXL?si=m6xr309tQw22RRERSvF2eQ" target="_blank" class="cyber-btn spotify">
-              <i class="ph-spotify-logo"></i> SPOTIFY
+            <a (click)="acessarArquivosMaster()" style="cursor: pointer;" class="cyber-btn spotify">
+              <i class="ph-spotify-logo"></i> {{ translate.isPt() ? '[ Extrair Arquivos Master ]' : '[Extract Master Files]' }}
             </a>
-            <a href="https://youtube.com/@RaquelSynths" target="_blank" class="cyber-btn youtube">
-              <i class="ph-youtube-logo"></i> YOUTUBE
+            <a (click)="acessarAlgoritmoCorporativo()" style="cursor: pointer;" class="cyber-btn youtube">
+              <i class="ph-youtube-logo"></i> {{ translate.isPt() ? '[ Burlar o Algoritmo Corporativo ]' : '[Bypass Corporate Algorithm]' }}
             </a>
-            <a href="https://soundcloud.com/rqs_official" target="_blank" class="cyber-btn soundcloud">
-              <i class="ph-soundcloud-logo"></i> SOUNDCLOUD
+            <a (click)="iniciarFrequenciaPirata()" style="cursor: pointer;" class="cyber-btn soundcloud">
+              <i class="ph-soundcloud-logo"></i> {{ translate.isPt() ? '[ Rastrear Frequência Pirata ]' : '[Track Pirate Frequency]' }}
             </a>
-            <a href="https://discord.com/invite/mVpzuFtfJh" target="_blank" class="cyber-btn discord">
-              <i class="ph-discord-logo"></i> {{ translate.isPt() ? 'ACESSAR QG SECRETO' : 'ACCESS SECRET HQ' }}
+            <a (click)="iniciarContrabando()" style="cursor: pointer;" class="cyber-btn discord">
+              <i class="ph-discord-logo"></i> {{ translate.isPt() ? '[ Acessar contrabando de dados ]' : '[Access Data Smuggling]' }}
             </a>
           </div>
 

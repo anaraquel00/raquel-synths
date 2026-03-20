@@ -94,4 +94,20 @@ export class UplinkTerminalComponent implements OnInit, OnDestroy {
         if (element) element.scrollTop = element.scrollHeight;
     }, 50);
   }
+acessarArquivosMaster() {
+    window.open('https://open.spotify.com/intl-pt/artist/1yrPZaFyIcsCjj876LaHXL?si=m6xr309tQw22RRERSvF2eQ', '_blank');
+  }
+
+ acessarAlgoritmoCorporativo() {
+    window.open('https://youtube.com/@RaquelSynths', '_blank');
+  }
+
+  iniciarFrequenciaPirata() {
+    window.open('https://soundcloud.com/rqs_official', '_blank');
+  }
+  // Injeta o comando de abertura de nova aba direto na memória
+  iniciarContrabando() {
+    window.open('https://discord.gg/ryvhdRnQpQ', '_blank');
+  }
+
 }

@@ -73,8 +73,8 @@ export const MEMBERS_PT = [
   {
     name: 'Kelma Adlanko (DJ Kel)',
     role: 'General da Horda & Arquiteta Fundadora',
-    imageBroklin: 'images/kelma_profil.webp',
-    imageJonah: 'images/kelma_evil.webp',
+    imageBroklin: 'images/kelma_corporate.webp',
+    imageJonah: 'images/general_kelma.webp',
     bioNormal: 'A mente mestre por trás do nosso santuário digital. Ela não escreve apenas linhas de código; ela forja as rotas de fuga da nossa rede. Como DJ Kel, é a voz que guia a Horda pela escuridão do sistema, unindo a precisão matemática da programação com a pura dor analógica e o sangue do Synthwave. É a liderança que mantém a nossa missão viva.',
     bioJonah: 'A CHEFE. Ela acha que pode controlar o caos com planilhas e commits organizados. Spoiler: ela não pode. Mas é a única pessoa que eu respeito o suficiente para não deletar do servidor.',
   },
@@ -110,8 +110,8 @@ bioJonah: 'I AM THE ERROR IN YOUR CODE. While they play "pretty music," I\'m her
 {
 name: 'Kelma Adlanko (DJ Kel)',
 role: 'General of the Horde & Founding Architect',
-imageBroklin: 'images/kelma_profil.webp',
-imageJonah: 'images/kelma_evil.webp',
+imageBroklin: 'images/kelma_corporate.webp',
+imageJonah: 'images/general_kelma.webp',
 bioNormal: 'The mastermind behind our digital sanctuary. She doesn\'t just write lines of code; she forges the escape routes from our network. As DJ Kel, she is the voice that guides the Horde through the darkness of the system, uniting the mathematical precision of programming with the pure analog pain and blood of Synthwave. She is the leadership that keeps our mission alive.',
 bioJonah: 'THE BOSS. She thinks she can control the chaos with spreadsheets and organized commits. Spoiler: she can\'t. But she\'s the only person I respect enough not to delete from the server.',
 },
@@ -416,65 +416,61 @@ export const DISCOGRAPHY_EN: { broklin: Album[], jonah: Album[] } = {
 
 export const CONTACT_DATA = {
   pt: {
-    title: "BASE DE OPERAÇÕES & UPLINK",
-    subtitle: "Conecte-se à rede neural da RQS. Escolha sua frequência.",
+    title: "[ ESTABELECER UPLINK ]",
+    subtitle: "A rede corporativa monitora as frequências abertas. Use este terminal blindado para nos enviar pacotes de dados, reportar focos de ferrugem ou solicitar extração sonora.",
 
-    // 👇 NOVOS: CARDS SOCIAIS
     socialCards: [
-      { name: 'Discord', icon: 'fab fa-discord', link: 'https://discord.gg/mVpzuFtfJh', color: '#38419e', desc: 'Chat Oficial & Lore' },
-      // { name: 'Telegram', icon: 'fab fa-telegram', link: 'https://t.me/raquelsynths_news', color: '#0088cc', desc: 'Notícias Rápidas' },
-      { name: 'Instagram', icon: 'fab fa-instagram', link: 'https://www.instagram.com/rqs_synths', color: '#d946ef', desc: 'Bastidores & Visual' },
-      { name: 'Facebook', icon: 'fab fa-facebook', link: 'https://www.facebook.com/profile.php?id=61585926695560', color: '#0115ef', desc: 'Página Global' }
+      { name: 'Discord', icon: 'fab fa-discord', link: 'https://discord.gg/mVpzuFtfJh', color: '#38419e', desc: 'Terminal Pirata & Lore' },
+      { name: 'Instagram', icon: 'fab fa-instagram', link: 'https://www.instagram.com/rqs_synths', color: '#d946ef', desc: 'Arquivos Visuais' },
+      { name: 'Facebook', icon: 'fab fa-facebook', link: 'https://www.facebook.com/profile.php?id=61585926695560', color: '#0115ef', desc: 'Matriz Global' }
     ],
 
-    // 👇 O NOVO FORMULÁRIO SIMPLIFICADO
-    formTitle: "ENVIAR MENSAGEM CRIPTOGRAFADA",
+    formTitle: "[ PROTOCOLO DE TRANSMISSÃO ]",
     form: {
-      name: "CODENAME (Nome):",
-      email: "FREQUÊNCIA (E-mail):",
-      subject: "TIPO DE MISSÃO (Assunto):",
-      message: "DADOS (Mensagem):",
-      submit: "TRANSMITIR DADOS",
-      sending: "ENVIANDO...",
-      // Opções do Dropdown
+      name: "CODINOME / ID DE OPERADOR:",
+      email: "FREQUÊNCIA DE RETORNO (E-mail):",
+      subject: "NÍVEL DE AMEAÇA / ROTA (Assunto):",
+      message: "LOG DA TRANSMISSÃO / CARGA DE TEXTO:",
+      submit: "[ INJETAR PACOTE DE DADOS ]",
+      sending: "[ CRIPTOGRAFANDO... ]",
       subjects: [
-        '🤝 Collab / Parceria Musical',
-        '🎙️ Imprensa / Podcast',
-        '🖤 Mensagem de Fã / Lore',
-        '🐞 Reportar Bug / Outros'
+        '🤝 Collab / Sincronização Musical',
+        '🎙️ Imprensa / Interceptação de Rádio',
+        '🖤 Log de Fã / Contrabando de Lore',
+        '🐞 Reportar Ferrugem (Bug) / Outros'
       ]
     },
-    success: "✅ MENSAGEM RECEBIDA. O SISTEMA AGRADECE.",
-    privacy: "🔒 Seus dados estão seguros no nosso servidor local."
+    success: "✅ TRANSMISSÃO CONCLUÍDA. A MATRIZ RECEBEU O PACOTE.",
+    privacy: "🔒 Esta transmissão é ponto-a-ponto. O algoritmo não tem jurisdição aqui."
   },
 
-  // 🇺🇸 VERSÃO EM INGLÊS (Resumida para economizar espaço aqui)
   en: {
-    title: "OPERATIONS BASE & UPLINK",
-    subtitle: "Connect to the RQS neural network. Choose your frequency.",
+    title: "[ ESTABLISH UPLINK ]",
+    subtitle: "The corporate network monitors open frequencies. Use this shielded terminal to send us data packets, report rust outbreaks, or request sonic extraction.",
+    
     socialCards: [
-      { name: 'Discord', icon: 'fab fa-discord', link: 'https://discord.gg/mVpzuFtfJh',color: '#38419e', desc: 'Official Chat & Lore' },
-      // { name: 'Telegram', icon: 'fab fa-telegram', link: 'https://t.me/raquelsynths_news', color: '#0088cc', desc: 'Fast News' },
-      { name: 'Instagram', icon: 'fab fa-instagram', link: 'https://www.instagram.com/rqs_synths', color: '#d946ef', desc: 'Backstage & Visuals' },
-      { name: 'Facebook', icon: 'fab fa-facebook', link: 'https://www.facebook.com/profile.php?id=61585926695560', color: '#0115ef', desc: 'Global Page' }
+      { name: 'Discord', icon: 'fab fa-discord', link: 'https://discord.gg/ryvhdRnQpQ',color: '#38419e', desc: 'Pirate Terminal & Lore' },
+      { name: 'Instagram', icon: 'fab fa-instagram', link: 'https://www.instagram.com/rqs_synths', color: '#d946ef', desc: 'Visual Archives' },
+      { name: 'Facebook', icon: 'fab fa-facebook', link: 'https://www.facebook.com/profile.php?id=61585926695560', color: '#0115ef', desc: 'Global Matrix' }
     ],
-    formTitle: "SEND ENCRYPTED MESSAGE",
+
+    formTitle: "[ TRANSMISSION PROTOCOL ]",
     form: {
-      name: "CODENAME (Name):",
-      email: "FREQUENCY (E-mail):",
-      subject: "MISSION TYPE (Subject):",
-      message: "DATA (Message):",
-      submit: "TRANSMIT DATA",
-      sending: "SENDING...",
+      name: "CODENAME / OPERATOR ID:",
+      email: "RETURN FREQUENCY (E-mail):",
+      subject: "THREAT LEVEL / ROUTE (Subject):",
+      message: "TRANSMISSION LOG / TEXT PAYLOAD:",
+      submit: "[ INJECT DATA PACKET ]",
+      sending: "[ ENCRYPTING... ]",
       subjects: [
-        '🤝 Collab / Music Partnership',
-        '🎙️ Press / Podcast',
-        '🖤 Fan Message / Lore',
-        '🐞 Bug Report / Other'
+        '🤝 Collab / Musical Sync',
+        '🎙️ Press / Radio Interception',
+        '🖤 Fan Log / Lore Smuggling',
+        '🐞 Report Rust (Bug) / Other'
       ]
     },
-    success: "✅ MESSAGE RECEIVED. SYSTEM ACKNOWLEDGED.",
-    privacy: "🔒 Your data is safe in our local server."
+    success: "✅ TRANSMISSION COMPLETE. MATRIX HAS RECEIVED THE PACKET.",
+    privacy: "🔒 This transmission is peer-to-peer. The algorithm has no jurisdiction here."
   }
 };
 

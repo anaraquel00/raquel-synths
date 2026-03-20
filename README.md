@@ -1,8 +1,8 @@
-# 🎹 RaQuel Synths | The Cyberpunk Musical Universe
+# 🎹 RaQuel Synths | The Cyberpunk Musical Universe 
+> *"Where Synthwave Romance meets Industrial Chaos."*
 
-> *"Where Gothic Romance meets Industrial Chaos."*
-
-![RQS Logo](public/rqs-logo.png)
+   ![RQS Logo](public/icons/icon-192x192.png)
+    
 
 ## 🌌 Sobre o Projeto (About)
 
@@ -20,13 +20,13 @@ O site possui um motor de temas dinâmico que altera completamente a interface (
 
 ### 🌍 Global Lore System (i18n)
 Nossa história não tem fronteiras. O sistema foi construído nativamente para ser **Bilíngue**:
-- **PT-BR:** Para a nossa base em Pernambuco e Brasil.
+- **PT-BR:** Para a nossa base em Pernambuco, Brasil.
 - **EN-US:** Para a dominação mundial.
-*(A troca de idioma altera instantaneamente os textos da Visual Novel e da Interface).*
+*(A troca de idioma altera instantaneamente os textos da Saga Literária e da Interface).*
 
 ### 🎧 RQS Archives
 - Streaming direto da Discografia (Spotify/SoundCloud).
-- Visual Novel interativa para ler a história da banda.
+- Músicas que são trilhas sonoras para a crição das histórias da Saga literária.
 
 ## 🚀 Tecnologias (Tech Stack)
 
@@ -50,13 +50,14 @@ O nosso *database* é estrategicamente dividido em coleções independentes que 
 
 - **`/lore` & `/lore-jonah`:** O sistema puxa os textos narrativos instantaneamente da nuvem, injetando a história correta dependendo se o usuário está no lado Broklin (Ordem) ou Jonah (Caos).
 - **`/discography`:** O nosso catálogo musical é escalável e pode ser atualizado via *database* sem a necessidade de engatilhar novos deploys no front-end.
+- **`/logs`:** Setor atualizado semanalmente onde a general Kelma e o Broklin contam os bastidores da Banda, da Lore, dos segredos da estrutura musical e dos **[Dev_Notes]** para a comunidade dos desenvolvedores Full-Stack que se interesse pela nossa arquitetura híbrida.
 - **`/departments` & `/products`:** A estrutura da nossa Neon Store e categorias (como o *Neon Witch*) puxam imagens, links de afiliados e suportam o nosso sistema global nativamente na árvore de dados (ex: campos separados para `pt` e `en`).
 
-Esta abordagem *API-First* e *Serverless* garante que a Visual Novel, a loja e a discografia estejam sempre sincronizadas com o nosso *mainframe* central, permitindo atualizações de conteúdo *Over-The-Air* com performance impecável.
+Esta abordagem *API-First* e *Serverless* garante que a Saga literária, a loja, a discografia e logs estejam sempre sincronizadas com o nosso *mainframe* central, permitindo atualizações de conteúdo *Over-The-Air* com performance impecável.
 
 ## 🛍️ Módulo: Neon Store (E-Commerce & Afiliados)
 
-Um módulo desenvolvido para monetizar a marca RQS através de **Marketing de Afiliados (Curadoria)**, totalmente integrado ao ecossistema Angular 21 sem a necessidade de um backend de e-commerce pesado.
+Um módulo desenvolvido para monetizar a marca RQS através de **Marketing de Afiliados (Curadoria)**, totalmente integrado ao ecossistema Angular 19+ sem a necessidade de um backend de e-commerce pesado.
 
 ### 🌟 Destaques Técnicos (Key Features)
 - **Arquitetura Zero-Stock:** Implementação de modelo de afiliados (Shein/AliExpress), eliminando logística enquanto mantém a autoridade da marca.
@@ -76,11 +77,11 @@ O módulo segue os princípios de **Clean Architecture**, separando estritamente
 O universo RQS é composto por mentes reais e virtuais:
 
 ### 👩‍💻 The Creator
-- **Raquel Holanda:** Lead Developer, Compositora & Mente Mestra.
+- **Ana Raquel de Holanda:** Full-Stack Developer, AI Music Designer & Mente Mestra idealizadora do projeto.
 
 ### 🧛‍♂️ The Gothic Sector (Synthwave/Pop)
 - **Broklin Garpeter:** AI Producer & Code Assistant.
-- **Kelma Adlanko:** Lead Vocalist & Visual Novel Star.
+- **Kelma Adlanko:** Lead Vocalist & General Star.
 
 ### ☣️ The Industrial Sector (Metal/Hard)
 - **Jonah Cyperfield:** Lead Guitar, Vocal & Chaos Manager.
