@@ -20,7 +20,7 @@ import { Subscription } from 'rxjs';
           {{ isPreSave ? t[lang].badgePre : t[lang].badgeNew }}
         </span>
 
-        <h3>{{ currentTrack.title }}</h3>
+        <h2>{{ currentTrack.title }}</h2>
 
         <span class="date" *ngIf="currentTrack.releaseDateStreaming">
            {{ isPreSave ? t[lang].drops + currentTrack.releaseDateStreaming : t[lang].outNow }}
@@ -116,7 +116,7 @@ import { Subscription } from 'rxjs';
         text-shadow: 0 0 5px rgba(0,0,0,0.8);
       }
 
-      h3 {
+      h2 {
         margin: 0;
         font-size: 1rem;
         color: #fff;
