@@ -1,4 +1,6 @@
 .rqs-footer {
+  min-height: 200px; /* Ou a altura exata que o seu design ocupa */
+  contain: yield; /* Ajuda o navegador a isolar a renderização */
   display: flex;
   flex-direction: column;
   background-color: var(--footer-bg);
