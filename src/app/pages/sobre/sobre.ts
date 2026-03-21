@@ -3,11 +3,12 @@ import { MEMBERS_PT, MEMBERS_EN, MANIFESTO_PT, MANIFESTO_EN } from '../../data/a
 import { TranslationService } from '../../services/translation.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-sobre',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NgOptimizedImage],
   templateUrl: './sobre.html',
   styleUrl: './sobre.scss'
 })
@@ -18,7 +19,7 @@ export class SobreComponent {
   // Começa com PT
   members = MEMBERS_PT;
   private router = inject(Router);
-
+ 
   constructor(public translate: TranslationService) {
     effect(() => {
       if (this.translate.isPt()) {

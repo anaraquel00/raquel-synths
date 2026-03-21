@@ -5,12 +5,15 @@
   </div>
 
   <div class="members-grid">
-    @for (member of members; track member) {
+    @for (member of members; track member.name; let i = $index) {
       <div class="member-card">
         <div class="image-frame">
-          <img [src]="member.imageBroklin" class="img-broklin" alt="Foto Normal">
-          <img [src]="member.imageJonah" class="img-jonah" alt="Foto Glitch">
-        </div>
+       <img [ngSrc]="member.imageBroklin" width="300" height="400" 
+       [priority]="i === 0" class="img-broklin" alt="Foto Normal">
+  
+       <img [ngSrc]="member.imageJonah" width="300" height="400" 
+       class="img-jonah" alt="Foto Glitch">
+      </div>
         <div class="info-box">
           <h3>{{ member.name }}</h3>
           <span class="role">{{ member.role }}</span>

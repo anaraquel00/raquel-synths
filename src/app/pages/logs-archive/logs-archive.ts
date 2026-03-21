@@ -7,11 +7,12 @@ import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { SafeHtmlPipe } from "../../components/pipes/safe-html.pipe";
 import { AdArticleComponent } from "../../components/ad-article/ad-article";
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-logs-archive',
   standalone: true,
-  imports: [CommonModule, RouterModule, SafeHtmlPipe, AdArticleComponent],
+  imports: [CommonModule, RouterModule, SafeHtmlPipe, AdArticleComponent, NgOptimizedImage],
   templateUrl: './logs-archive.html',
   styleUrls: ['./logs-archive.scss']
 })

@@ -8,11 +8,12 @@ import { ContentService } from '../../services/content.service';
 import { TranslationService } from '../../services/translation.service';
 import { Album } from '../../models/album.model';
 import { AdArticleComponent } from "../../components/ad-article/ad-article";
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-musical-archives',
   standalone: true,
-  imports: [CommonModule, RouterModule, AdArticleComponent], // Imports corretos
+  imports: [CommonModule, RouterModule, AdArticleComponent, NgOptimizedImage], // Imports corretos
   templateUrl: './musical-archives.html',
   styleUrl: './musical-archives.scss',
 })
@@ -29,8 +30,7 @@ export class MusicalArchives implements OnInit {
   introEN: any;
   introPT: any;
   isLast: any;
-  i: any;
-
+ 
   ngOnInit() {
     this.getArchives();
   }

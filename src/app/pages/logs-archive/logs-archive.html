@@ -30,8 +30,9 @@
 
             @if (log.image) {
               <div class="post-image">
-                <img [src]="log.image" [alt]="content?.title" loading="lazy">
-              </div>
+             <img [ngSrc]="log.image" [priority]="i === 0" 
+              width="600" height="400" [alt]="content?.title">
+             </div>
             }
 
             <div class="post-content-wrapper">
