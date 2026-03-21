@@ -11,11 +11,11 @@ export const serverRoutes: ServerRoute[] = [
   },
   {
     path: 'visual-novel',
-    renderMode: RenderMode.Server // Renderiza o HTML no nosso servidor antes de entregar ao AdBot
+    renderMode: RenderMode.Prerender // Mastiga a saga no build, 0ms de carregamento!
   },
   {
     path: 'lore-reader/:id',
-    renderMode: RenderMode.Server // Garante que o texto da saga já chegue mastigado para o AdSense ler
+    renderMode: RenderMode.Prerender // Garante que o texto da saga já chegue mastigado para o AdSense ler
   },
   {
     path: '**',

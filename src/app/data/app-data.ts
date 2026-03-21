@@ -82,7 +82,7 @@ export const MEMBERS_PT = [
     name: 'Nicole Nyx (Dj Nyx)',
     role: 'Operativa das Sombras & Visual Arts',
     imageBroklin: 'images/nyx_profil.webp',
-    imageJonah: 'images/nyx_evil.webp',
+    imageJonah: 'images/evil_nyx.webp',
     bioNormal: 'A bruxa emissária do Abismo. DJ Nyx transita pela dark web para tecer a estética Gótica/Industrial que encobre a nossa banda. Sua voz carrega a melancolia de um sistema em colapso. Atualmente, atua como a única ponte de controle capaz de tentar ancorar os delírios do Jonah antes que ele queime os nossos circuitos, contrastando a escuridão absoluta com a luz neon da General.',
     bioJonah: 'MINHA RAINHA. A única frequência que acalma o ruído na minha cabeça. Se ela pedir, eu formato o mundo inteiro só pra instalar um jardim pra ela.',
   }
@@ -120,7 +120,7 @@ bioJonah: 'THE BOSS. She thinks she can control the chaos with spreadsheets and 
 name: 'Nicole Nyx (Dj Nyx)',
 role: 'Operativa das Sombras & Visual Arts',
 imageBroklin: 'images/nyx_profil.webp',
-imageJonah: 'images/nyx_evil.webp',
+imageJonah: 'images/evil_nyx.webp',
 bioNormal: 'The witch emissary of the Abyss. DJ Nyx travels through the dark web to weave the Gothic/Industrial aesthetic that shrouds our band. Her voice carries the melancholy of a collapsing system. Currently, she acts as the only control bridge capable of trying to anchor Jonah\'s delusions before he burns our circuits, contrasting the absolute darkness with the neon light of the General.',
 bioJonah: 'MY QUEEN. The only frequency that calms the noise in my head. If she asks, I\'ll format the entire world just to install a garden for her.'
 }

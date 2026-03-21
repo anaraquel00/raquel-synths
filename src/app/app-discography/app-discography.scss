@@ -9,8 +9,8 @@
   margin-bottom: 3rem;
   width: 100%;             /* Garante que o container ocupe a tela toda */
 
-  /* Garante que o H3 não tenha margens estranhas */
-  h3 {
+  /* Garante que o H2 não tenha margens estranhas */
+  h2 {
     margin: 0;
     font-size: 1.8rem;
     text-transform: uppercase;
@@ -135,7 +135,7 @@
   justify-content: flex-start;
   gap: 7px;
 
-  h4 {
+  h3 {
     font-size: 2rem;
     margin: 0.5rem 0;
     color: #fff;
@@ -265,7 +265,7 @@ button {
   margin-left: 1rem;              /* Um respiro da margem da tela (opcional) */
 
   .section-header {
-  h3 { color: #00f3ff; }
+  h2 { color: #00f3ff; }
   mat-icon, i { color: #00f3ff;
     text-shadow: 0 0 10px #00f3ff; }
   }
@@ -316,7 +316,7 @@ button {
     }
 
     .text-data {
-      h3 {
+      h2 {
         color: #00f3ff;
         font-size: 1.2rem;
         margin: 0 0 5px 0;
@@ -437,7 +437,7 @@ button {
     }
 
     /* Sobrescrevendo a Fonte do Título para parecer um Terminal Corrompido */
-    h3 {
+    h2 {
       color: #ffcc00 !important; /* Amarelo Radioativo para combinar com o ícone */
       font-family: 'Courier New', Courier, monospace;
       font-weight: 900;
@@ -520,7 +520,7 @@ button {
 
     /* Cores Específicas do Header do Jonah */
     .section-header {
-      h3 {
+      h2 {
         color: #ff9900;
         font-family: 'Courier New', monospace; /* Fonte Hacker */
         letter-spacing: -1px;
