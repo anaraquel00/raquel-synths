@@ -212,6 +212,31 @@
     font-size: 1.1rem;
   }
 }
+
+::ng-deep .link-btn{
+  display: inline-block;
+  padding: 4px 7px;
+  background: rgba(0, 255, 204, 0.1);
+  border: 2px solid #00ffcc;
+  color: #00ffcc !important;
+  text-decoration: none;
+  font-size: 0.9em;
+  font-weight: bold;
+  letter-spacing: 1px;
+  box-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
+  text-shadow: 0 0 8px #00ffcc;
+  border-radius: 4px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: rgba(0, 255, 204, 0.2);
+    box-shadow: 0 0 25px rgba(0, 255, 204, 0.6), inset 0 0 10px rgba(0, 255, 204, 0.2);
+    color: #fff !important;
+    text-shadow: 0 0 10px #fff, 0 0 20px #00ffcc;
+}
+}
+
 /* --- ☢️ JONAH MODE OVERRIDE (O CAOS) ☢️ --- */
 /* Esse bloco só ativa quando o body tem a classe .mode-jonah */
 :host-context(body.mode-jonah) {
@@ -269,29 +294,22 @@
   .img-wrapper-wide img {
     filter: sepia(0.5) contrast(1.2) hue-rotate(-30deg);
   }
-}
-
 ::ng-deep .link-btn{
-  display: inline-block;
-  padding: 4px 7px;
-  background: rgba(0, 255, 204, 0.1);
-  border: 2px solid #00ffcc;
-  color: #00ffcc !important;
-  text-decoration: none;
-  font-size: 0.9em;
-  font-weight: bold;
-  letter-spacing: 1px;
-  box-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
-  text-shadow: 0 0 8px #00ffcc;
-  border-radius: 4px;
-  text-transform: uppercase;
-  transition: all 0.3s ease;
+  background: rgba(255, 87, 34, 0.1);
+  border: 2px solid #ff5722;
+  color: #ff5722 !important;
+  box-shadow: 0 0 10px rgba(255, 87, 34, 0.4);
+  text-shadow: 0 0 8px #ff5722;
   
   &:hover {
-    background: rgba(0, 255, 204, 0.2);
-    box-shadow: 0 0 25px rgba(0, 255, 204, 0.6), inset 0 0 10px rgba(0, 255, 204, 0.2);
+    background: rgba(255, 87, 34, 0.2);
+    box-shadow: 0 0 25px rgba(255, 87, 34, 0.6), inset 0 0 10px rgba(255, 87, 34, 0.2);
     color: #fff !important;
-    text-shadow: 0 0 10px #fff, 0 0 20px #00ffcc;
+    text-shadow: 0 0 10px #fff, 0 0 20px #ff5722;
+
 }
 }
+}
+
+
  
