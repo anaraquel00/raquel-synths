@@ -4,6 +4,10 @@ import { Injectable, signal, computed } from '@angular/core';
   providedIn: 'root'
 })
 export class TranslationService {
+  // 🚀 Define o idioma explicitamente (PT ou EN)
+  setLanguage(lang: string) {
+    this.isPt.set(lang === 'pt');
+  }
   // --- ESTADO DO IDIOMA ---
   // true = Português, false = Inglês
   isPt = signal(true);

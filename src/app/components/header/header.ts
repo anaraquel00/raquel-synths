@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,40 +12,34 @@ import { MatDividerModule } from '@angular/material/divider';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [MatToolbar,
-       MatButtonModule,
-       MatIconModule,
-       MatMenuModule,
-       MatDividerModule ,
-       RouterModule],
+  imports: [MatToolbar, MatButtonModule, MatIconModule, MatMenuModule, MatDividerModule, RouterModule],
   templateUrl: './header.html',
   styleUrl: './header.scss'
 })
 export class Header {
-isJonahMode: boolean = false; // Variável para controlar o estado do modo Jonah
+  isJonahMode: boolean = false; 
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
-    // 2. NOME DA CLASSE CERTO:
-    public translate: TranslationService,
+    public translate: TranslationService, // ← SERVIÇO CORRETO INJETADO
     private router: Router
   ) {}
 
-  // Getter inteligente
+  // 🛡️ A FUNÇÃO DO BOTÃO MANUAL AGORA USA O SERVIÇO CORRETO
+  mudarIdioma(novoIdioma: string) {
+    this.translate.setLanguage(novoIdioma); // USA O MÉTODO 'setLanguage'
+    localStorage.setItem('rqs_lang_override', novoIdioma); 
+  }
+
   get navText() {
     return this.translate.isPt() ? NAV_DATA.pt : NAV_DATA.en;
   }
 
-  // 3. ATUALIZE ESTA FUNÇÃO:
   scrollTo(elementId: string): void {
-    // Verifica se estamos na página principal ('/')
     if (this.router.url === '/') {
-      // Se já estamos na Home, só rola
       this.doScroll(elementId);
     } else {
-      // Se estamos na Lore, navega pra Home primeiro!
       this.router.navigate(['/']).then(() => {
-        // Espera um pouquinho (100ms) pro site carregar e então rola
         setTimeout(() => {
           this.doScroll(elementId);
         }, 100);
@@ -53,7 +47,6 @@ isJonahMode: boolean = false; // Variável para controlar o estado do modo Jonah
     }
   }
 
-  // Função auxiliar pra não repetir código
   private doScroll(id: string) {
     const element = this.document.getElementById(id);
     if (element) {
