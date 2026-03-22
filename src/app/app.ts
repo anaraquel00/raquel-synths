@@ -14,6 +14,7 @@ import { injectSpeedInsights } from '@vercel/speed-insights';
 import { TranslationService } from './services/translation.service';
 import { SeoService } from './services/seo.service';
 import { AdSenseService } from './services/ad-sense.service';
+import { TrackingService } from './services/tracking.service';
 
 @Component({
   selector: 'app-root',
@@ -43,7 +44,9 @@ export class App implements OnInit {
 
   cookiesAccepted!: boolean;
 
-  constructor(private adSenseService: AdSenseService) {
+  constructor(
+    private adSenseService: AdSenseService,
+    private trackingService: TrackingService) {
     injectSpeedInsights();
   }
 
@@ -53,6 +56,10 @@ export class App implements OnInit {
     
     // Liga o radar de interação
     this.adSenseService.initLazyLoad(meuAdSenseId);
+
+    // O Gatilho do Analytics / GTM
+    const meuGtmId = 'G-Z1TSQ0NV6T'; // Substitua pelo seu ID real (G-XXXX ou GTM-XXXX)
+    this.trackingService.initLazyTracking(meuGtmId);
 
     // 1. --- LÓGICA DE COOKIES ---
     if (typeof window !== 'undefined' && localStorage) {

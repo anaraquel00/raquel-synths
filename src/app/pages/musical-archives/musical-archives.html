@@ -13,7 +13,9 @@
       <article class="featured-album">
        <div class="album-cover">
          <img [ngSrc]="album.cover" [priority]="i === 0" 
-          width="400" height="400" [alt]="album.title">
+          width="400" 
+          height="400"
+          sizes="(max-width: 768px) 100vw, 50vw" [alt]="album.title">
          </div>
         <div class="album-content">
              <div class="header">
@@ -81,7 +83,9 @@
       <article class="featured-album">
        <div class="album-cover">
          <img [ngSrc]="album.cover" [priority]="i === 0" 
-          width="400" height="400" [alt]="album.title">
+          width="400" 
+          height="400"
+          sizes="(max-width: 768px) 100vw, 50vw" [alt]="album.title">
          </div>
         <div class="album-content">
              <div class="header">

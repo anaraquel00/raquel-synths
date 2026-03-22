@@ -60,7 +60,10 @@
   @for (album of featuredBroklin; track album; let i = $index; let isLast = $last) {
     <article class="featured-album">
       <div class="album-cover">
-        <img [src]="album.cover" [alt]="album.title">
+        <img [ngSrc]="album.cover" width="1024" 
+        height="540" 
+        sizes="(max-width: 768px) 100vw, 50vw" 
+        loading="lazy" [alt]="album.title">
       </div>
       <div class="album-content">
         <div class="header">
@@ -111,7 +114,10 @@
   @for (album of featuredJonah; track album; let i = $index; let isLast = $last) {
     <article class="featured-album">
       <div class="album-cover">
-        <img [src]="album.cover" [alt]="album.title" class="glitch-effect">
+        <img [ngSrc]="album.cover" 
+        width="1024" height="540" 
+        sizes="(max-width: 768px) 100vw, 50vw" 
+        loading="lazy" [alt]="album.title" class="glitch-effect">
       </div>
       <div class="album-content">
           <div class="header">

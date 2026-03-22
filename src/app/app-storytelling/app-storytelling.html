@@ -22,7 +22,10 @@
 
             @if (event.image) {
               <div class="img-wrapper-wide">
-                <img [ngSrc]="event.image" width="800" height="450" [alt]="content?.title">
+                <img [ngSrc]="event.image" 
+                width="800" 
+                height="450"
+                sizes="(max-width: 768px) 100vw, 50vw" [alt]="content?.title">
               </div>
             }
 

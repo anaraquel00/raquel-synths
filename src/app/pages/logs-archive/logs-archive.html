@@ -31,7 +31,8 @@
             @if (log.image) {
               <div class="post-image">
              <img [ngSrc]="log.image" [priority]="i === 0" 
-              width="600" height="400" [alt]="content?.title">
+              width="600" height="400"
+              sizes="(max-width: 768px) 100vw, 50vw" [alt]="content?.title">
              </div>
             }
 

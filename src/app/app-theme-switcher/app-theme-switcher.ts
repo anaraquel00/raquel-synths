@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { TrackingService } from '../services/tracking.service';
 
 @Component({
   selector: 'app-app-theme-switcher',
@@ -9,6 +10,9 @@ import { Component } from '@angular/core';
 export class AppThemeSwitcher {
   playIndustrialNoise: any;
   playSynthChord: any;
+  /* 2. A INJEÇÃO DE DEPENDÊNCIA (O coração do Angular. Tem que ter o "private" e o tipo forte "TrackingService") */
+  constructor(private trackingService: TrackingService) {}
+
   switchMode(mode: 'broklin' | 'jonah') {
   document.body.classList.remove('mode-broklin', 'mode-jonah');
   document.body.classList.add(`mode-${mode}`);
@@ -22,5 +26,12 @@ export class AppThemeSwitcher {
 
   // Dispara um evento global pro site todo ouvir
   window.dispatchEvent(new Event('theme-changed'));
-}
+
+  /* 3. O DISPARO SEGURO DO LASER */
+    this.trackingService.trackCustomEvent('theme_switched', {
+      selected_mode: mode,
+      location: 'header_switcher'
+    });
+  }
+
 }

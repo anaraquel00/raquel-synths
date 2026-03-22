@@ -12,11 +12,12 @@ import { ContentService } from '../services/content.service';
 import { Album } from '../models/album.model';
 import { AdBannerComponent } from "../components/ad-banner/ad-banner";
 import { LastReleasesComponent } from "../components/last-releases/last-releases";
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-discography',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule, RouterModule, AdBannerComponent, LastReleasesComponent],
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule, RouterModule, AdBannerComponent, LastReleasesComponent, NgOptimizedImage],
   templateUrl:'./app-discography.html',
   styleUrl: './app-discography.scss'
 })
