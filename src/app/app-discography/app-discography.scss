@@ -186,20 +186,33 @@
     cursor: pointer;
     box-shadow: 0 4px 6px rgba(0,0,0,0.3); /* Sombra pra destacar */
 
-    /* Estilo SoundCloud */
-    &.soundcloud-btn {
+     &.soundcloud-btn {
       background: #ff5500;
       color: rgb(0, 0, 0);
       border: 1px solid #ff5500;
       &:hover { background: #ff5500; transform: translateY(-2px); }
     }
 
-    /* Estilo Spotify */
     &.spotify-btn {
       background: #1db954;
       color: white;
       border: 1px solid #1db954;
       &:hover { background: #1ed760; transform: translateY(-2px); }
+    }
+
+    /* INJEÇÃO BLINDADA DENTRO DO BOTÃO */
+    .cyber-icon {
+      width: 25px !important;
+      height: 25px !important;
+      min-width: 25px; /* Trava absoluta contra colapso */
+      flex-shrink: 0; 
+      display: inline-block;
+      fill: currentColor !important; 
+
+      /* Força a tinta digital a penetrar no desenho */
+      path {
+        fill: currentColor !important;
+      }
     }
   }
 
@@ -403,7 +416,7 @@ button {
 @media (max-width: 768px) {
     .card-broklin {
         margin-top: -0.5rem;
-        margin-bottom: -1rem;
+        margin-bottom: 0.2rem;
         animation: none; /* Desativa a levitação no mobile para melhor usabilidade */
         transform: translateY(0); /* Garante que ele fique no lugar */
     }

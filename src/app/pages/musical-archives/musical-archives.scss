@@ -400,23 +400,39 @@ button {
       transition: all 0.3s ease;
       cursor: pointer;
 
-      &.soundcloud-btn {
-        background: #ff5500;
-        color: rgb(0, 0, 0);
-        border: 1px solid #ff5500;
-        &:hover { background: #d44600; }
-      }
+   &.soundcloud-btn {
+      background: #ff5500;
+      color: rgb(0, 0, 0);
+      border: 1px solid #ff5500;
+      &:hover { background: #ff5500; transform: translateY(-2px); }
+    }
 
-      &.spotify-btn {
-        background: #1db954;
-        color: rgb(0, 0, 0);
-        border: 1px solid #1db954;
-        &:hover { background: #1ed760; }
+    &.spotify-btn {
+      background: #1db954;
+      color: rgb(0, 0, 0);
+      border: 1px solid #1db954;
+      &:hover { background: #1ed760; transform: translateY(-2px); }
+    }
+
+    /* INJEÇÃO BLINDADA DENTRO DO BOTÃO */
+    .cyber-icon {
+      width: 25px !important;
+      height: 25px !important;
+      min-width: 25px; /* Trava absoluta contra colapso */
+      flex-shrink: 0; 
+      display: inline-block;
+      fill: currentColor !important; 
+
+      /* Força a tinta digital a penetrar no desenho */
+      path {
+        fill: currentColor !important;
       }
     }
+   }
   }
-}
+} 
 
+ 
 .embed-player {
   margin-bottom: 1rem;
 }

@@ -13,6 +13,7 @@ import { AdBannerComponent } from "./components/ad-banner/ad-banner";
 import { injectSpeedInsights } from '@vercel/speed-insights';
 import { TranslationService } from './services/translation.service';
 import { SeoService } from './services/seo.service';
+import { AdSenseService } from './services/ad-sense.service';
 
 @Component({
   selector: 'app-root',
@@ -42,11 +43,17 @@ export class App implements OnInit {
 
   cookiesAccepted!: boolean;
 
-  constructor() {
+  constructor(private adSenseService: AdSenseService) {
     injectSpeedInsights();
   }
 
   ngOnInit() {
+   // Insira aqui o seu ID de cliente real (ca-pub-XXXXXXXXXXXXX)
+    const meuAdSenseId = 'ca-pub-5619990751602183'; 
+    
+    // Liga o radar de interação
+    this.adSenseService.initLazyLoad(meuAdSenseId);
+
     // 1. --- LÓGICA DE COOKIES ---
     if (typeof window !== 'undefined' && localStorage) {
       this.cookiesAccepted = localStorage.getItem('rqs_cookies_consent') === 'true';
