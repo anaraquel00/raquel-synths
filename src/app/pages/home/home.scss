@@ -385,6 +385,12 @@
   }
 
   .hero-title {
+    position: relative;
+    &::before {
+    content: '';
+    will-change: transform; /* Aviso prévio para a placa de vídeo */
+    transition: transform 0.3s ease;
+    }
     font-size: 5rem;
     font-weight: 900;
     margin-bottom: 0;

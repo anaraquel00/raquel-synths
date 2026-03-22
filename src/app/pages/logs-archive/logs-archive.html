@@ -5,39 +5,32 @@
     <p class="subtitle">
       {{ translate.isPt() ? 'Log completo de operações e devaneios da RaQuel Synths' : 'Complete log of operations and daydreams of RaQuel Synths'}}.
     </p>
-
     <app-ad-article></app-ad-article>
   </header>
 
   <div class="blog-feed">
+    @let logs = logsPaginated$ | async;
 
-    @let logs = logs$ | async;
-
-   @if (logs) {
-
+    @if (logs) {
       @for (log of logs; track log.id; let i = $index) {
-
         @let content = getLogContent(log);
 
         <article class="blog-post">
-
           <div class="post-header">
             <span class="post-date">{{ log.date }}</span>
             <h2 class="post-title">{{ content?.title }}</h2>
           </div>
 
           <div class="post-body">
-
             @if (log.image) {
               <div class="post-image">
-             <img [ngSrc]="log.image" [priority]="i === 0" 
-              width="600" height="400"
-              sizes="(max-width: 768px) 100vw, 50vw" [alt]="content?.title">
-             </div>
+                <img [ngSrc]="log.image" [priority]="i < 2" 
+                     width="600" height="400"
+                     sizes="(max-width: 768px) 100vw, 50vw" [alt]="content?.title">
+              </div>
             }
 
             <div class="post-content-wrapper">
-
               <p class="post-text">{{ content?.description }}</p>
 
               @if (content?.jonahComment) {
@@ -54,7 +47,6 @@
               }
             </div>
           </div>
-
         </article>
 
         @if ((i + 1) % 2 === 0 && i !== logs.length - 1) {
@@ -64,20 +56,31 @@
         @if ((i + 1) % 2 !== 0 && i < logs.length - 1) {
           <hr class="cyber-divider">
         }
-
       }
-      } @else {
+
+      <nav class="pagination-controls">
+        <button (click)="previousPage()" [disabled]="currentPage === 0" class="btn-pager">
+          [ < VOLTAR ]
+        </button>
+        
+        <span class="page-counter">{{ currentPage + 1 }} / {{ totalPages }}</span>
+        
+        <button (click)="nextPage()" [disabled]="currentPage === totalPages - 1" class="btn-pager">
+          [ AVANÇAR > ]
+        </button>
+      </nav>
+
+    } @else {
       <div style="padding: 100px; text-align: center; color: #0f0;">
         <p>🔄 DOWNLOADING ARCHIVE...</p>
       </div>
     }
-
   </div>
 
   <footer class="blog-footer">
     <p>END_OF_LOGS</p>
     <app-ad-article></app-ad-article>
-  <a class="btn-back" routerLink="/">[ < BACK_TO_HOME ]</a>
+    <a class="btn-back" routerLink="/">[ < BACK_TO_HOME ]</a>
   </footer>
 
 </main>

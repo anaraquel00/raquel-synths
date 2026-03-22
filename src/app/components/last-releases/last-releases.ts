@@ -2,18 +2,21 @@ import { Component, Input, inject, OnInit, OnDestroy, ChangeDetectorRef } from '
 import { CommonModule } from '@angular/common';
 import { ContentService } from '../../services/content.service';
 import { Subscription } from 'rxjs';
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-last-releases',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NgOptimizedImage],
   template: `
     <div *ngIf="currentTrack"
          class="release-card"
          [class.jonah-mode]="isJonahMode"
          (click)="openLink()">
 
-      <img [src]="currentTrack.cover" alt="Album Cover" class="cover-art">
+       <img [ngSrc]="currentTrack.cover"
+        width="1024" height="540" 
+        sizes="(max-width: 768px) 150px, 600px" loading="lazy"  alt="Album Cover" class="cover-art">
 
       <div class="info">
         <span class="badge">

@@ -61,10 +61,11 @@ export class ContentService {
     return collectionData(colRef, { idField: 'id' }) as Observable<Department[]>;
   }
 
-  // 📜 4. LOGS (Fofocas e Bastidores)
+ // 📜 4. LOGS (Fofocas e Bastidores)
   getLogs(): Observable<any[]> {
     const colRef = collection(this.firestore, 'logs');
-    const q = query(colRef, orderBy('orderDate', 'desc'));
-    return collectionData(colRef, { idField: 'id' }) as Observable<any[]>;
+    // Agora o Firebase já entrega ordenado por data, poupando a CPU do fã
+    const q = query(colRef, orderBy('date', 'desc')); 
+    return collectionData(q, { idField: 'id' }) as Observable<any[]>;
   }
 }
