@@ -66,6 +66,12 @@ button.donate-btn {
   text-decoration: none;
   font-weight: bold;
   font-size: 0.95rem;
+  
+  /* A BLINDAGEM TIPOGRÁFICA */
+  line-height: 24px; /* Trava a altura do texto */
+  height: 24px; /* Trava a altura do link */
+  font-weight: bold;
+  font-size: 0.95rem;
   transition: all 0.3s;
   opacity: 0.8;
   
@@ -85,7 +91,7 @@ button.donate-btn {
   color: var(--accent-color);
   opacity: 1;
   text-shadow: 0 0 8px var(--accent-color); /* Brilho neon no hover */
-  letter-spacing: 1px; /* Efeito sutil de expansão */
+  transform: scale(1.03); /* Dá o efeito de expansão usando a GPU */
 }
 
 .copyright-line {
@@ -139,6 +145,9 @@ button.donate-btn {
 
 /* --- RESPONSIVIDADE MOBILE --- */
 @media (max-width: 768px) {
+  .rqs-footer {
+    min-height: 600px; /* Reserva o espaço do empilhamento no mobile */
+  }
   .footer-container {
     flex-direction: column; /* Empilha as colunas */
     align-items: center; /* Centraliza tudo */

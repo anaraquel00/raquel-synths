@@ -74,7 +74,14 @@ mat-toolbar {
   .broklin-escape {
     display: none !important; /* Esconde o botão de fuga do Broklin, porque ele só aparece no modo Jonah */
   }
-
+  
+ a {
+  display: inline-flex;
+  align-items: center;
+  height: 40px; /* Trava a altura do link */
+  line-height: 40px; /* Trava a altura do texto */
+  white-space: nowrap; /* Impede a quebra de linha acidental */
+}
   /* Trava a altura exata do menu para ele não "nascer" colapsado */
   min-height: 80px; /* Ajuste para a altura exata do seu header */
   display: flex;
@@ -97,6 +104,11 @@ mat-toolbar {
 
     /* Ícones dentro dos botões (já começam verdes ou brancos?) */
     mat-icon {
+      width: 24px !important;
+      height: 24px !important;
+      font-size: 24px !important;
+      line-height: 24px !important;
+      overflow: hidden;
       min-width: 24px;
       min-height: 24px;
       display: inline-block;
