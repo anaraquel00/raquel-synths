@@ -46,6 +46,14 @@ mat-toolbar {
 
 /* === BÔNUS: O Logo Brilhando === */
 .brand-logo {
+  /* Adicione estas travas de arquitetura: */
+  display: inline-block; /* Permite travar largura e altura num span */
+  width: 250px; /* Ajuste para a largura exata que a fonte final ocupa */
+  height: 40px; 
+  line-height: 40px;
+  white-space: nowrap; /* Impede que o texto quebre para a linha de baixo */
+  overflow: hidden; /* Se a fonte atrasar, nada vaza do bloco */
+
   /* ... configs de fonte ... */
   font-family: 'Oswald', sans-serif;
   font-weight: 800;
