@@ -1,3 +1,12 @@
+/* O FOSSO DE CONTENÇÃO DO CLS */
+main {
+  /* Força a área principal a ocupar 100% da altura da tela (Viewport Height) desde o milissegundo zero */
+  min-height: 100vh; 
+  display: block;
+  /* Isso empurra o app-footer para BAIXO DA TELA. 
+     Se ele não aparece na tela inicial, ele não causa CLS quando se move! */
+}
+
 /* BANNER DE COOKIES - FICA FLUTUANDO EM CIMA DE TUDO */
 .cookie-banner {
   position: fixed; /* O segredo: sai do fluxo normal da página */
