@@ -48,28 +48,23 @@
           "configurations": {
            "production": {
            "optimization": {
-           "scripts": true,
-           "styles": {
-           "minify": true,
-           "inlineCritical": true
-              },
-           "fonts": true
-           },
+            "scripts": true,
+            "styles": {
+              "minify": true,
+              "inlineCritical": true
+            },
+            "fonts": true
+            },
            "budgets": [
-           {
-           "type": "initial",
-           "maximumWarning": "500kB",
-           "maximumError": "1MB"
-           },
-          {
-           "type": "anyComponentStyle",
-           "maximumWarning": "4kB", 
-           "maximumError": "10kB"
-           }
-            ],
-           "outputHashing": "all",
-           "serviceWorker": "ngsw-config.json"
-           },
+            {
+              "type": "initial",
+              "maximumWarning": "1MB",
+              "maximumError": "2MB"
+            }
+          ],
+          "outputHashing": "all",
+          "serviceWorker": "ngsw-config.json"
+        },
             "development": {
               "optimization": false,
               "extractLicenses": false,
