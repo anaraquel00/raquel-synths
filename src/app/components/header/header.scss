@@ -75,7 +75,16 @@ mat-toolbar {
     display: none !important; /* Esconde o botão de fuga do Broklin, porque ele só aparece no modo Jonah */
   }
 
-  button[mat-button] {
+  /* Trava a altura exata do menu para ele não "nascer" colapsado */
+  min-height: 80px; /* Ajuste para a altura exata do seu header */
+  display: flex;
+  align-items: center;
+  
+  /* Font-Fallback de Elite: Define uma linha de defesa caso a Roboto atrase */
+  font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  font-size-adjust: 0.5; /* Equilibra o volume da fonte substituta */
+
+   button[mat-button] {
    
     /* 👇 AQUI ESTÁ A LUZ! Força branco sempre 👇 */
     color: #49fa02 !important;
@@ -88,6 +97,10 @@ mat-toolbar {
 
     /* Ícones dentro dos botões (já começam verdes ou brancos?) */
     mat-icon {
+      min-width: 24px;
+      min-height: 24px;
+      display: inline-block;
+      contain: strict; /* Isola o ícone para ele não empurrar os vizinhos */
       color: var(--accent-color) !important; /* Ícone Verde Neon */
       margin-right: 2px;
       vertical-align: middle;
@@ -133,15 +146,6 @@ mat-toolbar {
   }
 }
 
-/* ⚠️ KEYFRAMES: O Tremor de Corrupção do Jonah */
-@keyframes glitch-tremble {
-  0% { transform: translate(0); }
-  20% { transform: translate(-2px, 1px); }
-  40% { transform: translate(-1px, -1px); }
-  60% { transform: translate(2px, 1px); }
-  80% { transform: translate(1px, -1px); }
-  100% { transform: translate(0); }
-}
 
 /* O Perfurador de Escudos - MODO CAOS PURO */
 ::ng-deep .jonah-trigger {
@@ -149,9 +153,22 @@ mat-toolbar {
   border: 1px solid #ff5500 !important;
   font-weight: 700 !important;
   color: #050505 !important;
+  z-index: 1;
   
-  /* ⚡ A ANIMAÇÃO GLITCH: Rápida, constante e instável (0.2 segundos) */
-  animation: glitch-tremble 0.2s infinite !important;
+  /* O tremor tático vai direto para a GPU (Custo zero de layout) */
+  animation: gpu-glitch-shake 2s infinite;
+
+  /* Holograma do Neon (O Segredo da Performance) */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    box-shadow: 0 0 15px rgba(255, 51, 51, 0.6), inset 0 0 10px rgba(255, 0, 0, 0.4);
+    opacity: 0.6; /* Mantemos o neon estável na maior parte do tempo */
+    z-index: -1;
+    border-radius: inherit;
+    transition: opacity 0.3s ease;
+  }
   
   /* Mantendo o texto legível para o Lighthouse aprovar */
   .mdc-button__label, .mat-mdc-button-touch-target, span {
@@ -163,13 +180,28 @@ mat-toolbar {
     background-color: #ff7733 !important;
     
     /* No hover, o glitch fica ainda mais frenético (0.1s) e a aura acende */
-    animation: glitch-tremble 0.1s infinite !important;
+    animation: gpu-glitch-shake 0.1s infinite !important;
     box-shadow: 0 0 15px rgba(255, 85, 0, 0.9) !important;
     
     .mdc-button__label, span {
       color: #000000 !important;
     }
   }
+}
+
+/* ⚠️ KEYFRAMES: O Tremor de Corrupção do Jonah */
+@keyframes gpu-glitch-shake {
+  95% { transform: translate(0, 0); }
+  96% { transform: translate(-2px, 1px); }
+  97% { transform: translate(2px, -1px); }
+  98% { transform: translate(-2px, -2px); }
+  99% { transform: translate(2px, 2px); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes gpu-neon-flicker {
+  0% { opacity: 0.8; }
+  100% { opacity: 1; }
 }
 
 /* === BOTÃO MOBILE (Hambúrguer) === */
