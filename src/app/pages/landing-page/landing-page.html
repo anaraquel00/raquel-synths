@@ -1,6 +1,7 @@
 <app-home id="inicio"></app-home>
 
-<section id="storytelling" class="anchor-pad">
+<div id="storytelling" style="position: relative; top: -80px;"></div>
+<section class="anchor-pad">
   @defer (on viewport) {
     <app-storytelling></app-storytelling>
   } @placeholder {
@@ -10,7 +11,8 @@
   }
 </section>
 
-<section id="sobre" class="anchor-pad">
+<div id="sobre" style="position: relative; top: -80px;"></div>
+<section class="anchor-pad">
   @defer (on viewport) {
     <app-sobre></app-sobre>
   } @placeholder {
@@ -22,34 +24,12 @@
   <app-ad-banner></app-ad-banner>
 </section>
 
-<section id="visual-novel" class="anchor-pad">
-  @defer (on viewport) {
-    <app-visual-novel></app-visual-novel>
-  } @placeholder {
-    <div style="min-height: 500px; width: 100%; display: flex; align-items: center; justify-content: center; color: #00f3ff; opacity: 0.5;">
-      [Sincronizando Ecos da RQS...]
-    </div>
-  }
-</section>
+<app-visual-novel></app-visual-novel>
 
-<section id="discografia" class="anchor-pad">
-  @defer (on viewport) {
-    <app-discography [limitToHome]="5"></app-discography>
-  } @placeholder {
-    <div style="min-height: 600px; width: 100%; display: flex; align-items: center; justify-content: center; color: #00f3ff; opacity: 0.5;">
-      [Acessando Banco de Áudio Mestre...]
-    </div>
-  }
-</section>
-
+<app-discography [limitToHome]="5"></app-discography>
+  
 <section class="ads-section">
   <app-ad-banner></app-ad-banner>
 </section>
 
-<section id="contato" class="anchor-pad">
-  @defer (on viewport) {
-    <app-contato></app-contato>
-  } @placeholder {
-    <div style="min-height: 300px; width: 100%;"></div>
-  }
-</section>
+<app-contato></app-contato>

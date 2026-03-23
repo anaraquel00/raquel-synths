@@ -1,7 +1,10 @@
 <mat-toolbar color="primary">
-  <span class="brand-logo" (click)="scrollTo('inicio')">
+  <a routerLink="/" class="brand-logo" 
+  [matTooltip]="translate.isPt() ? 'Voltar para a Base (Home)' : 'Return to Base (Home)'"
+   matTooltipPosition="below"
+   matTooltipShowDelay="300">
     RAQUEL SYNTHS
-  </span>
+  </a>
 
   <span class="spacer"></span>
 
@@ -24,7 +27,7 @@
    </button>
 
     <button mat-button (click)="scrollTo('sobre')">{{ navText.sobre }}</button>
-    <button mat-button (click)="scrollTo('visual-novel')">{{ navText.visualNovel }}</button>
+    <button mat-button [routerLink]="['/saga']">{{ navText.visualNovel }}</button>
 
     <!-- <button mat-button [routerLink]="['/lore/broklin']">
       <mat-icon>auto_stories</mat-icon> {{ navText.lore }}
@@ -38,10 +41,6 @@
    <a mat-menu-item href="https://discord.gg/ryvhdRnQpQ" target="_blank">
     <mat-icon>forum</mat-icon> <span>Discord</span>
    </a>
-
-   <!--  <a mat-menu-item href="https://t.me/raquelsynths_news" target="_blank">
-    <mat-icon>send</mat-icon> <span>Telegram</span>
-   </a> -->
 
    <a mat-menu-item href="https://www.instagram.com/rqs_synths" target="_blank">
     <mat-icon>photo_camera</mat-icon>
@@ -59,7 +58,7 @@
       <mat-icon>terminal</mat-icon> {{ navText.creator }}
     </button>
 
-    <button mat-button (click)="scrollTo('discografia')">{{ navText.discografia }}</button>
+    <button mat-button [routerLink]="['/discografia']">{{ navText.discografia }}</button>
 
     <button mat-button [routerLink]="['/store']" class="store-container">
       {{ navText.store }} <mat-icon iconPositionEnd>open_in_new</mat-icon>
@@ -94,7 +93,7 @@
 </button>
 
 <button mat-menu-item (click)="scrollTo('sobre')">{{ navText.sobre }}</button>
-<button mat-menu-item (click)="scrollTo('visual-novel')">{{ navText.visualNovel }}</button>
+<button mat-menu-item [routerLink]="['/saga']">{{ navText.visualNovel }}</button>
 
 
 <button mat-menu-item [matMenuTriggerFor]="socialMenu" (click)="$event.stopPropagation()">
@@ -120,7 +119,7 @@
   </a>
 
 </mat-menu>
-<button mat-menu-item (click)="scrollTo('discografia')">DISCOGRAFIA</button>
+<button mat-menu-item [routerLink]="['/discografia']">DISCOGRAFIA</button>
 <button mat-menu-item [routerLink]="['/store']">{{ navText.store }}</button>
   </mat-menu>
 </mat-toolbar>

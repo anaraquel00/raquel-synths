@@ -54,8 +54,25 @@ export const routes: Routes = [
       } 
     }
   },
+ // 📖 ROTA 3: O Banner da Saga
 
-  // ✨ NOVA ROTA 3: O Catálogo (Episódios da Saga)
+ {
+  path: 'saga', loadComponent: () => import('./app-visual-novel/app-visual-novel').then(m => m.AppVisualNovel),
+ data: { 
+   seo: { 
+     title: { 
+       pt: 'Ecos da RQS', 
+       en: 'RQS Echoes' 
+     },
+     description: { 
+       pt: 'O resumo visual da guerra entre Broklin e Jonah. A história em um banner épico.', 
+       en: 'The visual summary of the war between Broklin and Jonah. The story in an epic banner.' 
+     }
+   }
+
+ }} ,
+
+  // ✨ NOVA ROTA 4: O Catálogo (Episódios da Saga)
   {
     path: 'visual-novel',
     loadComponent: () => import('./pages/visual-novel/visual-novel').then(m => m.VisualNovelComponent),
@@ -73,7 +90,7 @@ export const routes: Routes = [
     }
   },
 
-  // 📖 ROTA 4: O Leitor (Texto Puro)
+  // 📖 ROTA 5: O Leitor (Texto Puro)
   {
     path: 'lore/broklin',
     loadComponent: () => import('./pages/lore-reader/lore-reader').then(m => m.LoreReaderComponent)
@@ -83,7 +100,7 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/lore-reader/lore-reader').then(m => m.LoreReaderComponent)
   },
 
-  // 👩‍💻 ROTA 5: O Hub da Criadora (Blog Técnico/Portfólio)
+  // 👩‍💻 ROTA 6: O Hub da Criadora (Blog Técnico/Portfólio)
   {
     path: 'creator',
     loadComponent: () => import('./pages/creator/creator').then(m => m.Creator),
@@ -101,7 +118,7 @@ export const routes: Routes = [
     }
   },
 
-  // 🛡️ ROTA 6: Compliance
+  // 🛡️ ROTA 7: Compliance
   {
     path: 'compliance',
     loadComponent: () => import('./pages/compliance/compliance').then(m => m.ComplianceComponent),
@@ -119,7 +136,7 @@ export const routes: Routes = [
     }
   },
 
-  // 🛒 ROTA 7: A Loja (Neon Store)
+  // 🛒 ROTA 8: A Loja (Neon Store)
   {
     path: 'store',
     loadComponent: () => import('./pages/store/store').then(m => m.StoreComponent),
@@ -132,6 +149,42 @@ export const routes: Routes = [
         description: { 
           pt: 'Equipamentos, vestuário e hardware. Escolha sua facção: Blue Team ou Red Team na Neon Store.', 
           en: 'Gear, apparel, and hardware. Choose your faction: Blue Team or Red Team at the Neon Store.' 
+        }
+      }
+    }
+  },
+
+  // 📡 ROTA 9: O Terminal de Comunicação (Contato/Uplink)
+  {
+    path: 'contato',
+    loadComponent: () => import('./pages/contato/contato').then(m => m.ContatoComponent),
+    data: {
+      seo: { 
+        title: { 
+          pt: 'Uplink | Contato', 
+          en: 'Uplink | Contact' 
+        },
+        description: { 
+          pt: 'Estabeleça conexão direta com a base da RQS.', 
+          en: 'Establish a direct connection with the RQS base.' 
+        }
+      }
+    }
+  },
+
+  // 💿 ROTA 10: A Central de Áudio (Discografia)
+  {
+    path: 'discografia',
+    loadComponent: () => import('./app-discography/app-discography').then(m => m.DiscographyComponent),
+    data: {
+      seo: { 
+        title: { 
+          pt: 'Discografia | RQS', 
+          en: 'Discography | RQS' 
+        },
+        description: { 
+          pt: 'Acesse o banco de áudio mestre da Raquel Synths.', 
+          en: 'Access the master audio bank of Raquel Synths.' 
         }
       }
     }

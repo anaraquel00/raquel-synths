@@ -8,11 +8,12 @@ import { TranslationService } from '../../services/translation.service';
 import { NAV_DATA } from '../../data/app-data';
 import { Router, RouterModule } from '@angular/router';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [MatToolbar, MatButtonModule, MatIconModule, MatMenuModule, MatDividerModule, RouterModule],
+  imports: [MatToolbar, MatButtonModule, MatIconModule, MatMenuModule, MatDividerModule, RouterModule, MatTooltipModule],
   templateUrl: './header.html',
   styleUrl: './header.scss'
 })

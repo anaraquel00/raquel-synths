@@ -44,20 +44,32 @@ export class Home implements OnInit, OnDestroy {
   }
 
 executarQuickhack(targetId: string) {
-  // Hack nativo para garantir que o código só rode no Navegador (proteção do SSR)
   if (typeof document !== 'undefined') {
-    
-    // O radar varre a árvore do DOM
     const element = document.getElementById(targetId);
     
     if (element) {
-      // Alvo travado na mesma página. Rola suavemente até lá.
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // 🛡️ O SALTO QUÂNTICO: Troque 'smooth' por 'auto'. 
+      // O teletransporte não acorda os @defer do meio do caminho!
+      element.scrollIntoView({ behavior: 'auto', block: 'start' });
+
+      // ⚡ Radar Estabilizador Curto
+      // A seção de Contato vai acordar e esticar um pouco.
+      // O radar dá pequenos "snaps" invisíveis para garantir que a tela não saia do lugar.
+      let varreduras = 0;
+      const radarInterval = setInterval(() => {
+        const alvo = document.getElementById(targetId);
+        if (alvo) {
+          alvo.scrollIntoView({ behavior: 'auto', block: 'start' });
+        }
+        
+        varreduras++;
+        if (varreduras >= 4) { // 2 segundos são suficientes para o Contato renderizar
+          clearInterval(radarInterval);
+        }
+      }, 500);
+
     } else {
-      // Alvo em outra página. O radar falhou aqui, então disparamos o roteador para a Base Principal.
-      console.warn(`[FALHA DE SISTEMA] Módulo "${targetId}" não encontrado. Iniciando salto de emergência para a Home...`);
-      
-      // Salta para a raiz '/' e anexa a âncora na URL (ex: /#discografia)
+      console.warn(`[FALHA DE SISTEMA] Sinalizador "${targetId}" offline. Saltando para a raiz...`);
       this.router.navigate(['/'], { fragment: targetId });
     }
   }
@@ -78,17 +90,6 @@ executarQuickhack(targetId: string) {
     this.showUplink = false;
   }
 currentLanguage: any;
-  scrollToContact() {
-    // Procura o elemento com id 'contact-section' e rola até ele
-    const element = document.getElementById('contato');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else {
-      // Fallback: Se não achar (ex: se contato for outra página), redireciona
-      // this.router.navigate(['/contato']);
-      console.warn('Alvo do scroll não encontrado!');
-    }
-  }
 
   // --- INJEÇÕES NOVAS ---
   private injector = inject(Injector);

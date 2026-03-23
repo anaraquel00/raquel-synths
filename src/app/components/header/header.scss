@@ -44,32 +44,38 @@ mat-toolbar {
   height: 100%;
 }
 
-/* === BÔNUS: O Logo Brilhando === */
+/* 🛡️ BLINDAGEM DO LOGO (Verde Neon Restaurado) */
 .brand-logo {
-  /* Adicione estas travas de arquitetura: */
-  display: inline-block; /* Permite travar largura e altura num span */
-  width: 250px; /* Ajuste para a largura exata que a fonte final ocupa */
-  height: 40px; 
-  line-height: 40px;
-  white-space: nowrap; /* Impede que o texto quebre para a linha de baixo */
-  overflow: hidden; /* Se a fonte atrasar, nada vaza do bloco */
+  text-decoration: none !important; 
+  outline: none; 
+  cursor: pointer;
+  
+  // --- A COR REESTABELECIDA ---
+  // Substitua var(--primary-color) pela variável exata do seu verde, ou use #00ff41
+  color: var(--accent-color); 
+  font-family: var(--font-heading); 
+  font-weight: 700; 
+  font-size: 1.5rem; 
+  text-transform: uppercase; 
+  letter-spacing: 2px; 
 
-  /* ... configs de fonte ... */
-  font-family: 'Oswald', sans-serif;
-  font-weight: 800;
-  color: #ffffff;
-  transition: all 0.3s ease;
+  // --- ⚡ EFEITO HOLOGRÁFICO BASE ---
+  // Uma sombra sutil da mesma cor do texto para dar o efeito "aceso"
+  text-shadow: 0 0 8px rgba(var(--primary-rgb), 0.4);
 
-  /* Quando passa o mouse, ele acende */
+  transition: all 0.3s ease-in-out;
+  opacity: 1; 
+
+  /* 🌸 REAÇÃO AO HOVER (Flash de Ignição) */
   &:hover {
-    color: var(--accent-color);
-    text-shadow: 0 0 15px var(--accent-color), 0 0 30px var(--accent-color);
-    cursor: pointer;
-  }
+    // Ao passar o mouse, o texto fica branco incandescente e a aura verde expande!
+    color: #ffffff; 
+    text-shadow: 
+      0 0 10px var(--accent-color), 
+      0 0 20px var(--accent-color); 
 
-  /* Ajuste no mobile pra não quebrar */
-  @media (max-width: 380px) {
-    font-size: 1.1rem;
+    transform: scale(1.02); 
+    text-decoration: none; 
   }
 }
 
