@@ -64,25 +64,31 @@
 
   /* --- IMAGEM (ESTILO GERAL) --- */
   .post-image {
-     border-radius: 8px;
-     overflow: hidden;
-     border: 1px solid #333;
-     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-     margin-bottom: 25px;
+     position: relative; /* 🛡️ Obrigatório para a diretiva 'fill' funcionar */
+  width: 100%;
+  
+  /* 📐 O MOTOR 16:9: Força o formato panorâmico exato em qualquer tela */
+  aspect-ratio: 16 / 9; 
+  
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  
+  /* Estética de Classificados / Data Feed */
+  background: #050505; 
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 2px solid var(--accent-color); /* A linha de destaque de manchete */
+  border-radius: 4px;
 
-     /* 🛠️ CORREÇÃO MOBILE: Altura Automática */
-     height: auto;
-     width: 100%;
+  img {
+    object-fit: cover; /* Corta o excesso se a imagem do Firebase não for 16:9 exato */
+    object-position: top center; /* Foca no centro da ação */
+    transition: transform 0.4s ease;
+  }
 
-     img {
-       width: 100%;
-       height: 100%;
-       /* Garante que a foto apareça INTEIRA, sem cortar nada */
-       object-fit: contain;
-       display: block;
-       transition: transform 0.5s ease;
-     }
-     &:hover img { transform: scale(1.02); }
+  /* Micro-interação de hardware no Hover */
+  &:hover img {
+    transform: scale(1.02);
+  }
   }
 
   /* --- TEXTO --- */

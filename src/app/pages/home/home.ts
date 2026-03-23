@@ -44,21 +44,24 @@ export class Home implements OnInit, OnDestroy {
   }
 
 executarQuickhack(targetId: string) {
-    // 1. Hack nativo para garantir que o código só rode no Navegador (não no Servidor/Firebase)
-    if (typeof document !== 'undefined') {
+  // Hack nativo para garantir que o código só rode no Navegador (proteção do SSR)
+  if (typeof document !== 'undefined') {
+    
+    // O radar varre a árvore do DOM
+    const element = document.getElementById(targetId);
+    
+    if (element) {
+      // Alvo travado na mesma página. Rola suavemente até lá.
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      // Alvo em outra página. O radar falhou aqui, então disparamos o roteador para a Base Principal.
+      console.warn(`[FALHA DE SISTEMA] Módulo "${targetId}" não encontrado. Iniciando salto de emergência para a Home...`);
       
-      // 2. O radar varre a árvore do DOM inteiro procurando a etiqueta
-      const element = document.getElementById(targetId);
-      
-      if (element) {
-        // 3. Alvo travado. Rola suavemente até lá.
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      } else {
-        // 4. Se falhar, nós vamos ver exatamente quem está faltando no painel do F12 (Console)
-        console.error(`[FALHA DE SISTEMA] O módulo com id="${targetId}" não foi encontrado na placa-mãe!`);
-      }
+      // Salta para a raiz '/' e anexa a âncora na URL (ex: /#discografia)
+      this.router.navigate(['/'], { fragment: targetId });
     }
   }
+}
 
   showUplink = false; // Controle do Modal
  isJonahMode = true; // Controle do Modo (Broklin/Jonah)
@@ -190,13 +193,5 @@ currentLanguage: any;
   get navText() { return this.homeSignal(); }
   get contactText() { return this.contactSignal(); }
 
-  scrollTo(elementId: string): void {
-    const element = document.getElementById(elementId);
-        if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else {
-      console.warn(`ALERTA: Elemento '${elementId}' não encontrado.`);
-    }
-  }
-
+  
  }

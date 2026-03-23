@@ -64,23 +64,33 @@
   color: #fff;
 }
 
-/* --- IMAGEM DESTAQUE --- */
+/* =======================================================
+   📰 MÓDULO VISUAL: MANCHETE CORPORATIVA (16:9)
+   ======================================================= */
 .img-wrapper-wide {
+  position: relative; /* 🛡️ Obrigatório para a diretiva 'fill' funcionar */
   width: 100%;
-  height: 350px; /* Altura fixa para ficar cinemático */
-  background-color: #000;
-  position: relative;
+  
+  /* 📐 O MOTOR 16:9: Força o formato panorâmico exato em qualquer tela */
+  aspect-ratio: 16 / 9; 
+  
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  
+  /* Estética de Classificados / Data Feed */
+  background: #050505; 
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 2px solid var(--accent-color); /* A linha de destaque de manchete */
+  border-radius: 4px;
 
   img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* A MÁGICA: Isso estica a imagem sem distorcer e remove o preto */
-    object-position: center top; /* Foca no rosto/topo */
-    display: block;
+    object-fit: cover; /* Corta o excesso se a imagem do Firebase não for 16:9 exato */
+    object-position: center center; /* Foca no centro da ação */
+    transition: transform 0.4s ease;
   }
 
+  /* Micro-interação de hardware no Hover */
   &:hover img {
-    opacity: 1;
     transform: scale(1.02);
   }
 }

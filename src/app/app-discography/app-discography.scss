@@ -117,15 +117,30 @@
   }
 }
 
-.album-cover img {
-  width: 250px;
-  height: 250px;
-  object-fit: cover;
-  border-radius: 8px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-  transition: transform 0.3s ease;
-
-  &:hover { transform: scale(1.02); }
+.album-cover {
+  /* Controle de tamanho do container pai (protege contra expansão infinita) */
+  width: 100%;
+  max-width: 250px; 
+  flex-shrink: 0;
+  
+  img {
+    width: 100%;       /* Ocupa 100% dos 250px (ou menos no celular) */
+    height: auto;      /* Desliga a altura fixa */
+    
+    /* 🛡️ MOTOR GEOMÉTRICO: Força o quadrado perfeito sob qualquer tela */
+    aspect-ratio: 1 / 1; 
+    object-fit: cover; /* Se a imagem original for retangular, ele dá um "zoom" e corta as bordas pra caber no quadrado */
+    
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+    
+    /* Aceleração de Hardware que injetamos antes */
+    transition: transform 0.3s ease;
+  
+    &:hover { 
+      transform: scale(1.02); 
+    }
+  }
 }
 
 .album-content {
@@ -170,7 +185,7 @@
   }
 
   .btn-listen {
-    flex: 1; /* Faz os botões dividirem o espaço igualmente */
+    flex: 1;
     min-width: 140px;
     padding: 12px;
     text-align: center;
@@ -182,34 +197,42 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    transition: all 0.3s ease;
     cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.3); /* Sombra pra destacar */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    
+    /* 🛡️ BLINDAGEM DE HARDWARE: Transições explícitas para latência zero */
+    transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
 
-     &.soundcloud-btn {
+    &.soundcloud-btn {
       background: #ff5500;
       color: rgb(0, 0, 0);
       border: 1px solid #ff5500;
-      &:hover { background: #ff5500; transform: translateY(-2px); }
+      &:hover, &:active { 
+        background: #ff5500; 
+        transform: translateY(-2px); 
+        box-shadow: 0 6px 12px rgba(255, 85, 0, 0.4); /* Otimização da sombra no hover */
+      }
     }
 
     &.spotify-btn {
       background: #1db954;
       color: white;
       border: 1px solid #1db954;
-      &:hover { background: #1ed760; transform: translateY(-2px); }
+      &:hover, &:active { 
+        background: #1ed760; 
+        transform: translateY(-2px); 
+        box-shadow: 0 6px 12px rgba(29, 185, 84, 0.4);
+      }
     }
 
-    /* INJEÇÃO BLINDADA DENTRO DO BOTÃO */
     .cyber-icon {
       width: 25px !important;
       height: 25px !important;
-      min-width: 25px; /* Trava absoluta contra colapso */
+      min-width: 25px;
       flex-shrink: 0; 
       display: inline-block;
       fill: currentColor !important; 
 
-      /* Força a tinta digital a penetrar no desenho */
       path {
         fill: currentColor !important;
       }
@@ -226,7 +249,7 @@
   }
 
 
-/* --- CLASSE MESTRE DE SEÇÃO (A Base) --- */
+ /* --- CLASSE MESTRE DE SEÇÃO (A Base) --- */
 .artist-section {
   position: relative;
   padding: 2.5rem;
@@ -388,15 +411,16 @@ button {
    2. O MODIFICADOR DE DESTAQUE (Modo Ordem/Broklin)
    ========================================= */
 .card-broklin {
-  /* Mantém o domínio do Ciano sobre o Verde do Spotify */
   border-color: rgba(0, 255, 255, 0.4) !important;
   border-left-color: #00ffff !important; 
   margin-top: -2rem;
   
-  /* O MOTOR DE LEVITAÇÃO DO CARD INTEIRO */
+  /* O MOTOR DE LEVITAÇÃO */
   animation: floatCard 4s ease-in-out infinite;
 
-  /* Estilo do Texto Destacado que você sublinhou no HTML */
+  /* 🛡️ BLINDAGEM DE HARDWARE: Especificando propriedades para o Hover */
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+
   .text-highlight {
     color: #00ffff;
     font-weight: 800;
@@ -404,22 +428,29 @@ button {
     text-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
   }
 
-  /* O Hover foca o card no usuário (pausa a levitação e aumenta o brilho) */
   &:hover {
-    animation-play-state: paused; /* Trava o card no ar para facilitar o clique */
-    transform: translateY(-8px) scale(1.02); /* Eleva e aproxima levemente */
+    animation-play-state: paused; 
+    transform: translateY(-8px) scale(1.02); 
     border-color: #00ffff !important;
-    box-shadow: 0 15px 35px rgba(0, 255, 255, 0.3),
-                inset 0 0 15px rgba(0, 255, 255, 0.1) !important;
+    box-shadow: 0 15px 35px rgba(0, 255, 255, 0.3), inset 0 0 15px rgba(0, 255, 255, 0.1) !important;
   }
 }
+
 @media (max-width: 768px) {
-    .card-broklin {
-        margin-top: -0.5rem;
-        margin-bottom: 0.2rem;
-        animation: none; /* Desativa a levitação no mobile para melhor usabilidade */
-        transform: translateY(0); /* Garante que ele fique no lugar */
-    }
+  .card-broklin {
+      margin-top: -0.5rem;
+      margin-bottom: 0.2rem;
+      animation: none; 
+      transform: translateY(0); 
+      
+      /* Mantemos a transição explícita no mobile, caso haja interação por toque */
+      transition: box-shadow 0.3s ease, border-color 0.3s ease;
+      
+      &:hover {
+        /* Removemos o translateY do hover no mobile para evitar saltos na interface ao tocar */
+        transform: translateY(0) scale(1);
+      }
+  }
 }
 
 /* ========================================= */

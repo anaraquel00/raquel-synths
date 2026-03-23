@@ -21,12 +21,12 @@
           <div class="log-card-full">
 
             @if (event.image) {
-              <div class="img-wrapper-wide">
-                <img [ngSrc]="event.image" 
-                width="800" 
-                height="450"
-                sizes="(max-width: 768px) 100vw, 50vw" [alt]="content?.title">
-              </div>
+             <div class="img-wrapper-wide">
+             <img [ngSrc]="event.image" 
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw" 
+              [alt]="content?.title">
+             </div>
             }
 
             <div class="content-padding">

@@ -1,19 +1,55 @@
 <app-home id="inicio"></app-home>
 
+<section id="storytelling" class="anchor-pad">
+  @defer (on viewport) {
+    <app-storytelling></app-storytelling>
+  } @placeholder {
+    <div style="min-height: 400px; width: 100%; display: flex; align-items: center; justify-content: center; color: #00f3ff; opacity: 0.5;">
+      [Iniciando decodificação da Lore...]
+    </div>
+  }
+</section>
+
+<section id="sobre" class="anchor-pad">
+  @defer (on viewport) {
+    <app-sobre></app-sobre>
+  } @placeholder {
+    <div style="min-height: 300px; width: 100%;"></div>
+  }
+</section>
+
 <section class="ads-section">
-    <app-ad-banner></app-ad-banner>
-  </section>
+  <app-ad-banner></app-ad-banner>
+</section>
 
-<app-storytelling id="storytelling"></app-storytelling>
+<section id="visual-novel" class="anchor-pad">
+  @defer (on viewport) {
+    <app-visual-novel></app-visual-novel>
+  } @placeholder {
+    <div style="min-height: 500px; width: 100%; display: flex; align-items: center; justify-content: center; color: #00f3ff; opacity: 0.5;">
+      [Sincronizando Ecos da RQS...]
+    </div>
+  }
+</section>
 
-<app-sobre id="sobre"></app-sobre>
+<section id="discografia" class="anchor-pad">
+  @defer (on viewport) {
+    <app-discography [limitToHome]="5"></app-discography>
+  } @placeholder {
+    <div style="min-height: 600px; width: 100%; display: flex; align-items: center; justify-content: center; color: #00f3ff; opacity: 0.5;">
+      [Acessando Banco de Áudio Mestre...]
+    </div>
+  }
+</section>
 
-<app-ad-banner></app-ad-banner>
+<section class="ads-section">
+  <app-ad-banner></app-ad-banner>
+</section>
 
-<app-visual-novel id="visual-novel"></app-visual-novel>
-
-<app-discography id="discografia" [limitToHome]="5"></app-discography>
-
-<app-ad-banner></app-ad-banner>
-
-<app-contato id="contato"></app-contato>
+<section id="contato" class="anchor-pad">
+  @defer (on viewport) {
+    <app-contato></app-contato>
+  } @placeholder {
+    <div style="min-height: 300px; width: 100%;"></div>
+  }
+</section>

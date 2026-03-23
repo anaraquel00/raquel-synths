@@ -21,7 +21,7 @@ body {
   margin: 0;
   padding-top: 70px;
   font-family: 'Roboto', sans-serif;
-  min-height: 100vh;
+  min-height: 100dvh;
   position: relative;
 
   /* VARIÁVEIS */
@@ -42,6 +42,13 @@ body {
   overflow-x: hidden !important;
   width: 100% !important;
   max-width: 100% !important;
+
+  /* 📐 MOTOR CLAMP: Variáveis de Geometria Dinâmica */
+  /* Elas encolhem sozinhas no Moto G e expandem no S25 sem precisar de @media */
+  --font-title-hero: clamp(2rem, 5vw + 1rem, 4rem);     /* Títulos gigantes */
+  --font-subtitle: clamp(1.2rem, 3vw + 0.5rem, 2.5rem); /* Subtítulos */
+  --padding-section: clamp(15px, 5vw, 60px);            /* Respiro lateral das seções */
+  --gap-fluid: clamp(15px, 3vw, 30px);                  /* Distância entre os cards */
 }
 
 /* --- 🌍 ESTILOS GLOBAIS PARA ARTIGOS TÉCNICOS (Storytelling) --- */
@@ -644,3 +651,27 @@ a.rqs-archive-button {
 }
 
 
+/* =======================================================
+   🛡️ GRID UNIVERSAL RQS (Auto-adaptável)
+   ======================================================= */
+.cyber-grid-fluid {
+  display: grid;
+  
+  /* O processador calcula sozinho: se tiver espaço, coloca lado a lado. Se não, empilha. */
+  /* O card nunca será menor que 260px (perfeito pro celular) e vai expandir até preencher a tela */
+  grid-template-columns: repeat(auto-fit, minmax(clamp(260px, 30vw, 320px), 1fr));
+  
+  gap: var(--gap-fluid); /* Usa a nossa variável dinâmica criada no body */
+  width: 100%;
+  padding: var(--padding-section);
+  box-sizing: border-box;
+}
+
+/* =======================================================
+   🎯 PISTA DE POUSO (Âncoras de Scroll Protegidas)
+   ======================================================= */
+.anchor-pad {
+  width: 100%;
+  /* Compensa os 70px do padding-top do body. O scroll freia antes de engolir o título! */
+  scroll-margin-top: 80px; 
+}

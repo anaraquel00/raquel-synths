@@ -116,24 +116,26 @@
 }
 
 /* --- A MOLDURA DA FOTO --- */
+/* --- A MOLDURA DA FOTO --- */
 .image-frame {
-  width: 180px; /* Largura fixa */
+  width: 180px; 
   flex-shrink: 0;
-  position: relative;
+  
+  /* 🛡️ A ÂNCORA DO FILL: Isso é obrigatório. Segura a imagem dentro da caixa. */
+  position: relative; 
   overflow: hidden;
   border-right: 1px solid rgba(255,255,255,0.1);
 
   img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    position: absolute;
-    top: 0;
-    left: 0;
+    /* O Angular agora cuida da largura, altura e posição absoluta via hardware. */
+    /* Nós só dizemos como a pintura deve se comportar: */
+    object-fit: cover; 
+    /* 🛡️ AJUSTE DE ENQUADRAMENTO: Foca no Topo da imagem (no rosto) */
+    object-position: top center; // (Ou 50% 0%)
     transition: transform 0.5s ease, opacity 0.5s ease;
   }
 
-  /* Lógica Padrão: Mostra o Broklin (Bonzinho), Esconde o Jonah (Malvado) */
+  /* Lógica Padrão mantida intacta */
   .img-broklin { opacity: 1; z-index: 2; }
   .img-jonah { opacity: 0; z-index: 1; }
 }

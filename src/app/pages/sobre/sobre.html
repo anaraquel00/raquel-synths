@@ -7,13 +7,20 @@
   <div class="members-grid">
     @for (member of members; track member.name; let i = $index) {
       <div class="member-card">
-        <div class="image-frame">
-       <img [ngSrc]="member.imageBroklin" width="300" height="400" 
-       [priority]="i === 0" class="img-broklin" alt="Foto Normal">
+<div class="image-frame">
+  <img [ngSrc]="member.imageBroklin" 
+       fill
+       sizes="(max-width: 768px) 100vw, 15vw"
+       [priority]="i === 0" 
+       class="img-broklin" 
+       alt="Foto Normal">
   
-       <img [ngSrc]="member.imageJonah" width="300" height="400" 
-       class="img-jonah" alt="Foto Glitch">
-      </div>
+  <img [ngSrc]="member.imageJonah" 
+       fill
+       sizes="(max-width: 768px) 100vw, 15vw"
+       class="img-jonah" 
+       alt="Foto Glitch">
+</div>
         <div class="info-box">
           <h3>{{ member.name }}</h3>
           <span class="role">{{ member.role }}</span>

@@ -15,8 +15,10 @@ import { NgOptimizedImage } from '@angular/common';
          (click)="openLink()">
 
        <img [ngSrc]="currentTrack.cover"
-        width="1024" height="540" 
-        sizes="(max-width: 768px) 150px, 600px" loading="lazy"  alt="Album Cover" class="cover-art">
+       width="80" 
+       height="80" 
+       alt="Album Cover" 
+       class="cover-art">
 
       <div class="info">
         <span class="badge">

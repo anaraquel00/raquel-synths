@@ -1,3 +1,4 @@
+import { IMAGE_CONFIG } from '@angular/common';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection, isDevMode } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -29,6 +30,13 @@ export const appConfig: ApplicationConfig = {
    // Inicializando o Firebase
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideFirestore(() => getFirestore()),
-    provideAnalytics(() => getAnalytics())
+    provideAnalytics(() => getAnalytics()),
+    // 2. 🛡️ INJEÇÃO DE AUTORIZAÇÃO DE DOMÍNIO (O Passaporte do Firebase)
+    {
+      provide: IMAGE_CONFIG,
+      useValue: {
+        domains: ['firebasestorage.googleapis.com'] // Autoriza a entrada das imagens do Storage
+      }
+    }
   ]
-};
+  };
