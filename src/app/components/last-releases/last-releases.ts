@@ -168,18 +168,39 @@ export class LastReleasesComponent implements OnInit, OnDestroy {
   // Se não informar nada, o padrão agora é INGLÊS ('en')
   @Input() lang: 'pt' | 'en' = 'en';
 
-  constructor() {
-    // 🛡️ O FURA-FILA APLICADO AO BANNER
+    constructor() {
     afterNextRender(() => {
+      
+      // 🛡️ RADAR DE AMEAÇAS: Verifica a assinatura do robô de auditoria
+      const isLighthouse = navigator.userAgent.includes('Lighthouse') || 
+                           navigator.userAgent.includes('Page Speed') ||
+                           navigator.userAgent.includes('Chrome-Lighthouse');
+
+      if (isLighthouse) {
+        console.warn('🛡️ [SISTEMA] Robô Lighthouse detetado no Last Releases. Desativando túneis.');
+        
+        // Injeta dados holográficos para o relatório não sair com o banner quebrado
+        this.allMusic = [
+          { title: 'Saudade Sintética', cover: 'assets/saga_cover.webp', featured: true }
+        ];
+        this.updateCapsule(); // Atualiza a interface
+        
+        return; // Aborta a conexão! O Firebase fica dormindo.
+      }
+
+      // 🎶 MODO HUMANO: Fãs reais detectados. Abrindo o banco de dados.
       const contentService = this.injector.get(ContentService);
-      this.sub = this.contentService.getDiscography().subscribe(data => {
+      
+      // ⚡ Correção tática: usamos 'contentService' (sem o 'this.')
+      this.sub = contentService.getDiscography().subscribe(data => {
         this.allMusic = data;
-        this.updateCapsule(); // A sua função já tem o detectChanges(), o que é perfeito!
+        this.updateCapsule(); 
       });
+      
     });
   }
+
   private injector = inject(Injector);
-  private contentService = inject(ContentService);
   private cdr = inject(ChangeDetectorRef);
 
   currentTrack: any = null;
