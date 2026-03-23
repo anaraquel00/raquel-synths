@@ -384,56 +384,70 @@
     }
   }
 
-  .hero-title {
-    position: relative;
-    &::before {
+.hero-title {
+  position: relative;
+  font-size: 5rem;
+  font-weight: 900;
+  margin-bottom: 0;
+  margin-right: 30px;
+  font-family: var(--font-heading);
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  
+  /* 🛡️ 1. O TEXTO BASE: Gradiente estático e lindo (Zero custo de CPU) */
+  background: linear-gradient(90deg, #ffffff 0%, var(--primary-color) 50%, #ffffff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 15px rgba(var(--primary-rgb), 0.4));
+  overflow: hidden; /* Mantém o brilho contido dentro da caixa do texto */
+
+  /* ⚡ 2. O MOTOR GPU (Aida's Protocol): Um feixe de luz que viaja usando transform */
+  &::after {
     content: '';
-    will-change: transform; /* Aviso prévio para a placa de vídeo */
-    transition: transform 0.3s ease;
-    }
-    font-size: 5rem;
-    font-weight: 900;
-    margin-bottom: 0;
-    margin-right: 30px;
-    font-family: var(--font-heading);
-
-    /* Gradiente Animado */
-    background: linear-gradient(90deg, #ffffff 0%, var(--primary-color) 50%, #ffffff 100%);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-
-    text-transform: uppercase;
-    letter-spacing: 4px;
-    animation: shine 6s linear infinite;
-    filter: drop-shadow(0 0 15px rgba(var(--primary-rgb), 0.4));
-
-    /* Ajustes Responsivos */
-    @media (max-width: 1280px) {
-      font-size: 3.5rem; /* Menor em Laptops/Tablets */
-    }
-
-    @media (max-width: 768px) {
-      font-size: clamp(2rem, 12vw, 3.5rem); 
-      text-align: center;
-      width: 100%;
-      line-height: 1.1;
-      margin-bottom: 0rem;
-      word-break: keep-all; 
-      overflow-wrap: break-word;
-
-      /* 🛡️ O HACK DO LCP (Ignição Retardada) */
-      /* A animação original é mantida, mas espera 2 segundos para começar.
-         O Lighthouse registra a pintura instantânea e nos dá a nota verde! */
-      animation: shine 6s linear infinite;
-      animation-delay: 2s; 
-
-      /* ⚡ PURGA DE CPU (Proteção Térmica) */
-      /* O gradiente fica, mas a sombra pesada cai no celular. */
-      filter: none; 
-    }
+    position: absolute;
+    top: 0; 
+    left: -150%; /* Começa escondido à esquerda */
+    width: 100%; 
+    height: 100%;
+    
+    /* O feixe de luz Cyberpunk */
+    background: linear-gradient(
+      to right, 
+      transparent 0%, 
+      rgba(255, 255, 255, 0.4) 50%, 
+      transparent 100%
+    );
+    
+    /* Avisa a Placa de Vídeo que isso vai se mover */
+    will-change: transform;
+    animation: shineGPU 6s linear infinite;
+    
+    /* Opcional: Faz a luz se misturar com a cor base da Kelma */
+    mix-blend-mode: overlay; 
   }
+
+  /* Ajustes Responsivos */
+  @media (max-width: 1280px) { font-size: 3.5rem; }
+  @media (max-width: 768px) {
+    font-size: clamp(2rem, 12vw, 3.5rem); 
+    text-align: center;
+    width: 100%;
+    line-height: 1.1;
+    margin-bottom: 0rem;
+    word-break: keep-all; 
+    overflow-wrap: break-word;
+    /* No mobile, podemos desligar o drop-shadow pesado para garantir nota 100 */
+    filter: none; 
+  }
+}
+
+/* ⚡ A ANIMAÇÃO ACELERADA POR HARDWARE */
+@keyframes shineGPU {
+  0% { transform: translateX(0) skewX(-20deg); }
+  20% { transform: translateX(300%) skewX(-20deg); }
+  100% { transform: translateX(300%) skewX(-20deg); } /* Pausa para não ficar piscando frenético */
+}
 
   /* Animação */
   @keyframes shine { to { background-position: 200% center; } }

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, OnDestroy, signal, effect, HostListener, inject, PLATFORM_ID, ChangeDetectorRef, afterNextRender } from '@angular/core';
+import { Component, Inject, OnInit, OnDestroy, signal, effect, HostListener, inject, PLATFORM_ID, ChangeDetectorRef, afterNextRender, Injector } from '@angular/core';
 import { DOCUMENT, CommonModule, isPlatformBrowser } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser'; 
 import { MatButtonModule } from '@angular/material/button';
@@ -91,7 +91,7 @@ currentLanguage: any;
   }
 
   // --- INJEÇÕES NOVAS ---
-  private contentService = inject(ContentService);
+  private injector = inject(Injector);
   private sanitizer = inject(DomSanitizer);
   private cdr = inject(ChangeDetectorRef);
   private router = inject(Router);
@@ -120,7 +120,9 @@ currentLanguage: any;
    // 🛡️ PROTOCOLO DE ATRASO TÁTICO (Fura-Fila do Firebase)
     // Deixa a Home carregar o visual 100% primeiro. Depois busca a música silenciosamente.
     afterNextRender(() => {
-      this.musicSub = this.contentService.getDiscography().subscribe(data => {
+      // ⚡ 3. O PULO DO GATO: Só agora, depois da tela renderizada, nós chamamos o Firebase!
+        const contentService = this.injector.get(ContentService);
+        this.musicSub = this.injector.get(ContentService).getDiscography().subscribe(data => {
         this.allMusic = data;
         this.featuredTrack = this.allMusic.find(track => track.featured) || null;
         

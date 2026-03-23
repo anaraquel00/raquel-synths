@@ -1,4 +1,4 @@
-import { Component, Input, inject, OnInit, OnDestroy, ChangeDetectorRef, afterNextRender } from '@angular/core';
+import { Component, Input, inject, OnInit, OnDestroy, ChangeDetectorRef, afterNextRender, Injector } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ContentService } from '../../services/content.service';
 import { Subscription } from 'rxjs';
@@ -171,13 +171,14 @@ export class LastReleasesComponent implements OnInit, OnDestroy {
   constructor() {
     // 🛡️ O FURA-FILA APLICADO AO BANNER
     afterNextRender(() => {
+      const contentService = this.injector.get(ContentService);
       this.sub = this.contentService.getDiscography().subscribe(data => {
         this.allMusic = data;
         this.updateCapsule(); // A sua função já tem o detectChanges(), o que é perfeito!
       });
     });
   }
-
+  private injector = inject(Injector);
   private contentService = inject(ContentService);
   private cdr = inject(ChangeDetectorRef);
 
