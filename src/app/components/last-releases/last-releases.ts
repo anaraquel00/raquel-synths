@@ -1,4 +1,4 @@
-import { Component, Input, inject, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, inject, OnInit, OnDestroy, ChangeDetectorRef, afterNextRender } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ContentService } from '../../services/content.service';
 import { Subscription } from 'rxjs';
@@ -168,6 +168,16 @@ export class LastReleasesComponent implements OnInit, OnDestroy {
   // Se não informar nada, o padrão agora é INGLÊS ('en')
   @Input() lang: 'pt' | 'en' = 'en';
 
+  constructor() {
+    // 🛡️ O FURA-FILA APLICADO AO BANNER
+    afterNextRender(() => {
+      this.sub = this.contentService.getDiscography().subscribe(data => {
+        this.allMusic = data;
+        this.updateCapsule(); // A sua função já tem o detectChanges(), o que é perfeito!
+      });
+    });
+  }
+
   private contentService = inject(ContentService);
   private cdr = inject(ChangeDetectorRef);
 
@@ -200,12 +210,7 @@ export class LastReleasesComponent implements OnInit, OnDestroy {
   };
 
   ngOnInit() {
-    this.checkMode();
-    this.sub = this.contentService.getDiscography().subscribe(data => {
-      this.allMusic = data;
-      this.updateCapsule();
-    });
-
+    
     this.observer = new MutationObserver(() => {
       this.checkMode();
       this.updateCapsule();

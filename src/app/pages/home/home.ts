@@ -1,14 +1,14 @@
-import { Component, Inject, OnInit, OnDestroy, signal, effect, HostListener, inject, PLATFORM_ID, ChangeDetectorRef } from '@angular/core';
+import { Component, Inject, OnInit, OnDestroy, signal, effect, HostListener, inject, PLATFORM_ID, ChangeDetectorRef, afterNextRender } from '@angular/core';
 import { DOCUMENT, CommonModule, isPlatformBrowser } from '@angular/common';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser'; // 👈 NOVO
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser'; 
 import { MatButtonModule } from '@angular/material/button';
 import { Router, RouterLink } from '@angular/router';
 import Swal from 'sweetalert2';
-import { Subscription } from 'rxjs'; // 👈 NOVO
+import { Subscription } from 'rxjs'; 
 
 // Seus Imports
 import { TranslationService } from '../../services/translation.service';
-import { ContentService } from '../../services/content.service'; // 👈 NOVO (O Serviço do Firebase)
+import { ContentService } from '../../services/content.service'; 
 import { CONTACT_DATA, HOME_DATA } from '../../data/app-data';
 import { LastReleasesComponent } from '../../components/last-releases/last-releases';
 import { SystemAlert } from "../../components/system-alert/system-alert";
@@ -116,20 +116,27 @@ currentLanguage: any;
     effect(() => {
       this.updateContent();
     });
+     
+   // 🛡️ PROTOCOLO DE ATRASO TÁTICO (Fura-Fila do Firebase)
+    // Deixa a Home carregar o visual 100% primeiro. Depois busca a música silenciosamente.
+    afterNextRender(() => {
+      this.musicSub = this.contentService.getDiscography().subscribe(data => {
+        this.allMusic = data;
+        this.featuredTrack = this.allMusic.find(track => track.featured) || null;
+        
+        // ⚡ Avisa a placa-mãe que os dados chegaram em background
+        this.cdr.detectChanges(); 
+      });
+    });
   }
+
 
   ngOnInit() {
     if (typeof document !== 'undefined') {
       this.isJonahMode = document.body.classList.contains('mode-jonah');
     }
     
-    // 👇 1. BAIXA A DISCOGRAFIA (NOVO)
-    this.musicSub = this.contentService.getDiscography().subscribe(data => {
-      this.allMusic = data;
-      this.featuredTrack = this.allMusic.find(track => track.featured) || null;
-    });
-
-    // 👇 2. O VIGIA DO BODY (SEU CÓDIGO)
+     // 👇 2. O VIGIA DO BODY (SEU CÓDIGO)
     if (isPlatformBrowser(this.platformId)) {
       this.themeObserver = new MutationObserver(() => {
         this.updateContent();
@@ -165,9 +172,7 @@ currentLanguage: any;
 
     this.contactSignal.set(CONTACT_DATA[lang]);
     
-  }
-
- 
+  } 
 
   // 🛡️ GERADOR DE LINK SEGURO (CORRIGIDO E OTIMIZADO)
   generateSafeUrl(originalUrl: string) {
@@ -194,4 +199,4 @@ currentLanguage: any;
   get contactText() { return this.contactSignal(); }
 
   
- }
+}
