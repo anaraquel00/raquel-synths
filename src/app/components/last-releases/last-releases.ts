@@ -1,8 +1,9 @@
-import { Component, Input, inject, OnInit, OnDestroy, ChangeDetectorRef, afterNextRender, Injector } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Input, inject, OnInit, OnDestroy, ChangeDetectorRef, afterNextRender, Injector, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ContentService } from '../../services/content.service';
 import { Subscription } from 'rxjs';
 import { NgOptimizedImage } from '@angular/common';
+
 
 @Component({
   selector: 'app-last-releases',
@@ -167,7 +168,7 @@ export class LastReleasesComponent implements OnInit, OnDestroy {
   // Recebe o idioma do componente pai (ex: 'en' ou 'pt')
   // Se não informar nada, o padrão agora é INGLÊS ('en')
   @Input() lang: 'pt' | 'en' = 'en';
-
+  
     constructor() {
     afterNextRender(() => {
       
@@ -199,7 +200,7 @@ export class LastReleasesComponent implements OnInit, OnDestroy {
       
     });
   }
-
+  private platformId = inject(PLATFORM_ID);
   private injector = inject(Injector);
   private cdr = inject(ChangeDetectorRef);
 
@@ -231,17 +232,21 @@ export class LastReleasesComponent implements OnInit, OnDestroy {
     }
   };
 
-  ngOnInit() {
-    
-    this.observer = new MutationObserver(() => {
-      this.checkMode();
-      this.updateCapsule();
-    });
+ngOnInit() {
+    // 🛡️ BLINDAGEM SSR: O servidor pula este bloco e não explode
+    if (isPlatformBrowser(this.platformId)) {
+      this.checkMode(); // 🚀 Chamada segura agora
+      
+      this.observer = new MutationObserver(() => {
+        this.checkMode();
+        this.updateCapsule();
+      });
 
-    this.observer.observe(document.body, {
-      attributes: true,
-      attributeFilter: ['class']
-    });
+      this.observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class']
+      });
+    }
   }
 
   ngOnDestroy() {
@@ -250,8 +255,11 @@ export class LastReleasesComponent implements OnInit, OnDestroy {
   }
 
   checkMode() {
-    this.isJonahMode = document.body.classList.contains('mode-jonah');
-    this.cdr.detectChanges();
+    // 🛡️ BLINDAGEM ADICIONAL: document só existe no browser!
+    if (isPlatformBrowser(this.platformId)) {
+      this.isJonahMode = document.body.classList.contains('mode-jonah');
+      this.cdr.detectChanges();
+    }
   }
 
   updateCapsule() {

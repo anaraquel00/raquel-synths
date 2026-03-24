@@ -9,6 +9,8 @@ import { TranslationService } from '../../services/translation.service';
 import { Album } from '../../models/album.model';
 import { AdArticleComponent } from "../../components/ad-article/ad-article";
 import { NgOptimizedImage } from '@angular/common';
+import { PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-musical-archives',
@@ -22,6 +24,7 @@ export class MusicalArchives implements OnInit {
   private contentService = inject(ContentService);
   public translate = inject(TranslationService);
   private sanitizer = inject(DomSanitizer);
+  private platformId = inject(PLATFORM_ID);
 
   legacyReleases: Album[] = [];
   isLoading = true;
@@ -69,22 +72,31 @@ pageSize = 5; // Mostra 5 álbuns por vez (ajuste se quiser mais ou menos)
 currentPageBroklin = 1;
 currentPageJonah = 1;
 
-// Função Genérica de Scroll Suave
 private scrollToId(id: string) {
-  const element = document.getElementById(id);
-  if (element) {
-    // O 'block: start' joga o elemento pro topo da tela
-    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // 🛡️ BLINDAGEM SSR
+    if (isPlatformBrowser(this.platformId)) {
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
   }
-}
 
 // --- LÓGICA DO BROKLIN (Getters para fatiar o array automaticamente) ---
 get paginatedBroklin() {
+  // 🛡️ BLINDAGEM SSR: Se o array não existir ainda no servidor, retorna vazio.
+  if (!this.featuredBroklin) {
+    return [];
+  }
   const startIndex = (this.currentPageBroklin - 1) * this.pageSize;
   return this.featuredBroklin.slice(startIndex, startIndex + this.pageSize);
 }
 
 get totalPagesBroklin() {
+  // 🛡️ BLINDAGEM SSR: Protege o cálculo do '.length' contra undefined.
+  if (!this.featuredBroklin) {
+    return 0;
+  }
   return Math.ceil(this.featuredBroklin.length / this.pageSize);
 }
 
@@ -105,11 +117,18 @@ prevBroklin() {
 
 // --- LÓGICA DO JONAH (Independente) ---
 get paginatedJonah() {
+  if (!this.featuredJonah) {
+    return [];
+  }
   const startIndex = (this.currentPageJonah - 1) * this.pageSize;
   return this.featuredJonah.slice(startIndex, startIndex + this.pageSize);
 }
 
 get totalPagesJonah() {
+  // 🛡️ BLINDAGEM SSR: Protege o cálculo do '.length' contra undefined.
+  if (!this.featuredJonah) {
+    return 0;
+  }
   return Math.ceil(this.featuredJonah.length / this.pageSize);
 }
 

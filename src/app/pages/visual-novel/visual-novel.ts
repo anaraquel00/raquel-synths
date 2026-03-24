@@ -62,6 +62,7 @@ export class VisualNovelComponent implements OnInit, OnDestroy {
   }
 
   private checkTheme() {
+    if (!isPlatformBrowser(this.platformId)) return;
     if (!this.isBrowser) return;
     const isJonah = document.body.classList.contains('mode-jonah');
     const newMode: 'broklin' | 'jonah' = isJonah ? 'jonah' : 'broklin';

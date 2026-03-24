@@ -10,6 +10,8 @@ import { ContentService } from '../services/content.service'; // 👈 IMPORTANTE
 import { Observable, BehaviorSubject, switchMap } from 'rxjs'; // 👈 IMPORTANTE
 import { LoreEpisode } from '../data/lore-data';
 import { SystemAlert } from "../components/system-alert/system-alert";
+import { PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-visual-novel',
@@ -23,6 +25,7 @@ export class AppVisualNovel implements OnInit, OnDestroy {
   translate = inject(TranslationService);
   private router = inject(Router);
   private contentService = inject(ContentService); // 👈 INJETE O SERVIÇO AQUI
+  private platformId = inject(PLATFORM_ID);
 
   // --- ESTADO REATIVO ---
   private modeSubject = new BehaviorSubject<'broklin' | 'jonah'>('broklin');
@@ -41,27 +44,29 @@ export class AppVisualNovel implements OnInit, OnDestroy {
   isJonahMode:any;
  
 
-  ngOnInit() {
-    this.checkTheme();
-
-    // Vigia o body para mudanças de classe (tema)
-    this.themeObserver = new MutationObserver(() => {
+ ngOnInit() {
+    // 🛡️ BLINDAGEM TOTAL: O MutationObserver SÓ nasce no navegador
+    if (isPlatformBrowser(this.platformId)) {
       this.checkTheme();
-    });
-    this.themeObserver.observe(document.body, {
-      attributes: true,
-      attributeFilter: ['class']
-    });
+      this.themeObserver = new MutationObserver(() => {
+        this.checkTheme();
+      });
+      this.themeObserver.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class']
+      });
+    }
   }
 
   ngOnDestroy() {
     if (this.themeObserver) this.themeObserver.disconnect();
   }
 
-  private checkTheme() {
+ private checkTheme() {
+    // 🛡️ PROTEÇÃO ADICIONAL
+    if (!isPlatformBrowser(this.platformId)) return;
     const isJonah = document.body.classList.contains('mode-jonah');
     this.currentMode = isJonah ? 'jonah' : 'broklin';
-    // Avisa o Observable para buscar novos dados no Firebase
     this.modeSubject.next(this.currentMode);
   }
 

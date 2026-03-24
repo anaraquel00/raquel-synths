@@ -8,7 +8,6 @@ import { Subscription, combineLatest } from 'rxjs';
 import { ContentService } from '../../services/content.service';
 import { TranslationService } from '../../services/translation.service';
 import { StoreDepartmentsComponent } from './store-departments/store-departments';
-import { url } from 'node:inspector';
 import { SeoService } from '../../services/seo.service';
 
 @Component({
@@ -58,26 +57,22 @@ export class StoreComponent implements OnInit, OnDestroy {
     });
   }
 
-  // --- CICLO DE VIDA (Onde a mágica acontece) ---
-  ngOnInit(): void {
-    // 1. Sincroniza idioma
+ ngOnInit(): void {
     this.currentLang.set(this.translate.isPt() ? 'pt' : 'en');
-
-    // 2. Verifica tema inicial
     this.checkCurrentMode();
-
-        // 3. 📡 CHAMA O FIREBASE! (Sem isso, nada baixa)
     this.loadData();
-
-    // 4. Inicia vigilância do tema
     this.setupThemeObserver();
-    setInterval(() => {
-   const newLang = this.translate.isPt() ? 'pt' : 'en';
-   if (this.currentLang() !== newLang) {
-    this.currentLang.set(newLang);
-    this.cdr.detectChanges(); // Pinta a tela de novo
-  }
-}, 500);
+
+    // 🛡️ BLINDAGEM: Só o celular do fã roda esse cronômetro!
+    if (this.isBrowser) {
+      setInterval(() => {
+        const newLang = this.translate.isPt() ? 'pt' : 'en';
+        if (this.currentLang() !== newLang) {
+          this.currentLang.set(newLang);
+          this.cdr.detectChanges(); 
+        }
+      }, 500);
+    }
   }
 
   ngOnDestroy(): void {

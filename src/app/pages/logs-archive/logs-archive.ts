@@ -9,6 +9,8 @@ import { SafeHtmlPipe } from "../../components/pipes/safe-html.pipe";
 import { AdArticleComponent } from "../../components/ad-article/ad-article";
 import { NgOptimizedImage } from '@angular/common';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-logs-archive',
@@ -20,6 +22,7 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 export class LogsArchiveComponent {
   public translate = inject(TranslationService);
   private contentService = inject(ContentService);
+  private platformId = inject(PLATFORM_ID);
 
   private allLogs: any[] = [];
   public logsPaginated$ = new BehaviorSubject<any[]>([]);
@@ -50,6 +53,7 @@ export class LogsArchiveComponent {
  trackById(index: number, log: any) { return log.id; }
 
  ngOnInit() {
+  
     this.contentService.getLogs().subscribe(logs => {
       if (!logs) return;
 
@@ -73,14 +77,15 @@ export class LogsArchiveComponent {
     return this.translate.isPt() ? log.pt : log.en;
   }
 
-  updatePage() {
+ updatePage() {
     const start = this.currentPage * this.pageSize;
     const end = start + this.pageSize;
-    
-    // Entrega a fatia correta da página atual
     this.logsPaginated$.next(this.allLogs.slice(start, end));
     
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // 🛡️ BLINDAGEM: O servidor não tem janela pra rolar!
+    if (isPlatformBrowser(this.platformId)) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 
   nextPage() {

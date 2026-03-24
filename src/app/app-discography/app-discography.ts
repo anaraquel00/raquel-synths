@@ -13,6 +13,8 @@ import { Album } from '../models/album.model';
 import { AdBannerComponent } from "../components/ad-banner/ad-banner";
 import { LastReleasesComponent } from "../components/last-releases/last-releases";
 import { NgOptimizedImage } from '@angular/common';
+import { PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-discography',
@@ -26,6 +28,8 @@ export class DiscographyComponent implements OnInit {
   private contentService = inject(ContentService);
   public translate = inject(TranslationService);
   private sanitizer = inject(DomSanitizer);
+  private platformId = inject(PLATFORM_ID);
+
   @Input() limitToHome?: number;
 
   // Variáveis para os Textos da Intro
@@ -60,14 +64,21 @@ introJonahEN = `
   // O Banco de Dados Completo
   allAlbums: Album[] = [];
   isLoading = true;
- last: any;
+  last: any;
 
 // O componente lê o barramento global em tempo real
 get isJonahMode(): boolean {
-  // Troque 'jonah-theme' pelo nome exato da classe que o seu botão global adiciona no body
-  return document.body.classList.contains('jonah-theme'); 
+  // 🛡️ BLINDAGEM: No servidor, 'document' não existe. Retorne false.
+  if (isPlatformBrowser(this.platformId)) {
+    return document.body.classList.contains('jonah-theme'); 
+  }
+  return false;
 }
+
   ngOnInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      document.body.classList.add('mode-broklin'); // Começa no modo Broklin por padrão
+    }
     this.getDiscography();
   }
 
