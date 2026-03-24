@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Firestore, collection, collectionData, query, orderBy, where } from '@angular/fire/firestore';
-import { map, Observable } from 'rxjs';
+import { map, Observable, take } from 'rxjs'; // 🔥 Importamos o 'take' AQUI
 
 // --- IMPORTAÇÃO DAS INTERFACES ---
 import { LoreEpisode } from '../data/lore-data';
@@ -15,16 +15,20 @@ export class ContentService {
   private firestore = inject(Firestore);
   currentMode!: string;
 
+  // 🎵 1. DISCOGRAFIA
   getDiscography(): Observable<any[]> {
     const colRef = collection(this.firestore, 'discography');
-    return collectionData(colRef, { idField: 'id' }) as Observable<any[]>;
+    // Envolvemos a busca original em parênteses, e conectamos o pipe POR FORA
+    return (collectionData(colRef, { idField: 'id' }) as Observable<any[]>).pipe(take(1));
   }
 
   getEpisodes(mode: 'broklin' | 'jonah'): Observable<LoreEpisode[]> {
-    //const dataFutura = new Date('2030-01-01'); // Viajamos para 2030
-    //where("releasedDate", "<=", dataFutura)
+    
+    // --- 🕰️ MÁQUINA DO TEMPO (QA & TESTES DE UI) ---
+    // const dataFutura = new Date('2030-01-01'); // Viajamos para 2030
+    // where("releasedDate", "<=", dataFutura)
+    
     // 1. DECIDE QUAL COLEÇÃO USAR BASEADO NO MODO
-    // Se for 'jonah', vai na 'lore-jonah'. Se for 'broklin', vai na 'lore' (ou 'lore-broklin' se você tiver separado também)
     const collectionName = mode === 'jonah' ? 'lore-jonah' : 'lore'; 
     
     // 2. CONECTA NA COLEÇÃO CERTA
@@ -32,40 +36,38 @@ export class ContentService {
     const q = query(
       colRef,
       where('mode', '==', mode),
-      orderBy('releaseDate', 'desc'), // Ordena do mais novo pro mais antigo 
-      where('releaseDate', '<=', new Date().toISOString()), // 🔥 O PULO DO GATO: Só traz se a data já passou!
-      where('published', '==', true),
-                
+      orderBy('releaseDate', 'desc'), 
+      where('releaseDate', '<=', new Date().toISOString()), // Em prod, só traz se a data já passou!
+      where('published', '==', true)
     );
 
     return collectionData(q, { idField: 'id' }).pipe(
-   map(episodes => {
-    // A MÁGICA ESTÁ AQUI: { numeric: true }
-    // Isso diz: "Compare 10 como maior que 2, por favor."
-    return (episodes as LoreEpisode[]).sort((a, b) => 
-      (a.id || '').localeCompare(b.id || '', undefined, { numeric: true, sensitivity: 'base' })
+      take(1), // 🔥 A TRAVA DO PAGESPEED: Ouve 1 vez, entrega os dados e desliga a rede.
+      map(episodes => {
+        // A MÁGICA ESTÁ AQUI: { numeric: true }
+        return (episodes as LoreEpisode[]).sort((a, b) => 
+          (a.id || '').localeCompare(b.id || '', undefined, { numeric: true, sensitivity: 'base' })
+        );
+      })
     );
-  })
- );
   }
 
-  // 🛒 2. LOJA (Produtos)
+ // 🛒 2. LOJA (Produtos)
   getProducts(): Observable<Product[]> {
     const colRef = collection(this.firestore, 'products');
-    return collectionData(colRef, { idField: 'id' }) as Observable<Product[]>;
+    return (collectionData(colRef, { idField: 'id' }) as Observable<Product[]>).pipe(take(1));
   }
 
   // 🏪 3. DEPARTAMENTOS
   getDepartments(): Observable<Department[]> {
     const colRef = collection(this.firestore, 'departments');
-    return collectionData(colRef, { idField: 'id' }) as Observable<Department[]>;
+    return (collectionData(colRef, { idField: 'id' }) as Observable<Department[]>).pipe(take(1));
   }
 
  // 📜 4. LOGS (Fofocas e Bastidores)
   getLogs(): Observable<any[]> {
     const colRef = collection(this.firestore, 'logs');
-    // Agora o Firebase já entrega ordenado por data, poupando a CPU do fã
     const q = query(colRef, orderBy('date', 'desc')); 
-    return collectionData(q, { idField: 'id' }) as Observable<any[]>;
+    return (collectionData(q, { idField: 'id' }) as Observable<any[]>).pipe(take(1));
   }
 }

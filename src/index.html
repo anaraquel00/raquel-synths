@@ -1,8 +1,12 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
+  <!-- 1. PRÉ-CONEXÕES CORRIGIDAS (Apenas as reais) -->
   <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
   <link rel="dns-prefetch" href="https://firestore.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Hreflang & SEO -->
   <link rel="alternate" hreflang="pt-br" href="https://raquelsynths.com.br/" />
   <link rel="alternate" hreflang="en" href="https://raquelsynths.com.br/en" />
   <meta charset="utf-8">
@@ -12,6 +16,7 @@
   <meta name="keywords" content="Virtual Band, RaQuel Synths, Transmedia Storytelling, Cyberpunk Sagas, BookTok, Literary Saga, Dark Romance, Suno AI Music, Angular Developer, Ana Raquel, Tech Lead vs Metal Lord, Industrial Pop, Audio Civil War">
   <meta name="author" content="Ana Raquel">
 
+  <!-- Meta Tags (Open Graph / Twitter) -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://raquelsynths.com.br/">
   <meta property="og:site_name" content="RaQuel Synths Official">
@@ -21,29 +26,88 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:locale" content="en_US">
-
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="RaQuel Synths | Audio Civil War">
   <meta name="twitter:description" content="Choose your side: Synthwave Code or Industrial Chaos. A transmedia Cyberpunk Saga by Ana Raquel.">
   <meta name="twitter:image" content="https://raquelsynths.com.br/images/banner-seo-global.jpg">
+  
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
- 
   <meta name="theme-color" content="#0a0a12">
   <link rel="icon" type="image/x-icon" href="rqs-logo.webp">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
+  <!-- 2. FONTES -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400&family=Roboto:wght@300;400;500;700&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons&display=swap">
 
+  <!-- 3. LCP PRELOAD (Ótima estratégia que você já tinha!) -->
   <link rel="preload" as="image" href="/images/background3_rqs.webp" type="image/webp" media="(min-width: 769px)" fetchpriority="high">
   <link rel="preload" as="image" href="/images/background3_rqs_mobile.webp" type="image/webp" media="(max-width: 768px)" fetchpriority="high">
   <link rel="manifest" href="manifest.webmanifest">
-  
+
 </head>
-<body style="background-color: #0a0a12; margin: 0;">
-  <app-root></app-root>
+<body style="background-color: #04043a69; margin: 0; display: flex; flex-direction: column; min-height: 100vh;">
+  
+  <!-- 4. SKELETON LOADER - Tática agressiva de Retenção -->
+ <app-root>
+    <div id="boot-screen" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; width: 100vw; background-color: #0a0a12; font-family: 'Montserrat', sans-serif; transition: all 0.3s ease;">
+      
+      <h2 id="boot-title" style="margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px;">INIT SYSTEM...</h2>
+      <p id="boot-subtitle" style="color: #888; font-family: 'Roboto', sans-serif; font-size: 14px;">Buscando pacotes de dados...</p>
+
+      <style>
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+        @keyframes glitch { 
+          0% { transform: translate(0) } 
+          20% { transform: translate(-2px, 2px) } 
+          40% { transform: translate(-2px, -2px) } 
+          60% { transform: translate(2px, 2px) } 
+          80% { transform: translate(2px, -2px) } 
+          100% { transform: translate(0) } 
+        }
+
+        .tech-mode { color: #00f3ff; text-shadow: 0 0 10px rgba(0, 243, 255, 0.5); animation: pulse 1.5s infinite; }
+        .jonah-mode { color: #ff003c; text-shadow: 0 0 15px rgba(255, 0, 60, 0.8); animation: glitch 0.3s infinite alternate !important; }
+      </style>
+
+      <script>
+        (function() {
+          try {
+            var savedTheme = localStorage.getItem('rqs-theme'); 
+            
+            // 🌍 RADAR DE IDIOMA: Lê a configuração do navegador do usuário
+            var userLang = navigator.language || navigator.userLanguage;
+            var isPt = userLang.toLowerCase().includes('pt');
+            
+            var title = document.getElementById('boot-title');
+            var subtitle = document.getElementById('boot-subtitle');
+            var bootScreen = document.getElementById('boot-screen');
+
+            // Modo Jonah (Caos)
+            if (savedTheme === 'jonah') {
+              document.body.classList.add('mode-jonah');
+              title.innerText = 'SYSTEM OVERRIDE...';
+              title.className = 'jonah-mode';
+              // Entrega a ameaça no idioma correto
+              subtitle.innerText = isPt ? '[ Infiltrando vírus e corrompendo a matriz de áudio ]' : '[ Injecting virus and corrupting the audio matrix ]';
+              bootScreen.style.backgroundColor = '#050000'; 
+            } 
+            // Modo Broklin (Tech Lead)
+            else {
+              document.body.classList.add('mode-broklin');
+              title.innerText = 'STARTING UPLINK...';
+              title.className = 'tech-mode';
+              // Entrega a blindagem no idioma correto
+              subtitle.innerText = isPt ? '[ Carregando blindagem e módulos de áudio Synthwave ]' : '[ Loading armor and Synthwave audio modules ]';
+            }
+          } catch (e) { 
+            console.error('Falha na ignição do bootloader:', e); 
+          }
+        })();
+      </script>
+    </div>
+  </app-root>
+
   <noscript>Please enable JavaScript to continue using this application.</noscript>
 </body>
 </html>
