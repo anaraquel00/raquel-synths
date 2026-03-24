@@ -1,13 +1,10 @@
 <app-home id="inicio"></app-home>
 
-<div id="storytelling" style="position: relative; top: -80px;"></div>
-<section class="anchor-pad">
+<section class="ads-section">
   @defer (on viewport) {
-    <app-storytelling></app-storytelling>
+    <app-ad-banner></app-ad-banner>
   } @placeholder {
-    <div style="min-height: 400px; width: 100%; display: flex; align-items: center; justify-content: center; color: #00f3ff; opacity: 0.5;">
-      [Iniciando decodificação da Lore...]
-    </div>
+    <div style="min-height: 100px; width: 100%;"></div>
   }
 </section>
 
@@ -28,7 +25,18 @@
   }
 </section>
 
-@defer (on viewport) {
+<div id="storytelling" style="position: relative; top: -80px;"></div>
+<section class="anchor-pad">
+  @defer (on timer(2s)) {
+    <app-storytelling></app-storytelling>
+  } @placeholder {
+    <div style="min-height: 400px; width: 100%; display: flex; align-items: center; justify-content: center; color: #00f3ff; opacity: 0.5;">
+      [Iniciando decodificação da Lore...]
+    </div>
+  }
+</section>
+
+@defer (on timer(2s)) {
   <app-visual-novel></app-visual-novel>
 } @placeholder {
   <div style="min-height: 400px; width: 100%; display: flex; align-items: center; justify-content: center; color: var(--primary-color); opacity: 0.3;">
@@ -36,7 +44,7 @@
   </div>
 }
 
-@defer (on viewport) {
+@defer (on timer(2s)) {
   <app-discography [limitToHome]="5"></app-discography>
 } @placeholder {
   <div style="min-height: 500px; width: 100%; display: flex; align-items: center; justify-content: center; color: var(--primary-color); opacity: 0.3;">
