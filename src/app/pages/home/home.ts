@@ -3,15 +3,10 @@ import { DOCUMENT, CommonModule, isPlatformBrowser } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser'; 
 import { MatButtonModule } from '@angular/material/button';
 import { Router, RouterLink } from '@angular/router';
-import Swal from 'sweetalert2';
-import { Subscription } from 'rxjs'; 
 
 // Seus Imports
 import { TranslationService } from '../../services/translation.service';
-import { ContentService } from '../../services/content.service'; 
 import { CONTACT_DATA, HOME_DATA } from '../../data/app-data';
-import { LastReleasesComponent } from '../../components/last-releases/last-releases';
-import { SystemAlert } from "../../components/system-alert/system-alert";
 import { UplinkTerminalComponent } from "../../components/uplink-terminal/uplink-terminal";
 
 
@@ -97,13 +92,7 @@ currentLanguage: any;
   private cdr = inject(ChangeDetectorRef);
   private router = inject(Router);
 
-  // --- DADOS DA MÚSICA (NOVO) ---
-  allMusic: any[] = [];
-  featuredTrack: any = null;
-  safeSpotifyUrl: SafeResourceUrl | null = null;
-  private musicSub: Subscription | null = null;
-
-  // --- SEU CÓDIGO ANTIGO (TEXTOS) ---
+    // --- SEU CÓDIGO ANTIGO (TEXTOS) ---
   private homeSignal = signal<any>({});
   private contactSignal = signal<any>({});
   private themeObserver: MutationObserver | undefined;
@@ -116,41 +105,8 @@ currentLanguage: any;
     // 1. Reage se o idioma mudar
     effect(() => {
       this.updateContent();
-    });
-     
-   // 🛡️ PROTOCOLO DE ATRASO TÁTICO (Fura-Fila do Firebase)
-    // Deixa a Home carregar o visual 100% primeiro. Depois busca a música silenciosamente.
-    afterNextRender(() => {
-      // 🛡️ RADAR DE AMEAÇAS: Verifica a assinatura do utilizador
-      const isLighthouse = navigator.userAgent.includes('Lighthouse') || 
-                           navigator.userAgent.includes('Page Speed') ||
-                           navigator.userAgent.includes('Chrome-Lighthouse');
-
-      if (isLighthouse) {
-        // ⚡ MODO FURTIVO ATIVADO: Oculta o Firebase do robô
-        console.warn('🛡️ [SISTEMA] Robô de auditoria detetado. Desativando túneis de rede.');
-        
-        // Colocamos dados falsos apenas para a secção não ficar vazia no print do relatório
-        this.allMusic = [
-          { titulo: 'Saudade Sintética', featured: true, cover: 'assets/saga_cover.webp' }
-        ];
-        this.featuredTrack = this.allMusic[0];
-        this.cdr.detectChanges();
-        
-        return; // Aborta a execução aqui! O Firebase nem chega a ser importado.
-      }
-
-      // 🎶 MODO HUMANO: Carrega a rede pesada para os verdadeiros fãs da RQS
-      const contentService = this.injector.get(ContentService);
-      
-      this.musicSub = contentService.getDiscography().subscribe(data => {
-        this.allMusic = data;
-        this.featuredTrack = this.allMusic.find(track => track.featured) || null;
-        this.cdr.detectChanges(); 
-      });
-    });
+    });           
   }
-
 
   ngOnInit() {
     if (typeof document !== 'undefined') {
@@ -174,8 +130,7 @@ currentLanguage: any;
   }
 
   ngOnDestroy() {
-    this.themeObserver?.disconnect();
-    if (this.musicSub) this.musicSub.unsubscribe(); // 👈 Limpeza nova
+    this.themeObserver?.disconnect();    
   }
 
   // 👇 ATUALIZA TUDO (TEXTO + MÚSICA)
@@ -194,30 +149,8 @@ currentLanguage: any;
     this.contactSignal.set(CONTACT_DATA[lang]);
     
   } 
-
-  // 🛡️ GERADOR DE LINK SEGURO (CORRIGIDO E OTIMIZADO)
-  generateSafeUrl(originalUrl: string) {
-    if (!originalUrl) {
-      this.safeSpotifyUrl = null;
-      return;
-    }
-
-    let embedUrl = originalUrl.trim();
-
-    // Lógica robusta para transformar link normal em Embed
-    // De: https://open.spotify.com/track/xyz
-    // Para: https://open.spotify.com/embed/track/xyz
-    if (!embedUrl.includes('/embed/')) {
-      embedUrl = embedUrl.replace('open.spotify.com/', 'open.spotify.com/embed/');
-    }
-
-    // Sanitiza para o Angular aceitar o iframe
-    this.safeSpotifyUrl = this.sanitizer.bypassSecurityTrustResourceUrl(embedUrl);
-  }
   // --- SEUS GETTERS E HELPERS ORIGINAIS ---
 
   get navText() { return this.homeSignal(); }
-  get contactText() { return this.contactSignal(); }
-
-  
+  get contactText() { return this.contactSignal(); }  
 }
