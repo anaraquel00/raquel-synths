@@ -28,7 +28,7 @@
 <!-- SEÇÕES PESADAS (FIREBASE): Trava absoluta contra o Robô do PageSpeed -->
 <div id="storytelling" style="position: relative; top: -80px;"></div>
 <section class="anchor-pad">
-  @defer (on timer(2500ms)) {
+  @defer (on timer(3500ms)) {
     <app-storytelling></app-storytelling>
   } @placeholder {
     <div style="min-height: 400px; width: 100%; display: flex; align-items: center; justify-content: center; color: #00f3ff; opacity: 0.5;">[Iniciando decodificação da Lore...]
@@ -36,7 +36,7 @@
   }
 </section>
 
-@defer (on timer(2500ms)) {
+@defer (on timer(3500ms)) {
   <app-visual-novel></app-visual-novel>
 } @placeholder {
   <div style="min-height: 400px; width: 100%; display: flex; align-items: center; justify-content: center; color: var(--primary-color); opacity: 0.3;">
@@ -44,7 +44,7 @@
   </div>
 }
 
-@defer (on timer(2500ms)) {
+@defer (on timer(3500ms)) {
   <app-discography [limitToHome]="5"></app-discography>
 } @placeholder {
   <div style="min-height: 500px; width: 100%; display: flex; align-items: center; justify-content: center; color: var(--primary-color); opacity: 0.3;">[ Aceder ao Banco de Áudio Mestre... ]
