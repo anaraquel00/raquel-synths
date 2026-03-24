@@ -414,31 +414,100 @@
       font-size: 3.5rem; /* Menor em Laptops/Tablets */
     }
 
-    @media (max-width: 768px) {
-      font-size: clamp(2rem, 12vw, 3.5rem); /* Cresce e encolhe como um pulmão, sem quebrar */
-      text-align: center;
-      width: 100%;
-      line-height: 1.1;
-      margin-bottom: 0rem;
-      
-      /* Caso a tela seja minúscula (ex: iPhone SE), forçamos uma quebra elegante por palavra, e não por letra */
-      word-break: keep-all; 
-      overflow-wrap: break-word;
-    }
+     }
+     
+/* ========================================================== */
+/* 🛡️ PROTOCOLO DE BLINDAGEM MOBILE DEFINITIVO (SALVA-LCP)   */
+/* ========================================================== */
+@media (max-width: 768px) {
+
+  /* 1. CORREÇÃO UNIVERSAL & MODO DEFAULT (TECH LEAD) */
+  .hero-title {
+    margin-right: 0 !important; /* Arranca a margem do desktop */
+    margin-left: 0 !important;
+    text-align: center !important;
+    display: block !important; 
+    width: 100% !important;
+
+    /* Blindagem do LCP: Desliga o peso visual base */
+    animation: none !important;
+    background-image: none !important;
+    
+    /* Glitch visual limpo (Custo zero de CPU) */
+    text-shadow: 
+      -2px 0px 0px rgba(0, 243, 255, 0.8), 
+       2px 0px 0px rgba(0, 243, 255, 0.4) !important;
+  }
+  
+  /* Esconde pseudo-elementos pesados no modo base */
+  .hero-title::before,
+  .hero-title::after {
+    display: none !important;
   }
 
-  /* Animação Original */
-  @keyframes shine { to { background-position: 200% center; } }
+  /* ======================================== */
+  /* 🔥 BLINDAGEM MODO JONAH (O SALVA-LCP 90+) */
+  /* ======================================== */
+  :host-context(body.mode-jonah) .hero-title {
+    /* 🟢 RESET DE SINAL: Desligamos o LCP pesado */
+    text-shadow: none !important; 
+    animation: none !important; 
 
-/* ⚡ A ANIMAÇÃO ACELERADA POR HARDWARE */
-@keyframes shineGPU {
-  0% { transform: translateX(0) skewX(-20deg); }
-  20% { transform: translateX(300%) skewX(-20deg); }
-  100% { transform: translateX(300%) skewX(-20deg); } /* Pausa para não ficar piscando frenético */
+      /* Glitch visual limpo (Custo zero de CPU) */
+     text-shadow: 
+      -2px 0px 0px #ffcc00, 
+       2px 0px 0px #ff2a00 !important;
+    
+    /* FIXAÇÃO DO MAGMA: Centralizado e Estático */
+    background-position: center center !important; 
+    background-image: linear-gradient(90deg, #ff2a00, #ffcc00, #ff2a00) !important;
+    background-size: 200% auto !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    color: transparent !important;
+
+    /* 🟢 CORREÇÃO DE TAMANHO (Matching Broklin standard) */
+    /* Forçamos a mesma altura e posição do Broklin */
+    font-size: 3.5rem !important; 
+    margin-top: 2.5rem !important; 
+    
+    /* 🔴 NOVO ESTILO: AGRESSIVO & TORTO (Industrial-Metal) */
+    /* Injetamos o 'itálico' agressivo e apertamos o espaçamento das letras 
+       para passar a sensação de tensão e densidade industrial. */
+    font-style: italic !important; 
+    letter-spacing: 1px !important; 
+  }
+
+  /* A Fumaça Tóxica Congelada (Sem faixa) */
+  :host-context(body.mode-jonah) .hero-title::before {
+    display: block !important;
+    content: attr(data-text);
+    position: absolute;
+    left: 0; top: 0; width: 100%; height: 100%;
+    z-index: -1;
+    
+    /* Configuração da fumaça */
+    background: transparent !important;
+    color: #ff3300 !important;
+    opacity: 0.6 !important;
+    filter: blur(8px) !important;
+    
+    /* 🟢 CORREÇÃO VISUAL DE ESCALA */
+    /* Eliminamos o scale(1.02) que fazia o texto parecer maior. 
+       Mantemos apenas a elevação tática (-5px). */
+    transform: translate3d(0, -5px, 0) !important; 
+    
+    animation: none !important;
+  }
+
+  /* Extermina a camada ::after sob qualquer circunstância */
+  :host-context(body.mode-jonah) .hero-title::after {
+    display: none !important;
+  }
 }
 
   /* Animação */
-  @keyframes shine { to { background-position: 200% center; } }
+  @keyframes shine { to { background-position: 200% center; } } 
 
   /* Subtítulo */
   .hero-subtitle {
@@ -477,99 +546,55 @@
 /* 🔥 MODO JONAH: FIRE GOD EDITION */
 /* ========================================= */
 
-/* 1. Definimos a animação do fogo correndo */
+/* 1. Definimos as animações no nível RAIZ do arquivo (Fora de qualquer classe) */
 @keyframes magma-flow {
   0% { background-position: 0% 50%; }
   100% { background-position: 200% 50%; }
 }
 
+@keyframes toxic-smoke {
+  0% { opacity: 0.8; transform: translate3d(0, 0, 0) scale(1); filter: blur(2px); color: #ff3300; }
+  40% { opacity: 0.6; transform: translate3d(0, -15px) scale(1.1); color: #555555; filter: blur(6px); }
+  100% { opacity: 0; transform: translate3d(0, -40px) scale(1.5) rotate(5deg); filter: blur(20px); }
+}
+
+/* ========================================================== */
+/* 2. O TÍTULO PRINCIPAL (DESKTOP A 100%)    */
+/* ========================================================== */
 :host-context(body.mode-jonah) .hero-title {
-  /* RESET: Removemos a cor sólida antiga */
   color: transparent !important;
-   /* Ajustes Responsivos */
-    @media (max-width: 1280px) {
-      font-size: 3.5rem; /* Menor em Laptops/Tablets */
-    }
+  
+  @media (max-width: 1280px) { font-size: 3.5rem; }
+  @media (max-width: 768px) { font-size: 2.5rem; letter-spacing: 2px; margin-top: 2.5rem; }
 
-    @media (max-width: 768px) {
-      font-size: 2.5rem; /* Menor ainda em Celulares */
-      letter-spacing: 2px;
-      margin-top: 2.5rem;
-    }
-
-  /* A MÁGICA DO DEGRADÊ (Magma/Fogo) */
-  background: linear-gradient(
-    90deg,
-    #ff2a00, /* Vermelho Sangue */
-    #ffcc00, /* Amarelo Núcleo */
-    #ff2a00  /* Vermelho Sangue (Repete pra fechar o loop) */
-  );
-
-  background-size: 200% auto; /* O segredo pro movimento */
-
-  /* RECORTA O FUNDO NO FORMATO DA LETRA */
+  background: linear-gradient(90deg, #ff2a00, #ffcc00, #ff2a00);
+  background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
-
-  /* O BRILHO EXTERNO (Use drop-shadow em vez de text-shadow aqui) */
   filter: drop-shadow(0 0 15px rgba(255, 69, 0, 0.8));
-
-  /* ANIMAÇÃO: Troquei o panic-shake pelo magma-flow */
+  
   animation: magma-flow 2s linear infinite;
-
-  /* Mantendo layout */
   letter-spacing: 5px !important;
   position: relative;
   z-index: 1;
 }
 
-/* A FUMAÇA (AGORA VISÍVEL) */
+/* ========================================================== */
+/* 3. A FUMAÇA TÓXICA (PSEUDO-ELEMENTO) */
+/* ========================================================== */
 :host-context(body.mode-jonah) .hero-title::before {
-  content: attr(data-text); /* Puxa o texto do HTML */
+  content: attr(data-text);
   position: absolute;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-
-  /* Z-INDEX: Se o fundo do site for preto, -1 funciona.
-     Se não aparecer, mude para '1' e adicione 'mix-blend-mode: screen' */
   z-index: -1;
-
- /* COR MAIS FORTE: Começa Verde Radioativo */
   color: #00ff00;
-
-  /* MENOS BLUR NO INÍCIO para você ver que ela existe */
   filter: blur(2px);
-
-  /* Duração mais rápida pra gente testar */
   animation: toxic-smoke 1s infinite linear;
-
-  /* Garante que o mouse não interaja com a fumaça */
   pointer-events: none;
-  
-}
-
-/* ANIMAÇÃO REFEITA: Sobe e Dissolve */
-@keyframes toxic-smoke {
-  0% {
-    opacity: 0.8; /* Começa quase sólido */
-    transform: translate3d(0, 0, 0) scale(1);
-    filter: blur(2px);
-    color: #ff3300; /* Laranja Fogo */
-  }
-  40% {
-    opacity: 0.6;
-    transform: translate3d(0, -15px) scale(1.1); /* Sobe um pouco */
-    color: #555555; /* Vira Fumaça Cinza */
-    filter: blur(6px);
-  }
-  100% {
-    opacity: 0;
-    transform: translate3d(0, -40px) scale(1.5) rotate(5deg); /* Sobe muito */
-    filter: blur(20px);
-  }
-}
+} /* ⚠️ A CHAVE QUE FALTAVA ESTÁ AQUI! O escopo foi fechado com sucesso! */
 
 
 /* 👇 COLE NO FINAL DO home.component.scss */

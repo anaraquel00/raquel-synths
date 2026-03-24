@@ -67,8 +67,6 @@ get isJonahMode(): boolean {
   // Troque 'jonah-theme' pelo nome exato da classe que o seu botão global adiciona no body
   return document.body.classList.contains('jonah-theme'); 
 }
- 
-
   ngOnInit() {
     this.getDiscography();
   }
