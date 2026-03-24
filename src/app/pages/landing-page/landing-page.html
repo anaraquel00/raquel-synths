@@ -21,15 +21,39 @@
 </section>
 
 <section class="ads-section">
-  <app-ad-banner></app-ad-banner>
+  @defer (on viewport) {
+    <app-ad-banner></app-ad-banner>
+  } @placeholder {
+    <div style="min-height: 100px; width: 100%;"></div>
+  }
 </section>
 
-<app-visual-novel></app-visual-novel>
+@defer (on viewport) {
+  <app-visual-novel></app-visual-novel>
+} @placeholder {
+  <div style="min-height: 400px; width: 100%; display: flex; align-items: center; justify-content: center; color: var(--primary-color); opacity: 0.3;">
+    [ A carregar a interface da Saga... ]
+  </div>
+}
 
-<app-discography [limitToHome]="5"></app-discography>
+@defer (on viewport) {
+  <app-discography [limitToHome]="5"></app-discography>
+} @placeholder {
+  <div style="min-height: 500px; width: 100%; display: flex; align-items: center; justify-content: center; color: var(--primary-color); opacity: 0.3;">
+    [ Aceder ao Banco de Áudio Mestre... ]
+  </div>
+}
   
 <section class="ads-section">
-  <app-ad-banner></app-ad-banner>
+  @defer (on viewport) {
+    <app-ad-banner></app-ad-banner>
+  } @placeholder {
+    <div style="min-height: 100px; width: 100%;"></div>
+  }
 </section>
 
-<app-contato></app-contato>
+@defer (on viewport) {
+  <app-contato></app-contato>
+} @placeholder {
+  <div style="min-height: 300px; width: 100%;"></div>
+}
