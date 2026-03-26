@@ -45,6 +45,28 @@
   <link rel="preload" as="image" href="/images/background3_rqs_mobile.webp" type="image/webp" media="(max-width: 768px)" fetchpriority="high">
   <link rel="manifest" href="manifest.webmanifest">
 
+  <script>
+  // Apenas declara a função vazia para não quebrar nada
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+  n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];}(window,document,'script');
+
+  // ⏱️ O TRUQUE MÁGICO: Espera 3 segundos para carregar o peso do Facebook!
+  // Isso salva a nossa pontuação no mobile.
+  setTimeout(function() {
+    var t=document.createElement('script');
+    t.async=!0;
+    t.src='https://connect.facebook.net/en_US/fbevents.js';
+    var s=document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(t,s);
+    
+    // A CHAVE DA GENERAL KELMA AQUI:
+    fbq('init', '1141940554358347'); 
+    fbq('track', 'PageView');
+    console.log("🛡️ [SISTEMA] Radar da Meta ativado em segundo plano.");
+  }, 3000); // 3000 milissegundos = 3 segundos
+</script>
+
 </head>
 <body style="background-color: #04043a69; margin: 0; display: flex; flex-direction: column; min-height: 100vh;">
   

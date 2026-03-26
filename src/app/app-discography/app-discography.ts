@@ -15,6 +15,7 @@ import { LastReleasesComponent } from "../components/last-releases/last-releases
 import { NgOptimizedImage } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { TrackingService } from '../services/tracking.service';
 
 @Component({
   selector: 'app-discography',
@@ -33,33 +34,33 @@ export class DiscographyComponent implements OnInit {
   @Input() limitToHome?: number;
 
   // Variáveis para os Textos da Intro
-// --- VARIÁVEIS DE INTRODUÇÃO (MODO BROKLIN / MODO RQS) ---
-introBroklinPT = `
+  // --- VARIÁVEIS DE INTRODUÇÃO (MODO BROKLIN / MODO RQS) ---
+ introBroklinPT = `
   <strong>[Transmissão ao vivo do Estúdio RQS]</strong><br>
   Enquanto a General Kelma ajusta a captação de voz no microfone condensador, eu calibro a distorção dos sintetizadores para compilar a verdadeira trilha sonora da saga 
   <span class="text-highlight">'Ecos da RQS'</span>. O que você encontra aqui não são apenas músicas; são arquivos de áudio extraídos diretamente da nossa vivência no Apartamento 14 e dos nossos altos e baixos no percorrer da história. 
-  Frequências puras, sem interferências externas. Escolha o seu terminal abaixo e inicie a imersão sonora.
-`;
+   Frequências puras, sem interferências externas. Escolha o seu terminal abaixo e inicie a imersão sonora.
+ `;
 
-introBroklinEN = `
+ introBroklinEN = `
   <strong>[Live Broadcast from RQS Studio]</strong><br>
   While General Kelma tunes her vocal capture on the condenser mic, I calibrate the synth distortion to compile the true soundtrack of the 
   <span class="text-highlight">'Echoes of RQS'</span> saga. What you find here aren't just songs; they are audio files extracted directly from our life in Apartment 14 and our highs and lows throughout the story. 
   Pure frequencies, no external interference. Choose your terminal below and initiate the sonic immersion.
-`;
+ `;
 
-// --- VARIÁVEIS DE INTRODUÇÃO (MODO JONAH / CORRUPTO) ---
-introJonahPT = `
+ // --- VARIÁVEIS DE INTRODUÇÃO (MODO JONAH / CORRUPTO) ---
+ introJonahPT = `
   <strong><span class="hazard-text">[Sinal Interceptado // Servidor Corrompido]</span></strong><br>
   Frequências puras? Sem interferências? <em>[Risadas distorcidas na linha]</em>. O 'Arquiteto' e a sua General acham que podem blindar esse servidor contra a minha ferrugem. A verdade é que o caos não pede senha de acesso, e o que eles chamam de 'altos e baixos', eu chamo de realidade. 
   Acessem os meus arquivos abaixo e ouçam o som do sistema deles sangrando.
-`;
+ `;
 
-introJonahEN = `
+ introJonahEN = `
   <strong><span class="hazard-text">[Signal Intercepted // Corrupted Server]</span></strong><br>
   Pure frequencies? No interference? <em>[Distorted laughter on the line]</em>. The 'Architect' and his General think they can shield this server from my rust. The truth is, chaos doesn't ask for a password, and what they call 'highs and lows', I call reality. 
   Access my files below and listen to the sound of their system bleeding.
-`;
+ `;
 
   // O Banco de Dados Completo
   allAlbums: Album[] = [];
@@ -147,7 +148,7 @@ get isJonahMode(): boolean {
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
-  openLink(url: string | undefined) {
+  openLink(url: string | undefined) {    
     if (url) window.open(url, '_blank');
   }
 
@@ -163,4 +164,15 @@ get isJonahMode(): boolean {
   navigateFullArchive() {
     this.router.navigate(['/musical-archives']);
   }
+
+  // Injeção do nosso serviço de espionagem
+  private trackingService = inject(TrackingService);
+
+  // Radar passivo que não interfere na abertura da aba
+  trackAlbumClick(albumTitle: string) {
+    if (albumTitle) {
+      this.trackingService.trackSpotifyClick(albumTitle);
+    }
+
+}
 }

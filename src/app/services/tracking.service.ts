@@ -61,4 +61,23 @@ export class TrackingService {
       console.log(`🛡️ [Tracking] Evento capturado: ${eventName}`);
     }
   }
+
+  // 🎯 O GATILHO: Dispara quando o botão do Spotify for clicado
+  trackSpotifyClick(albumName: string) {
+    // 🛡️ BLINDAGEM: O servidor não pode enviar eventos pra Meta, só o humano!
+    if (isPlatformBrowser(this.platformId)) {
+      
+      // Verifica se o Pixel carregou com sucesso no index.html
+      if (typeof (window as any).fbq === 'function') {
+        
+        // Envia o sinal "Lead" (Conversão) para a Meta
+        (window as any).fbq('trackCustom', 'SpotifyClick', {
+          content_name: albumName,
+          content_category: 'Music'
+        });
+        
+        console.log(`🛡️ [TELEMETRIA META] Disparo confirmado para: ${albumName}`);
+      }
+    }
+  }
 }

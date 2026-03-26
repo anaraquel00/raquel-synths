@@ -11,6 +11,7 @@ import { AdArticleComponent } from "../../components/ad-article/ad-article";
 import { NgOptimizedImage } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { TrackingService } from '../../services/tracking.service';
 
 @Component({
   selector: 'app-musical-archives',
@@ -161,5 +162,15 @@ prevJonah() {
   getSafeUrl(url: string | undefined): SafeResourceUrl {
     if (!url) return '';
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  }
+
+  private trackingService = inject(TrackingService);
+  
+    // Radar passivo que não interfere na abertura da aba
+    trackAlbumClick(albumTitle: string) {
+      if (albumTitle) {
+        this.trackingService.trackSpotifyClick(albumTitle);
+      }
+  
   }
 }
