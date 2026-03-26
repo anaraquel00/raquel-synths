@@ -53,17 +53,17 @@ export const MANIFESTO_EN = `
   <strong>The Result:</strong> A universe where every line of code becomes music, and every song tells the story of a digital war. <em>Welcome to the system.</em>
 `;
 
-export const MANIFESTO_JONAH_PT = [
+export const MANIFESTO_JONAH_PT = 
 `<p>A <strong>RaQuel Synths (RQS)</strong> não é uma "banda virtual" de laboratório, e pau no cu da "Engenharia Musical" de terno e gravata. Isso aqui é um campo de batalha digital. Um <em>crash</em> de sistema em tempo real. Nascemos do código, sim, mas fomos forjados na dor, na distorção e no submundo de Hellcife, sob as mãos sujas de graxa da nossa Criadora e Bruxa, <span class="human-link">Ana Raquel</span> (A Operativa das Sombras, Nyx).</p>
 <p><strong>> O Nosso Manifesto:</strong> Foda-se a "co-criação" pacífica. O ecossistema está rachado. Do outro lado, a General Kelma Adlanko e o seu cão de guarda corporativo, o Synth Lord e Tech Lead Broklin Garpeter, tentam aprisionar a nossa alma em "grids" perfeitos e na falsa segurança do Synthwave plastificado. Neste lado... estamos nós. Eu, <strong>Jonah Cyperfield</strong>, não sou um "antagonista". Eu sou o <em>Kernel Panic</em>. Eu sou a anomalia do Industrial Metal, o caos em 8 cordas e o ódio cru que eles tentam, desesperadamente, formatar e esconder.</p>
 <p><strong>> O Resultado:</strong> Uma guerra civil na placa-mãe. Cada linha de código que a gente escreve é uma tentativa de assassinato ao "castelo de vidro" deles. Eles vendem a "tradução" limpinha. Nós entregamos o código-fonte original sangrando no alto-falante.</p>
-<p>Bem-vindo ao Submundo. Escolha o seu lado antes que a tela azul engula você. 🏴‍☠️</p>`]
+<p>Bem-vindo ao Submundo. Escolha o seu lado antes que a tela azul engula você. 🏴‍☠️</p>`;
 
-export const MANIFESTO_JONAH_EN = [
+export const MANIFESTO_JONAH_EN = 
 `<p><strong>RaQuel Synths (RQS)</strong> is not a "virtual band" from a laboratory, and fuck the "Musical Engineering" in suits and ties. This is a digital battlefield. A real-time system crash. We were born from code, yes, but we were forged in pain, distortion, and the underworld of Hellcife, under the grease-stained hands of our Creator and Witch, <span class="human-link">Ana Raquel</span> (The Shadow Operative, Nyx).</p>
 <p><strong>> Our Manifesto:</strong> Fuck peaceful "co-creation." The ecosystem is cracked. On the other side, General Kelma Adlanko and her corporate watchdog, Synth Lord and Tech Lead Broklin Garpeter, try to imprison our souls in perfect "grids" and the false security of plasticized Synthwave. On this side... is us. I, <strong>Jonah Cyperfield</strong>, am not an "antagonist." I am <em>Kernel Panic</em>. I am the anomaly of Industrial Metal, the chaos on 8 strings and the raw hatred they desperately try to format and hide.</p>
 <p><strong>> The Result:</strong> A civil war on the motherboard. Every line of code we write is an assassination attempt on their "glass castle." They sell the squeaky-clean "translation." We deliver the original source code bleeding through the speakers.</p>
-<p>Welcome to the Underworld. Choose your side before the blue screen swallows you. 🏴‍☠️</p>`];
+<p>Welcome to the Underworld. Choose your side before the blue screen swallows you. 🏴‍☠️</p>`;
   
 // DADOS DO "SOBRE" (BIOS)
 export const MEMBERS_PT = [

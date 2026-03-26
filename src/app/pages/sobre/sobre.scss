@@ -204,15 +204,15 @@
 
 /* --- ☢️ MODO JONAH (O CAOS REAL) ☢️ --- */
 :host-context(body.mode-jonah) {
+  .manifesto_jonah {
+    display: block;
+    }
+
  .manifesto-text {
     display: none; /* Apaga o texto do Broklin */
   }
 
-  .manifesto_jonah {
-    display: block;
-      }
-
-  .member-card {
+   .member-card {
     border-color: #bf360c;
     background: rgba(10, 0, 0, 0.8); /* Vidro sujo de óleo */
     backdrop-filter: blur(5px) sepia(0.8); /* Filtro de terror */
