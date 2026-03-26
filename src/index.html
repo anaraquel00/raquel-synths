@@ -45,14 +45,13 @@
   <link rel="preload" as="image" href="/images/background3_rqs_mobile.webp" type="image/webp" media="(max-width: 768px)" fetchpriority="high">
   <link rel="manifest" href="manifest.webmanifest">
 
-  <script>
-  // Apenas declara a função vazia para não quebrar nada
+<script>
+  // 1. Declaramos o radar vazio para não dar erro se o clique for muito rápido
   !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
   n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
   n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];}(window,document,'script');
 
-  // ⏱️ O TRUQUE MÁGICO: Espera 3 segundos para carregar o peso do Facebook!
-  // Isso salva a nossa pontuação no mobile.
+  // 2. Atrasamos o download pesado por 3.5 segundos (Salva o Lighthouse e o 3G!)
   setTimeout(function() {
     var t=document.createElement('script');
     t.async=!0;
@@ -60,12 +59,17 @@
     var s=document.getElementsByTagName('script')[0];
     s.parentNode.insertBefore(t,s);
     
-    // A CHAVE DA GENERAL KELMA AQUI:
-    fbq('init', '1141940554358347'); 
+    // O código EXATO que a corporação pediu para a sua interface:
+    fbq('init', '2358502707934592');
     fbq('track', 'PageView');
-    console.log("🛡️ [SISTEMA] Radar da Meta ativado em segundo plano.");
-  }, 3000); // 3000 milissegundos = 3 segundos
+    console.log("🛡️ [SISTEMA] Radar da Meta ativado com sucesso após o boot.");
+  }, 3500); 
 </script>
+
+<noscript>
+  <img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=2358502707934592&ev=PageView&noscript=1" />
+</noscript>
 
 </head>
 <body style="background-color: #04043a69; margin: 0; display: flex; flex-direction: column; min-height: 100vh;">
