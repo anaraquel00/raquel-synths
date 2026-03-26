@@ -203,13 +203,15 @@
 }
 
 /* --- ☢️ MODO JONAH (O CAOS REAL) ☢️ --- */
-:host-context(body.mode-jonah) {
+:host-context(.mode-jonah) {
+  
   .manifesto_jonah {
     display: block;
-    }
+  }
 
- .manifesto-text {
-    display: none; /* Apaga o texto do Broklin */
+  .manifesto-text {
+    /* 2. Adicione a trava de segurança !important */
+    display: none !important; 
   }
 
    .member-card {
