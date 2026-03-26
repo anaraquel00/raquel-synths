@@ -5,6 +5,22 @@ import { isPlatformBrowser } from '@angular/common';
   providedIn: 'root'
 })
 export class TrackingService {
+  
+  trackAffiliateClick(productName: string, platform: string) {
+  if (isPlatformBrowser(this.platformId)) {
+    if (typeof (window as any).fbq === 'function') {
+      
+      // 🎯 EVENTO 'ViewContent': Avisa que o fã quer ver o produto na loja parceira
+      (window as any).fbq('track', 'ViewContent', {
+        content_name: productName,
+        content_category: `Affiliate - ${platform}`,
+        status: 'Redirecting to Partner'
+      });
+      
+      console.log(`🔗 [UPLINK AFILIADO] Redirecionando para ${platform}: ${productName}`);
+    }
+  }
+}
   private scriptsLoaded = false;
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}

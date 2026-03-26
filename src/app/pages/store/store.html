@@ -45,6 +45,10 @@
        <span class="folder-icon">📂</span> {{ selectedDepartmentId | uppercase }}
     </h2>
 
+  @if (selectedDepartmentData?.loreDescription) {
+     <p class="sector-description" [innerHTML]="selectedDepartmentData.loreDescription[currentLang()]"></p>
+  }
+
     <div class="hazard-stripe bottom"></div>
   </div>
  </div>
@@ -66,7 +70,7 @@
               <span class="price">{{ item.content[currentLang()]?.price }}</span>
 
               <button
-  (click)="handleShopClick(item.stripeUrl)"
+ (click)="handleShopClick(item)"
   class="btn-neon"
   [disabled]="item.status === 'sold_out'"
   [class.sold-out-mode]="item.status === 'sold_out'">

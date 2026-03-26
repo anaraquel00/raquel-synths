@@ -9,6 +9,8 @@ import { ContentService } from '../../services/content.service';
 import { TranslationService } from '../../services/translation.service';
 import { StoreDepartmentsComponent } from './store-departments/store-departments';
 import { SeoService } from '../../services/seo.service';
+import { TrackingService } from '../../services/tracking.service';
+import { DEPARTMENTS_DATA } from '../../data/store-data';
 
 @Component({
   selector: 'app-store',
@@ -18,6 +20,7 @@ import { SeoService } from '../../services/seo.service';
   styleUrls: ['./store.scss']
 })
 export class StoreComponent implements OnInit, OnDestroy {
+selectedDepartmentData: any;
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
@@ -29,6 +32,7 @@ export class StoreComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef); // Para forçar a atualização da tela
   public translate = inject(TranslationService);
+  private trackingService = inject(TrackingService); // Para a telemetria de afiliados
 
   // --- OBSERVERS & SUBSCRIPTIONS ---
   private observer: MutationObserver | null = null;
@@ -135,40 +139,36 @@ checkCurrentMode() {
     this.observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
   }
 
-  // --- NAVEGAÇÃO ---
- onDepartmentSelected(deptId: string) {
-    this.selectedDepartmentId = deptId;
-    // Filtra: só mostra produtos onde a 'faction' for igual ao ID do departamento
-    this.filteredProducts = this.allProducts.filter(item => item.faction === deptId);
-    this.currentView = 'MINI_STORE';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // --- NAVEGAÇÃO ---
+onDepartmentSelected(deptId: string) {
+  // 🛡️ UNIFICAÇÃO: Busca os dados uma única vez no LOCAL para garantir a Lore
+  const deptData = DEPARTMENTS_DATA.find(d => d.id === deptId) || null;
+  
+  this.selectedDepartmentId = deptId;
+  this.selectedDepartmentData = deptData; 
+  this.filteredProducts = this.allProducts.filter(item => item.faction === deptId);
+  this.currentView = 'MINI_STORE';
+  
+  if (this.isBrowser) window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // 🛡️ --- INJEÇÃO DE SEO DINÂMICA ---
-    // Buscamos os dados desse departamento no Firebase para montar o card
-    const deptData = this.allDepartments.find(d => d.id === deptId);
+  // 🚀 INJEÇÃO DE SEO (Usando os mesmos dados da Lore)
+  if (deptData) {
+    const lang = this.currentLang();
+    const seoTitle = deptData.title || deptId.toUpperCase();
+    const seoDesc = deptData.loreDescription ? deptData.loreDescription[lang] : (deptData.description ? deptData.description[lang] : 'RQS Protocol');
     
-    if (deptData) {
-      const lang = this.currentLang();
-      // Puxa o título, a descrição no idioma atual e a imagem do Firebase. 
-      // Se algo faltar no banco, usamos um fallback seguro.
-      const seoTitle = deptData.title || deptId.toUpperCase();
-      const seoDesc = deptData.description ? deptData.description[lang] : 'Official Merch // Print-on-Demand Protocol';
-      
-      // Ajuste o domínio caso a imagem seja um caminho relativo (ex: 'assets/store/...')
-      const imgPath = deptData.image || 'assets/images/banner-seo-global.jpg';
-      const seoImage = imgPath.startsWith('http') ? imgPath : `https://raquelsynths.com.br/${imgPath}`;
-      
-      const seoUrl = `https://raquelsynths.com.br/store/${deptId}`;
-
-      // 🚀 Dispara a atualização na aba e nas redes sociais!
-      this.seoService.updateTags({
-        title: seoTitle,
-        description: seoDesc,
-        image: seoImage,
-        url: seoUrl
-      });
-    }
+    const imgPath = deptData.image || 'assets/images/banner-seo-global.jpg';
+    const seoImage = imgPath.startsWith('http') ? imgPath : `https://raquelsynths.com.br/${imgPath}`;
+    
+    this.seoService.updateTags({
+      title: seoTitle,
+      description: seoDesc,
+      image: seoImage,
+      url: `https://raquelsynths.com.br/store/${deptId}`
+    });
   }
+}
+
 
  backToLobby() {
     this.currentView = 'LOBBY';
@@ -189,40 +189,55 @@ checkCurrentMode() {
     return jonahZones.includes(id.toLowerCase());
   }
 
- // --- 💸 MONETIZAÇÃO BLINDADA V2.0 ---
+ // --- 💸 MONETIZAÇÃO BLINDADA V2.0 (AGORA COM TELEMETRIA) ---
 
-  handleShopClick(productUrl: string) {
+  handleShopClick(item: any) { // 👈 AGORA RECEBE O ITEM COMPLETO
+    const productUrl = item.stripeUrl; // 👈 Extrai a URL original aqui
+
     if (!productUrl) {
       console.warn('🚫 Link vazio detectado.');
       return;
     }
 
-    // 🛡️ SANITIZAÇÃO EXTREMA:
-    // 1. .trim() -> Remove espaços no começo e fim
-    // 2. .replace() -> Remove aspas duplas (") e simples (') que podem ter vindo do Copy/Paste
+    // 🛡️ SANITIZAÇÃO EXTREMA MANTIDA:
     const cleanUrl = productUrl.trim().replace(/['"]/g, '');
-
     console.log('🖱️ Clique LIMPO e VERIFICADO:', cleanUrl);
 
-    // Verificação de Segurança Extra: O link parece um link?
     if (!cleanUrl.startsWith('http')) {
        console.error('🚨 URL Inválida (falta http):', cleanUrl);
        return;
     }
 
+    // 🎯 🚀 DISPARO DA TELEMETRIA PARA A META 🚀 🎯
+    const lang = this.currentLang();
+    const productName = item.content[lang]?.name || 'Produto RQS';
+    const platform = this.detectPlatformForPixel(cleanUrl);
+    
+    // Avisa o algoritmo ANTES de abrir o modal
+    this.trackingService.trackAffiliateClick(productName, platform);
+
+    // 🎛️ LÓGICA DE MODAIS ORIGINAIS MANTIDA INTACTA:
     const lowerUrl = cleanUrl.toLowerCase();
     const isShein = lowerUrl.includes('shein');
-    // ✅ NOVA LÓGICA: Detecta se é link do Stripe
     const isStripe = lowerUrl.includes('stripe') || lowerUrl.includes('checkout');
 
     if (isShein) {
       this.openSheinCouponModal(cleanUrl);
     } else if (isStripe) {
-      // 🚀 Redireciona para o novo Modal do Stripe
       this.openStripeCouponModal(cleanUrl);
     } else {
       this.openGenericPartnerModal(cleanUrl);
     }
+  }
+
+  // 🔍 FUNÇÃO AUXILIAR: Lê a URL e traduz para a Meta
+  private detectPlatformForPixel(url: string): string {
+    const lower = url.toLowerCase();
+    if (lower.includes('amazon')) return 'Amazon';
+    if (lower.includes('shein')) return 'Shein';
+    if (lower.includes('aliexpress')) return 'AliExpress';
+    if (lower.includes('stripe') || lower.includes('checkout')) return 'Stripe Official';
+    return 'Partner Store';
   }
 
  private openSheinCouponModal(url: string) {

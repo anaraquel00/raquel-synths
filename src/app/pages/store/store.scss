@@ -88,6 +88,27 @@
       }
     }
 
+ .sector-description {
+  text-align: center;
+  color: var(--color-primary, #00ffff); /* Verde Neon Broklin */
+  font-family: 'Courier New', monospace;
+  font-size: 1.2rem;
+ /* 🛡️ O AJUSTE DE EXPANSÃO: */
+  max-width: 1200px;  /* Aumentamos de 600px para 900px para ganhar as laterais */
+  width: 90% ;       /* Garante que em telas menores ele ocupe quase tudo */
+  
+  margin: 15px auto 25px auto;
+  padding: 0 10px;   /* Reduzi o padding lateral para o texto "respirar" pra fora */
+  line-height: 1.6;  /* Aumentei levemente o espaço entre linhas para facilitar a leitura longa */
+  
+  /* Manter a aura de terminal */
+  letter-spacing: 0.5px;
+  
+  .jonah-mode & {
+    color: var(--color-accent, #ff3300); /* Vermelho Caos Jonah */
+  }
+}   
+
 
 /* --- GRID DE PRODUTOS --- */
 .product-grid {
@@ -167,7 +188,7 @@
 
   .desc {
     font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgb(255, 255, 255);
     margin-bottom: 1.5rem;
     line-height: 1.4;
     flex-grow: 1; // Empurra o preço pra baixo
@@ -427,7 +448,7 @@
       text-transform: uppercase;
     }
     .desc {
-      color: #bb8888;
+      color: #ffc2c2;
     }
   }
 
