@@ -1,7 +1,11 @@
 <section class="bios-container">
   <h2 class="section-title">{{ translate.isPt() ? 'QUEM SOMOS' : 'WHO WE ARE' }}</h2>
   <div class="manifesto-text">
-    <p [innerHTML]="translate.isPt() ? manifestoPt : manifestoEn"(click)="handleClick($event)"></p>
+    <p [innerHTML]="translate.isPt() ? manifestoPt : manifestoEn"(click)="handleClick($event)">
+    </p>
+  </div>
+  <div class="manifesto_jonah">
+  <p [innerHTML]="translate.isPt() ? manifesto_jonah_pt : manifesto_jonah_en" (click)="handleClick($event)"></p>
   </div>
 
   <div class="members-grid">

@@ -19,6 +19,10 @@
   text-transform: uppercase;
 }
 
+.manifesto_jonah {
+  display: none;
+}
+
 .manifesto-text {
   max-width: 1200px;
   margin: 0.3rem 2rem auto;
@@ -27,12 +31,13 @@
   line-height: 1.8; /* Aumentei o respiro entre linhas */
   color: #ccc;
 
-
   /* Estilizando as tags que colocamos no HTML */
   strong { color: #fff; font-weight: 700; }
   em { color: var(--accent-color); font-style: normal; }
 }
-/* Responsivo */
+
+
+ /* Responsivo */
 @media (max-width: 768px) {
   .manifesto-text {
     text-align: left; /* No celular, justificado ou centro fica ruim de ler */
@@ -199,6 +204,13 @@
 
 /* --- ☢️ MODO JONAH (O CAOS REAL) ☢️ --- */
 :host-context(body.mode-jonah) {
+ .manifesto-text {
+    display: none; /* Apaga o texto do Broklin */
+  }
+
+  .manifesto_jonah {
+    display: block; /* Revela o nosso manifesto */
+      }
 
   .member-card {
     border-color: #bf360c;
@@ -215,6 +227,11 @@
   }
 
   .info-box {
+     padding: 1.5rem 2rem !important;
+     display: flex !important;
+     flex-direction: column !important;
+     justify-content: center !important;
+     flex: 1 !important; /* Ocupa o resto do espaço */
     h3 {
       background: none;
       -webkit-text-fill-color: #ff5722;
