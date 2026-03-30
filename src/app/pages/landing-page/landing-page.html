@@ -8,19 +8,6 @@
   }
 </section>
 
-<div id="sobre" style="position: relative; top: -80px;"></div>
-<section class="anchor-pad">
-    <app-sobre></app-sobre>     
-</section>
-
-<section class="ads-section">
-  @defer (on viewport) {
-    <app-ad-banner></app-ad-banner>
-  } @placeholder {
-    <div style="min-height: 100px; width: 100%;"></div>
-  }
-</section>
-
 <!-- SEÇÕES PESADAS (FIREBASE): Trava absoluta contra o Robô do PageSpeed -->
 <div id="storytelling" style="position: relative; top: -80px;"></div>
 <section class="anchor-pad">
@@ -33,6 +20,19 @@
       <p>Explore os System_Logs para descobrir as conexões entre os personagens e os eventos que moldam a Guerra Sonora. Mergulhe nos Dev_Notes para entender as inspirações por trás de cada personagem e como eles se encaixam na grande tapeçaria da RQS.</p>
       [ Acessar os Logs do Sistema... ]
     </div>
+  }
+</section>
+
+<div id="sobre" style="position: relative; top: -80px;"></div>
+<section class="anchor-pad">
+    <app-sobre></app-sobre>     
+</section>
+
+<section class="ads-section">
+  @defer (on viewport) {
+    <app-ad-banner></app-ad-banner>
+  } @placeholder {
+    <div style="min-height: 100px; width: 100%;"></div>
   }
 </section>
 

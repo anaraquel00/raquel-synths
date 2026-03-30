@@ -23,13 +23,13 @@
       <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ NET: ACESSAR_COMUNIDADE.sh ]' : '[ NET: ACCESS_COMMUNITY.sh ]' }}
       </button>
 
-      <button class="hack-btn" (click)="executarQuickhack('sobre')">
-      <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ EXE: PERFIS_OPERATIVOS.sh ]' : '[ EXE: OPERATORS_PROFILES.sh ]' }}
-      </button>
-
       <button class="hack-btn" (click)="executarQuickhack('storytelling')">
         <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ EXE: SYSTEM_LOGS.sh ]' : '[ EXE: SYSTEM_LOGS.sh ]' }}
-      </button>         
+      </button>
+
+      <button class="hack-btn" (click)="executarQuickhack('sobre')">
+      <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ EXE: PERFIS_OPERATIVOS.sh ]' : '[ EXE: OPERATORS_PROFILES.sh ]' }}
+      </button>               
       
       <button class="hack-btn" routerLink="/saga">
         <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ EXE: LOGS_NARRATIVOS.sh ]' : '[ EXE: NARRATIVE_LOGS.sh ]' }}
