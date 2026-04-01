@@ -74,7 +74,7 @@
         <div class="actions-bar">
           <a *ngIf="album.soundcloudUrl || album.soundcloud || album.embedLink"
              [href]="album.soundcloudUrl ? album.soundcloudUrl : (album.soundcloud ? album.soundcloud : album.embedLink)"
-             target="_blank" class="btn-listen soundcloud-btn">
+             target="_blank" class="btn-listen soundcloud-btn"(click)="trackSoundcloudClick(album.title)">
              <svg class="cyber-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
                <path d="M116.7 284c-3.1-41.2-34.9-74.1-73.4-74.1-23.8 0-45.3 11.8-59 30.6-2.6 3.6-4.9 7.4-6.8 11.5v120.7c0 8.8 7.2 16 16 16h123.2V284zm382.4-71.3c-23.4 0-44.5 8.7-60.6 23.3-12-29.3-39.6-50.6-72.4-53.5-31-2.8-58.9 13.9-72.8 40.5-8.2-5.7-18.1-9.1-28.7-9.1-24.8 0-45.6 17.5-51 40.9H135.5v134.4h363.6c51 0 92.4-41.4 92.4-92.4.1-51.1-41.3-92.5-92.4-92.5M158.4 227v161.7h13.1V210.4c-4.9 4.3-9.4 9.6-13.1 16.6zm31.3-43.2v204.9h13.1V171.1c-4.9 3.3-9.4 7.5-13.1 12.7zm31.3-20.7v225.6h13.1V151c-4.9 2.8-9.4 6.7-13.1 12.7zm31.3-10.6v236.2h13.1V140.7c-4.9 2.5-9.4 6-13.1 10.8z"/>
              </svg> SoundCloud
@@ -129,7 +129,7 @@
       <div class="actions-bar">
           <a *ngIf="album.soundcloudUrl || album.soundcloud || album.embedLink"
              [href]="album.soundcloudUrl ? album.soundcloudUrl : (album.soundcloud ? album.soundcloud : album.embedLink)"
-             target="_blank" class="btn-listen soundcloud-btn">
+             target="_blank" class="btn-listen soundcloud-btn"(click)="trackSoundcloudClick(album.title)">
              <svg class="cyber-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
                <path d="M116.7 284c-3.1-41.2-34.9-74.1-73.4-74.1-23.8 0-45.3 11.8-59 30.6-2.6 3.6-4.9 7.4-6.8 11.5v120.7c0 8.8 7.2 16 16 16h123.2V284zm382.4-71.3c-23.4 0-44.5 8.7-60.6 23.3-12-29.3-39.6-50.6-72.4-53.5-31-2.8-58.9 13.9-72.8 40.5-8.2-5.7-18.1-9.1-28.7-9.1-24.8 0-45.6 17.5-51 40.9H135.5v134.4h363.6c51 0 92.4-41.4 92.4-92.4.1-51.1-41.3-92.5-92.4-92.5M158.4 227v161.7h13.1V210.4c-4.9 4.3-9.4 9.6-13.1 16.6zm31.3-43.2v204.9h13.1V171.1c-4.9 3.3-9.4 7.5-13.1 12.7zm31.3-20.7v225.6h13.1V151c-4.9 2.8-9.4 6.7-13.1 12.7zm31.3-10.6v236.2h13.1V140.7c-4.9 2.5-9.4 6-13.1 10.8z"/>
              </svg> SoundCloud

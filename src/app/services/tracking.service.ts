@@ -96,4 +96,23 @@ export class TrackingService {
       }
     }
   }
+
+  // 🎯 O GATILHO: Dispara quando o botão do SoundCloud for clicado
+  trackSoundcloudClick(albumName: string) {
+    // 🛡️ BLINDAGEM: O servidor não pode enviar eventos pra Meta, só o browser do usuário!
+    if (isPlatformBrowser(this.platformId)) {
+      
+      // Verifica se o Pixel carregou com sucesso no index.html
+      if (typeof (window as any).fbq === 'function') {
+        
+        // Envia o sinal customizado para a Meta criar o nosso "Lookalike"
+        (window as any).fbq('trackCustom', 'SoundcloudClick', {
+          content_name: albumName,
+          content_category: 'Music Stream'
+        });
+        
+        console.log(`🛡️ [TELEMETRIA META] Disparo SoundCloud confirmado para: ${albumName}`);
+      }
+    }
+  }
 }

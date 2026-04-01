@@ -175,4 +175,11 @@ get isJonahMode(): boolean {
     }
 
 }
+
+// Radar passivo exclusivo para o SoundCloud
+  trackSoundcloudClick(albumTitle: string) {
+    if (albumTitle) {
+      this.trackingService.trackSoundcloudClick(albumTitle);
+    }
+  }
 }
