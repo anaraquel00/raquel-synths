@@ -619,3 +619,28 @@ button {
   }
 }
 
+  ::ng-deep .cyber-play-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(10, 10, 15, 0.8);
+    color: #00e5ff;
+    font-size: 25px;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    border: 3px solid #00e5ff;
+    box-shadow: 0px 0px 20px #00e5ff;
+    pointer-events: none;
+    transition: all 0.3s ease;
+  }
+
+  :host-context(.mode-jonah) ::ng-deep .cyber-play-btn {
+    background-color: rgba(255, 153, 0, 0.8);
+    color: #ff9900;
+    border-color: #ff9900;
+    box-shadow: 0px 0px 20px #ff9900;
+  }
