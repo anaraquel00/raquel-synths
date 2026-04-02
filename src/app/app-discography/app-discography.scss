@@ -453,6 +453,11 @@ button {
   }
 }
 
+.terminal-radio-container{
+  border: 1px solid rgba(255, 153, 0, 0.2);
+  background: linear-gradient(135deg, rgba(20, 10, 0, 0.95) 0%, rgba(10, 10, 10, 0.9) 100%);
+}
+
 /* ========================================= */
 
 /* ESTADO PADRÃO (Modo Ordem / Broklin Ativo) */
@@ -652,4 +657,10 @@ button {
 :host-context(.mode-jonah) ::ng-deep .cyber-play-btn:hover {
   background-color: rgba(255, 153, 0, 0.4);
   box-shadow: 0px 0px 20px #ff9900;
+}
+
+
+:host-context(.mode-jonah) .terminal-radio-container {
+  border-color: rgba(255, 153, 0, 0.2);
+  background: linear-gradient(135deg, rgba(20, 10, 0, 0.95) 0%, rgba(10, 10, 10, 0.9) 100%);
 }

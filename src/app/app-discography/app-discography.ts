@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, inject, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,6 +17,8 @@ import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { TrackingService } from '../services/tracking.service';
 
+
+
 @Component({
   selector: 'app-discography',
   standalone: true,
@@ -30,6 +32,11 @@ export class DiscographyComponent implements OnInit {
   public translate = inject(TranslationService);
   private sanitizer = inject(DomSanitizer);
   private platformId = inject(PLATFORM_ID);
+  private cdr = inject(ChangeDetectorRef);
+
+// 2. Crie os links confiáveis
+ radioBroklin = this.sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/K-M0kMMH8hY');
+ radioJonah = this.sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/kXmn44r6szM');
 
   @Input() limitToHome?: number;
 
@@ -71,9 +78,14 @@ export class DiscographyComponent implements OnInit {
 get isJonahMode(): boolean {
   // 🛡️ BLINDAGEM: No servidor, 'document' não existe. Retorne false.
   if (isPlatformBrowser(this.platformId)) {
-    return document.body.classList.contains('jonah-theme'); 
+    return document.body.classList.contains('mode-jonah'); 
   }
   return false;
+}
+
+@HostListener('window:theme-changed')
+onThemeChange() {
+  this.cdr.detectChanges(); // Força o redesenho físico
 }
 
   ngOnInit() {
