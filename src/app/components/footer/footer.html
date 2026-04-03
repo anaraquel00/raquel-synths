@@ -7,17 +7,21 @@
       <p>{{ t.rights }}</p>
       <p>{{ t.owers }}</p>
       <p>{{t.madeWith}}</p>
-      <p style="margin-top: 10px;">
-     <a [routerLink]="['/creator']" class="tech-link">
-      {{ t.devProfile }}
-     </a>
-      </p>
-      <p style="margin-top: 10px;">
-    <a [routerLink]="['/compliance']" class="compliance-link">
-      {{ t.compliance }}
+     <p style="margin-top: 10px;">
+    <a [routerLink]="['/creator']" 
+     class="tech-link" 
+     aria-label="Perfil do Desenvolvedor e Criador">
+     {{ t.devProfile }}
     </a>
     </p>
-    </div>
+    <p style="margin-top: 10px;">
+    <a [routerLink]="['/compliance']" 
+     class="compliance-link" 
+     aria-label="Política de Privacidade e Compliance">
+     {{ t.compliance }}
+     </a>
+     </p>
+     </div>
 
     <div class="footer-column">
       <h3>{{ t.listen }}</h3>
@@ -51,8 +55,7 @@
         <li><a href="https://x.com/anaraquel00" target="_blank">X / Twitter</a></li>
         <li><a href="https://www.facebook.com/profile.php?id=61585926695560" target="_blank">Facebook</a></li>
         <li><a href="https://discord.gg/ryvhdRnQpQ" target="_blank">Discord</a></li>
-        <!-- <li><a href="https://t.me/raquelsynths_news" target="_blank">Telegram</a></li> -->
-
+       
       </ul>
     </div>
   </div>
