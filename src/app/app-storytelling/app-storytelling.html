@@ -1,6 +1,8 @@
 <section class="story-container">
   <h2 class="section-title">SYSTEM_LOGS<br>LATEST</h2>
-
+  <p class="terminal-subtitle">
+  {{translate.isPt() ? '> [ DIR: /var/log/rqs/ ] Decodificando interceptações de áudio, ataques de rede e a verdade nua e crua do Apartamento 14. Acesso concedido.' : '> [ DIR: /var/log/rqs/ ] Decoding audio intercepts, network attacks and the raw truth of Apartment 14. Access granted.'}}
+</p>
   <div class="timeline-vertical">
 
     @let events = logs$ | async;
