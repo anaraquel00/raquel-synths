@@ -492,91 +492,72 @@ export const COMPLIANCE_DATA = {
   pt: {
     broklin: {
       title: '🛡️ COMPLIANCE & PRIVACIDADE',
-
       privacyTitle: '1. Política de Privacidade & Dados',
-      privacyText: 'O ecossistema RaQuel Synths (RQS) utiliza a API do Facebook/Instagram exclusivamente para automação de postagens. Prezamos pela integridade técnica: não coletamos, armazenamos ou compartilhamos dados pessoais de terceiros em nossos servidores.',
-
+      privacyText: 'O ecossistema RaQuel Synths (RQS) utiliza a API do Facebook/Instagram exclusivamente para automação de postagens. Prezamos pela integridade técnica: não coletamos, armazenamos ou compartilhamos dados pessoais em nossos servidores além do estritamente necessário para o funcionamento da rede.',
       deletionTitle: '2. Instruções para Exclusão',
       deletionText: 'Para revogar o acesso, acesse as configurações de "Apps e Sites" em seu perfil do Facebook e remova a permissão da "RQS API". Para limpeza de logs manuais, contate-nos.',
-
-      // 👇 NOVO: MÓDULO LOJA (STRIPE)
       storeTitle: '3. Política da Loja (Stripe & Print-on-Demand)',
-      storeText: 'Utilizamos processamento seguro via Stripe. Como nossos produtos são feitos sob demanda (Print-on-Demand), <strong>não realizamos trocas por escolha de tamanho errado</strong>. Reembolsos apenas por defeito de fabricação reportado em até 7 dias.',
-
-      // 👇 NOVO: MÓDULO AFILIADOS
+      storeText: 'Utilizamos processamento seguro via Stripe. Como nossos produtos são compilados sob demanda (Print-on-Demand), <strong>não realizamos trocas por escolha de tamanho errado</strong>. Reembolsos apenas por defeito de fabricação reportado em até 7 dias após o download físico do item.',
       affiliateTitle: '4. Transparência de Afiliados',
-      affiliateText: 'Participamos de programas de associados (Amazon/Shein). Ao comprar via nossos links, recebemos uma comissão que mantém o servidor ativo, sem custo extra para você.',
-
-      policyTitle: '5. Publicidade e Cookies (AdSense)',
-      policyText: 'Este site utiliza o Google AdSense. O Google usa cookies (DART) para exibir anúncios baseados em visitas. Você pode desativar a personalização na <a href="https://myadcenter.google.com" target="_blank">Minha Central de Anúncios</a>.',
-
-      contactTitle: '6. Canal de Suporte',
-      contactText: 'Para questões legais ou bugs: <a href="mailto:contact@raquelsynths.com.br">contact@raquelsynths.com.br</a>'
+      affiliateText: 'Participamos de programas de associados (Amazon/Shein). Ao adquirir itens via nossos links, recebemos uma comissão de roteamento que mantém o servidor ativo, sem custo extra para você.',
+      policyTitle: '5. Publicidade e Cookies (Google AdSense)',
+      policyText: 'O Google e fornecedores de terceiros utilizam cookies (incluindo o cookie DART) para veicular anúncios baseados em visitas anteriores do usuário ao nosso site e a outros domínios na internet. O uso de cookies de publicidade permite que o Google e seus parceiros exibam anúncios personalizados. Você pode desativar a publicidade personalizada acessando a <a href="https://myadcenter.google.com" target="_blank">Minha Central de Anúncios</a> do Google ou visitando o site <a href="https://www.aboutads.info" target="_blank">www.aboutads.info</a> para desativar cookies de terceiros.',
+      lgpdTitle: '6. Conformidade com a LGPD (Lei Geral de Proteção de Dados)',
+      lgpdText: 'Nossa infraestrutura opera em conformidade com a legislação brasileira. Processamos apenas telemetria básica (como endereços IP anonimizados para segurança do firewall e Analytics). Você tem o direito de solicitar informações ou a exclusão de qualquer log residual associado à sua navegação.',
+      contactTitle: '7. Canal de Suporte',
+      contactText: 'Para requisições legais, exclusão de dados ou reporte de bugs: <a href="mailto:contact@raquelsynths.com.br">contact@raquelsynths.com.br</a>'
     },
-
     jonah: {
       title: '💀 PROTOCOLO DE SEGURANÇA (CAOS)',
-
       privacyTitle: '1. RASTROS DIGITAIS',
-      privacyText: 'O sistema RQS invade as redes apenas para espalhar o som. Seus dados não me interessam, eu só quero que o servidor não caia enquanto o mundo queima. Nada é guardado nos meus arquivos.',
-
+      privacyText: 'O sistema RQS invade as redes apenas para espalhar o som. Seus dados não me interessam, eu só quero que o servidor não caia enquanto o mundo queima. Nada é guardado nos meus arquivos além do estritamente necessário.',
       deletionTitle: '2. APAGAR EVIDÊNCIAS',
       deletionText: 'Quer sair da rede? Vá nas configurações do Facebook e corte o cabo de conexão da RQS API. Eu não vou guardar backup do seu rastro digital, não sou babá de dados.',
-
-      // 👇 NOVO: MÓDULO LOJA (VERSÃO JONAH)
       storeTitle: '3. LOJA INDUSTRIAL (SEM DRAMA)',
-      storeText: 'Processamos via Stripe. Regra de Ouro do Industrial: <strong>Se você escolheu o tamanho errado, o problema é seu.</strong> A peça é feita única pra você. Só aceito devolução se o correio destruir a mercadoria.',
-
-      // 👇 NOVO: MÓDULO AFILIADOS (VERSÃO JONAH)
+      storeText: 'Processamos via Stripe. Regra de Ouro do Industrial: <strong>Se você escolheu o tamanho errado, o problema é seu.</strong> A peça é compilada única pra você. Só aceito devolução se o correio destruir a mercadoria.',
       affiliateTitle: '4. ALIANÇAS ESTRATÉGICAS',
       affiliateText: 'Alguns links mandam você pra Amazon. Se você comprar, eles me pagam uma taxa pra financiar minha guerra sonora. Você não paga nada a mais, apenas alimenta o sistema.',
-
       policyTitle: '5. VIGILÂNCIA CORPORATIVA (ADS)',
-      policyText: 'Sim, tem anúncios. O Google usa cookies para te rastrear, não eu. Se quiser se esconder das "Big Techs", resolva com eles na <a href="https://myadcenter.google.com" target="_blank">Central de Controle deles</a>. Eu lavo minhas mãos.',
-
-      contactTitle: '6. FREQUÊNCIA DE RÁDIO',
+      policyText: 'Sim, tem anúncios. O Google e seus parceiros de terceiros usam cookies (tipo o DART) para te rastrear, não eu. Se quiser se esconder das "Big Techs", resolva com eles na <a href="https://myadcenter.google.com" target="_blank">Central de Controle deles</a> ou suma do radar no <a href="https://www.aboutads.info" target="_blank">aboutads.info</a>. Eu lavo minhas mãos.',
+      lgpdTitle: '6. LEI DE PROTEÇÃO DE DADOS (LGPD)',
+      lgpdText: 'Nós jogamos pelas regras pra não derrubarem o site. Só processamos IPs anonimizados pra evitar que hackers piores que eu quebrem o firewall. Se quiser deletar algo seu que ficou preso na matriz, avise.',
+      contactTitle: '7. FREQUÊNCIA DE RÁDIO',
       contactText: 'Problemas? Mande um sinal: <a href="mailto:contact@raquelsynths.com.br">contact@raquelsynths.com.br</a>'
     }
   },
-
   en: {
     broklin: {
       title: '🛡️ COMPLIANCE & PRIVACY',
       privacyTitle: '1. Privacy & Data Policy',
-      privacyText: 'The RaQuel Synths (RQS) ecosystem uses Facebook/Instagram API solely for automation. We value integrity: we do not collect, store, or share personal data on our servers.',
+      privacyText: 'The RaQuel Synths (RQS) ecosystem uses Facebook/Instagram API solely for post automation. We value technical integrity: we do not collect, store, or share personal data on our servers beyond what is strictly necessary for network operation.',
       deletionTitle: '2. Deletion Instructions',
       deletionText: 'To revoke access, go to "Apps and Websites" in your Facebook settings and remove "RQS API". Contact us for manual log clearing.',
-
       storeTitle: '3. Store Policy (Stripe & PoD)',
-      storeText: 'Secure processing via Stripe. Since items are Print-on-Demand, <strong>we do not offer exchanges for wrong size selection</strong>. Refunds only for manufacturing defects reported within 7 days.',
-
+      storeText: 'Secure processing via Stripe. Since items are compiled on demand (Print-on-Demand), <strong>we do not offer exchanges for wrong size selection</strong>. Refunds only for manufacturing defects reported within 7 days after the physical download of the item.',
       affiliateTitle: '4. Affiliate Transparency',
-      affiliateText: 'We participate in associate programs (Amazon/Shein). Buying via our links earns us a commission to keep servers running, at no extra cost to you.',
-
-      policyTitle: '5. Advertising & Cookies',
-      policyText: 'This site uses Google AdSense. Google uses cookies (DART) to serve ads. Opt-out at <a href="https://myadcenter.google.com" target="_blank">Google Ad Center</a>.',
-
-      contactTitle: '6. Support Channel',
-      contactText: 'Legal or bugs: <a href="mailto:contact@raquelsynths.com.br">contact@raquelsynths.com.br</a>'
+      affiliateText: 'We participate in associate programs (Amazon/Shein). Buying via our links earns us a routing commission to keep servers running, at no extra cost to you.',
+      policyTitle: '5. Advertising & Cookies (Google AdSense)',
+      policyText: 'Google and third-party vendors use cookies (including the DART cookie) to serve ads based on a user\'s prior visits to our website or other websites. Google\'s use of advertising cookies enables it and its partners to serve personalized ads to your users. You may opt out of personalized advertising by visiting <a href="https://myadcenter.google.com" target="_blank">Google Ad Center</a> or by visiting <a href="https://www.aboutads.info" target="_blank">www.aboutads.info</a> to opt out of a third-party vendor\'s use of cookies.',
+      lgpdTitle: '6. Data Protection Compliance (LGPD/GDPR)',
+      lgpdText: 'Our infrastructure operates in compliance with data protection laws. We only process basic telemetry (like anonymized IP addresses for firewall security and Analytics). You have the right to request information or the deletion of any residual log associated with your browsing.',
+      contactTitle: '7. Support Channel',
+      contactText: 'For legal requests, data deletion, or bug reports: <a href="mailto:contact@raquelsynths.com.br">contact@raquelsynths.com.br</a>'
     },
-
     jonah: {
       title: '💀 SECURITY PROTOCOL (CHAOS)',
       privacyTitle: '1. DIGITAL FOOTPRINTS',
-      privacyText: 'RQS hits the network to spread sound. Your data is boring; I just want uptime. Nothing is archived.',
+      privacyText: 'RQS hits the network to spread sound. Your data is boring; I just want uptime. Nothing is archived beyond the bare minimum to keep the world burning.',
       deletionTitle: '2. ERASING EVIDENCE',
       deletionText: 'Want out? Cut the RQS API cable in Facebook settings. I’m not a data babysitter; no backups kept.',
-
       storeTitle: '3. INDUSTRIAL STORE (NO DRAMA)',
-      storeText: 'Processed via Stripe. Golden Rule: <strong>If you picked the wrong size, that’s on you.</strong> It’s custom-made. I only refund if the courier destroys it.',
-
+      storeText: 'Processed via Stripe. Golden Rule: <strong>If you picked the wrong size, that’s on you.</strong> It’s custom-compiled. I only refund if the courier destroys the merch.',
       affiliateTitle: '4. STRATEGIC ALLIANCES',
       affiliateText: 'Some links go to Amazon. You buy, I get coins to fund the sonic war. Costs you nothing extra.',
-
-      policyTitle: '5. CORPORATE SURVEILLANCE',
-      policyText: 'Google tracks you with cookies, not me. Hide from Big Tech at <a href="https://myadcenter.google.com" target="_blank">Their Control Center</a>. I wash my hands.',
-
-      contactTitle: '6. RADIO FREQUENCY',
+      policyTitle: '5. CORPORATE SURVEILLANCE (ADS)',
+      policyText: 'Yes, there are ads. Google and third-party partners track you with cookies (like DART), not me. Hide from Big Tech at <a href="https://myadcenter.google.com" target="_blank">Their Control Center</a> or vanish at <a href="https://www.aboutads.info" target="_blank">aboutads.info</a>. I wash my hands.',
+      lgpdTitle: '6. DATA PROTECTION LAW (GDPR/LGPD)',
+      lgpdText: 'We play by the rules so they don’t take the site down. We only process anonymized IPs to stop hackers worse than me from breaking the firewall. If you want your residual data wiped from the matrix, send a signal.',
+      contactTitle: '7. RADIO FREQUENCY',
       contactText: 'Issues? Send a signal: <a href="mailto:contact@raquelsynths.com.br">contact@raquelsynths.com.br</a>'
     }
   }
