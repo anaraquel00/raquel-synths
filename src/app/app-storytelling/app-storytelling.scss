@@ -147,7 +147,7 @@
 /* --- ÁREA DE CONTEÚDO (Onde vai o texto) --- */
 /* Criei essa classe interna para dar o padding só no texto */
 .content-padding {
-  padding: 0.5rem 2rem; /* [BROKLIN FIX]: Margens laterais generosas para leitura */
+  padding: 2.1rem 1rem; /* [BROKLIN FIX]: Margens laterais generosas para leitura */
 }
 
 /* --- CABEÇALHO DO POST --- */
@@ -256,15 +256,18 @@
     font-size: 2rem;
   }
   .content-padding {
-    padding: 0.5rem 1.5rem; /* Padding menor no celular */
+    padding: 2rem 1.5rem; /* Padding menor no celular */
   }
 
   .img-wrapper-wide {
     height: 200px; /* Imagem menor no celular */
   }
-
+  .date{
+    font-size: 0.75rem;
+    padding: 3px 8px;    
+  }
   .title {
-    font-size: 1.5rem;
+    font-size: 1.5rem;    
   }
 
   .description-lead {
@@ -369,4 +372,4 @@
 }
 }
 }
-:host-context(.mode-jonah) {}
+

@@ -5,6 +5,25 @@ import { Meta, Title } from '@angular/platform-browser';
   providedIn: 'root'
 })
 export class SeoService {
+  // 🛡️ NOVO MÉTODO: Alinhado com o LogReaderComponent
+  updateMetaTags(config: { title: string; description: any; image?: string; url?: string }) {
+    const pageTitle = config.title ? `${config.title} | RaQuel Synths` : this.defaultTitle;
+    const pageDesc = config.description || this.defaultDesc;
+    const pageImage = config.image || this.defaultImage;
+
+    this.title.setTitle(pageTitle);
+    this.meta.updateTag({ name: 'description', content: pageDesc });
+
+    // Open Graph (Facebook/Discord/LinkedIn)
+    this.meta.updateTag({ property: 'og:title', content: pageTitle });
+    this.meta.updateTag({ property: 'og:description', content: pageDesc });
+    this.meta.updateTag({ property: 'og:image', content: pageImage });
+
+    // Twitter (X)
+    this.meta.updateTag({ name: 'twitter:title', content: pageTitle });
+    this.meta.updateTag({ name: 'twitter:description', content: pageDesc });
+    this.meta.updateTag({ name: 'twitter:image', content: pageImage });
+  }
 
   // O núcleo da nossa narrativa (Sincronizado com o index.html oficial)
   private defaultTitle = 'RaQuel Synths | Cyberpunk Sagas & Virtual Band';

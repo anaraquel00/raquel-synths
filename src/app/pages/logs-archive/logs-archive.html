@@ -30,21 +30,14 @@
               </div>
             }
 
-            <div class="post-content-wrapper">
-              <p class="post-text">{{ content?.description }}</p>
+           <div class="post-content-wrapper">
+              <p class="post-text" [innerHTML]="content?.description"></p>
 
-              @if (content?.jonahComment) {
-                <div class="jonah-box">
-                  <strong>[JONAH]:</strong> {{ content.jonahComment }}
-                </div>
-              }
-
-              @if (content?.techContent) {
-                <div class="tech-box">
-                  <span class="tech-label">[ DEV_NOTES ]</span>
-                  <div class="tech-body" [innerHTML]="content.techContent | safeHtml"></div>
-                </div>
-              }
+              <div class="action-area" style="margin-top: 20px;">
+                <a [routerLink]="['/log-reader', log.id]" class="btn-decrypt">
+                  {{ translate.isPt() ? '[ DECRIPTAR_LOG_COMPLETO ]' : '[ DECRYPT_FULL_LOG ]' }}
+                </a>
+              </div>
             </div>
           </div>
         </article>

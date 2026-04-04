@@ -30,8 +30,7 @@
               [alt]="content?.title">
              </div>
             }
-
-            <div class="content-padding">
+              <div class="content-padding">
 
               <div class="log-header">
                 <span class="date">{{ event.date }}</span>
@@ -40,24 +39,24 @@
 
               <p class="description-lead" [innerHTML]="content.description | safeHtml"></p>
 
-              @if (content?.techContent) {
-                <div class="tech-body" [innerHTML]="content.techContent | safeHtml"></div>
-                  }
-
-              @if (content?.jonahComment) {
-                <div class="jonah-note">
-                  <strong>[JONAH_OVERRIDE]:</strong> {{ content.jonahComment }}
+              @if (!event.isArchiveLink) {
+                <div class="action-area" style="margin-top: 15px;">
+                  <a [routerLink]="['/log-reader', event.id]" class="btn-decrypt">
+                    {{ translate.isPt() ? '[ DECRIPTAR_LOG_COMPLETO ]' : '[ DECRYPT_FULL_LOG ]' }}
+                  </a>
                 </div>
               }
 
               @if (event.isArchiveLink) {
-                <div class="action-area">
+                <div class="action-area" style="margin-top: 15px;">
                   <a routerLink="/logs-archive" class="btn-decrypt">
-                    [ 📂 ACCESS_FULL_ARCHIVES ]
+                     {{ translate.isPt() ? '[ 📂 ACESSAR_TODOS_OS_LOGS ]' : '[ 📂 ACCESS_FULL_ARCHIVES ]' }}
                   </a>
                 </div>
               }
-            </div> </div> <app-ad-banner></app-ad-banner>}
+              
+            </div>
+           </div> <app-ad-banner></app-ad-banner>}
       }
 
       @if (events.length === 0) {

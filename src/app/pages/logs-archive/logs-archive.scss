@@ -28,6 +28,22 @@
   .subtitle { font-size: 1.2rem; opacity: 0.8; }
  }
 
+ .btn-decrypt {
+  background: transparent;
+  border: 1px solid var(--accent-color);
+  color: var(--accent-color);
+  padding: 10px 20px;
+  cursor: pointer;
+  font-family: 'Fira Code', monospace;
+  font-weight: bold;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(var(--accent-rgb), 0.1);
+    box-shadow: 0 0 15px rgba(var(--accent-rgb), 0.4);
+  }
+}
+
  /* --- O POST (CARTÃO) --- */
  .blog-post {
   background: rgba(0, 0, 0, 0.78);

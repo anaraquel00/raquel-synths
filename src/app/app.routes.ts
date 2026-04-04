@@ -18,8 +18,13 @@ export const routes: Routes = [
       } 
     }
   },
+  // 📖 ROTA 2: O Leitor de Logs (O "Diário de Bordo" da Saga)
+  {
+  path: 'log-reader/:id',
+  loadComponent: () => import('./pages/log-reader/log-reader').then(m => m.LogReaderComponent)
+  },
 
-  // 📜 ROTA 2: O Arquivo de Logs (A "Memória Infinita")
+  // 📜 ROTA 3: O Arquivo de Logs (A "Memória Infinita")
   {
     path: 'logs-archive', 
     loadComponent: () => import('./pages/logs-archive/logs-archive').then(m => m.LogsArchiveComponent),
@@ -37,7 +42,7 @@ export const routes: Routes = [
     }
   },
 
-  // ✨ NOVA ROTA 2: O Arquivo Musical (Discografia Completa)
+  // ✨ NOVA ROTA 4: O Arquivo Musical (Discografia Completa)
   {
     path:'musical-archives', 
     loadComponent: () => import('./pages/musical-archives/musical-archives').then(m => m.MusicalArchives),
@@ -54,7 +59,7 @@ export const routes: Routes = [
       } 
     }
   },
- // 📖 ROTA 3: O Banner da Saga
+ // 📖 ROTA 5: O Banner da Saga
 
  {
   path: 'saga', loadComponent: () => import('./app-visual-novel/app-visual-novel').then(m => m.AppVisualNovel),
@@ -72,7 +77,7 @@ export const routes: Routes = [
 
  }} ,
 
-  // ✨ NOVA ROTA 4: O Catálogo (Episódios da Saga)
+  // ✨ NOVA ROTA 6: O Catálogo (Episódios da Saga)
   {
     path: 'visual-novel',
     loadComponent: () => import('./pages/visual-novel/visual-novel').then(m => m.VisualNovelComponent),
@@ -90,7 +95,7 @@ export const routes: Routes = [
     }
   },
 
-  // 📖 ROTA 5: O Leitor (Texto Puro)
+  // 📖 ROTA 7: O Leitor (Texto Puro)
   {
     path: 'lore/broklin',
     loadComponent: () => import('./pages/lore-reader/lore-reader').then(m => m.LoreReaderComponent)
@@ -100,7 +105,7 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/lore-reader/lore-reader').then(m => m.LoreReaderComponent)
   },
 
-  // 👩‍💻 ROTA 6: O Hub da Criadora (Blog Técnico/Portfólio)
+  // 👩‍💻 ROTA 8: O Hub da Criadora (Blog Técnico/Portfólio)
   {
     path: 'creator',
     loadComponent: () => import('./pages/creator/creator').then(m => m.Creator),
@@ -118,7 +123,7 @@ export const routes: Routes = [
     }
   },
 
-  // 🛡️ ROTA 7: Compliance
+  // 🛡️ ROTA 9: Compliance
   {
     path: 'compliance',
     loadComponent: () => import('./pages/compliance/compliance').then(m => m.ComplianceComponent),
@@ -136,7 +141,7 @@ export const routes: Routes = [
     }
   },
 
-  // 🛒 ROTA 8: A Loja (Neon Store)
+  // 🛒 ROTA 10: A Loja (Neon Store)
   {
     path: 'store',
     loadComponent: () => import('./pages/store/store').then(m => m.StoreComponent),
@@ -154,7 +159,7 @@ export const routes: Routes = [
     }
   },
 
-  // 📡 ROTA 9: O Terminal de Comunicação (Contato/Uplink)
+  // 📡 ROTA 11: O Terminal de Comunicação (Contato/Uplink)
   {
     path: 'contato',
     loadComponent: () => import('./pages/contato/contato').then(m => m.ContatoComponent),
@@ -172,7 +177,7 @@ export const routes: Routes = [
     }
   },
 
-  // 💿 ROTA 10: A Central de Áudio (Discografia)
+  // 💿 ROTA 12: A Central de Áudio (Discografia)
   {
     path: 'discografia',
     loadComponent: () => import('./app-discography/app-discography').then(m => m.DiscographyComponent),

@@ -1,5 +1,5 @@
 import { Injectable, PLATFORM_ID, inject } from '@angular/core';
-import { Firestore, collection, collectionData, query, orderBy, where } from '@angular/fire/firestore';
+import { Firestore, collection, collectionData, query, orderBy, where, doc, docData } from '@angular/fire/firestore';
 import { map, Observable, of, take } from 'rxjs'; // 🔥 Importamos o 'take' AQUI
 
 // --- IMPORTAÇÃO DAS INTERFACES ---
@@ -78,5 +78,15 @@ export class ContentService {
     const colRef = collection(this.firestore, 'logs');
     const q = query(colRef, orderBy('date', 'desc')); 
     return (collectionData(q, { idField: 'id' }) as Observable<any[]>).pipe(take(1));
+  }
+  // 📜 4.1 LOG ESPECÍFICO (O Sniper)
+  getLogById(id: string): Observable<any> {
+    if (!isPlatformBrowser(this.platformId)) return of(null);
+    
+    // Conecta direto no documento específico usando o ID da URL
+    const docRef = doc(this.firestore, `logs/${id}`);
+    
+    // Puxa os dados e anexa o ID junto no objeto
+   return docData(docRef) as Observable<any>;
   }
 }

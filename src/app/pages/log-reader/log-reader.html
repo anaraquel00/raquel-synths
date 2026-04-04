@@ -1,0 +1,44 @@
+@if (logData$ | async; as data) {
+  <main class="terminal-container">
+    <div class="terminal-wrapper">
+      
+      <header class="log-header">
+        <span class="date">{{ data.date }}</span>
+        <h1 class="title">{{ data.title }}</h1>
+      </header>
+
+      <p class="description-lead" [innerHTML]="data.description | safeHtml"></p>
+      
+      <div class="ad-module" style="margin: 30px 0;">
+        <app-ad-article></app-ad-article>
+      </div>
+
+      @if (data.techContent) {
+        <div class="tech-box">
+          <span class="tech-label">[ DEV_NOTES ]</span>
+          <div class="tech-body" [innerHTML]="data.techContent | safeHtml"></div>
+        </div>
+      }
+
+      @if (data.jonahComment) {
+        <div class="jonah-note">
+          <strong>[JONAH_OVERRIDE]:</strong> 
+          <span [innerHTML]="data.jonahComment | safeHtml"></span>
+        </div>
+      }
+
+      <div class="ad-module" style="margin: 30px 0;">
+        <app-ad-article></app-ad-article>
+      </div>
+
+      <footer class="terminal-footer">
+     <a class="btn-back" routerLink="/">{{ translate.isPt() ? '[ < VOLTAR_À_BASE ]' : '[ < BACK_TO_BASE ]' }}</a>  
+     </footer>
+
+    </div>
+  </main>
+} @else {
+  <div class="loading-state">
+    <p>[ 🔄 ESTABELECENDO_UPLINK_COM_O_MAINFRAME... ]</p>
+  </div>
+}
