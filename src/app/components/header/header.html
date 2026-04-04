@@ -26,7 +26,7 @@
     {{ navText.lightmode }} <!-- Texto: "VOLTAR À BASE" -->
    </button>
 
-    <button mat-button (click)="scrollTo('sobre')">{{ navText.sobre }}</button>
+    <button mat-button [routerLink]="['/dossier']">{{ navText.sobre }}</button>
     <button mat-button [routerLink]="['/saga']">{{ navText.visualNovel }}</button>
 
     <button mat-button [matMenuTriggerFor]="socialMenu">
@@ -89,7 +89,7 @@
   <span style="color: var(--accent-color); font-weight: bold;">{{ navText.creator }}</span>
 </button>
 
-<button mat-menu-item (click)="scrollTo('sobre')">{{ navText.sobre }}</button>
+<button mat-menu-item [routerLink]="['/dossier']">{{ navText.sobre }}</button>
 <button mat-menu-item [routerLink]="['/saga']">{{ navText.visualNovel }}</button>
 
 

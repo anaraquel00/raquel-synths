@@ -18,6 +18,16 @@
   letter-spacing: 3px;
   text-transform: uppercase;
 }
+.section-subtitle {
+    font-family: 'Courier New', Courier, monospace;
+    letter-spacing: 1.5px;
+    color: rgba(0, 255, 204, 0.7); /* Mantém o nosso Neon Cyan da Blue Team, mas esmaecido para leitura */
+    border-left: 2px solid #00ffcc; /* Barra de sistema lateral para ancorar o texto */
+    padding-left: 28px; 
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    margin-top: -1rem;
+  }
 
 .manifesto_jonah {
   display: none;
@@ -26,6 +36,7 @@
 .manifesto-text {
   max-width: 1200px;
   margin: 0.3rem 2rem auto;
+  font-family: 'Courier New', Courier, monospace;
   text-align: justify; /* Ou 'justify' para ficar quadradinho */
   font-size: 1.1rem;
   line-height: 1.8; /* Aumentei o respiro entre linhas */
@@ -204,9 +215,24 @@
 
 /* --- ☢️ MODO JONAH (O CAOS REAL) ☢️ --- */
 :host-context(.mode-jonah) {
+  .section-subtitle {
+    //estilo do texto mais agressivo e caótico para o modo Jonah
+    border-left: 2px solid #ff5722; 
+    font-family: 'Courier New', monospace;
+    color: #ff5722; /* Laranja intenso para o modo Jonah */
+    font-style: normal;
+    text-shadow: 0 0 5px #ff5722;
+  }
   
   .manifesto_jonah {
     display: block;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 1.5px;
+    color: #ccb6b0; /* Laranja intenso, mas esmaecido para leitura */
+    font-size: 1.2rem;
+    margin-left: 10px; /* Aumenta o recuo para destacar mais a barra */
+    margin-bottom: 1rem;
+    margin-top: -1rem;
   }
 
   .manifesto-text {

@@ -15,7 +15,7 @@ import { isPlatformBrowser } from '@angular/common';
 @Component({
   selector: 'app-logs-archive',
   standalone: true,
-  imports: [CommonModule, RouterModule, SafeHtmlPipe, AdArticleComponent, NgOptimizedImage, ScrollingModule],
+  imports: [CommonModule, RouterModule, AdArticleComponent, NgOptimizedImage, ScrollingModule],
   templateUrl: './logs-archive.html',
   styleUrls: ['./logs-archive.scss']
 })

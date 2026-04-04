@@ -1,15 +1,15 @@
-import { Component, OnInit, OnDestroy, AfterViewChecked, inject, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslationService } from '../../services/translation.service';
 import { ContentService } from '../../services/content.service';
-import { Observable } from 'rxjs';
+import { SeoService } from '../../services/seo.service'; // 🛡️ Importante para SEO
+import { Observable, combineLatest, of } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { SplitContentPipe } from "../../components/pipes/content-splitter.pipe";
 import { LoreEpisode } from '../../data/lore-data';
 import { AdArticleComponent } from "../../components/ad-article/ad-article";
 import { NgOptimizedImage } from '@angular/common';
-import { tap } from 'rxjs/operators';
-
 
 @Component({
   selector: 'app-lore-reader',
@@ -18,17 +18,18 @@ import { tap } from 'rxjs/operators';
   templateUrl: './lore-reader.html',
   styleUrls: ['./lore-reader.scss']
 })
-export class LoreReaderComponent implements OnInit, OnDestroy, AfterViewChecked {
+export class LoreReaderComponent implements OnInit, OnDestroy {
   private contentService = inject(ContentService);
   public translate = inject(TranslationService);
+  private seoService = inject(SeoService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
   currentMode: 'broklin' | 'jonah' = 'broklin';
-  episodes$!: Observable<LoreEpisode[]>; // 👈 Usando a interface certa
+  
+  // 🛡️ O CANO AGORA ENTREGA APENAS UM EPISÓDIO, NÃO UM ARRAY
+  episode$!: Observable<LoreEpisode | null>; 
 
-  private targetId: string | null = null;
-  private scrollDone = false;
   private themeObserver: MutationObserver | null = null;
   isBrowser: boolean;
 
@@ -39,74 +40,36 @@ export class LoreReaderComponent implements OnInit, OnDestroy, AfterViewChecked 
   ngOnInit() {
     if (this.isBrowser) {
       this.checkTheme();
-      this.loadEpisodes(); // 🚀 LIGA O FIREBASE AQUI
-
-      this.targetId = this.route.snapshot.paramMap.get('id');
 
       this.themeObserver = new MutationObserver(() => {
         this.checkTheme();
-        this.loadEpisodes(); // Recarrega se trocar de Broklin para Jonah
+        // A reatividade lida com a mudança de modo automaticamente!
       });
       this.themeObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
     }
-  }
 
- loadEpisodes() {
-    // 🔌 Conecta o cano no lugar certo e coloca um "grampo" (tap) na linha
-    this.episodes$ = this.contentService.getEpisodes(this.currentMode).pipe(
-      tap((episodes) => {
-        // Antes do HTML desenhar a tela, o sistema verifica se temos um alvo (ex: ep-6)
-        if (this.targetId && episodes) {
-          
-          // Rastreamos em qual índice do array (posição) esse episódio está
-          const targetIndex = episodes.findIndex(ep => ep.id === this.targetId);
-          
-          // Se o episódio estiver escondido atrás do nosso escudo de limite (5)...
-          if (targetIndex >= this.displayLimit) {
-            // 🛑 HACK DE SISTEMA: Destravamos o limite para caber o episódio alvo + folga!
-            this.displayLimit = targetIndex + 2; 
-          }
-        }
+    // 🛰️ CAPTURA O ID DA URL
+    const id$ = this.route.paramMap.pipe(map(params => params.get('id')));
+
+    // 💻 CONECTA O CANO DE FORMA REATIVA
+    this.episode$ = id$.pipe(
+      switchMap(id => {
+        if (!id) return of(null);
+
+        // Puxa o array do servidor, mas FILTRA apenas o alvo!
+        return this.contentService.getEpisodes(this.currentMode).pipe(
+          map(episodes => episodes ? episodes.find(ep => ep.id === id) || null : null),
+          tap(ep => {
+            if (ep) {
+               // Atualiza a aba do navegador para o SEO rastrear
+               const title = this.translate.isPt() ? ep.title : (ep.title_en || ep.title);
+               const desc = this.translate.isPt() ? ep.description : (ep.description_en || ep.description);
+               this.seoService.updateMetaTags({ title: `${title} | RQS Saga`, description: desc });
+            }
+          })
+        );
       })
-   );
-  }
-
-// Variável de controle para não entrar em loop eterno
-  // Mude de boolean para number para contar as tentativas
-  private scrollAttempts = 0; 
-
-  ngAfterViewChecked() {
-    // 🔍 O ELEMENTO SÓ EXISTE DEPOIS QUE O FIREBASE CARREGA
-    if (this.isBrowser && this.targetId && this.scrollAttempts < 3) {
-      
-      const element = document.getElementById(this.targetId);
-      
-      if (element) {
-        // TÁTICA "DOUBLE TAP" 🔫
-        
-        // 1. Scroll Imediato (Assim que o elemento nasce no DOM)
-        this.scrollToTarget(element);
-        this.scrollAttempts++; // Conta 1
-
-        // 2. Scroll de Correção (500ms depois - Imagens leves carregaram)
-        setTimeout(() => {
-          this.scrollToTarget(element);
-        }, 500);
-
-        // 3. Scroll Final (1.5s depois - Garantia total contra internet lenta)
-        setTimeout(() => {
-          this.scrollToTarget(element);
-        }, 1500);
-      }
-    }
-  }
-
-  scrollToTarget(element: HTMLElement) {
-    // Como usamos o CSS 'scroll-margin-top', o método nativo funciona melhor!
-    element.scrollIntoView({ 
-      behavior: 'smooth', 
-      block: 'start' // Alinha o topo do elemento com o topo da janela (respeitando o margin css)
-    });
+    );
   }
 
   ngOnDestroy() {
@@ -121,13 +84,5 @@ export class LoreReaderComponent implements OnInit, OnDestroy, AfterViewChecked 
 
   goBack() {
     this.router.navigate(['/visual-novel']);
-  }
-
-  // 1. Limite de renderização do DOM (Inicia com 5 arquivos)
-  displayLimit: number = 5;
-
-  // 2. A função que o botão vai chamar para liberar mais pacotes de dados
-  decriptarMais() {
-    this.displayLimit += 5;
   }
 }

@@ -1,5 +1,6 @@
 <section class="bios-container">
-  <h2 class="section-title">{{ translate.isPt() ? 'QUEM SOMOS' : 'WHO WE ARE' }}</h2>
+  <h2 class="section-title">{{ translate.isPt() ? 'DOSSIÊ OPERATIVO' : 'OPERATIVE DOSSIER' }}</h2>
+  <p class="section-subtitle">{{ translate.isPt() ? 'Acesso restrito: decripte os perfis operativos da RQS.' : 'Restricted access: decrypt the operative profiles of RQS.' }}</p>
 <div class="manifesto-text">
     <div [innerHTML]="translate.isPt() ? manifestoPt : manifestoEn" (click)="handleClick($event)">
     </div>

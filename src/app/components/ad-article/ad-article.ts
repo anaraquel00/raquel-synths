@@ -20,23 +20,26 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
     </div>
   `,
   styles: [`
-    :host { display: block; width: 100%; margin: 3rem 0; }
+    /* 🛡️ Reduzimos a margem externa pela metade */
+    :host { display: block; width: 100%; margin: 1.5rem 0; }
     
     .ad-native-container {
       width: 100%;
-      border-top: 1px solid rgba(0,255,0,0.2); /* Linha sutil verde */
-      border-bottom: 1px solid rgba(0,255,0,0.2);
-      padding: 20px 0;
-      background: rgba(255,255,255,0.02); /* Leve destaque do fundo */
+      /* 💻 Trocamos a linha sólida por tracejada (estilo log de sistema) e ajustamos pro Cyan da RQS */
+      border-top: 1px dashed rgba(0, 255, 204, 0.3); 
+      border-bottom: 1px dashed rgba(0, 255, 204, 0.3);
+      padding: 15px 0; /* Área de respiro interna mais contida */
+      background: rgba(0, 255, 204, 0.02); /* Fundo levíssimo em tom neon */
     }
 
     .system-label {
       font-family: 'Courier New', monospace;
-      font-size: 0.6rem;
-      color: rgba(255,255,255,0.4);
-      margin-bottom: 10px;
+      font-size: 0.65rem;
+      color: rgba(0, 255, 204, 0.5);
+      margin-bottom: 8px;
       text-align: center;
       letter-spacing: 2px;
+      text-transform: uppercase;
     }
   `]
 })

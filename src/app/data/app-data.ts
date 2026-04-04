@@ -1,8 +1,8 @@
 import { Album } from '../models/album.model';
 // DADOS DO HEADER/NAV
 export const NAV_DATA = {
-  pt: { lightmode:'MODO BROKLIN', darkmode:'MODO JONAH', inicio: 'INÍCIO', sobre: 'QUEM SOMOS', visualNovel: 'SAGAS', discografia: 'DISCOGRAFIA', store: 'LOJA', social: 'COMUNIDADE', creator: 'A CRIADORA', backToBase: 'VOLTAR À BASE' },
-  en: { lightmode:'BROKLIN MODE', darkmode:'JONAH MODE', inicio: 'HOME', sobre: 'WHO WE ARE', visualNovel: 'SAGAS', discografia: 'DISCOGRAPHY', store: 'STORE', social: 'COMMUNITY', creator: 'THE CREATOR', backToBase: 'BACK TO BASE' }
+  pt: { lightmode:'MODO BROKLIN', darkmode:'MODO JONAH', inicio: 'INÍCIO', sobre: 'DOSSIÊ OPERATIVO', visualNovel: 'SAGAS', discografia: 'DISCOGRAFIA', store: 'LOJA', social: 'COMUNIDADE', creator: 'A CRIADORA', backToBase: 'VOLTAR À BASE' },
+  en: { lightmode:'BROKLIN MODE', darkmode:'JONAH MODE', inicio: 'HOME', sobre: 'OPERATIVE DOSSIER', visualNovel: 'SAGAS', discografia: 'DISCOGRAPHY', store: 'STORE', social: 'COMMUNITY', creator: 'THE CREATOR', backToBase: 'BACK TO BASE' }
 };
 
 // DADOS DA HOME
@@ -383,7 +383,6 @@ export const VISUAL_NOVEL_PT = [
     },
 
 ];
-
 
 export const VISUAL_NOVEL_EN = [
 

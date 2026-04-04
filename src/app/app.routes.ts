@@ -18,13 +18,30 @@ export const routes: Routes = [
       } 
     }
   },
-  // 📖 ROTA 2: O Leitor de Logs (O "Diário de Bordo" da Saga)
+// 🛡️ ROTA 2: Acesso ao Banco de Dados dos Criadores
+  {
+    path: 'dossier', // 💻 Substituímos 'about' por 'dossier' (funciona perfeitamente em PT e EN)
+    loadComponent: () => import('./pages/sobre/sobre').then(m => m.SobreComponent),
+    data: { 
+      seo: { 
+        title: {
+          pt: 'Dossiê Operativo | Arquitetos da RQS',
+          en: 'Operative Dossier | RQS Architects'
+        },
+        description: {
+          pt: 'Acesso restrito: decripte os perfis operativos da Blue Team. Conheça Broklin, a General Kelma e as mentes que programam a saga cyberpunk RQS.',
+          en: 'Restricted access: decrypt the Blue Team operative profiles. Meet Broklin, General Kelma, and the minds coding the RQS cyberpunk saga.'
+        }
+      }
+    }    
+  },
+  // 📖 ROTA 3: O Leitor de Logs (O "Diário de Bordo" da Saga)
   {
   path: 'log-reader/:id',
   loadComponent: () => import('./pages/log-reader/log-reader').then(m => m.LogReaderComponent)
   },
 
-  // 📜 ROTA 3: O Arquivo de Logs (A "Memória Infinita")
+  // 📜 ROTA 4: O Arquivo de Logs (A "Memória Infinita")
   {
     path: 'logs-archive', 
     loadComponent: () => import('./pages/logs-archive/logs-archive').then(m => m.LogsArchiveComponent),
@@ -42,7 +59,7 @@ export const routes: Routes = [
     }
   },
 
-  // ✨ NOVA ROTA 4: O Arquivo Musical (Discografia Completa)
+  // ✨ NOVA ROTA 5: O Arquivo Musical (Discografia Completa)
   {
     path:'musical-archives', 
     loadComponent: () => import('./pages/musical-archives/musical-archives').then(m => m.MusicalArchives),
@@ -59,7 +76,7 @@ export const routes: Routes = [
       } 
     }
   },
- // 📖 ROTA 5: O Banner da Saga
+ // 📖 ROTA 6: O Banner da Saga
 
  {
   path: 'saga', loadComponent: () => import('./app-visual-novel/app-visual-novel').then(m => m.AppVisualNovel),
@@ -77,7 +94,7 @@ export const routes: Routes = [
 
  }} ,
 
-  // ✨ NOVA ROTA 6: O Catálogo (Episódios da Saga)
+  // ✨ NOVA ROTA 7: O Catálogo (Episódios da Saga)
   {
     path: 'visual-novel',
     loadComponent: () => import('./pages/visual-novel/visual-novel').then(m => m.VisualNovelComponent),
@@ -95,7 +112,7 @@ export const routes: Routes = [
     }
   },
 
-  // 📖 ROTA 7: O Leitor (Texto Puro)
+  // 📖 ROTA 8: O Leitor (Texto Puro)
   {
     path: 'lore/broklin',
     loadComponent: () => import('./pages/lore-reader/lore-reader').then(m => m.LoreReaderComponent)
@@ -105,7 +122,7 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/lore-reader/lore-reader').then(m => m.LoreReaderComponent)
   },
 
-  // 👩‍💻 ROTA 8: O Hub da Criadora (Blog Técnico/Portfólio)
+  // 👩‍💻 ROTA 9: O Hub da Criadora (Blog Técnico/Portfólio)
   {
     path: 'creator',
     loadComponent: () => import('./pages/creator/creator').then(m => m.Creator),
@@ -123,7 +140,7 @@ export const routes: Routes = [
     }
   },
 
-  // 🛡️ ROTA 9: Compliance
+  // 🛡️ ROTA 10: Compliance
   {
     path: 'compliance',
     loadComponent: () => import('./pages/compliance/compliance').then(m => m.ComplianceComponent),
@@ -141,7 +158,7 @@ export const routes: Routes = [
     }
   },
 
-  // 🛒 ROTA 10: A Loja (Neon Store)
+  // 🛒 ROTA 11: A Loja (Neon Store)
   {
     path: 'store',
     loadComponent: () => import('./pages/store/store').then(m => m.StoreComponent),
@@ -159,7 +176,7 @@ export const routes: Routes = [
     }
   },
 
-  // 📡 ROTA 11: O Terminal de Comunicação (Contato/Uplink)
+  // 📡 ROTA 12: O Terminal de Comunicação (Contato/Uplink)
   {
     path: 'contato',
     loadComponent: () => import('./pages/contato/contato').then(m => m.ContatoComponent),
@@ -177,7 +194,7 @@ export const routes: Routes = [
     }
   },
 
-  // 💿 ROTA 12: A Central de Áudio (Discografia)
+  // 💿 ROTA 13: A Central de Áudio (Discografia)
   {
     path: 'discografia',
     loadComponent: () => import('./app-discography/app-discography').then(m => m.DiscographyComponent),

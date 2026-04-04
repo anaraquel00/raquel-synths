@@ -31,8 +31,8 @@ export class ContentService {
     }
 
     // --- 🕰️ MÁQUINA DO TEMPO (QA & TESTES DE UI) ---
-    // const dataFutura = new Date('2030-01-01'); // Viajamos para 2030
-    // where("releasedDate", "<=", dataFutura)
+     //const dataFutura = new Date('2030-01-01'); // Viajamos para 2030
+     //where("releasedDate", "<=", dataFutura)
     
     // 1. DECIDE QUAL COLEÇÃO USAR BASEADO NO MODO
     const collectionName = mode === 'jonah' ? 'lore-jonah' : 'lore'; 
