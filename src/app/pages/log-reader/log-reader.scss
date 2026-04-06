@@ -61,6 +61,9 @@
   font-family: 'Fira Code', monospace;
   font-weight: bold;
 }
+ .jonah-note {
+  display: none; // Escondido por padrão, só aparece no modo Jonah
+ }
 
 // ☣️ [ REDTEAM ] - JONAH OVERRIDE
 :host-context(.mode-jonah) {
@@ -113,6 +116,15 @@
 .btn-return:hover, .btn-back:hover {
     background: rgba(var(--accent-rgb), 0.1);
     box-shadow: 0 0 15px rgba(var(--accent-rgb), 0.4);
+  }
+  .jonah-note {
+    display: block; // Mostra a nota de Jonah no modo caos
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(29, 9, 2, 0.2);
+    border-left: 4px solid #ff4500;
+    color: #ff4500;
+    font-style: italic;
   }
 }
 
