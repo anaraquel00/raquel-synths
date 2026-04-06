@@ -18,7 +18,7 @@
         <article class="blog-post">
           <div class="post-header">
             <span class="post-date">{{ log.date }}</span>
-            <h2 class="post-title">{{ content?.title }}</h2>
+            <h2 class="post-title"[innerHTML]=" content?.title "></h2>
           </div>
 
           <div class="post-body">
