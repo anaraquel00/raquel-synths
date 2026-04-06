@@ -70,6 +70,14 @@ app.get('/sitemap.xml', async (req, res) => {
       });
     }
 
+    // ☣️ INDEXANDO OS LOGS DO JONAH (Red Team - Isolamento de Rede)
+    if (logsData.documents) {
+      logsData.documents.forEach((doc: any) => {
+        const logId = doc.name.split('/').pop();
+        xml += `  <url>\n    <loc>https://raquelsynths.com.br/log-reader/${logId}?mode=jonah</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
+      });
+    }
+
     // 🛡️ INDEXANDO A MINHA SAGA (Blue Team)
     if (loreData.documents) {
       loreData.documents.forEach((doc: any) => {
