@@ -53,7 +53,7 @@ export class LogReaderComponent implements OnInit {
               title: localized?.title,
               description: localized?.description,
               techContent: localized?.techContent,
-              jonahComment: localized?.JonahComment // ⚠️ Case-sensitive (print do Firebase)
+              jonahComment: localized?.jonahComment 
             };
           }),
           tap(mappedData => {
