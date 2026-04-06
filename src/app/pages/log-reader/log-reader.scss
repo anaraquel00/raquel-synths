@@ -65,6 +65,41 @@
   display: none; // Escondido por padrão, só aparece no modo Jonah
  }
 
+   ::ng-deep .cyber-play-btn {
+  display: inline-block; /* Mantém no meio do texto, mas permite bordas/padding */
+  background-color: rgba(10, 10, 15, 0.8);
+  color: #00e5ff;
+  font-size: 16px; /* Tamanho de texto legível */
+  border-radius: 20px; /* Formato pílula horizontal (não círculo) */
+  padding: 4px 15px; /* Espaço pro texto respirar */
+  text-align: center;
+  border: 2px solid #00e5ff;
+  box-shadow: 0px 0px 10px #00e5ff;
+  text-decoration: none; /* Tira o sublinhado padrão do link */
+  transition: all 0.3s ease;
+  cursor: pointer; /* O mouse vira mãozinha (fundamental) */
+  white-space: nowrap; /* Impede o botão de quebrar no meio de duas linhas */
+}
+
+/* O Efeito Neon ao passar o mouse */
+::ng-deep .cyber-play-btn:hover {
+  background-color: rgba(0, 229, 255, 0.2);
+  box-shadow: 0px 0px 20px #00e5ff;
+}
+
+/* Isolamento do Tema do Jonah */
+:host-context(.mode-jonah) ::ng-deep .cyber-play-btn {
+  background-color: rgba(255, 153, 0, 0.2);
+  color: #ff9900;
+  border-color: #ff9900;
+  box-shadow: 0px 0px 10px #ff9900;
+}
+
+:host-context(.mode-jonah) ::ng-deep .cyber-play-btn:hover {
+  background-color: rgba(255, 153, 0, 0.4);
+  box-shadow: 0px 0px 20px #ff9900;
+}
+
 // ☣️ [ REDTEAM ] - JONAH OVERRIDE
 :host-context(.mode-jonah) {
   .terminal-container {

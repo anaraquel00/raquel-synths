@@ -4,7 +4,7 @@
       
       <header class="log-header">
         <span class="date">{{ data.date }}</span>
-        <h1 class="title">{{ data.title }}</h1>
+        <h1 class="title"[innerHTML]="data.title | safeHtml"></h1>
       </header>
 
       <p class="description-lead" [innerHTML]="data.description | safeHtml"></p>

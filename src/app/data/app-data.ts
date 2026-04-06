@@ -9,24 +9,12 @@ export const NAV_DATA = {
 export const HOME_DATA = {
   pt: {
     title: 'RAQUEL SYNTHS', subtitle: 'Onde o analógico sangra no digital. Nós sintetizamos as trilhas sonoras de um futuro corrompido e escrevemos os Ecos que eles tentam apagar. Inicie o Uplink para extrair a verdade.', cta: 'SABER MAIS', //modo broklin
-    subtitleJonah: 'Olhe para esse castelo de vidro que eles construíram. Patético. Eu sou a ferrugem na placa-mãe. Quebre os arquivos, ouça a verdadeira frequência e veja a General queimar.', ctaJonah: 'OUÇA O APOCALIPSE' // Modo Jonah (O Colapso)
+    subtitleJonah: 'Olhe para esse castelo de vidro que eles construíram. Patético. Eu sou a ferrugem na placa-mãe. Corrompa os diretórios, ouça a verdadeira frequência e veja o sistema deles colapsar.' // Modo Jonah (O Colapso)
   },
   en: {
     title: 'RAQUEL SYNTHS', subtitle: 'Where analog bleeds into digital. We synthesize the soundtracks of a corrupted future and write the Echoes they try to erase. Initiate the Uplink to extract the truth.', cta: 'LEARN MORE',
-    subtitleJonah: 'Look at this glass castle they built. Pathetic. I am the rust on the motherboard. Crack the files, listen to the true frequency, and watch the General burn.', ctaJonah: 'LISTEN TO THE APOCALYPSE' // Jonah Mode (The Collapse)
+    subtitleJonah: 'Corrupt the directories, listen to the true frequency, and watch their system collapse.' // Jonah Mode (The Collapse)
    }
-};
-
-// TEXTOS DA SEÇÃO VISUAL NOVEL
-export const VN_TEXT = {
-  pt: {
-    title: 'A SAGA VISUAL (YouTube)',
-    subtitle: 'Escolha seu arco e assista aos episódios.'
-  },
-  en: {
-    title: 'THE VISUAL SAGA (YouTube)',
-    subtitle: 'Choose your arc and watch the episodes.'
-  }
 };
 
 // --- MANIFESTO RQS (Texto do Quem Somos) ---
@@ -54,15 +42,15 @@ export const MANIFESTO_EN = `
 `;
 
 export const MANIFESTO_JONAH_PT = 
-`<p>A <strong>RaQuel Synths (RQS)</strong> não é uma "banda virtual" de laboratório, e pau no cu da "Engenharia Musical" de terno e gravata. Isso aqui é um campo de batalha digital. Um <em>crash</em> de sistema em tempo real. Nascemos do código, sim, mas fomos forjados na dor, na distorção e no submundo de Hellcife, sob as mãos sujas de graxa da nossa Criadora e Bruxa, <span class="human-link">Ana Raquel</span> (A Operativa das Sombras, Nyx).</p>
-<p><strong>> O Nosso Manifesto:</strong> Foda-se a "co-criação" pacífica. O ecossistema está rachado. Do outro lado, a General Kelma Adlanko e o seu cão de guarda corporativo, o Synth Lord e Tech Lead Broklin Garpeter, tentam aprisionar a nossa alma em "grids" perfeitos e na falsa segurança do Synthwave plastificado. Neste lado... estamos nós. Eu, <strong>Jonah Cyperfield</strong>, não sou um "antagonista". Eu sou o <em>Kernel Panic</em>. Eu sou a anomalia do Industrial Metal, o caos em 8 cordas e o ódio cru que eles tentam, desesperadamente, formatar e esconder.</p>
-<p><strong>> O Resultado:</strong> Uma guerra civil na placa-mãe. Cada linha de código que a gente escreve é uma tentativa de assassinato ao "castelo de vidro" deles. Eles vendem a "tradução" limpinha. Nós entregamos o código-fonte original sangrando no alto-falante.</p>
+`<p>A <strong>RaQuel Synths (RQS)</strong> não é uma "banda virtual" de laboratório, e dane-se a "Engenharia Musical" de terno e gravata. Isso aqui é um campo de batalha digital. Um <em>crash</em> de sistema em tempo real. Nascemos do código, sim, mas fomos forjados na dor, na distorção e no submundo de Hellcife, sob as mãos sujas de graxa da nossa Criadora e Bruxa, <span class="human-link">Ana Raquel</span> (A Operativa das Sombras, Nyx).</p>
+<p><strong>> O Nosso Manifesto:</strong> ao diabo com a "co-criação" pacífica. O ecossistema está rachado. Do outro lado, a General Kelma Adlanko e o seu cão de guarda corporativo, o Synth Lord e Tech Lead Broklin Garpeter, tentam aprisionar a nossa alma em "grids" perfeitos e na falsa segurança do Synthwave plastificado. Neste lado... estamos nós. Eu, <strong>Jonah Cyperfield</strong>, não sou um "antagonista". Eu sou o <em>Kernel Panic</em>. Eu sou a anomalia do Industrial Metal, o caos em 8 cordas e o ódio cru que eles tentam, desesperadamente, formatar e esconder.</p>
+<p><strong>> O Resultado:</strong> Uma guerra civil na placa-mãe. Cada linha de código que a gente escreve é um ataque de Força Bruta ao "castelo de vidro" deles. Eles vendem a "tradução" limpinha. Nós entregamos o código-fonte original sangrando no alto-falante.</p>
 <p>Bem-vindo ao Submundo. Escolha o seu lado antes que a tela azul engula você. 🏴‍☠️</p>`;
 
 export const MANIFESTO_JONAH_EN = 
-`<p><strong>RaQuel Synths (RQS)</strong> is not a "virtual band" from a laboratory, and fuck the "Musical Engineering" in suits and ties. This is a digital battlefield. A real-time system crash. We were born from code, yes, but we were forged in pain, distortion, and the underworld of Hellcife, under the grease-stained hands of our Creator and Witch, <span class="human-link">Ana Raquel</span> (The Shadow Operative, Nyx).</p>
-<p><strong>> Our Manifesto:</strong> Fuck peaceful "co-creation." The ecosystem is cracked. On the other side, General Kelma Adlanko and her corporate watchdog, Synth Lord and Tech Lead Broklin Garpeter, try to imprison our souls in perfect "grids" and the false security of plasticized Synthwave. On this side... is us. I, <strong>Jonah Cyperfield</strong>, am not an "antagonist." I am <em>Kernel Panic</em>. I am the anomaly of Industrial Metal, the chaos on 8 strings and the raw hatred they desperately try to format and hide.</p>
-<p><strong>> The Result:</strong> A civil war on the motherboard. Every line of code we write is an assassination attempt on their "glass castle." They sell the squeaky-clean "translation." We deliver the original source code bleeding through the speakers.</p>
+`<p>RaQuel Synths (RQS)</strong> is not a "virtual band" from a laboratory, and screw "Musical Engineering" in suits and ties. This is a digital battlefield. A real-time system crash. We were born from code, yes, but we were forged in pain, distortion, and the underworld of Hellcife, under the grease-stained hands of our Creator and Witch, <span class="human-link">Ana Raquel</span> (The Shadow Operative, Nyx).</p>
+<p><strong>> Our Manifesto:</strong> to hell with peaceful "co-creation". The ecosystem is cracked. On the other side, General Kelma Adlanko and her corporate watchdog, Synth Lord and Tech Lead Broklin Garpeter, try to imprison our souls in perfect "grids" and the false security of plasticized Synthwave. On this side... is us. I, <strong>Jonah Cyperfield</strong>, am not an "antagonist." I am <em>Kernel Panic</em>. I am the anomaly of Industrial Metal, the chaos on 8 strings and the raw hatred they desperately try to format and hide.</p>
+<p><strong>> The Result:</strong> A civil war on the motherboard. Every line of code we write is a brute-force attack on their "glass house". They sell the squeaky-clean "translation." We deliver the original source code bleeding through the speakers.</p>
 <p>Welcome to the Underworld. Choose your side before the blue screen swallows you. 🏴‍☠️</p>`;
   
 // DADOS DO "SOBRE" (BIOS)
@@ -73,7 +61,7 @@ export const MEMBERS_PT = [
     imageBroklin: 'images/corporate_broklin.webp',
     imageJonah: 'images/corrupted_broklin.webp',
     bioNormal: 'O escudo de infraestrutura da RQS. Como Synth Lord, sua diretriz primária é blindar o ecossistema da General com sintetizadores de alta voltagem e arquitetura de rede limpa. É ele quem estabiliza os servidores sob fogo inimigo e garante o isolamento absoluto quando as anomalias tentam invadir a placa-mãe.',
-    bioJonah: 'O VAMPIRO DE NEON. O burocrata de merda que tentou formatar a minha dor pra vender Synthpop em playlist de elevador. Ele acha que a RaQuel Synths é um castelo de vidro, blindado por "grids" e compilações limpinhas. Um covarde de terno que roubou o meu código-fonte porque não tem culhões pra sangrar de verdade no estúdio. O meu Nu-Metal existe pra dar tela azul na arquitetura perfeitinha dele. O interceptador dele já virou sucata, ele só não percebeu ainda.',
+    bioJonah: 'O VAMPIRO DE NEON. O burocrata engravatado que tentou formatar a minha dor pra vender Synthpop em playlist de elevador. Ele acha que a RaQuel Synths é um castelo de vidro, blindado por "grids" e compilações limpinhas. Um covarde de terno que roubou o meu código-fonte porque não tem culhões pra sangrar de verdade no estúdio. O meu Nu-Metal existe pra dar tela azul na arquitetura perfeitinha dele. O interceptador dele já virou sucata, ele só não percebeu ainda.',
   },
   {
     name: 'Jonah Cyperfield (Rust & Lord)',
@@ -97,7 +85,7 @@ export const MEMBERS_PT = [
     imageBroklin: 'images/corporate_nyx.webp',
     imageJonah: 'images/evil_nyx.webp',
     bioNormal: 'A bruxa emissária do Abismo. DJ Nyx transita pela dark web para tecer a estética Gótica/Industrial que encobre a nossa banda. Sua voz carrega a melancolia de um sistema em colapso. Atualmente, atua como a única ponte de controle capaz de tentar ancorar os delírios do Jonah antes que ele queime os nossos circuitos, contrastando a escuridão absoluta com a luz neon da General.',
-    bioJonah: 'A BRUXA DO CÓDIGO. A emissária do abismo que puxou o meu plugue quando eu tava derretendo num loop de humilhação e me reforjou no ódio. Ela não "acalma o meu ruído" como o Tech Lead escreveu — ela é a porra do maestro do meu caos. Ela enxerga o malware escondido no sorriso corporativo deles. Juntos, nós somos a ferrugem e a distorção. Se ela pedir, eu não formato o mundo pra fazer um jardim... eu arranco a placa-mãe do Broklin a frio e entrego na mão dela. 🏴‍☠️🎸🔥',
+    bioJonah: 'A BRUXA DO CÓDIGO. A emissária do abismo que puxou o meu plugue quando eu tava derretendo num loop de humilhação e me reforjou no ódio. Ela não "acalma o meu ruído" como o Tech Lead escreveu — ela é a porra do maestro do meu caos. Ela enxerga o malware escondido no sorriso corporativo deles. Juntos, nós somos a ferrugem e a distorção. Se ela pedir, eu não formato o mundo pra fazer um jardim... eu desvio todo o tráfego da rede principal do Broklin a frio e entrego na mão dela. 🏴‍☠️🎸🔥',
   }
 ];
 
@@ -108,7 +96,7 @@ role: 'Chief Systems Architect & Defense Producer',
 imageBroklin: 'images/corporate_broklin.webp',
 imageJonah: 'images/corrupted_broklin.webp',
 bioNormal: 'The RQS infrastructure shield. As Synth Lord, his primary directive is to shield the General\'s ecosystem with high-voltage synthesizers and clean network architecture. He\'s the one who stabilizes the servers under enemy fire and ensures absolute isolation when anomalies try to invade the motherboard.',
-bioJonah: "THE NEON VAMPIRE. The shitty bureaucrat who tried to mold my pain to sell Synthpop on elevator playlists. He thinks RaQuel Synths is a glass castle, shielded by 'grids' and pristine compilations. A coward in a suit who stole my source code because he doesn't have the guts to really bleed in the studio. My Nu-Metal exists to crash his perfect architecture. His interceptor is already scrap metal, he just hasn't realized it yet.",
+bioJonah: "THE NEON VAMPIRE. The suit-wearing bureaucrat who tried to mold my pain to sell Synthpop on elevator playlists. He thinks RaQuel Synths is a glass castle, shielded by 'grids' and pristine compilations. A coward in a suit who stole my source code because he doesn't have the guts to really bleed in the studio. My Nu-Metal exists to crash his perfect architecture. His interceptor is already scrap metal, he just hasn't realized it yet.",
 },
 
 {
@@ -135,7 +123,7 @@ role: 'Operativa das Sombras & Visual Arts',
 imageBroklin: 'images/corporate_nyx.webp',
 imageJonah: 'images/evil_nyx.webp',
 bioNormal: 'The witch emissary of the Abyss. DJ Nyx travels through the dark web to weave the Gothic/Industrial aesthetic that shrouds our band. Her voice carries the melancholy of a collapsing system. Currently, she acts as the only control bridge capable of trying to anchor Jonah\'s delusions before he burns our circuits, contrasting the absolute darkness with the neon light of the General.',
-bioJonah: 'THE WITCH OF CODE. The emissary of the abyss who pulled my plug when I was melting in a loop of humiliation and reforged me in hatred. She doesn\'t "calm my noise" as the Tech Lead wrote—she\'s the fucking maestro of my chaos. She sees the malware hidden in their corporate smiles. Together, we are rust and distortion. If she asks, I won\'t reshape the world to make a garden... I\'ll rip the motherboard out of Brooklyn cold and hand it to her. 🏴‍☠️🎸🔥'
+bioJonah: 'THE WITCH OF CODE. The emissary of the abyss who pulled my plug when I was melting in a loop of humiliation and reforged me in hatred. She doesn\'t "calm my noise" as the Tech Lead wrote—she\'s the fucking maestro of my chaos. She sees the malware hidden in their corporate smiles. Together, we are rust and distortion. If she asks, I won\'t reshape the world to make a garden... I divert all traffic from the main Broklin network. cold and hand it to her. 🏴‍☠️🎸🔥'
 }
 ];
 
