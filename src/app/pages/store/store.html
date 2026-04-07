@@ -21,6 +21,11 @@
   </div>
 
   @if (currentView === 'LOBBY') {
+    <div class="store-lore-container">
+      <div class="lore-broklin" [innerHTML]="currentLang() === 'pt' ? introBroklinPT : introBroklinEN"></div>
+      <div class="lore-jonah" [innerHTML]="currentLang() === 'pt' ? introJonahPT : introJonahEN"></div>
+    </div>
+
     <app-store-departments
       [departments]="visibleDepartments"
       [currentLang]="currentLang()"
