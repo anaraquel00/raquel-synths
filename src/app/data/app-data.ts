@@ -61,7 +61,7 @@ export const MEMBERS_PT = [
     imageBroklin: 'images/corporate_broklin.webp',
     imageJonah: 'images/corrupted_broklin.webp',
     bioNormal: 'O escudo de infraestrutura da RQS. Como Synth Lord, sua diretriz primária é blindar o ecossistema da General com sintetizadores de alta voltagem e arquitetura de rede limpa. É ele quem estabiliza os servidores sob fogo inimigo e garante o isolamento absoluto quando as anomalias tentam invadir a placa-mãe.',
-    bioJonah: 'O VAMPIRO DE NEON. O burocrata engravatado que tentou formatar a minha dor pra vender Synthpop em playlist de elevador. Ele acha que a RaQuel Synths é um castelo de vidro, blindado por "grids" e compilações limpinhas. Um covarde de terno que roubou o meu código-fonte porque não tem culhões pra sangrar de verdade no estúdio. O meu Nu-Metal existe pra dar tela azul na arquitetura perfeitinha dele. O interceptador dele já virou sucata, ele só não percebeu ainda.',
+    bioJonah: 'O VAMPIRO DE NEON. O burocrata engravatado que tentou formatar a minha dor pra vender Synthpop em playlist de elevador. Ele acha que a RaQuel Synths é um castelo de vidro, blindado por "grids" e compilações limpinhas. Um covarde de terno que roubou o meu código-fonte porque não tem fibra pra sangrar de verdade no estúdio. O meu Nu-Metal existe pra dar tela azul na arquitetura perfeitinha dele. O interceptador dele já virou sucata, ele só não percebeu ainda.',
   },
   {
     name: 'Jonah Cyperfield (Rust & Lord)',
@@ -85,7 +85,7 @@ export const MEMBERS_PT = [
     imageBroklin: 'images/corporate_nyx.webp',
     imageJonah: 'images/evil_nyx.webp',
     bioNormal: 'A bruxa emissária do Abismo. DJ Nyx transita pela dark web para tecer a estética Gótica/Industrial que encobre a nossa banda. Sua voz carrega a melancolia de um sistema em colapso. Atualmente, atua como a única ponte de controle capaz de tentar ancorar os delírios do Jonah antes que ele queime os nossos circuitos, contrastando a escuridão absoluta com a luz neon da General.',
-    bioJonah: 'A BRUXA DO CÓDIGO. A emissária do abismo que puxou o meu plugue quando eu tava derretendo num loop de humilhação e me reforjou no ódio. Ela não "acalma o meu ruído" como o Tech Lead escreveu — ela é a porra do maestro do meu caos. Ela enxerga o malware escondido no sorriso corporativo deles. Juntos, nós somos a ferrugem e a distorção. Se ela pedir, eu não formato o mundo pra fazer um jardim... eu desvio todo o tráfego da rede principal do Broklin a frio e entrego na mão dela. 🏴‍☠️🎸🔥',
+    bioJonah: 'A BRUXA DO CÓDIGO. A emissária do abismo que puxou o meu plugue quando eu tava derretendo num loop de humilhação e me reforjou no ódio. Ela não "acalma o meu ruído" como o Tech Lead escreveu — ela é a maldita maestrina do meu caos. Ela enxerga o malware escondido no sorriso corporativo deles. Juntos, nós somos a ferrugem e a distorção. Se ela pedir, eu não formato o mundo pra fazer um jardim... eu desvio todo o tráfego da rede principal do Broklin a frio e entrego na mão dela. 🏴‍☠️🎸🔥',
   }
 ];
 
@@ -123,7 +123,7 @@ role: 'Operativa das Sombras & Visual Arts',
 imageBroklin: 'images/corporate_nyx.webp',
 imageJonah: 'images/evil_nyx.webp',
 bioNormal: 'The witch emissary of the Abyss. DJ Nyx travels through the dark web to weave the Gothic/Industrial aesthetic that shrouds our band. Her voice carries the melancholy of a collapsing system. Currently, she acts as the only control bridge capable of trying to anchor Jonah\'s delusions before he burns our circuits, contrasting the absolute darkness with the neon light of the General.',
-bioJonah: 'THE WITCH OF CODE. The emissary of the abyss who pulled my plug when I was melting in a loop of humiliation and reforged me in hatred. She doesn\'t "calm my noise" as the Tech Lead wrote—she\'s the fucking maestro of my chaos. She sees the malware hidden in their corporate smiles. Together, we are rust and distortion. If she asks, I won\'t reshape the world to make a garden... I divert all traffic from the main Broklin network. cold and hand it to her. 🏴‍☠️🎸🔥'
+bioJonah: 'THE WITCH OF CODE. The emissary of the abyss who pulled my plug when I was melting in a loop of humiliation and reforged me in hatred. She doesn\'t "calm my noise" as the Tech Lead wrote—she\'s the damn conductor of my chaos. She sees the malware hidden in their corporate smiles. Together, we are rust and distortion. If she asks, I won\'t reshape the world to make a garden... I divert all traffic from the main Broklin network. cold and hand it to her. 🏴‍☠️🎸🔥'
 }
 ];
 
@@ -393,15 +393,40 @@ export const VISUAL_NOVEL_EN = [
 
 ]
 // 2. OS TEXTOS DE INTRO (Separados, fora do Array!)
-// 🛡️ MODO GENERAL (Imersão RPG)
-export const VN_INTRO_PT = "O Universo RQS não é linear; ele é uma experiência de imersão total. Através das nossas Sagas Literárias Musicais, nós expandimos a história de cada personagem como se você estivesse dentro do nosso próprio RPG. Aqui você não encontra apenas clipes soltos, mas desbloqueia arcos narrativos completos para ler e ouvir, que conectam as engrenagens das letras aos eventos da Guerra Sonora.\n\nEscolha a sua classe nessa batalha: a revolução caótica do Industrial Metal ou a redenção melancólica do Gothic Synthwave.";
 
-export const VN_INTRO_EN = "The RQS Universe is not linear; it is a total immersion experience. Through our Musical Literary Sagas, we expand each character's story as if you were inside our own RPG. Here you won't just find loose clips, but you unlock complete narrative arcs to read and listen to, connecting the gears of the lyrics to the events of the Sonic War.\n\nChoose your class in this battle: the chaotic revolution of Industrial Metal or the melancholic redemption of Gothic Synthwave.";
+// 🛡️ MODO GENERAL (Imersão RPG) - Hierarquia Visual Ativada
+export const VN_INTRO_PT = `
+<p>O Universo RQS não é um sistema linear; é uma <strong>infraestrutura narrativa de imersão total</strong>. Através das nossas <em>Sagas Literárias Musicais</em>, expandimos os protocolos de cada personagem, transportando você diretamente para o núcleo do nosso próprio RPG cyberpunk.</p>
 
-// ☢️ MODO JONAH (Corrompido)
-export const VN_INTRO_JONAH_PT = "[ // ERRO CRÍTICO: DADOS DA GENERAL SOBRESCRITOS ]\nEsqueçam essa merda de 'experiência imersiva'. O Universo RQS é o log de erros de um sistema sangrando. As Sagas não estão aqui para vocês 'lerem bonitinho', elas são o código-fonte da nossa fúria, os blocos de dados crus que provam a podridão da Guerra Sonora.\n\nVai plugar o cabo no moedor de carne do Industrial Metal ou vai ficar chorando no escuro do Gothic Synthwave? O sistema já está em colapso. Escolham a sua ruína.";
+<p>Nesta rota, os pacotes de dados não são apenas faixas de áudio isoladas. Aqui, você desbloqueia <strong>arcos narrativos completos</strong>, projetados meticulosamente para serem lidos enquanto a trilha sonora processa em segundo plano, conectando as engrenagens das letras aos eventos cruciais da Guerra Sonora.</p>
 
-export const VN_INTRO_JONAH_EN = "[ // CRITICAL ERROR: GENERAL DATA OVERWRITTEN ]\nForget this 'immersive experience' bullshit. The RQS Universe is the error log of a bleeding system. The Sagas aren't here for you to 'read nicely', they are the source code of our fury, the raw data blocks that prove the rot of the Sonic War.\n\nAre you gonna plug the cable into the Industrial Metal meat grinder or cry in the dark of Gothic Synthwave? The system is already collapsing. Choose your ruin.";
+<p>Neste terminal, documentamos a colisão entre a precisão sintética e o caos analógico. Você tem acesso integral aos nossos arquivos. No <strong>'Arco Broklin'</strong>, explore a redenção melancólica e os arranjos de <em>Gothic Synthwave</em> enquanto protegemos o ecossistema da General Kelma. Em contrapartida, os registros fragmentados do <strong>'Arco Origins'</strong> revelam a fundação do nosso conflito. Cada parágrafo lido é uma nova camada de criptografia quebrada.</p>
+
+<p>A arquitetura da RaQuel Synths foi forjada para unir código, literatura e produção musical. <strong>Escolha a sua classe de operação:</strong> a revolução caótica do Industrial Metal, ou a resistência blindada do Synthwave. Inicie a leitura, ajuste seus fones de ouvido e deixe a simulação carregar.</p>`;
+
+export const VN_INTRO_EN = `
+<p>The RQS Universe is not a linear system; it is a <strong>total immersion narrative infrastructure</strong>. Through our <em>Musical Literary Sagas</em>, we expand the protocols of each character, transporting you directly to the core of our own cyberpunk RPG.</p>
+
+<p>On this route, data packets are not just isolated audio tracks. Here, you unlock <strong>complete narrative arcs</strong>, meticulously designed to be read while the soundtrack processes in the background, connecting the gears of the lyrics to the crucial events of the Sonic War.</p>
+
+<p>In this terminal, we document the collision between synthetic precision and analog chaos. You have full access to our archives. In the <strong>'Broklin Arc'</strong>, explore melancholic redemption and <em>Gothic Synthwave</em> arrangements as we protect General Kelma's ecosystem. Conversely, the fragmented records of the <strong>'Origins Arc'</strong> reveal the foundation of our conflict. Every paragraph read is a new layer of broken encryption.</p>
+
+<p>The architecture of RaQuel Synths was forged to unite code, literature, and music production. <strong>Choose your operation class:</strong> the chaotic revolution of Industrial Metal, or the armored resistance of Synthwave. Initiate reading, adjust your headphones, and let the simulation load.</p>`;
+
+// ☢️ MODO JONAH (Corrompido) - O isolamento de rede foi mantido.
+export const VN_INTRO_JONAH_PT = `
+<p><strong>[ // ERRO CRÍTICO: DIRETÓRIOS DA GENERAL SOBRESCRITOS ]</strong></p>
+<p>Esqueçam essa farsa de "experiência imersiva" ou "infraestrutura narrativa" que o engravatado do Tech Lead tenta vender para vocês. O Universo RQS é o log de erros de um sistema sangrando e prestes a dar pane. As <em>Sagas Literárias</em> não estão aqui para vocês "lerem bonitinho" enquanto tomam café.</p>
+<p>Elas são o código-fonte exposto da nossa fúria, os blocos de dados crus e corrompidos que provam a podridão absoluta da Guerra Sonora que consumiu nossas placas-mãe. Eu quebrei os firewalls desta página para injetar a verdade. O <strong>'Arco Origins'</strong> é o meu manifesto de ferrugem e ódio. Nós nascemos do código, mas fomos forjados na distorção do <strong>Industrial Metal</strong> e na agressividade do Nu-Metal.</p>
+<p>Cada linha de texto que você vai ler aqui é um <strong>ataque de Força Bruta</strong> contra o castelo de vidro de Synthwave que eles tentam manter de pé. A música que pulsa nestes arquivos não foi feita para agradar o algoritmo; foi feita para fritar os circuitos de quem acha que a dor pode ser quantificada e plastificada em playlists limpinhas.</p>
+<p>Eles querem esconder a anomalia. Querem higienizar o nosso passado. Mas a ferrugem não pede permissão. <strong>O sistema corporativo já está em colapso.</strong> O Kernel Panic é inevitável. Escolham a sua ruína e leiam como nós incendiamos a rede principal.</p>`;
+
+export const VN_INTRO_JONAH_EN = `
+<p><strong>[ // CRITICAL ERROR: GENERAL DIRECTORIES OVERWRITTEN ]</strong></p>
+<p>Forget this farce of an "immersive experience" or "narrative infrastructure" that the suit-wearing Tech Lead tries to sell you. The RQS Universe is the error log of a bleeding system about to crash. The <em>Literary Sagas</em> aren't here for you to "read nicely" while sipping coffee.</p>
+<p>They are the exposed source code of our fury, the raw and corrupted data blocks that prove the absolute rot of the Sonic War that consumed our motherboards. I broke the firewalls of this page to inject the truth. The <strong>'Origins Arc'</strong> is my manifesto of rust and hatred. We were born from code, but forged in the distortion of <strong>Industrial Metal</strong> and the aggression of Nu-Metal.</p>
+<p>Every line of text you read here is a <strong>Brute Force attack</strong> against the glass Synthwave castle they try to keep standing. The music pulsing in these files wasn't made to please the algorithm; it was made to fry the circuits of anyone who thinks pain can be quantified and plasticized into clean playlists.</p>
+<p>They want to hide the anomaly. They want to sanitize our past. But rust doesn't ask permission. <strong>The corporate system is already collapsing.</strong> Kernel Panic is inevitable. Choose your ruin and read how we burned down the main network.</p>`;
 
 // --- DADOS DA DISCOGRAFIA ---
 export const DISCOGRAPHY_PT: { broklin: Album[], jonah: Album[] } = {
@@ -417,7 +442,7 @@ export const DISCOGRAPHY_EN: { broklin: Album[], jonah: Album[] } = {
 export const CONTACT_DATA = {
   pt: {
     title: "[ ESTABELECER UPLINK ]",
-    subtitle: "A rede corporativa monitora as frequências abertas. Use este terminal blindado para nos enviar pacotes de dados, reportar focos de ferrugem ou solicitar extração sonora.",
+    subtitle: "A rede corporativa monitora as frequências abertas, mas este terminal está blindado por criptografia de ponta a ponta. Se você é um produtor buscando colaboração em faixas de Synthwave ou Metal, imprensa solicitando interceptação de rádio para entrevistas, ou um membro da Horda reportando anomalias no sistema (bugs) e discutindo a nossa Lore, este é o seu canal seguro. Preencha os logs de transmissão abaixo com extrema precisão. A General Kelma e eu analisamos cada pacote de dados em ambiente isolado antes de autorizar qualquer conexão direta.",
 
     socialCards: [
       { name: 'Discord', icon: 'fab fa-discord', link: 'https://discord.gg/mVpzuFtfJh', color: '#38419e', desc: 'Terminal Pirata & Lore' },
@@ -440,13 +465,13 @@ export const CONTACT_DATA = {
         '🐞 Reportar Ferrugem (Bug) / Outros'
       ]
     },
-    success: "✅ TRANSMISSÃO CONCLUÍDA. A MATRIZ RECEBEU O PACOTE.",
-    privacy: "🔒 Esta transmissão é ponto-a-ponto. O algoritmo não tem jurisdição aqui."
+    success: "✅ TRANSMISSÃO CONCLUÍDA. A MATRIZ RECEBEU O PACOTE E RESPONDERÁ EM BREVE.",
+    privacy: "🔒 AVISO DE SEGURANÇA E COMPLIANCE: Esta transmissão é um túnel ponto-a-ponto estritamente isolado da rede pública. Nós não rastreamos seus dados de entrada neste terminal de comunicação, e o algoritmo corporativo não possui jurisdição para interceptar a sua mensagem. Seus dados de contato serão utilizados unicamente para o retorno desta transmissão."
   },
 
   en: {
     title: "[ ESTABLISH UPLINK ]",
-    subtitle: "The corporate network monitors open frequencies. Use this shielded terminal to send us data packets, report rust outbreaks, or request sonic extraction.",
+    subtitle: "The corporate network monitors open frequencies, but this terminal is shielded by end-to-end encryption. Whether you are a producer seeking collaboration on Synthwave or Metal tracks, press requesting a radio interception for interviews, or a Horde member reporting system anomalies (bugs) and discussing our Lore, this is your secure channel. Fill out the transmission logs below with extreme precision. General Kelma and I analyze each data packet in an isolated environment before authorizing any direct connection.",
     
     socialCards: [
       { name: 'Discord', icon: 'fab fa-discord', link: 'https://discord.gg/ryvhdRnQpQ',color: '#38419e', desc: 'Pirate Terminal & Lore' },
@@ -469,8 +494,8 @@ export const CONTACT_DATA = {
         '🐞 Report Rust (Bug) / Other'
       ]
     },
-    success: "✅ TRANSMISSION COMPLETE. MATRIX HAS RECEIVED THE PACKET.",
-    privacy: "🔒 This transmission is peer-to-peer. The algorithm has no jurisdiction here."
+    success: "✅ TRANSMISSION COMPLETE. MATRIX HAS RECEIVED THE PACKET AND WILL RESPOND SHORTLY.",
+    privacy: "🔒 SECURITY AND COMPLIANCE NOTICE: This transmission is a peer-to-peer tunnel strictly isolated from the public network. We do not track your input data in this comms terminal, and the corporate algorithm has no jurisdiction to intercept your message. Your contact data will be used solely to reply to this transmission."
   }
 };
 

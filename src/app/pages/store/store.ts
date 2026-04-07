@@ -1,6 +1,6 @@
 import { Component, inject, OnDestroy, OnInit, signal, ChangeDetectorRef, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import Swal from 'sweetalert2';
 import { Subscription, combineLatest } from 'rxjs';
 
@@ -30,10 +30,11 @@ selectedDepartmentData: any;
   private contentService = inject(ContentService); // Conexão com o Firebase
   private seoService = inject(SeoService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private cdr = inject(ChangeDetectorRef); // Para forçar a atualização da tela
   public translate = inject(TranslationService);
   private trackingService = inject(TrackingService); // Para a telemetria de afiliados
-
+  
   // --- OBSERVERS & SUBSCRIPTIONS ---
   private observer: MutationObserver | null = null;
   private dataSubscription: Subscription | null = null;
@@ -61,11 +62,37 @@ selectedDepartmentData: any;
     });
   }
 
- ngOnInit(): void {
+ngOnInit(): void {
     this.currentLang.set(this.translate.isPt() ? 'pt' : 'en');
     this.checkCurrentMode();
     this.loadData();
     this.setupThemeObserver();
+
+    // 👇 OUVINTE DE URL (A Mágica do Deep Link com Query Params)
+    this.route.queryParams.subscribe(params => {
+      const dept = params['dept'];
+      
+      if (dept) {
+        // A URL pediu um departamento específico! Pula o Lobby.
+        this.selectedDepartmentId = dept;
+        this.currentView = 'MINI_STORE';
+        
+        // Puxa a Lore imediatamente (pois vem do arquivo estático local)
+        const deptData = DEPARTMENTS_DATA.find(d => d.id === dept);
+        if (deptData) {
+          this.selectedDepartmentData = deptData;
+        }
+
+        // Se o Firebase JÁ carregou os produtos (ex: navegou de volta), filtra agora:
+        if (this.allProducts.length > 0) {
+          this.filteredProducts = this.allProducts.filter(item => item.faction === dept);
+        }
+      } else {
+        // Se não tem departamento na URL, mostra o Lobby normal
+        this.currentView = 'LOBBY';
+        this.selectedDepartmentId = null;
+      }
+    });
 
     // 🛡️ BLINDAGEM: Só o celular do fã roda esse cronômetro!
     if (this.isBrowser) {
@@ -85,17 +112,22 @@ selectedDepartmentData: any;
   }
 
   // --- FUNÇÃO DE CARREGAMENTO (CORRIGIDA) ---
-  private loadData() {
-    // 👇 AQUI ESTÁ A MÁGICA: combineLatest em vez de forkJoin
+ private loadData() {
     this.dataSubscription = combineLatest({
       products: this.contentService.getProducts(),
       departments: this.contentService.getDepartments()
     }).subscribe({
       next: (data) => {
-        console.log('📦 Estoque recebido:', data); // Vai aparecer no console!
+        console.log('📦 Estoque recebido:', data); 
 
         this.allProducts = data.products;
         this.allDepartments = data.departments;
+
+        // 👇 INJEÇÃO DE ROTEAMENTO: 
+        // Se o usuário entrou por link direto, filtra os produtos AGORA que o Firebase respondeu!
+        if (this.selectedDepartmentId) {
+           this.filteredProducts = this.allProducts.filter(item => item.faction === this.selectedDepartmentId);
+        }
 
         // Força o Angular a pintar a tela
         this.cdr.detectChanges();

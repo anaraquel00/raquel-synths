@@ -262,7 +262,7 @@ button, a.btn-read, a.back-link, a.btn-decrypt, a.btn-watch {
     cursor: not-allowed;
     border: 1px solid transparent;
   }
-}
+  }
 
 // --- MOBILE (Ajuste fino) ---
 @media (max-width: 768px) {
@@ -335,6 +335,20 @@ button, a.btn-read, a.back-link, a.btn-decrypt, a.btn-watch {
   
   .neon-tab {
     width: 80%;
+  }
+}
+
+.cyber-text-link {
+  color: #00e5ff;
+  text-decoration: none;
+  font-weight: 700;
+  text-shadow: 0px 0px 8px rgba(0, 229, 255, 0.6);
+  transition: all 0.3s ease;
+  position: relative; /* Mantém dentro do fluxo normal do parágrafo */
+  
+  &:hover {
+    color: #fff;
+    text-shadow: 0px 0px 15px #00e5ff, 0px 0px 30px #00e5ff;
   }
 }
 // ... (Todo o seu CSS atual do Broklin fica aqui em cima)
@@ -489,10 +503,10 @@ button, a.btn-read, a.back-link, a.btn-decrypt, a.btn-watch {
     text-shadow: 0 0 10px rgba(255, 0, 0, 0.9);
     box-shadow: 0 0 20px rgba(255, 0, 0, 0.5), inset 0 0 15px rgba(255, 0, 0, 0.2);
   }
-}
+ }
 
-/* Ajuste para telas de celular */
-@media (max-width: 600px) {
+ /* Ajuste para telas de celular */
+ @media (max-width: 600px) {
   .season-tabs {
     flex-direction: column;
     gap: 15px;
@@ -501,5 +515,14 @@ button, a.btn-read, a.back-link, a.btn-decrypt, a.btn-watch {
   .neon-tab {
     width: 80%;
   }
-}
+ }
+ .cyber-text-link {
+    color: #ff3d00;
+    text-shadow: 0px 0px 8px rgba(255, 61, 0, 0.6);
+
+    &:hover {
+      color: #fff;
+      text-shadow: 0px 0px 15px #ff3d00, 0px 0px 30px #ff3d00;
+    }
+  }
 }

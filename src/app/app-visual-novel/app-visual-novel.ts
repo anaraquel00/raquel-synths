@@ -9,14 +9,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { ContentService } from '../services/content.service'; // 👈 IMPORTANTE
 import { Observable, BehaviorSubject, switchMap } from 'rxjs'; // 👈 IMPORTANTE
 import { LoreEpisode } from '../data/lore-data';
-import { SystemAlert } from "../components/system-alert/system-alert";
 import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-visual-novel',
   standalone: true,
-  imports: [CommonModule, MatIconModule, AdBannerComponent, MatButtonModule, SystemAlert],
+  imports: [CommonModule, MatIconModule, AdBannerComponent, MatButtonModule],
   templateUrl: './app-visual-novel.html',
   styleUrls: ['./app-visual-novel.scss']
 })

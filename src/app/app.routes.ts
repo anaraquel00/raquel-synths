@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { StoreComponent } from './pages/store/store';
 
 export const routes: Routes = [
   // 🏠 ROTA 1: A Vitrine (Landing Page)
@@ -175,6 +176,22 @@ export const routes: Routes = [
       }
     }
   },
+ { 
+    path: 'store/:dept', 
+    component: StoreComponent,
+    data: {
+      seo: { 
+        title: { 
+          pt: 'Neon Store | Setores Classificados', 
+          en: 'Neon Store | Classified Sectors' 
+        },
+        description: { 
+          pt: 'Explore os 5 setores da Neon Store: Tech Lead, Synth General, Sonic Arsenal, Rust Riot e Neon Witch. O arsenal de hardware e o merch oficial dos operativos da RQS.', 
+          en: 'Explore the 5 sectors of the Neon Store: Tech Lead, Synth General, Sonic Arsenal, Rust Riot, and Neon Witch. The hardware arsenal and official merch for RQS operatives.' 
+        }
+      }
+    }
+  }, 
 
   // 📡 ROTA 12: O Terminal de Comunicação (Contato/Uplink)
   {

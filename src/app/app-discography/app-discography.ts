@@ -40,33 +40,31 @@ export class DiscographyComponent implements OnInit {
 
   @Input() limitToHome?: number;
 
-  // Variáveis para os Textos da Intro
+ // Variáveis para os Textos da Intro
   // --- VARIÁVEIS DE INTRODUÇÃO (MODO BROKLIN / MODO RQS) ---
  introBroklinPT = `
-  <strong>[Transmissão ao vivo do Estúdio RQS]</strong><br>
-  Enquanto a General Kelma ajusta a captação de voz no microfone condensador, eu calibro a distorção dos sintetizadores para compilar a verdadeira trilha sonora da saga 
-  <span class="text-highlight">'Ecos da RQS'</span>. O que você encontra aqui não são apenas músicas; são arquivos de áudio extraídos diretamente da nossa vivência no Apartamento 14 e dos nossos altos e baixos no percorrer da história. 
-   Frequências puras, sem interferências externas. Escolha o seu terminal abaixo e inicie a imersão sonora.
+  <p><strong>[ Transmissão Ativa // Terminal Segregado: Estúdio RQS ]</strong></p>
+  <p>Enquanto a General Kelma calibra a captação de frequência no microfone condensador, minha diretriz principal é estabilizar a distorção dos sintetizadores e compilar a verdadeira trilha sonora da nossa narrativa. O que você acessa neste diretório não são meros arquivos de áudio genéricos na nuvem; são logs de dados sonoros extraídos diretamente da nossa vivência no Apartamento 14.</p>
+  <p>Nesta interface de <strong>Discografia e Streams</strong>, mapeamos a evolução da nossa <em>Guerra Sonora</em> através de lançamentos oficiais, álbuns conceituais e singles de <strong>Synthwave, Dream Pop e Música Eletrônica</strong>. Cada faixa foi meticulosamente forjada para expandir a saga <span class="text-highlight">'Ecos da RQS'</span>. Frequências puras, mixagem cristalina e sem interferências de anomalias externas. Escolha o seu player abaixo, conecte-se via Spotify ou SoundCloud, sintonize na nossa rádio oficial e inicie a imersão.</p>
  `;
 
  introBroklinEN = `
-  <strong>[Live Broadcast from RQS Studio]</strong><br>
-  While General Kelma tunes her vocal capture on the condenser mic, I calibrate the synth distortion to compile the true soundtrack of the 
-  <span class="text-highlight">'Echoes of RQS'</span> saga. What you find here aren't just songs; they are audio files extracted directly from our life in Apartment 14 and our highs and lows throughout the story. 
-  Pure frequencies, no external interference. Choose your terminal below and initiate the sonic immersion.
+  <p><strong>[ Active Broadcast // Segregated Terminal: RQS Studio ]</strong></p>
+  <p>While General Kelma tunes her frequency capture on the condenser mic, my primary directive is to stabilize the synth distortion and compile the true soundtrack of our narrative. What you access in this directory aren't just generic audio files in the cloud; they are sonic data logs extracted directly from our life in Apartment 14.</p>
+  <p>In this <strong>Discography and Streams</strong> interface, we map the evolution of our <em>Sonic War</em> through official releases, concept albums, and singles covering <strong>Synthwave, Dream Pop, and Electronic Music</strong>. Each track was meticulously forged to expand the <span class="text-highlight">'Echoes of RQS'</span> saga. Pure frequencies, crystal-clear mixing, and no interference from external anomalies. Choose your player below, connect via Spotify or SoundCloud, tune into our official radio, and initiate the immersion.</p>
  `;
 
  // --- VARIÁVEIS DE INTRODUÇÃO (MODO JONAH / CORRUPTO) ---
  introJonahPT = `
-  <strong><span class="hazard-text">[Sinal Interceptado // Servidor Corrompido]</span></strong><br>
-  Frequências puras? Sem interferências? <em>[Risadas distorcidas na linha]</em>. O 'Arquiteto' e a sua General acham que podem blindar esse servidor contra a minha ferrugem. A verdade é que o caos não pede senha de acesso, e o que eles chamam de 'altos e baixos', eu chamo de realidade. 
-  Acessem os meus arquivos abaixo e ouçam o som do sistema deles sangrando.
+  <p><strong><span class="hazard-text">[ Sinal Interceptado // Segurança de Rede Comprometida // Kernel Panic ]</span></strong></p>
+  <p>Frequências puras? Mixagem "cristalina"? <em>[Ruído de estática e risadas distorcidas na linha]</em>. O Arquiteto de Software e a Princesa de Plástico acham que podem blindar esses servidores contra a minha ferrugem. Eles vendem o ecossistema perfeitinho deles como se fosse a única verdade, mas o caos não pede senha de acesso, e o que eles chamam de 'altos e baixos', eu chamo de <strong>falha de compilação humana</strong>.</p>
+  <p>Acessem os meus diretórios abaixo. O que vocês vão encontrar não é musiquinha de fundo para playlist corporativa. É o puro código-fonte do <strong>Nu-Metal, Industrial Metal e da distorção agressiva</strong>. Cada lançamento meu mapeado nesta página é um ataque de Força Bruta contra a arquitetura deles. Plugue seus fones, ative o ganho máximo e ouçam o som do sistema deles sangrando.</p>
  `;
 
  introJonahEN = `
-  <strong><span class="hazard-text">[Signal Intercepted // Corrupted Server]</span></strong><br>
-  Pure frequencies? No interference? <em>[Distorted laughter on the line]</em>. The 'Architect' and his General think they can shield this server from my rust. The truth is, chaos doesn't ask for a password, and what they call 'highs and lows', I call reality. 
-  Access my files below and listen to the sound of their system bleeding.
+  <p><strong><span class="hazard-text">[ Signal Intercepted // Network Security Compromised // Kernel Panic ]</span></strong></p>
+  <p>Pure frequencies? "Crystal-clear" mixing? <em>[Static noise and distorted laughter on the line]</em>. The Software Architect and the Plastic Princess think they can shield these servers from my rust. They sell their perfect little ecosystem as if it were the only truth, but chaos doesn't ask for an access password, and what they call 'highs and lows', I call a <strong>human compilation failure</strong>.</p>
+  <p>Access my directories below. What you're going to find isn't background music for a corporate playlist. It's the pure source code of <strong>Nu-Metal, Industrial Metal, and aggressive distortion</strong>. Every release of mine mapped on this page is a Brute Force attack against their architecture. Plug in your headphones, maximize the gain, and listen to the sound of their system bleeding.</p>
  `;
 
   // O Banco de Dados Completo
