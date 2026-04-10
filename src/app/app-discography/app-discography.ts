@@ -36,7 +36,7 @@ export class DiscographyComponent implements OnInit {
 
 // 2. Crie os links confiáveis
  radioBroklin = this.sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/K-M0kMMH8hY');
- radioJonah = this.sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/kXmn44r6szM');
+ radioJonah = this.sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/E871XDzFsYc?si=e6AhqzWwuh7EzIRR');
 
   @Input() limitToHome?: number;
 
@@ -76,7 +76,7 @@ export class DiscographyComponent implements OnInit {
 get isJonahMode(): boolean {
   // 🛡️ BLINDAGEM: No servidor, 'document' não existe. Retorne false.
   if (isPlatformBrowser(this.platformId)) {
-    return document.body.classList.contains('mode-jonah'); 
+    return document.body.classList.contains('mode-jonah');
   }
   return false;
 }
@@ -133,7 +133,7 @@ onThemeChange() {
          const dateB = b.releaseDate ? new Date(b.releaseDate).getTime() : 0;
          return dateB - dateA;
       });
-      
+
     return this.limitToHome ? filtered.slice(0, this.limitToHome) : filtered;
   }
 
@@ -158,7 +158,7 @@ onThemeChange() {
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
-  openLink(url: string | undefined) {    
+  openLink(url: string | undefined) {
     if (url) window.open(url, '_blank');
   }
 
