@@ -18,7 +18,6 @@ import { isPlatformBrowser } from '@angular/common';
 import { TrackingService } from '../services/tracking.service';
 
 
-
 @Component({
   selector: 'app-discography',
   standalone: true,
@@ -38,7 +37,19 @@ export class DiscographyComponent implements OnInit {
  radioBroklin = this.sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/K-M0kMMH8hY');
  radioJonah = this.sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/E871XDzFsYc?si=e6AhqzWwuh7EzIRR');
 
-  @Input() limitToHome?: number;
+  private _limitToHome: number = 5; // 🛡️ Valor de fábrica blindado (default)
+
+@Input() set limitToHome(value: any) {
+  // Se o roteador injetar 'undefined' ou 'null', a trava mantém o 5.
+  // Se vier um valor real (como o 5 da Landing Page), ele aceita.
+  if (value !== undefined && value !== null) {
+    this._limitToHome = Number(value);
+  }
+}
+
+get limitToHome(): number {
+  return this._limitToHome;
+}
 
  // Variáveis para os Textos da Intro
   // --- VARIÁVEIS DE INTRODUÇÃO (MODO BROKLIN / MODO RQS) ---

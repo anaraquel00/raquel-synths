@@ -6,8 +6,8 @@ export const routes: Routes = [
   {
     path: '',
     loadComponent: () => import('./pages/landing-page/landing-page').then(m => m.LandingPage),
-    data: { 
-      seo: { 
+    data: {
+      seo: {
         title: {
           pt: 'Cyberpunk Sagas & Virtual Band',
           en: 'Cyberpunk Sagas & Virtual Band'
@@ -16,15 +16,15 @@ export const routes: Routes = [
           pt: 'A guerra digital entre a precisão técnica e o caos. Uma Saga Literária Cyberpunk e experimento musical transmídia.',
           en: 'Broklin\'s Tech vs. Jonah\'s Chaos. A Cyberpunk Literary Saga & Musical Experiment. The story has begun.'
         }
-      } 
+      }
     }
   },
 // 🛡️ ROTA 2: Acesso ao Banco de Dados dos Criadores
   {
     path: 'dossier', // 💻 Substituímos 'about' por 'dossier' (funciona perfeitamente em PT e EN)
     loadComponent: () => import('./pages/sobre/sobre').then(m => m.SobreComponent),
-    data: { 
-      seo: { 
+    data: {
+      seo: {
         title: {
           pt: 'Dossiê Operativo | Arquitetos da RQS',
           en: 'Operative Dossier | RQS Architects'
@@ -34,7 +34,7 @@ export const routes: Routes = [
           en: 'Restricted access: decrypt the Blue Team operative profiles. Meet Broklin, General Kelma, and the minds coding the RQS cyberpunk saga.'
         }
       }
-    }    
+    }
   },
   // 📖 ROTA 3: O Leitor de Logs (O "Diário de Bordo" da Saga)
   {
@@ -44,52 +44,52 @@ export const routes: Routes = [
 
   // 📜 ROTA 4: O Arquivo de Logs (A "Memória Infinita")
   {
-    path: 'logs-archive', 
+    path: 'logs-archive',
     loadComponent: () => import('./pages/logs-archive/logs-archive').then(m => m.LogsArchiveComponent),
-    data: { 
-      seo: { 
-        title: { 
-          pt: 'Arquivo de Logs', 
-          en: 'Logs Archive' 
+    data: {
+      seo: {
+        title: {
+          pt: 'Arquivo de Logs',
+          en: 'Logs Archive'
         },
-        description: { 
-          pt: 'Os bastidores da narrativa transmídia e DevNotes da RQS.', 
-          en: 'The behind-the-scenes of the transmedia narrative and RQS DevNotes.' 
+        description: {
+          pt: 'Os bastidores da narrativa transmídia e DevNotes da RQS.',
+          en: 'The behind-the-scenes of the transmedia narrative and RQS DevNotes.'
         }
-      } 
+      }
     }
   },
 
   // ✨ NOVA ROTA 5: O Arquivo Musical (Discografia Completa)
   {
-    path:'musical-archives', 
+    path:'musical-archives',
     loadComponent: () => import('./pages/musical-archives/musical-archives').then(m => m.MusicalArchives),
-    data: { 
-      seo: { 
-        title: { 
-          pt: 'Arquivo Musical', 
-          en: 'Musical Archives' 
+    data: {
+      seo: {
+        title: {
+          pt: 'Arquivo Musical',
+          en: 'Musical Archives'
         },
-        description: { 
-          pt: 'A discografia completa, com detalhes de cada faixa e processo criativo.', 
-          en: 'The complete musical archive, with details of each track and creative process.' 
+        description: {
+          pt: 'A discografia completa, com detalhes de cada faixa e processo criativo.',
+          en: 'The complete musical archive, with details of each track and creative process.'
         }
-      } 
+      }
     }
   },
  // 📖 ROTA 6: O Banner da Saga
 
  {
   path: 'saga', loadComponent: () => import('./app-visual-novel/app-visual-novel').then(m => m.AppVisualNovel),
- data: { 
-   seo: { 
-     title: { 
-       pt: 'Ecos da RQS', 
-       en: 'RQS Echoes' 
+ data: {
+   seo: {
+     title: {
+       pt: 'Ecos da RQS',
+       en: 'RQS Echoes'
      },
-     description: { 
-       pt: 'O resumo visual da guerra entre Broklin e Jonah. A história em um banner épico.', 
-       en: 'The visual summary of the war between Broklin and Jonah. The story in an epic banner.' 
+     description: {
+       pt: 'O resumo visual da guerra entre Broklin e Jonah. A história em um banner épico.',
+       en: 'The visual summary of the war between Broklin and Jonah. The story in an epic banner.'
      }
    }
 
@@ -99,17 +99,17 @@ export const routes: Routes = [
   {
     path: 'visual-novel',
     loadComponent: () => import('./pages/visual-novel/visual-novel').then(m => m.VisualNovelComponent),
-    data: { 
-      seo: { 
-        title: { 
-          pt: 'Ecos da RQS | Episódios', 
-          en: 'RQS Echoes | Episodes' 
+    data: {
+      seo: {
+        title: {
+          pt: 'Ecos da RQS | Episódios',
+          en: 'RQS Echoes | Episodes'
         },
-        description: { 
-          pt: 'Mergulhe na saga. Broklin\'s Tech vs. Jonah\'s Chaos. O registro histórico da nossa jornada.', 
-          en: 'Dive into the saga. Broklin\'s Tech vs. Jonah\'s Chaos. The historical record of our journey.' 
+        description: {
+          pt: 'Mergulhe na saga. Broklin\'s Tech vs. Jonah\'s Chaos. O registro histórico da nossa jornada.',
+          en: 'Dive into the saga. Broklin\'s Tech vs. Jonah\'s Chaos. The historical record of our journey.'
         }
-      } 
+      }
     }
   },
 
@@ -128,14 +128,14 @@ export const routes: Routes = [
     path: 'creator',
     loadComponent: () => import('./pages/creator/creator').then(m => m.Creator),
     data: {
-      seo: { 
-        title: { 
-          pt: 'A Criadora', 
-          en: 'The Creator' 
+      seo: {
+        title: {
+          pt: 'A Criadora',
+          en: 'The Creator'
         },
-        description: { 
-          pt: 'A mente por trás do código. Engenharia Musical fundindo Angular, IA e a alma humana.', 
-          en: 'The mind behind the code. Musical Engineering fusing Angular, AI, and the human soul.' 
+        description: {
+          pt: 'A mente por trás do código. Engenharia Musical fundindo Angular, IA e a alma humana.',
+          en: 'The mind behind the code. Musical Engineering fusing Angular, AI, and the human soul.'
         }
       }
     }
@@ -146,14 +146,14 @@ export const routes: Routes = [
     path: 'compliance',
     loadComponent: () => import('./pages/compliance/compliance').then(m => m.ComplianceComponent),
     data: {
-      seo: { 
-        title: { 
-          pt: 'Compliance', 
-          en: 'Compliance' 
+      seo: {
+        title: {
+          pt: 'Compliance',
+          en: 'Compliance'
         },
-        description: { 
-          pt: 'Protocolos de Sistema: Transparência, afiliações e as regras do nosso universo digital.', 
-          en: 'System Protocols: Transparency, affiliations, and the rules of our digital universe.' 
+        description: {
+          pt: 'Protocolos de Sistema: Transparência, afiliações e as regras do nosso universo digital.',
+          en: 'System Protocols: Transparency, affiliations, and the rules of our digital universe.'
         }
       }
     }
@@ -164,48 +164,48 @@ export const routes: Routes = [
     path: 'store',
     loadComponent: () => import('./pages/store/store').then(m => m.StoreComponent),
     data: {
-      seo: { 
-        title: { 
-          pt: 'Neon Store | Merch Oficial', 
-          en: 'Neon Store | Official Merch' 
+      seo: {
+        title: {
+          pt: 'Neon Store | Merch Oficial',
+          en: 'Neon Store | Official Merch'
         },
-        description: { 
-          pt: 'Equipamentos, vestuário e hardware. Escolha sua facção: Blue Team ou Red Team na Neon Store.', 
-          en: 'Gear, apparel, and hardware. Choose your faction: Blue Team or Red Team at the Neon Store.' 
+        description: {
+          pt: 'Equipamentos, vestuário e hardware. Escolha sua facção: Blue Team ou Red Team na Neon Store.',
+          en: 'Gear, apparel, and hardware. Choose your faction: Blue Team or Red Team at the Neon Store.'
         }
       }
     }
   },
- { 
-    path: 'store/:dept', 
+ {
+    path: 'store/:dept',
     component: StoreComponent,
     data: {
-      seo: { 
-        title: { 
-          pt: 'Neon Store | Setores Classificados', 
-          en: 'Neon Store | Classified Sectors' 
+      seo: {
+        title: {
+          pt: 'Neon Store | Setores Classificados',
+          en: 'Neon Store | Classified Sectors'
         },
-        description: { 
-          pt: 'Explore os 5 setores da Neon Store: Tech Lead, Synth General, Sonic Arsenal, Rust Riot e Neon Witch. O arsenal de hardware e o merch oficial dos operativos da RQS.', 
-          en: 'Explore the 5 sectors of the Neon Store: Tech Lead, Synth General, Sonic Arsenal, Rust Riot, and Neon Witch. The hardware arsenal and official merch for RQS operatives.' 
+        description: {
+          pt: 'Explore os 5 setores da Neon Store: Tech Lead, Synth General, Sonic Arsenal, Rust Riot e Neon Witch. O arsenal de hardware e o merch oficial dos operativos da RQS.',
+          en: 'Explore the 5 sectors of the Neon Store: Tech Lead, Synth General, Sonic Arsenal, Rust Riot, and Neon Witch. The hardware arsenal and official merch for RQS operatives.'
         }
       }
     }
-  }, 
+  },
 
   // 📡 ROTA 12: O Terminal de Comunicação (Contato/Uplink)
   {
     path: 'contato',
     loadComponent: () => import('./pages/contato/contato').then(m => m.ContatoComponent),
     data: {
-      seo: { 
-        title: { 
-          pt: 'Uplink | Contato', 
-          en: 'Uplink | Contact' 
+      seo: {
+        title: {
+          pt: 'Uplink | Contato',
+          en: 'Uplink | Contact'
         },
-        description: { 
-          pt: 'Estabeleça conexão direta com a base da RQS.', 
-          en: 'Establish a direct connection with the RQS base.' 
+        description: {
+          pt: 'Estabeleça conexão direta com a base da RQS.',
+          en: 'Establish a direct connection with the RQS base.'
         }
       }
     }
@@ -216,14 +216,15 @@ export const routes: Routes = [
     path: 'discografia',
     loadComponent: () => import('./app-discography/app-discography').then(m => m.DiscographyComponent),
     data: {
-      seo: { 
-        title: { 
-          pt: 'Discografia | RQS', 
-          en: 'Discography | RQS' 
+      limiteToHome: 5, // Variável para limitar o número de faixas exibidas na home
+      seo: {
+        title: {
+          pt: 'Discografia | RQS',
+          en: 'Discography | RQS'
         },
-        description: { 
-          pt: 'Acesse o banco de áudio mestre da Raquel Synths.', 
-          en: 'Access the master audio bank of Raquel Synths.' 
+        description: {
+          pt: 'Acesse o banco de áudio mestre da Raquel Synths.',
+          en: 'Access the master audio bank of Raquel Synths.'
         }
       }
     }
