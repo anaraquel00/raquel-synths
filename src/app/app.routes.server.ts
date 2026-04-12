@@ -15,7 +15,11 @@ export const serverRoutes: ServerRoute[] = [
   },
   {
     path: 'lore-reader/:id',
-    renderMode: RenderMode.Prerender // Garante que o texto da saga já chegue mastigado para o AdSense ler
+    renderMode: RenderMode.Server // Garante que o texto da saga já chegue mastigado para o AdSense ler
+  },
+  {
+    path: 'log-reader/:id',
+    renderMode: RenderMode.Server //  Renderiza no servidor para o Google ler os textões.
   },
   {
     path: '**',
