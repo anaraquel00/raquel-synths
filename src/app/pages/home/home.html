@@ -1,5 +1,5 @@
 <div class="home-container">
-  
+
   <div class="hero-section hero-layout-split">
 
     <div class="hero-left fade-in-up" style="text-align: left;">
@@ -18,7 +18,7 @@
         </div>
 
         <div class="quickhacks-grid" style="display: flex; flex-direction: column; gap: 8px;">
-          
+
       <button class="hack-btn uplink-hack" (click)="triggerUplink()">
       <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ NET: ACESSAR_COMUNIDADE.sh ]' : '[ NET: ACCESS_COMMUNITY.sh ]' }}
       </button>
@@ -28,17 +28,17 @@
       </button>
 
       <button class="hack-btn" routerLink="/dossier">
-      <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ EXE: PERFIS_OPERATIVOS.sh ]' : '[ EXE: OPERATORS_PROFILES.sh ]' }}
-      </button>               
-      
+      <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ EXE: DOSSIÊ_OPERATIVO.sh ]' : '[ EXE: OPERATIVE_DOSSIER.sh ]' }}
+      </button>
+
       <button class="hack-btn" routerLink="/saga">
         <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ EXE: LOGS_NARRATIVOS.sh ]' : '[ EXE: NARRATIVE_LOGS.sh ]' }}
       </button>
-      
+
       <button class="hack-btn" routerLink="/discografia">
         <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ EXE: EXTRAIR_FREQUENCIAS.exe ]' : '[ EXE: EXTRACT_FREQUENCIES.exe ]' }}
       </button>
-      
+
       <button class="hack-btn" routerLink="/contato">
         <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ NET: UPLINK_BASE_OPERATIVA.exe ]' : '[ NET: OPERATING_BASE_UPLINK.exe ]' }}
       </button>
@@ -46,15 +46,15 @@
       <button class="hack-btn store-hack" routerLink="/store">
         <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ DIR: SUPRIMENTOS_DA_HORDA.sys ]' : '[ DIR: HORDE_SUPPLIES.sys ]' }}
       </button>
-      
+
       <button class="hack-btn creator-hack" routerLink="/creator">
         <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ DIR: A_CRIADORA.sys ]' : '[ DIR: THE_CREATOR.sys ]' }}
       </button>
-      
+
       <button class="hack-btn jonah-hack" (click)="forcarModoJonah()">
-        <span class="cmd-arrow">> </span>{{ isJonahMode 
-           ? (translate.isPt() ? '[ OVR: MODO_BROKLIN.bat ]' : '[ OVR: BROKLIN_MODE.bat ]') 
-           : (translate.isPt() ? '[ OVR: MODO_JONAH.bat ]' : '[ OVR: JONAH_MODE.bat ]') 
+        <span class="cmd-arrow">> </span>{{ isJonahMode
+           ? (translate.isPt() ? '[ OVR: MODO_BROKLIN.bat ]' : '[ OVR: BROKLIN_MODE.bat ]')
+           : (translate.isPt() ? '[ OVR: MODO_JONAH.bat ]' : '[ OVR: JONAH_MODE.bat ]')
         }}
       </button>
         </div>

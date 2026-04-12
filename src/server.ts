@@ -13,7 +13,7 @@ const app = express();
 const angularApp = new AngularNodeAppEngine();
 
 // =====================================================================
-// 🛰️ [ MÓDULO GOD-TIER ]: GERADOR DE SITEMAP DINÂMICO
+// 🛰️ [ MÓDULO GOD-TIER ]: GERADOR DE SITEMAP DINÂMICO (BLUE TEAM ONLY)
 // =====================================================================
 app.get('/sitemap.xml', async (req, res) => {
   res.header('Content-Type', 'application/xml');
@@ -21,23 +21,16 @@ app.get('/sitemap.xml', async (req, res) => {
   let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
   xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
 
-  // 1. AS ROTAS BASE (Blindadas)
+  // 1. AS ROTAS BASE (Blindadas e sem código legado)
   const staticRoutes = [
     { path: '', priority: '1.0' },
-    { path: '?mode=jonah', priority: '1.0' },
     { path: '/compliance', priority: '0.9' },
-    { path: '/compliance?mode=jonah', priority: '0.9' },
     { path: '/dossier', priority: '0.9' },
-    { path: '/dossier?mode=jonah', priority: '0.9' },
     { path: '/store', priority: '0.8' },
-    { path: '/store?mode=jonah', priority: '0.8' },
     { path: '/saga', priority: '0.8' },
-    { path: '/saga?mode=jonah', priority: '0.8' },
     { path: '/visual-novel', priority: '0.8' },
-    { path: '/visual-novel?mode=jonah', priority: '0.8' },
     { path: '/logs-archive', priority: '0.9' },
     { path: '/discografia', priority: '0.9' },
-    { path: '/discografia?mode=jonah', priority: '0.9' },
     { path: '/creator', priority: '0.5' },
     { path: '/contato', priority: '0.5' }
   ];
@@ -46,35 +39,25 @@ app.get('/sitemap.xml', async (req, res) => {
     xml += `  <url>\n    <loc>https://raquelsynths.com.br${route.path}</loc>\n    <priority>${route.priority}</priority>\n  </url>\n`;
   }
 
-  // 2. A BUSCA TRIPLA NO FIREBASE (Rest API - Processamento Paralelo)
+  // 2. A BUSCA NO FIREBASE (Rest API - Processamento Paralelo)
   try {
     const projectId = 'raquel-synths-platform';
     const baseUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents`;
 
-    // Dispara 3 requisições simultâneas
-    const [logsRes, loreRes, loreJonahRes] = await Promise.all([
+    // Dispara apenas as requisições essenciais (Economia de banda)
+    const [logsRes, loreRes] = await Promise.all([
       fetch(`${baseUrl}/logs`),
-      fetch(`${baseUrl}/lore`),
-      fetch(`${baseUrl}/lore-jonah`)
+      fetch(`${baseUrl}/lore`)
     ]);
 
     const logsData = await logsRes.json();
     const loreData = await loreRes.json();
-    const loreJonahData = await loreJonahRes.json();
 
-    // 💻 INDEXANDO OS LOGS
+    // 💻 INDEXANDO OS LOGS OFICIAIS
     if (logsData.documents) {
       logsData.documents.forEach((doc: any) => {
         const logId = doc.name.split('/').pop();
         xml += `  <url>\n    <loc>https://raquelsynths.com.br/log-reader/${logId}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
-      });
-    }
-
-    // ☣️ INDEXANDO OS LOGS DO JONAH (Red Team - Isolamento de Rede)
-    if (logsData.documents) {
-      logsData.documents.forEach((doc: any) => {
-        const logId = doc.name.split('/').pop();
-        xml += `  <url>\n    <loc>https://raquelsynths.com.br/log-reader/${logId}?mode=jonah</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
       });
     }
 
@@ -83,14 +66,6 @@ app.get('/sitemap.xml', async (req, res) => {
       loreData.documents.forEach((doc: any) => {
         const epId = doc.name.split('/').pop();
         xml += `  <url>\n    <loc>https://raquelsynths.com.br/lore-reader/${epId}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
-      });
-    }
-
-    // ☣️ INDEXANDO A SAGA DO JONAH (Red Team - Isolamento de Rede)
-    if (loreJonahData.documents) {
-      loreJonahData.documents.forEach((doc: any) => {
-        const epId = doc.name.split('/').pop();
-        xml += `  <url>\n    <loc>https://raquelsynths.com.br/lore-reader/${epId}?mode=jonah</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
       });
     }
   } catch (error) {

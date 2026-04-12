@@ -2,7 +2,6 @@
 <html lang="pt-BR">
 <head>
   <!-- 1. PRÉ-CONEXÕES CORRIGIDAS (Apenas as reais) -->
-  <link rel="canonical" href="https://raquelsynths.com.br/">
   <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
   <link rel="dns-prefetch" href="https://firestore.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,8 +10,8 @@
   <link rel="alternate" hreflang="pt-br" href="https://raquelsynths.com.br/" />
   <link rel="alternate" hreflang="en" href="https://raquelsynths.com.br/en" />
   <meta charset="utf-8">
-  <title>RaQuel Synths | Cyberpunk Sagas & Virtual Band</title>  
-  
+  <title>RaQuel Synths | Cyberpunk Sagas & Virtual Band</title>
+
   <meta name="description" content="RaQuel Synths is a transmedia virtual band featuring a digital war between Synthwave and Industrial Metal. Read our Cyberpunk Sagas created by Ana Raquel using Angular & AI.">
   <meta name="keywords" content="Virtual Band, RaQuel Synths, Cyberpunk 2077, Transmedia Storytelling, Cyberpunk Sagas, Netrunner, Dark Romance, Suno AI Music, Audio Civil War, Night City aesthetic, Edgerunners, Industrial Metal, BookTok">
   <meta name="author" content="Ana Raquel">
@@ -31,7 +30,7 @@
   <meta name="twitter:title" content="RaQuel Synths | Audio Civil War">
   <meta name="twitter:description" content="Choose your side: Synthwave Code or Industrial Chaos. A transmedia Cyberpunk Saga by Ana Raquel.">
   <meta name="twitter:image" content="https://raquelsynths.com.br/images/banner-seo-global.jpg">
-  
+
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0a0a12">
@@ -64,7 +63,7 @@
     t.src='https://connect.facebook.net/en_US/fbevents.js';
     var s=document.getElementsByTagName('script')[0];
     s.parentNode.insertBefore(t,s);
-    
+
     // 3. A Inicialização
     fbq('init', '2358502707934592');
     fbq('track', 'PageView');
@@ -87,23 +86,23 @@
 
 </head>
 <body style="background-color: #04043a69; margin: 0; display: flex; flex-direction: column; min-height: 100vh;">
-  
+
   <!-- 4. SKELETON LOADER - Tática agressiva de Retenção -->
  <app-root>
     <div id="boot-screen" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; width: 100vw; background-color: #0a0a12; font-family: 'Montserrat', sans-serif; transition: all 0.3s ease;">
-      
+
       <h2 id="boot-title" style="margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px;">INIT SYSTEM...</h2>
       <p id="boot-subtitle" style="color: #888; font-family: 'Roboto', sans-serif; font-size: 14px;">Buscando pacotes de dados...</p>
 
       <style>
         @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
-        @keyframes glitch { 
-          0% { transform: translate(0) } 
-          20% { transform: translate(-2px, 2px) } 
-          40% { transform: translate(-2px, -2px) } 
-          60% { transform: translate(2px, 2px) } 
-          80% { transform: translate(2px, -2px) } 
-          100% { transform: translate(0) } 
+        @keyframes glitch {
+          0% { transform: translate(0) }
+          20% { transform: translate(-2px, 2px) }
+          40% { transform: translate(-2px, -2px) }
+          60% { transform: translate(2px, 2px) }
+          80% { transform: translate(2px, -2px) }
+          100% { transform: translate(0) }
         }
 
         .tech-mode { color: #00f3ff; text-shadow: 0 0 10px rgba(0, 243, 255, 0.5); animation: pulse 1.5s infinite; }
@@ -113,12 +112,12 @@
       <script>
         (function() {
           try {
-            var savedTheme = localStorage.getItem('rqs-theme'); 
-            
+            var savedTheme = localStorage.getItem('rqs-theme');
+
             // 🌍 RADAR DE IDIOMA: Lê a configuração do navegador do usuário
             var userLang = navigator.language || navigator.userLanguage;
             var isPt = userLang.toLowerCase().includes('pt');
-            
+
             var title = document.getElementById('boot-title');
             var subtitle = document.getElementById('boot-subtitle');
             var bootScreen = document.getElementById('boot-screen');
@@ -130,8 +129,8 @@
               title.className = 'jonah-mode';
               // Entrega a ameaça no idioma correto
               subtitle.innerText = isPt ? '[ Infiltrando vírus e corrompendo a matriz de áudio ]' : '[ Injecting virus and corrupting the audio matrix ]';
-              bootScreen.style.backgroundColor = '#050000'; 
-            } 
+              bootScreen.style.backgroundColor = '#050000';
+            }
             // Modo Broklin (Tech Lead)
             else {
               document.body.classList.add('mode-broklin');
@@ -140,8 +139,8 @@
               // Entrega a blindagem no idioma correto
               subtitle.innerText = isPt ? '[ Carregando blindagem e módulos de áudio Synthwave ]' : '[ Loading armor and Synthwave audio modules ]';
             }
-          } catch (e) { 
-            console.error('Falha na ignição do bootloader:', e); 
+          } catch (e) {
+            console.error('Falha na ignição do bootloader:', e);
           }
         })();
       </script>
