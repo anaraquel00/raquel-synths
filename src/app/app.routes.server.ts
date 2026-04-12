@@ -10,6 +10,10 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Prerender // O túnel VIP pro compliance legal
   },
   {
+    path: 'log-reader/:id',
+    renderMode: RenderMode.Server //  Renderiza no servidor para o Google ler os textões.
+  },
+  {
     path: 'visual-novel',
     renderMode: RenderMode.Prerender // Mastiga a saga no build, 0ms de carregamento!
   },
@@ -18,8 +22,8 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Server // Garante que o texto da saga já chegue mastigado para o AdSense ler
   },
   {
-    path: 'log-reader/:id',
-    renderMode: RenderMode.Server //  Renderiza no servidor para o Google ler os textões.
+    path: 'discografia',
+    renderMode: RenderMode.Prerender // A vitrine blindada e super rápida
   },
   {
     path: '**',
