@@ -25,6 +25,10 @@ export const serverRoutes: ServerRoute[] = [
     path: 'discografia',
     renderMode: RenderMode.Server // A vitrine blindada e super rápida
   },
+   {
+    path:'logs-archive',
+    renderMode: RenderMode.Server
+   },
   {
     path: '**',
     renderMode: RenderMode.Prerender
