@@ -12,8 +12,8 @@
     @for (album of paginatedBroklin; track album; let i = $index; let isLast = $last) {
       <article class="featured-album">
        <div class="album-cover">
-         <img [ngSrc]="album.cover" [priority]="i === 0" 
-          width="400" 
+         <img [ngSrc]="album.cover" [priority]="i === 0"
+          width="400"
           height="400"
           sizes="(max-width: 768px) 100vw, 50vw" [alt]="album.title">
          </div>
@@ -56,17 +56,29 @@
     }
 
     <div class="terminal-pagination">
-      <button (click)="prevBroklin()" [disabled]="currentPageBroklin === 1" class="cmd-btn">
+      <a [routerLink]="['/musical-archives']"
+         queryParamsHandling="merge"
+         [queryParams]="{ broPage: currentPageBroklin - 1 }"
+         (click)="scrollToId('broklin-top')"
+         class="cmd-btn"
+         [class.disabled]="currentPageBroklin === 1"
+         [style.pointer-events]="currentPageBroklin === 1 ? 'none' : 'auto'">
         [ < PREV_LOG ]
-      </button>
+      </a>
 
       <span class="cmd-display">
         PAGE: 0{{ currentPageBroklin }} / 0{{ totalPagesBroklin }}
       </span>
 
-      <button (click)="nextBroklin()" [disabled]="currentPageBroklin === totalPagesBroklin" class="cmd-btn">
+      <a [routerLink]="['/musical-archives']"
+         queryParamsHandling="merge"
+         [queryParams]="{ broPage: currentPageBroklin + 1 }"
+         (click)="scrollToId('broklin-top')"
+         class="cmd-btn"
+         [class.disabled]="currentPageBroklin === totalPagesBroklin"
+         [style.pointer-events]="currentPageBroklin === totalPagesBroklin ? 'none' : 'auto'">
         [ NEXT_LOG > ]
-      </button>
+      </a>
     </div>
  <a class="btn-exit" routerLink="/">
   {{ translate.isPt() ? '[ SAIR DO ARQUIVO ]' : '[ EXIT ARCHIVE ]' }}
@@ -82,8 +94,8 @@
     @for (album of paginatedJonah; track album; let i = $index; let isLast = $last) {
       <article class="featured-album">
        <div class="album-cover">
-         <img [ngSrc]="album.cover" [priority]="i === 0" 
-          width="400" 
+         <img [ngSrc]="album.cover" [priority]="i === 0"
+          width="400"
           height="400"
           sizes="(max-width: 768px) 100vw, 50vw" [alt]="album.title">
          </div>
@@ -126,17 +138,29 @@
     }
 
     <div class="terminal-pagination hazard-mode">
-      <button (click)="prevJonah()" [disabled]="currentPageJonah === 1" class="cmd-btn">
+      <a [routerLink]="['/musical-archives']"
+         queryParamsHandling="merge"
+         [queryParams]="{ joPage: currentPageJonah - 1 }"
+         (click)="scrollToId('jonah-top')"
+         class="cmd-btn"
+         [class.disabled]="currentPageJonah === 1"
+         [style.pointer-events]="currentPageJonah === 1 ? 'none' : 'auto'">
         [ < REWIND_CRASH ]
-      </button>
+      </a>
 
       <span class="cmd-display">
         SECTOR: 0{{ currentPageJonah }} / 0{{ totalPagesJonah }}
       </span>
 
-      <button (click)="nextJonah()" [disabled]="currentPageJonah === totalPagesJonah" class="cmd-btn">
+      <a [routerLink]="['/musical-archives']"
+         queryParamsHandling="merge"
+         [queryParams]="{ joPage: currentPageJonah + 1 }"
+         (click)="scrollToId('jonah-top')"
+         class="cmd-btn"
+         [class.disabled]="currentPageJonah === totalPagesJonah"
+         [style.pointer-events]="currentPageJonah === totalPagesJonah ? 'none' : 'auto'">
         [ SKIP_ERROR > ]
-      </button>
+      </a>
     </div>
   <a class="btn-exit hazard-mode-btn" routerLink="/" style="color: #ff0000; border-color: #ff0000;">
   {{ translate.isPt() ? '[ ABORTAR SISTEMA ]' : '[ ABORT SYSTEM ]' }}

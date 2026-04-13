@@ -24,7 +24,7 @@
           <div class="post-body">
             @if (log.image) {
               <div class="post-image">
-                <img [ngSrc]="log.image" [priority]="i < 2" 
+                <img [ngSrc]="log.image" [priority]="i < 2"
                      fill
                      sizes="(max-width: 768px) 100vw, 50vw" [alt]="content?.title">
               </div>
@@ -51,16 +51,24 @@
         }
       }
 
-      <nav class="pagination-controls">
-        <button (click)="previousPage()" [disabled]="currentPage === 0" class="btn-pager">
+     <nav class="pagination-controls">
+        <a [routerLink]="['/logs-archive']"
+           [queryParams]="{ page: currentPage - 1 }"
+           class="btn-pager"
+           [class.disabled]="currentPage === 0"
+           [style.pointer-events]="currentPage === 0 ? 'none' : 'auto'">
           [ < VOLTAR ]
-        </button>
-        
+        </a>
+
         <span class="page-counter">{{ currentPage + 1 }} / {{ totalPages }}</span>
-        
-        <button (click)="nextPage()" [disabled]="currentPage === totalPages - 1" class="btn-pager">
+
+        <a [routerLink]="['/logs-archive']"
+           [queryParams]="{ page: currentPage + 1 }"
+           class="btn-pager"
+           [class.disabled]="currentPage === totalPages - 1"
+           [style.pointer-events]="currentPage === totalPages - 1 ? 'none' : 'auto'">
           [ AVANÇAR > ]
-        </button>
+        </a>
       </nav>
 
     } @else {

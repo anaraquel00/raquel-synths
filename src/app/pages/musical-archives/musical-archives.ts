@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterModule, Router } from '@angular/router';
+import { RouterLink, RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 // Services & Models
@@ -22,6 +22,7 @@ import { TrackingService } from '../../services/tracking.service';
 })
 export class MusicalArchives implements OnInit {
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private contentService = inject(ContentService);
   public translate = inject(TranslationService);
   private sanitizer = inject(DomSanitizer);
@@ -34,9 +35,15 @@ export class MusicalArchives implements OnInit {
   introEN: any;
   introPT: any;
   isLast: any;
- 
+
   ngOnInit() {
     this.getArchives();
+    // 🔥 BLINDAGEM SEO: O terminal agora rastreia a URL
+    this.route.queryParams.subscribe(params => {
+      // Se não tiver página na URL, ele assume 1 (padrão)
+      this.currentPageBroklin = params['broPage'] ? Number(params['broPage']) : 1;
+      this.currentPageJonah = params['joPage'] ? Number(params['joPage']) : 1;
+    });
   }
 
 getArchives() {
@@ -61,8 +68,8 @@ getArchives() {
         this.featuredJonah = jonahFull.slice(5);
 
         // Se você usar a variável legacyReleases globalmente, aplique o corte nela também:
-        this.legacyReleases = sortedData.slice(5); 
-        
+        this.legacyReleases = sortedData.slice(5);
+
         this.isLoading = false;
       }
     });
@@ -73,7 +80,7 @@ pageSize = 5; // Mostra 5 álbuns por vez (ajuste se quiser mais ou menos)
 currentPageBroklin = 1;
 currentPageJonah = 1;
 
-private scrollToId(id: string) {
+public scrollToId(id: string) {
     // 🛡️ BLINDAGEM SSR
     if (isPlatformBrowser(this.platformId)) {
       const element = document.getElementById(id);
@@ -101,20 +108,6 @@ get totalPagesBroklin() {
   return Math.ceil(this.featuredBroklin.length / this.pageSize);
 }
 
-// Controles Broklin
-nextBroklin() {
-  if (this.currentPageBroklin < this.totalPagesBroklin) {
-    this.currentPageBroklin++;
-    this.scrollToId('broklin-top');
-  }
-}
-
-prevBroklin() {
-  if (this.currentPageBroklin > 1) {
-    this.currentPageBroklin--;
-    this.scrollToId('broklin-top');
-  }
-}
 
 // --- LÓGICA DO JONAH (Independente) ---
 get paginatedJonah() {
@@ -133,20 +126,6 @@ get totalPagesJonah() {
   return Math.ceil(this.featuredJonah.length / this.pageSize);
 }
 
-// Controles Jonah
-nextJonah() {
-  if (this.currentPageJonah < this.totalPagesJonah) {
-    this.currentPageJonah++;
-    this.scrollToId('jonah-top');
-  }
-}
-
-prevJonah() {
-  if (this.currentPageJonah > 1) {
-    this.currentPageJonah--;
-    this.scrollToId('jonah-top');
-  }
-}
 
   GoHome() {
     this.router.navigate(['/']);
@@ -165,12 +144,12 @@ prevJonah() {
   }
 
   private trackingService = inject(TrackingService);
-  
+
     // Radar passivo que não interfere na abertura da aba
     trackAlbumClick(albumTitle: string) {
       if (albumTitle) {
         this.trackingService.trackSpotifyClick(albumTitle);
       }
-  
+
   }
 }

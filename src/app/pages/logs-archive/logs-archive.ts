@@ -1,6 +1,6 @@
 import { Component, inject, TrackByFunction } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { TranslationService } from '../../services/translation.service';
 import { ContentService } from '../../services/content.service';
 import { BehaviorSubject, Observable, of } from 'rxjs';
@@ -23,13 +23,15 @@ export class LogsArchiveComponent {
   public translate = inject(TranslationService);
   private contentService = inject(ContentService);
   private platformId = inject(PLATFORM_ID);
+  private route = inject(ActivatedRoute);
 
   private allLogs: any[] = [];
   public logsPaginated$ = new BehaviorSubject<any[]>([]);
-  
+
   public currentPage = 0;
   public pageSize = 5; // 5 logs por página é o ideal para mobile
   public totalPages = 0;
+
 
   // 🔥 ARQUIVO: Pega a sobra da Home (do 5º log em diante)
   logs$: Observable<any[]> = this.contentService.getLogs().pipe(
@@ -50,10 +52,11 @@ export class LogsArchiveComponent {
       return of([]);
     })
   );
+
  trackById(index: number, log: any) { return log.id; }
 
  ngOnInit() {
-  
+
     this.contentService.getLogs().subscribe(logs => {
       if (!logs) return;
 
@@ -69,9 +72,16 @@ export class LogsArchiveComponent {
 
       // 4. Calcula as páginas baseadas APENAS no que sobrou
       this.totalPages = Math.ceil(this.allLogs.length / this.pageSize);
-      this.updatePage();
+      // 🔥 A MÁGICA DO SEO AQUI: O componente agora ESCUTA a URL!
+      this.route.queryParams.subscribe(params => {
+        // Se a URL tiver ?page=1, ele pega o 1. Se não tiver nada, assume o 0.
+        this.currentPage = params['page'] ? Number(params['page']) : 0;
+
+        // Dispara a atualização visual
+        this.updatePage();
+      });
     });
-  }
+      }
 
   getLogContent(log: any) {
     return this.translate.isPt() ? log.pt : log.en;
@@ -81,26 +91,11 @@ export class LogsArchiveComponent {
     const start = this.currentPage * this.pageSize;
     const end = start + this.pageSize;
     this.logsPaginated$.next(this.allLogs.slice(start, end));
-    
+
     // 🛡️ BLINDAGEM: O servidor não tem janela pra rolar!
     if (isPlatformBrowser(this.platformId)) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
 
-  nextPage() {
-    if (this.currentPage < this.totalPages - 1) {
-      this.currentPage++;
-      this.updatePage();
-    }
-  }
-
-  previousPage() {
-    if (this.currentPage > 0) {
-      this.currentPage--;
-      this.updatePage();
-    }
-  }
-
-  
 }
