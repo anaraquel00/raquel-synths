@@ -18,7 +18,7 @@ import { TrackingService } from './services/tracking.service';
 
 @Component({
   selector: 'app-root',
-  standalone: true, 
+  standalone: true,
   imports: [
     CommonModule,
     Header,
@@ -38,7 +38,7 @@ export class App implements OnInit {
   private seoService = inject(SeoService);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
-  
+
   // 🛡️ INJEÇÃO DO PLATAFORM ID (Necessário para não quebrar o SSR)
   private platformId = inject(PLATFORM_ID);
 
@@ -52,8 +52,8 @@ export class App implements OnInit {
 
   ngOnInit() {
    // Insira aqui o seu ID de cliente real (ca-pub-XXXXXXXXXXXXX)
-    const meuAdSenseId = 'ca-pub-5619990751602183'; 
-    
+    const meuAdSenseId = 'ca-pub-5619990751602183';
+
     // Liga o radar de interação
     this.adSenseService.initLazyLoad(meuAdSenseId);
 
@@ -70,15 +70,15 @@ export class App implements OnInit {
     if (isPlatformBrowser(this.platformId)) {
       this.iniciarProtocoloDeIdioma();
     }
-   
+
     // 3. --- LEITURA BRUTA DA URL ---
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
-      const modeNaURL = params.get('mode'); 
+      const modeNaURL = params.get('mode');
       if (modeNaURL === 'jonah') {
         this.aplicarModo('jonah');
       } else {
-        this.aplicarModo('broklin'); 
+        this.aplicarModo('broklin');
       }
     }
 
@@ -95,7 +95,7 @@ export class App implements OnInit {
     ).subscribe(data => {
       if (data['seo']) {
         const lang = this.translate.isPt() ? 'pt' : 'en';
-        this.seoService.updateTags({
+        this.seoService.updateMetaTags({
           title: data['seo'].title ? data['seo'].title[lang] : undefined,
           description: data['seo'].description ? data['seo'].description[lang] : undefined
         });
@@ -110,7 +110,7 @@ export class App implements OnInit {
       document.body.classList.add(`mode-${mode}`);
     }
     if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('rqs-theme', mode); 
+      localStorage.setItem('rqs-theme', mode);
     }
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new Event('theme-changed'));
@@ -118,9 +118,9 @@ export class App implements OnInit {
   }
 
   acceptCookies() {
-    this.cookiesAccepted = true; 
+    this.cookiesAccepted = true;
     if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('rqs_cookies_consent', 'true'); 
+      localStorage.setItem('rqs_cookies_consent', 'true');
     }
   }
 
@@ -131,7 +131,7 @@ export class App implements OnInit {
       const idiomaNavegador = navigator.language || navigator.languages[0];
       // ATENÇÃO AQUI: Mudamos para usar this.translate.setLanguage(xxx)
       if (idiomaNavegador.startsWith('en')) {
-        this.translate.setLanguage('en'); 
+        this.translate.setLanguage('en');
       } else {
         this.translate.setLanguage('pt');
       }
