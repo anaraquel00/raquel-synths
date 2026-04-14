@@ -45,6 +45,11 @@
       "source": "/youtube",
       "destination": "/?utm_source=youtube&utm_medium=organic_video&utm_campaign=descricao",
       "permanent": false
+    },
+    {
+      "source": "/reddit",
+      "destination": "/?utm_source=reddit&utm_medium=organic_social&utm_campaign=link_bio",
+      "permanent": false
     }
   ]
 }
