@@ -68,7 +68,7 @@ export class VisualNovelComponent implements OnInit, OnDestroy {
         attributeFilter: ['class']
       });
     }
-  }
+      }
 
   ngOnDestroy() {
     if (this.themeObserver) this.themeObserver.disconnect();

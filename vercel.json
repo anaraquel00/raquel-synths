@@ -1,12 +1,18 @@
 {
-  "redirects":[
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "redirects": [
     {
       "source": "/spotify",
       "destination": "/?utm_source=spotify&utm_medium=audio_stream&utm_campaign=link_bio",
       "permanent": false
     },
     {
-      "source":"/soundcloud",
+      "source": "/soundcloud",
       "destination": "/?utm_source=soundcloud&utm_medium=audio_stream&utm_campaign=link_bio",
       "permanent": false
     },
