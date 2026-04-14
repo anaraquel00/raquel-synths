@@ -65,7 +65,7 @@ selectedDepartmentData: any;
   private cdr = inject(ChangeDetectorRef); // Para forçar a atualização da tela
   public translate = inject(TranslationService);
   private trackingService = inject(TrackingService); // Para a telemetria de afiliados
-  
+
   // --- OBSERVERS & SUBSCRIPTIONS ---
   private observer: MutationObserver | null = null;
   private dataSubscription: Subscription | null = null;
@@ -102,12 +102,12 @@ ngOnInit(): void {
     // 👇 OUVINTE DE URL (A Mágica do Deep Link com Query Params)
     this.route.queryParams.subscribe(params => {
       const dept = params['dept'];
-      
+
       if (dept) {
         // A URL pediu um departamento específico! Pula o Lobby.
         this.selectedDepartmentId = dept;
         this.currentView = 'MINI_STORE';
-        
+
         // Puxa a Lore imediatamente (pois vem do arquivo estático local)
         const deptData = DEPARTMENTS_DATA.find(d => d.id === dept);
         if (deptData) {
@@ -131,7 +131,7 @@ ngOnInit(): void {
         const newLang = this.translate.isPt() ? 'pt' : 'en';
         if (this.currentLang() !== newLang) {
           this.currentLang.set(newLang);
-          this.cdr.detectChanges(); 
+          this.cdr.detectChanges();
         }
       }, 500);
     }
@@ -149,12 +149,12 @@ ngOnInit(): void {
       departments: this.contentService.getDepartments()
     }).subscribe({
       next: (data) => {
-        console.log('📦 Estoque recebido:', data); 
+        console.log('📦 Estoque recebido:', data);
 
         this.allProducts = data.products;
         this.allDepartments = data.departments;
 
-        // 👇 INJEÇÃO DE ROTEAMENTO: 
+        // 👇 INJEÇÃO DE ROTEAMENTO:
         // Se o usuário entrou por link direto, filtra os produtos AGORA que o Firebase respondeu!
         if (this.selectedDepartmentId) {
            this.filteredProducts = this.allProducts.filter(item => item.faction === this.selectedDepartmentId);
@@ -176,11 +176,11 @@ ngOnInit(): void {
   // --- LÓGICA DE TEMA ---
 checkCurrentMode() {
     if (!this.isBrowser) return;
-    
+
     // A Loja não dita mais as regras. Ela apenas lê a classe global que o Header já definiu.
     const isJonahActive = document.body.classList.contains('mode-jonah');
     this.activeMode = isJonahActive ? 'jonah' : 'broklin';
-   
+
   }
 
 
@@ -202,35 +202,68 @@ checkCurrentMode() {
     this.observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
   }
 
-    // --- NAVEGAÇÃO ---
-onDepartmentSelected(deptId: string) {
-  // 🛡️ UNIFICAÇÃO: Busca os dados uma única vez no LOCAL para garantir a Lore
-  const deptData = DEPARTMENTS_DATA.find(d => d.id === deptId) || null;
-  
-  this.selectedDepartmentId = deptId;
-  this.selectedDepartmentData = deptData; 
-  this.filteredProducts = this.allProducts.filter(item => item.faction === deptId);
-  this.currentView = 'MINI_STORE';
-  
-  if (this.isBrowser) window.scrollTo({ top: 0, behavior: 'smooth' });
+// --- NAVEGAÇÃO E BOOST DE SEO ---
+  onDepartmentSelected(deptId: string) {
+    // 🛡️ UNIFICAÇÃO: Busca os dados uma única vez no LOCAL
+    const deptData = DEPARTMENTS_DATA.find(d => d.id === deptId) || null;
+    this.selectedDepartmentId = deptId;
+    this.selectedDepartmentData = deptData;
+    this.filteredProducts = this.allProducts.filter(item => item.faction === deptId);
+    this.currentView = 'MINI_STORE';
 
-  // 🚀 INJEÇÃO DE SEO (Usando os mesmos dados da Lore)
-  if (deptData) {
-    const lang = this.currentLang();
-    const seoTitle = deptData.title || deptId.toUpperCase();
-    const seoDesc = deptData.loreDescription ? deptData.loreDescription[lang] : (deptData.description ? deptData.description[lang] : 'RQS Protocol');
-    
-    const imgPath = deptData.image || 'assets/images/banner-seo-global.jpg';
-    const seoImage = imgPath.startsWith('http') ? imgPath : `https://raquelsynths.com.br/${imgPath}`;
-    
-    this.seoService.updateTags({
-      title: seoTitle,
-      description: seoDesc,
-      image: seoImage,
-      url: `https://raquelsynths.com.br/store/${deptId}`
-    });
+    if (this.isBrowser) window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // 🚀 INJEÇÃO DE SEO & METADADOS
+    if (deptData) {
+      const lang = this.currentLang();
+      const seoTitle = deptData.title || deptId.toUpperCase();
+      const seoDesc = deptData.loreDescription ? deptData.loreDescription[lang] : (deptData.description ? deptData.description[lang] : 'RQS Protocol');
+      const imgPath = deptData.image || 'assets/images/banner-seo-global.jpg';
+      const seoImage = imgPath.startsWith('http') ? imgPath : `https://raquelsynths.com.br/${imgPath}`;
+
+      // 🛡️ MOTOR 1: Atualiza a vitrine visual
+      this.seoService.updateMetaTags({
+        title: `${seoTitle} | Neon Store`,
+        description: seoDesc,
+        image: seoImage,
+        type: 'website'
+      });
+
+      // 🚀 MOTOR 2 (O BOOST!): Informa ao Google que isso é uma página de Produtos
+      // Só dispara se houver produtos carregados no departamento
+      if (this.filteredProducts.length > 0) {
+        this.seoService.setJsonLd({
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          "name": seoTitle,
+          "description": seoDesc,
+          "url": `https://raquelsynths.com.br/store?dept=${deptId}`,
+          "itemListElement": this.filteredProducts.map((product, index) => ({
+            "@type": "ListItem",
+            "position": index + 1,
+            "item": {
+              "@type": "Product",
+              "name": product.name ? product.name[lang] : 'RQS Item',
+              "image": product.images ? product.images[0] : seoImage,
+              "description": product.description ? product.description[lang] : seoDesc,
+              "brand": {
+                "@type": "Brand",
+                "name": "RaQuel Synths"
+              },
+              "offers": {
+                "@type": "Offer",
+                "url": product.link || `https://raquelsynths.com.br/store?dept=${deptId}`,
+                // Colocamos o BRL por padrão. O Google entende BRL.
+                "priceCurrency": "BRL",
+                "price": product.price || "0.00",
+                "availability": "https://schema.org/InStock"
+              }
+            }
+          }))
+        });
+      }
+    }
   }
-}
 
 
  backToLobby() {
@@ -238,9 +271,22 @@ onDepartmentSelected(deptId: string) {
     this.selectedDepartmentId = null;
     this.filteredProducts = [];
 
-    // ♻️ --- RESET DE SEO ---
-    // Chama a função vazia para restaurar as tags globais de "Audio Civil War"
-    this.seoService.updateTags(); 
+    // ♻️ --- RESET DE SEO (O FIX DO ERRO) ---
+    // Agora passamos o título explicitamente para o compilador não chiar.
+    this.seoService.updateMetaTags({
+      title: 'Neon Store | RQS Oficial',
+      description: 'Mercado Negro Cyberpunk. Equipamentos, Vestuário e Arquivos Confidenciais.',
+      type: 'website'
+    });
+
+    // 🚀 RETORNA O JSON-LD PARA A HOME DA LOJA
+    this.seoService.setJsonLd({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "RQS Neon Store",
+      "url": "https://raquelsynths.com.br/store",
+      "description": "Oficial Merchandise from RaQuel Synths virtual band."
+    });
   }
 
   goBackHome() { this.router.navigate(['/']); }
@@ -275,7 +321,7 @@ onDepartmentSelected(deptId: string) {
     const lang = this.currentLang();
     const productName = item.content[lang]?.name || 'Produto RQS';
     const platform = this.detectPlatformForPixel(cleanUrl);
-    
+
     // Avisa o algoritmo ANTES de abrir o modal
     this.trackingService.trackAffiliateClick(productName, platform);
 
@@ -305,8 +351,8 @@ onDepartmentSelected(deptId: string) {
 
  private openSheinCouponModal(url: string) {
     const isPt = this.currentLang() === 'pt';
-    const couponCode = '348EW73'; 
-    const newserCode = 'WY3BYYD'; 
+    const couponCode = '348EW73';
+    const newserCode = 'WY3BYYD';
 
     const titleText = isPt ? '🔥 CUPOM DETECTADO!' : '🔥 COUPON DETECTED!';
     const subtitleText = isPt ? 'Economize até <strong>40% OFF</strong> nas melhores marcas!' : 'Save up to <strong>40% OFF</strong> on top brands!';
@@ -354,8 +400,8 @@ onDepartmentSelected(deptId: string) {
             });
             Toast.fire({ icon: 'success', title: isPt ? 'Copiado!' : 'Copied!' });
         });
-        
-        return true; 
+
+        return true;
       }
     }); // 🛑 Fim do Swal.fire. Sem .then() encadeado aqui!
   }
@@ -422,7 +468,7 @@ onDepartmentSelected(deptId: string) {
 // --- MODAL ESPECÍFICO PARA STRIPE (CUPOM DEBUG10) ---
  private openStripeCouponModal(url: string) {
     const isPt = this.currentLang() === 'pt';
-    const couponCode = 'DEBUG10'; 
+    const couponCode = 'DEBUG10';
 
     const titleText = isPt ? 'ACESSO VIP DETECTADO!' : '⚡ VIP ACCESS DETECTED!';
     const subtitleText = isPt ? 'Você desbloqueou um desconto de <strong>10% OFF</strong>!' : 'You unlocked a <strong>10% OFF</strong> discount!';
@@ -450,13 +496,13 @@ onDepartmentSelected(deptId: string) {
       background: '#121212 url("/assets/images/noise-texture.png")',
       color: '#fff',
       showCancelButton: true,
-      confirmButtonColor: '#00ff88', 
+      confirmButtonColor: '#00ff88',
       cancelButtonColor: '#333',
-      confirmButtonText: confirmBtnText , 
+      confirmButtonText: confirmBtnText ,
       cancelButtonText: cancelBtnText,
       reverseButtons: true,
       customClass: { confirmButton: 'btn-neon-stripe-confirm' },
-      
+
       // 🚀 A INJEÇÃO DE ENGENHARIA (SÍNCRONA)
       preConfirm: () => {
         // 1. ABRE A ABA DO STRIPE IMEDIATAMENTE
@@ -470,7 +516,7 @@ onDepartmentSelected(deptId: string) {
             Toast.fire({ icon: 'success', title: isPt ? 'Copiado! Redirecionando...' : 'Copied! Redirecting...' });
         });
 
-        return true; 
+        return true;
       }
     });
   }
