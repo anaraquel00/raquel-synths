@@ -4,17 +4,18 @@ import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslationService } from '../../services/translation.service';
 import { ContentService } from '../../services/content.service';
 import { SeoService } from '../../services/seo.service'; // 🛡️ Importante para SEO
-import { Observable, combineLatest, of } from 'rxjs';
+import { Observable, combineLatest, of, BehaviorSubject } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { SplitContentPipe } from "../../components/pipes/content-splitter.pipe";
 import { LoreEpisode } from '../../data/lore-data';
 import { AdArticleComponent } from "../../components/ad-article/ad-article";
 import { NgOptimizedImage } from '@angular/common';
+import { AuthorSignatureComponent } from '../../components/author-signature/author-signature';
 
 @Component({
   selector: 'app-lore-reader',
   standalone: true,
-  imports: [CommonModule, SplitContentPipe, AdArticleComponent, RouterLink, NgOptimizedImage],
+  imports: [CommonModule, SplitContentPipe, AdArticleComponent, RouterLink, NgOptimizedImage, AuthorSignatureComponent],
   templateUrl: './lore-reader.html',
   styleUrls: ['./lore-reader.scss']
 })
@@ -26,9 +27,11 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
 
   currentMode: 'broklin' | 'jonah' = 'broklin';
-  
+  // 🛡️ O CANAL DE RÁDIO DO TEMA
+  private mode$ = new BehaviorSubject<'broklin' | 'jonah'>('broklin');
+
   // 🛡️ O CANO AGORA ENTREGA APENAS UM EPISÓDIO, NÃO UM ARRAY
-  episode$!: Observable<LoreEpisode | null>; 
+  episode$!: Observable<LoreEpisode | null>;
 
   private themeObserver: MutationObserver | null = null;
   isBrowser: boolean;
@@ -51,13 +54,13 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
     // 🛰️ CAPTURA O ID DA URL
     const id$ = this.route.paramMap.pipe(map(params => params.get('id')));
 
-    // 💻 CONECTA O CANO DE FORMA REATIVA
-    this.episode$ = id$.pipe(
-      switchMap(id => {
+    // 💻 CONECTA O CANO DE FORMA REATIVA DUPLA
+    this.episode$ = combineLatest([id$, this.mode$]).pipe(
+      switchMap(([id, mode]) => {
         if (!id) return of(null);
 
-        // Puxa o array do servidor, mas FILTRA apenas o alvo!
-        return this.contentService.getEpisodes(this.currentMode).pipe(
+        // Puxa o array do servidor usando o modo atualizado instantaneamente!
+        return this.contentService.getEpisodes(mode).pipe(
           map(episodes => episodes ? episodes.find(ep => ep.id === id) || null : null),
           tap(ep => {
             if (ep) {
@@ -76,10 +79,20 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
     if (this.themeObserver) this.themeObserver.disconnect();
   }
 
-  private checkTheme() {
+ private checkTheme() {
     if (!this.isBrowser) return;
+
+    // 1. O radar verifica se a classe de perigo existe
     const isJonah = document.body.classList.contains('mode-jonah');
-    this.currentMode = isJonah ? 'jonah' : 'broklin';
+
+    // 2. APRESENTAMOS o newMode pro compilador (A linha que faltava!)
+    const newMode: 'broklin' | 'jonah' = isJonah ? 'jonah' : 'broklin';
+
+    // 3. Só dispara o gatilho reativo se houver mudança real
+    if (this.currentMode !== newMode) {
+      this.currentMode = newMode;
+      this.mode$.next(newMode); // 🚀 Envia o sinal de rádio pra trocar de episódio
+    }
   }
 
   goBack() {

@@ -14,11 +14,11 @@
   </header>
 
   <div class="episode-view">
-    
+
     @if (episode$ | async; as ep) {
-      
+
       <article class="episode-card" [id]="ep.id" [class.season-two]="ep.id && ep.id.startsWith('s2-')">
-        
+
         <div class="ep-header">
           <span class="season-badge" [class.badge-s2]="ep.id && ep.id.startsWith('s2-')">
             {{ translate.isPt() ? ep.category : (ep.category_en || ep.category) }}
@@ -47,12 +47,14 @@
         </div>
 
       <div class="divider"><span>● ● ●</span></div>
+      <app-author-signature></app-author-signature>
       </article>
 
-    } @else {
-      <div class="loading-state" style="padding: 100px 0; text-align: center;">
-        <p class="loading-text glitch-text" style="font-family: monospace; color: #00ffcc;">
-          {{ translate.isPt() ? '[ 🔄 ESTABELECENDO_CONEXÃO_COM_O_ECO... ]' : '[ 🔄 ESTABLISHING_ECHO_CONNECTION... ]' }}
+   } @else {
+      <div style="padding: 100px; text-align: center; font-family: 'Courier New', monospace;"
+           [style.color]="currentMode === 'jonah' ? '#ff0000' : '#00e5ff'">
+        <p class="glitch-text" style="animation: pulse 1.5s infinite;">
+          {{ translate.isPt() ? '[ 🔄 AGUARDANDO SINAL DA MATRIX... ]' : '[ 🔄 WAITING FOR MATRIX SIGNAL... ]' }}
         </p>
       </div>
     }
