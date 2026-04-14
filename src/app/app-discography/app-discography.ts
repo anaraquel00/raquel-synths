@@ -16,6 +16,7 @@ import { NgOptimizedImage } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { TrackingService } from '../services/tracking.service';
+import { SeoService } from '../services/seo.service';
 
 
 @Component({
@@ -32,6 +33,7 @@ export class DiscographyComponent implements OnInit {
   private sanitizer = inject(DomSanitizer);
   private platformId = inject(PLATFORM_ID);
   private cdr = inject(ChangeDetectorRef);
+  private seoService = inject(SeoService);
 
 // 2. Crie os links confiáveis
  radioBroklin = this.sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/K-M0kMMH8hY');
@@ -104,19 +106,40 @@ onThemeChange() {
     this.getDiscography();
   }
 
-  getDiscography() {
-    this.contentService.getDiscography().subscribe({
-      next: (data: any[]) => {
-        // Guarda TUDO na variável mestre
-        this.allAlbums = data as Album[];
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('Erro ao carregar álbuns:', err);
-        this.isLoading = false;
+ getDiscography() {
+  this.contentService.getDiscography().subscribe({
+    next: (data: any[]) => {
+      this.allAlbums = data as Album[];
+      this.isLoading = false;
+
+      // 🚀 INJEÇÃO NEURAL: Structured Data para a Vitrine
+      if (this.allAlbums.length > 0) {
+        this.seoService.setJsonLd({
+          "@context": "https://schema.org",
+          "@type": "MusicGroup",
+          "name": "RaQuel Synths",
+          "alternateName": "RQS",
+          "genre": ["Cyberpunk", "Nu-Metal", "Synthwave"],
+          "description": this.translate.isPt()
+            ? "Banda Virtual Cyberpunk mesclando frequências puras com o caos industrial."
+            : "Cyberpunk Virtual Band blending pure frequencies with industrial chaos.",
+          "album": this.featuredBroklin.map(a => ({
+            "@type": "MusicAlbum",
+            "name": a.title,
+            "image": a.cover,
+            "datePublished": a.releaseDate,
+            "description": this.translate.isPt() ? a.descriptionPT : (a.descriptionEN || a.descriptionPT),
+            "byArtist": { "@type": "MusicGroup", "name": "RaQuel Synths" }
+          }))
+        });
       }
-    });
-  }
+    },
+    error: (err) => {
+      console.error('Erro ao carregar álbuns:', err);
+      this.isLoading = false;
+    }
+  });
+}
 
   // --- GETTERS (A Mágica que conserta o HTML) ---
 

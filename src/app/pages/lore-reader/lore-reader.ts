@@ -64,10 +64,46 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
           map(episodes => episodes ? episodes.find(ep => ep.id === id) || null : null),
           tap(ep => {
             if (ep) {
-               // Atualiza a aba do navegador para o SEO rastrear
+               // 🛡️ O QUE JÁ EXISTE: Atualiza as abas e Open Graph
                const title = this.translate.isPt() ? ep.title : (ep.title_en || ep.title);
                const desc = this.translate.isPt() ? ep.description : (ep.description_en || ep.description);
-               this.seoService.updateMetaTags({ title: `${title} | RQS Saga`, description: desc });
+               const imageUrl = ep.image || 'https://raquelsynths.com.br/images/banner-seo-global.jpg';
+
+               this.seoService.updateMetaTags({
+                 title: `${title} | RQS Saga`,
+                 description: desc,
+                 image: imageUrl,
+                 type: 'article' // 🚀 Boost de OG que configuramos no serviço!
+               });
+
+               // 🚀 O SEGUNDO MOTOR: Structured Data JSON-LD
+               // Isso é o que o webcode.tools gerou, agora automatizado!
+               this.seoService.setJsonLd({
+                 "@context": "https://schema.org",
+                 "@type": "BlogPosting",
+                 "headline": title,
+                 "description": desc,
+                 "image": [ imageUrl ],
+                 "datePublished": ep.releaseDate,
+                 "author": [{
+                     "@type": "Person",
+                     "name": "Ana Raquel",
+                     "jobTitle": "Dev & Creator",
+                     "url": "https://raquelsynths.com.br/creator"
+                   }],
+                 "publisher": {
+                   "@type": "Organization",
+                   "name": "RaQuel Synths",
+                   "logo": {
+                     "@type": "ImageObject",
+                     "url": "https://raquelsynths.com.br/rqs-logo.webp"
+                   }
+                 },
+                 "mainEntityOfPage": {
+                   "@type": "WebPage",
+                   "@id": `https://raquelsynths.com.br/lore-reader/${ep.id}`
+                 }
+               });
             }
           })
         );

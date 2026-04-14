@@ -1,39 +1,38 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router'; 
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toObservable } from '@angular/core/rxjs-interop'; // 👈 Essencial
 import { SafeHtmlPipe } from "../../components/pipes/safe-html.pipe";
 import { ContentService } from '../../services/content.service';
 import { TranslationService } from '../../services/translation.service';
-import { SeoService } from '../../services/seo.service'; 
+import { SeoService } from '../../services/seo.service';
 import { Observable, combineLatest, map, switchMap, of, tap } from 'rxjs';
 import { AdArticleComponent } from '../../components/ad-article/ad-article';
 
 @Component({
   selector: 'app-log-reader',
-  standalone: true, 
+  standalone: true,
   imports: [CommonModule, SafeHtmlPipe, RouterLink, AdArticleComponent],
   templateUrl: './log-reader.html',
   styleUrl: './log-reader.scss',
 })
 export class LogReaderComponent implements OnInit {
-  
+
   private route = inject(ActivatedRoute);
   public translate = inject(TranslationService);
   private contentService = inject(ContentService);
-  private seoService = inject(SeoService); 
+  private seoService = inject(SeoService);
 
   // 🛡️ A CORREÇÃO: toObservable deve ser inicializado aqui, no topo da classe!
-  // Isso garante que ele esteja no "Injection Context" correto.
-  private isPt$ = toObservable(this.translate.isPt); 
+  private isPt$ = toObservable(this.translate.isPt);
 
-  logData$!: Observable<any>; 
+  logData$!: Observable<any>;
 
   ngOnInit() {
     // 🛰️ Captura o ID da URL de forma reativa
     const id$ = this.route.paramMap.pipe(map(params => params.get('id')));
 
-    // 🛰️ COMBINAÇÃO TÁTICA: Usamos o 'isPt$' que definimos lá em cima
+    // 🛰️ COMBINAÇÃO TÁTICA
     this.logData$ = combineLatest([id$, this.isPt$]).pipe(
       switchMap(([id, isPt]) => {
         if (!id) return of(null);
@@ -42,26 +41,55 @@ export class LogReaderComponent implements OnInit {
         return this.contentService.getLogById(id).pipe(
           map((data: any) => {
             if (!data) return null;
-            
+
             // 🗺️ Desempacota a árvore correta (EN ou PT)
-            // Se o seu serviço usa isPt(), passamos o valor booleano
             const localized = isPt ? data.pt : data.en;
 
             return {
               id: id,
-              date: data.date, 
+              date: data.date,
               title: localized?.title,
               description: localized?.description,
               techContent: localized?.techContent,
-              jonahComment: localized?.jonahComment 
+              jonahComment: localized?.jonahComment
             };
           }),
           tap(mappedData => {
             if (mappedData) {
+              // 🛡️ MOTOR 1: Meta Tags Básicas e Open Graph
               this.seoService.updateMetaTags({
                 title: `${mappedData.title} | RQS Logs`,
-                description: mappedData.description
+                description: mappedData.description,
+                type: 'article' // Classifica como artigo nas redes sociais
               });
+
+              // 🚀 MOTOR 2: O Injetor Neural JSON-LD (Structured Data)
+              this.seoService.setJsonLd({
+                 "@context": "https://schema.org",
+                 "@type": "TechArticle",
+                 "headline": mappedData.title,
+                 "description": mappedData.description,
+                 "image": [ "https://raquelsynths.com.br/images/banner-seo-global.jpg" ], // Fallback de blindagem
+                 "datePublished": mappedData.date,
+                 "author": [{
+                     "@type": "Person",
+                     "name": "Ana Raquel",
+                     "jobTitle": "Dev & Creator",
+                     "url": "https://raquelsynths.com.br/creator"
+                   }],
+                 "publisher": {
+                   "@type": "Organization",
+                   "name": "RaQuel Synths",
+                   "logo": {
+                     "@type": "ImageObject",
+                     "url": "https://raquelsynths.com.br/rqs-logo.webp"
+                   }
+                 },
+                 "mainEntityOfPage": {
+                   "@type": "WebPage",
+                   "@id": `https://raquelsynths.com.br/log-reader/${mappedData.id}`
+                 }
+               });
             }
           })
         );

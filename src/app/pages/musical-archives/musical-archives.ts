@@ -12,6 +12,7 @@ import { NgOptimizedImage } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { TrackingService } from '../../services/tracking.service';
+import { SeoService } from '../../services/seo.service';
 
 @Component({
   selector: 'app-musical-archives',
@@ -27,6 +28,7 @@ export class MusicalArchives implements OnInit {
   public translate = inject(TranslationService);
   private sanitizer = inject(DomSanitizer);
   private platformId = inject(PLATFORM_ID);
+  private seoService = inject(SeoService);
 
   legacyReleases: Album[] = [];
   isLoading = true;
@@ -35,6 +37,7 @@ export class MusicalArchives implements OnInit {
   introEN: any;
   introPT: any;
   isLast: any;
+
 
   ngOnInit() {
     this.getArchives();
@@ -69,7 +72,34 @@ getArchives() {
 
         // Se você usar a variável legacyReleases globalmente, aplique o corte nela também:
         this.legacyReleases = sortedData.slice(5);
+        // 🛡️ MOTOR DE AUTORIDADE: Meta Tags da Discografia Completa
+      this.seoService.updateMetaTags({
+        title: this.translate.isPt() ? 'Arquivos Musicais | RQS' : 'Musical Archives | RQS',
+        description: 'O diretório completo de áudio da RaQuel Synths. Explore o legado de Broklin Garpeter e as anomalias de Jonah Cyperfield.',
+        type: 'website'
+      });
 
+      // 🚀 INJEÇÃO DE LEGADO (JSON-LD): O catálogo completo para o Google
+      this.seoService.setJsonLd({
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": this.translate.isPt() ? "Arquivos Musicais RaQuel Synths" : "RaQuel Synths Musical Archives",
+        "mainEntity": {
+          "@type": "ItemList",
+          "itemListElement": albums.map((a, index) => ({
+            "@type": "ListItem",
+            "position": index + 1,
+            "item": {
+              "@type": "MusicAlbum",
+              "name": a.title,
+              "image": a.cover,
+              "datePublished": a.releaseDate,
+              "description": this.translate.isPt() ? a.descriptionPT : (a.descriptionEN || a.descriptionPT),
+              "byArtist": { "@type": "MusicGroup", "name": "RaQuel Synths" }
+            }
+          }))
+        }
+      });
         this.isLoading = false;
       }
     });

@@ -1,9 +1,11 @@
 # Protocolo de Acesso RQS - RaQuel Synths
 User-agent: *
 Allow: /
-Disallow: /assets/private/ # Se você tiver algo que não quer que apareça na busca
 
-# Prioridade total para o Robô do AdSense
+# Quarentena: Setores de memoria que nao devem ser rastreados
+Disallow: /assets/private/
+
+# Prioridade total para o Drone do AdSense
 User-agent: Mediapartners-Google
 Allow: /
 
