@@ -115,6 +115,35 @@ $glass-border: rgba(255, 255, 255, 0.1);
   gap: 2.5rem;
 }
 
+/* 🔵 ESTADO BASE (BROKLIN / TEMP 3 / CIANO) */
+.matrix-waiting-box {
+  width: 100%;
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px;
+}
+
+.loading-text {
+  font-family: 'Courier New', monospace;
+  font-size: 1.2rem;
+  color: #00e5ff;
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.8);
+  animation: pulse 1s infinite;
+}
+
+.sub-loading-text {
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 10px;
+  font-family: 'Courier New', monospace;
+}
+
+/* Animações (Caso você já não tenha no seu CSS global) */
+@keyframes pulse {
+  0%, 100% { opacity: 1; filter: blur(0px); }
+  50% { opacity: 0.5; filter: blur(2px); }
+}
+
 // --- CARD DO EPISÓDIO ---
 .episode-card {
   background: $glass-bg;
@@ -318,7 +347,7 @@ button, a.btn-read, a.back-link, a.btn-decrypt, a.btn-watch {
   /* Estado ATIVO - Roxo/Rosa Neon da General */
   &.active {
     color: #fff;
-    border-color: #bd00ff; 
+    border-color: #bd00ff;
     background: rgba(189, 0, 255, 0.1); /* Fundo levemente roxo */
     text-shadow: 0 0 10px rgba(189, 0, 255, 0.9);
     box-shadow: 0 0 20px rgba(189, 0, 255, 0.5), inset 0 0 15px rgba(189, 0, 255, 0.2);
@@ -332,7 +361,7 @@ button, a.btn-read, a.back-link, a.btn-decrypt, a.btn-watch {
     flex-direction: column;
     gap: 15px;
   }
-  
+
   .neon-tab {
     width: 80%;
   }
@@ -345,7 +374,7 @@ button, a.btn-read, a.back-link, a.btn-decrypt, a.btn-watch {
   text-shadow: 0px 0px 8px rgba(0, 229, 255, 0.6);
   transition: all 0.3s ease;
   position: relative; /* Mantém dentro do fluxo normal do parágrafo */
-  
+
   &:hover {
     color: #fff;
     text-shadow: 0px 0px 15px #00e5ff, 0px 0px 30px #00e5ff;
@@ -360,12 +389,37 @@ button, a.btn-read, a.back-link, a.btn-decrypt, a.btn-watch {
   // 1. O Fundo da Página (Ambiente Hostil)
 // O :host-context verifica se algum pai (o body) tem essa classe
 :host-context(.mode-jonah) {
- 
+
   .visual-novel-catalog {
     // Sai o degradê azul, entra o abismo vermelho escuro
     background: linear-gradient(180deg, #0a0000 0%, #1a0505 100%) !important;
     border: 1px solid #4a0000;
   }
+/* 🔴 ESTADO CORROMPIDO (JONAH) */
+  .matrix-waiting-box {
+    background: rgba(20, 0, 0, 0.8);
+    border: 1px dashed #ff3d00;
+  }
+
+  .loading-text {
+    color: #ff3d00;
+    /* 🛡️ A sombra do Jonah esmaga a do Broklin diretamente no texto! */
+    text-shadow: 0 0 10px #ff4500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    /* MANTÉM O PULSE, SÓ TROCA A COR */
+    animation: pulse 1s infinite!important;
+  }
+
+  .sub-loading-text {
+    color: #ff3d00;
+    opacity: 0.7;
+  }
+  /* Animação Pulse (Geral) */
+ @keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
 
   // 2. Os Cards dos Episódios (Chapas de Metal)
   .episode-card {
@@ -395,7 +449,7 @@ button, a.btn-read, a.back-link, a.btn-decrypt, a.btn-watch {
     img {
       filter: sepia(20%) contrast(1.1); // Um leve tom de filme velho/sujo
     }
-    
+
     // O Cadeado (Lock Overlay)
     .lock-overlay {
         background: rgba(20, 0, 0, 0.8);
@@ -490,7 +544,7 @@ button, a.btn-read, a.back-link, a.btn-decrypt, a.btn-watch {
 
   /* 🔥 OVERRIDE: MODO JONAH (Vermelho Caos) 🔥 */
  .neon-tab {
-  
+
   &:hover {
     border-color: #ff3300; /* Laranja Fogo */
     text-shadow: 0 0 8px rgba(255, 51, 0, 0.8);
@@ -511,7 +565,7 @@ button, a.btn-read, a.back-link, a.btn-decrypt, a.btn-watch {
     flex-direction: column;
     gap: 15px;
   }
-  
+
   .neon-tab {
     width: 80%;
   }

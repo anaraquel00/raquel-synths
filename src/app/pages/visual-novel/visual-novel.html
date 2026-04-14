@@ -119,63 +119,56 @@
      </div>
 
      <div class="season-tabs">
-      <button class="neon-tab" 
-              [class.active]="temporadaAtiva === 1" 
+      <button class="neon-tab"
+              [class.active]="temporadaAtiva === 1"
               (click)="setTemporada(1)">
         {{ translate.isPt() ? 'Temporada 1' : 'Season 1' }}
       </button>
-      
-      <button class="neon-tab" 
-              [class.active]="temporadaAtiva === 2" 
+
+      <button class="neon-tab"
+              [class.active]="temporadaAtiva === 2"
               (click)="setTemporada(2)">
         {{ translate.isPt() ? 'Temporada 2' : 'Season 2' }}
       </button>
      </div>
      <div class="episode-grid">
-
-      @for (ep of episodes$ | async; track ep.id) {
-
-       @if (ep.id && ep.id.startsWith('s' + temporadaAtiva + '-')) {
-          
+      @for (ep of filteredEpisodes$ | async; track ep.id) {
           <div class="episode-card">
-
             <div class="card-image">
-              <img [ngSrc]="ep.image || 'assets/images/placeholder.jpg'" 
-                   width="600" 
-                   height="400" 
+              <img [ngSrc]="ep.image || 'assets/images/placeholder.jpg'"
+                   width="600"
+                   height="400"
                    priority
                    [alt]="ep.title">
             </div>
-
             <div class="card-content">
               <span class="date" *ngIf="ep.releaseDate">
                   {{ ep.releaseDate | date:'dd/MM/yyyy' }}
               </span>
-
               <h3>
                 {{ translate.isPt() ? ep.title : (ep.title_en || ep.title) }}
               </h3>
-
               <p>
                 {{ translate.isPt()
                    ? (ep.description || 'Clique para ler...')
                    : (ep.description_en || ep.description || 'Click to read...')
                 }}
               </p>
-
               <a [routerLink]="['/lore-reader', ep.id]" class="btn-read">
                 {{ translate.isPt() ? '📖 Ler Episódio' : '📖 Read Episode' }}
               </a>
             </div>
-
           </div>
-        
-        } } @empty {
-        <p class="loading-text">
-          {{ translate.isPt() ? '⚠️ SINAL BLOQUEADO: A VERDADE SERÁ REVELADA NESTE DOMINGO...' : '⚠️ SIGNAL BLOCKED: THE TRUTH WILL BE REVEALED THIS SUNDAY...' }}
-        </p>
+      } @empty {
+        <div class="matrix-waiting-box">
+          <p class="loading-text">
+            {{ translate.isPt() ? '[ 🔄 AGUARDANDO SINAL DA MATRIX... ]' : '[ 🔄 WAITING FOR MATRIX SIGNAL... ]' }}
+          </p>
+          <p class="sub-loading-text">
+            {{ translate.isPt() ? '⚠️ SINAL BLOQUEADO: A VERDADE SERÁ REVELADA EM BREVE...' : '⚠️ SIGNAL BLOCKED: THE TRUTH WILL BE REVEALED SOON...' }}
+          </p>
+        </div>
       }
     </div>
-
   </div>
 </section>

@@ -3,7 +3,8 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ContentService } from '../../services/content.service';
 import { TranslationService } from '../../services/translation.service';
-import { Observable, BehaviorSubject, switchMap } from 'rxjs'; // 👈 Importamos o switchMap
+// 🛡️ AQUI: Adicionamos o combineLatest e o map nas importações
+import { Observable, BehaviorSubject, switchMap, combineLatest, map } from 'rxjs';
 import { NgOptimizedImage } from '@angular/common';
 
 @Component({
@@ -22,16 +23,29 @@ export class VisualNovelComponent implements OnInit, OnDestroy {
   private modeSubject = new BehaviorSubject<'broklin' | 'jonah'>('broklin');
 
   // 🚀 AQUI ESTÁ A NOSSA VARIÁVEL DE ESTADO DAS ABAS
-  public temporadaAtiva: number = 1; 
+  public temporadaAtiva: number = 1;
 
-  // ⚡ FUNÇÃO PARA TROCAR DE TEMPORADA
+  // 📻 NOVO: O sinal de rádio para avisar a matriz que a temporada mudou!
+  private temporadaAtivaSubject = new BehaviorSubject<number>(1);
+
+  // ⚡ FUNÇÃO PARA TROCAR DE TEMPORADA (ATUALIZADA)
   public setTemporada(numeroDaTemporada: number): void {
     this.temporadaAtiva = numeroDaTemporada;
+    this.temporadaAtivaSubject.next(numeroDaTemporada); // 🚀 Dispara o sinal!
   }
 
-  // 🚀 A MÁGICA: Sempre que o modo mudar, o switchMap pede novos episódios ao Firebase
+  // 🚀 A MÁGICA ORIGINAL: Sempre que o modo mudar, pede novos episódios ao Firebase
   episodes$: Observable<any[]> = this.modeSubject.asObservable().pipe(
     switchMap(mode => this.contentService.getEpisodes(mode))
+  );
+
+  // 🛡️ O NOVO FILTRO: Pega todos os episódios e entrega pro HTML SÓ os da temporada certa!
+  filteredEpisodes$: Observable<any[]> = combineLatest([this.episodes$, this.temporadaAtivaSubject]).pipe(
+    map(([episodes, season]) => {
+      if (!episodes) return [];
+      // Se for Temp 1, entrega os 's1-'. Se for Temp 2, entrega os 's2-'.
+      return episodes.filter(ep => ep.id && ep.id.startsWith('s' + season + '-'));
+    })
   );
 
   private themeObserver: MutationObserver | null = null;
@@ -39,7 +53,6 @@ export class VisualNovelComponent implements OnInit, OnDestroy {
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     this.isBrowser = isPlatformBrowser(this.platformId);
-    // Removemos a lógica complexa do constructor e colocamos direto na variável episodes$
   }
 
   ngOnInit() {
@@ -71,6 +84,7 @@ export class VisualNovelComponent implements OnInit, OnDestroy {
 
     if (this.modeSubject.value !== newMode) {
       this.modeSubject.next(newMode);
+      this.setTemporada(1); // 🛡️ Bônus de UX: Volta pra Temp 1 ao trocar de personagem
     }
   }
 }
