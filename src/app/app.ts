@@ -1,5 +1,5 @@
-import { Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, inject, OnInit, PLATFORM_ID, effect, Renderer2 } from '@angular/core';
+import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
 
 // 🛡️ IMPORTAÇÕES DA ENGENHARIA DE ROTEAMENTO:
 import { Router, NavigationEnd, ActivatedRoute, RouterModule, RouterOutlet } from '@angular/router';
@@ -39,6 +39,10 @@ export class App implements OnInit {
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
 
+  // 🛡️ INJEÇÕES DE MANIPULAÇÃO DO DOM (Para o AdSense)
+  private document = inject(DOCUMENT);
+  private renderer = inject(Renderer2);
+
   // 🛡️ INJEÇÃO DO PLATAFORM ID (Necessário para não quebrar o SSR)
   private platformId = inject(PLATFORM_ID);
 
@@ -48,6 +52,18 @@ export class App implements OnInit {
     private adSenseService: AdSenseService,
     private trackingService: TrackingService) {
     injectSpeedInsights();
+
+    // 🚀 GATILHO REATIVO DO IDIOMA PARA O ADSENSE (SEO/RPM)
+    effect(() => {
+      // Escuta o idioma atual do seu TranslationService
+      const currentLang = this.translate.currentLang();
+
+      // Define a tag para o robô do AdSense faturar em dólar ou real
+      const langAttribute = currentLang === 'en' ? 'en-US' : 'pt-BR';
+
+      // Injeta diretamente na tag <html>
+      this.renderer.setAttribute(this.document.documentElement, 'lang', langAttribute);
+    });
   }
 
   ngOnInit() {
