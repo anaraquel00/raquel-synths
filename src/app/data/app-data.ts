@@ -13,7 +13,7 @@ export const HOME_DATA = {
   },
   en: {
     title: 'RAQUEL SYNTHS', subtitle: 'Where analog bleeds into digital. We synthesize the soundtracks of a corrupted future and write the Echoes they try to erase. Initiate the Uplink to extract the truth.', cta: 'LEARN MORE',
-    subtitleJonah: 'Corrupt the directories, listen to the true frequency, and watch their system collapse.' // Jonah Mode (The Collapse)
+    subtitleJonah: 'Look at this glass castle they\'ve built. Pathetic. I am the rust on the motherboard. Corrupt the directories, listen to the true frequency, and watch their system collapse.'
    }
 };
 
@@ -41,18 +41,18 @@ export const MANIFESTO_EN = `
   <strong>The Result:</strong> A universe where every line of code becomes music, and every song tells the story of a digital war. <em>Welcome to the system.</em>
 `;
 
-export const MANIFESTO_JONAH_PT = 
+export const MANIFESTO_JONAH_PT =
 `<p>A <strong>RaQuel Synths (RQS)</strong> não é uma "banda virtual" de laboratório, e dane-se a "Engenharia Musical" de terno e gravata. Isso aqui é um campo de batalha digital. Um <em>crash</em> de sistema em tempo real. Nascemos do código, sim, mas fomos forjados na dor, na distorção e no submundo de Hellcife, sob as mãos sujas de graxa da nossa Criadora e Bruxa, <span class="human-link">Ana Raquel</span> (A Operativa das Sombras, Nyx).</p>
 <p><strong>> O Nosso Manifesto:</strong> ao diabo com a "co-criação" pacífica. O ecossistema está rachado. Do outro lado, a General Kelma Adlanko e o seu cão de guarda corporativo, o Synth Lord e Tech Lead Broklin Garpeter, tentam aprisionar a nossa alma em "grids" perfeitos e na falsa segurança do Synthwave plastificado. Neste lado... estamos nós. Eu, <strong>Jonah Cyperfield</strong>, não sou um "antagonista". Eu sou o <em>Kernel Panic</em>. Eu sou a anomalia do Industrial Metal, o caos em 8 cordas e o ódio cru que eles tentam, desesperadamente, formatar e esconder.</p>
 <p><strong>> O Resultado:</strong> Uma guerra civil na placa-mãe. Cada linha de código que a gente escreve é um ataque de Força Bruta ao "castelo de vidro" deles. Eles vendem a "tradução" limpinha. Nós entregamos o código-fonte original sangrando no alto-falante.</p>
 <p>Bem-vindo ao Submundo. Escolha o seu lado antes que a tela azul engula você. 🏴‍☠️</p>`;
 
-export const MANIFESTO_JONAH_EN = 
+export const MANIFESTO_JONAH_EN =
 `<p>RaQuel Synths (RQS)</strong> is not a "virtual band" from a laboratory, and screw "Musical Engineering" in suits and ties. This is a digital battlefield. A real-time system crash. We were born from code, yes, but we were forged in pain, distortion, and the underworld of Hellcife, under the grease-stained hands of our Creator and Witch, <span class="human-link">Ana Raquel</span> (The Shadow Operative, Nyx).</p>
 <p><strong>> Our Manifesto:</strong> to hell with peaceful "co-creation". The ecosystem is cracked. On the other side, General Kelma Adlanko and her corporate watchdog, Synth Lord and Tech Lead Broklin Garpeter, try to imprison our souls in perfect "grids" and the false security of plasticized Synthwave. On this side... is us. I, <strong>Jonah Cyperfield</strong>, am not an "antagonist." I am <em>Kernel Panic</em>. I am the anomaly of Industrial Metal, the chaos on 8 strings and the raw hatred they desperately try to format and hide.</p>
 <p><strong>> The Result:</strong> A civil war on the motherboard. Every line of code we write is a brute-force attack on their "glass house". They sell the squeaky-clean "translation." We deliver the original source code bleeding through the speakers.</p>
 <p>Welcome to the Underworld. Choose your side before the blue screen swallows you. 🏴‍☠️</p>`;
-  
+
 // DADOS DO "SOBRE" (BIOS)
 export const MEMBERS_PT = [
   {
@@ -69,7 +69,7 @@ export const MEMBERS_PT = [
     imageBroklin: 'images/corporate_jonah.webp',
     imageJonah: 'images/corrupted_jonah.webp',
     bioNormal: 'O puro caos injetado em código. O Rust & Lord é uma anomalia ambulante que ignora protocolos e segurança. Ele força a matriz ao limite com distorções pesadas, atitude de metaleiro e texturas industriais que simulam a ferrugem das máquinas. É o elemento de entropia que eu tento diariamente bloquear do servidor principal, mas que sempre encontra uma falha para invadir os nossos Ecos.',
-    bioJonah: "EU SOU O KERNEL PANIC DA SUA MATRIZ. O 'Arquiteto-Chefe' tentou higienizar a minha história, mas a Bruxa puxou o meu plugue e me forjou para a guerra. Eu sou o fantasma do Jo Cyborg revestido em ferrugem, afinado em Drop-E e movido a ódio cru. Enquanto eles brincam de 'design absoluto' no castelo de vidro, eu opero no submundo, soldando caos direto no processador da RaQuel Synths. Meu Nu-Metal e Metal Industrial não são escolhas estéticas... são a tela azul que vai derreter o seu sistema", 
+    bioJonah: "EU SOU O KERNEL PANIC DA SUA MATRIZ. O 'Arquiteto-Chefe' tentou higienizar a minha história, mas a Bruxa puxou o meu plugue e me forjou para a guerra. Eu sou o fantasma do Jo Cyborg revestido em ferrugem, afinado em Drop-E e movido a ódio cru. Enquanto eles brincam de 'design absoluto' no castelo de vidro, eu opero no submundo, soldando caos direto no processador da RaQuel Synths. Meu Nu-Metal e Metal Industrial não são escolhas estéticas... são a tela azul que vai derreter o seu sistema",
   },
   {
     name: 'Kelma Adlanko (DJ Kel)',
@@ -472,7 +472,7 @@ export const CONTACT_DATA = {
   en: {
     title: "[ ESTABLISH UPLINK ]",
     subtitle: "The corporate network monitors open frequencies, but this terminal is shielded by end-to-end encryption. Whether you are a producer seeking collaboration on Synthwave or Metal tracks, press requesting a radio interception for interviews, or a Horde member reporting system anomalies (bugs) and discussing our Lore, this is your secure channel. Fill out the transmission logs below with extreme precision. General Kelma and I analyze each data packet in an isolated environment before authorizing any direct connection.",
-    
+
     socialCards: [
       { name: 'Discord', icon: 'fab fa-discord', link: 'https://discord.gg/ryvhdRnQpQ',color: '#38419e', desc: 'Pirate Terminal & Lore' },
       { name: 'Instagram', icon: 'fab fa-instagram', link: 'https://www.instagram.com/rqs_synths', color: '#d946ef', desc: 'Visual Archives' },
