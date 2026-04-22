@@ -36,8 +36,8 @@ export class DiscographyComponent implements OnInit {
   private seoService = inject(SeoService);
 
 // 2. Crie os links confiáveis
- radioBroklin = this.sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/K-M0kMMH8hY');
- radioJonah = this.sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/E871XDzFsYc?si=e6AhqzWwuh7EzIRR');
+ radioBroklin = this.sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/u7JI-dyajuA?autoplay=1&loop=1&playlist=u7JI-dyajuA');
+ radioJonah = this.sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/E871XDzFsYc?autoplay=1&loop=1&playlist=E871XDzFsYc&si=e6AhqzWwuh7EzIRR');
 
   private _limitToHome: number = 5; // 🛡️ Valor de fábrica blindado (default)
 
