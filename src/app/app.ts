@@ -66,25 +66,26 @@ export class App implements OnInit {
     });
   }
 
-  ngOnInit() {
-   // Insira aqui o seu ID de cliente real (ca-pub-XXXXXXXXXXXXX)
-    const meuAdSenseId = 'ca-pub-5619990751602183';
-
-    // Liga o radar de interação
-    this.adSenseService.initLazyLoad(meuAdSenseId);
-
-    // O Gatilho do Analytics / GTM
-    const meuGtmId = 'G-Z1TSQ0NV6T'; // Substitua pelo seu ID real (G-XXXX ou GTM-XXXX)
-    this.trackingService.initLazyTracking(meuGtmId);
-
-    // 1. --- LÓGICA DE COOKIES ---
+ngOnInit() {
+    // 1. --- LÓGICA DE COOKIES (Seguro, pois tem verificação de window) ---
     if (typeof window !== 'undefined' && localStorage) {
       this.cookiesAccepted = localStorage.getItem('rqs_cookies_consent') === 'true';
     }
 
-    // 2. --- 🚀 PROTOCOLO DE IDIOMA (O Interceptador Gringo) ---
+    // 2. --- 🚀 PROTOCOLO DE RASTREAMENTO E IDIOMA (O Cofre do Navegador) ---
+    // 🛡️ TUDO o que for de Google Analytics, AdSense ou Idioma DEVE ficar aqui dentro!
     if (isPlatformBrowser(this.platformId)) {
+
       this.iniciarProtocoloDeIdioma();
+
+      // Inicia o AdSense em segurança
+      const meuAdSenseId = 'ca-pub-5619990751602183';
+      this.adSenseService.initLazyLoad(meuAdSenseId);
+
+      // Inicia o Analytics/GTM em segurança
+      const meuGtmId = 'G-Z1TSQ0NV6T';
+      this.trackingService.initLazyTracking(meuGtmId);
+
     }
 
     // 3. --- LEITURA BRUTA DA URL ---
