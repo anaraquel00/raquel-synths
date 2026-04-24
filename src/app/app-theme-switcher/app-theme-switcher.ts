@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, effect, signal } from '@angular/core';
 import { TrackingService } from '../services/tracking.service';
 
 @Component({
@@ -8,30 +8,34 @@ import { TrackingService } from '../services/tracking.service';
   styleUrl: './app-theme-switcher.scss'
 })
 export class AppThemeSwitcher {
-  playIndustrialNoise: any;
-  playSynthChord: any;
-  /* 2. A INJEÇÃO DE DEPENDÊNCIA (O coração do Angular. Tem que ter o "private" e o tipo forte "TrackingService") */
-  constructor(private trackingService: TrackingService) {}
+  // O NOSSO CABO DE FIBRA ÓTICA (Estado Centralizado)
+  currentMode = signal<'broklin' | 'jonah'>('broklin');
 
+  constructor(private trackingService: TrackingService) {
+    // A PEÇA 1: O OBSERVADOR AUTOMÁTICO (Passivo)
+    effect(() => {
+      const modoAtual = this.currentMode();
+
+      // Muda a cor do navegador e salva no disco local
+      document.body.classList.remove('mode-broklin', 'mode-jonah');
+      document.body.classList.add(`mode-${modoAtual}`);
+      localStorage.setItem('rqs-theme', modoAtual);
+    });
+  }
+
+  // A PEÇA 2: A AÇÃO DIRETA (Ativada pelo clique do usuário)
   switchMode(mode: 'broklin' | 'jonah') {
-  document.body.classList.remove('mode-broklin', 'mode-jonah');
-  document.body.classList.add(`mode-${mode}`);
+    // 1. Injeta o novo valor na fibra ótica (o effect lá em cima vai reagir sozinho!)
+    this.currentMode.set(mode);
 
-  // Opcional: Tocar um som quando trocar!
-  if (mode === 'jonah') this.playIndustrialNoise();
-  if (mode === 'broklin') this.playSynthChord();
-
-  // 3. A NOVIDADE: Salvar e Avisar a Loja!
-  localStorage.setItem('rqs-theme', mode); // Salva pra não perder no F5
-
-  // Dispara um evento global pro site todo ouvir
-  window.dispatchEvent(new Event('theme-changed'));
-
-  /* 3. O DISPARO SEGURO DO LASER */
+    // 2. Dispara o laser de rastreio de métricas
     this.trackingService.trackCustomEvent('theme_switched', {
       selected_mode: mode,
       location: 'header_switcher'
     });
   }
-
 }
+
+
+
+
