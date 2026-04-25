@@ -78,7 +78,7 @@ export class ContentService {
     const colRef = collection(this.firestore, 'logs');
 
     // --- 🕰️ MÁQUINA DO TEMPO (QA & TESTES DE LOGS) ---
-    // const dataFutura = new Date('2030-12-31').toISOString();
+    //const dataFutura = new Date('2030-12-31').toISOString();
 
     const q = query(
       colRef,

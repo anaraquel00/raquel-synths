@@ -124,7 +124,7 @@
     border: 2px dashed #ff4500;
     padding: 20px;
     background: rgba(255, 69, 0, 0.1);
-    
+
     .jonah-glitch-header {
       background: #ff4500;
       color: #000;
@@ -133,7 +133,7 @@
       display: inline-block;
       margin-bottom: 15px;
     }
-    
+
     .jonah-content {
       font-style: italic;
       color: #ffaa88;
@@ -172,4 +172,81 @@
 @keyframes jitter {
   0% { transform: translate(1px, 0); }
   100% { transform: translate(-1px, 0.5px); }
+}
+
+.system-log-detail {
+  font-family: 'Courier New', Courier, monospace;
+  line-height: 1.6;
+}
+
+// 🛡️ BYPASS ABSOLUTO DO ANGULAR
+::ng-deep {
+
+  // 🔴 RED TEAM (O caos validado da Temporada 1)
+  .chat-log {
+    font-family: 'Fira Code', 'Consolas', monospace !important;
+    background: rgba(0, 0, 0, 0.4) !important;
+    border-left: 3px solid var(--accent-color) !important;
+    padding: 15px 20px !important;
+    margin: 20px 0 !important;
+    border-radius: 0 8px 8px 0 !important;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #e0e0e0 !important;
+    box-shadow: inset 5px 0 15px -5px rgba(0,0,0,0.5);
+
+    em {
+      color: var(--accent-color) !important;
+      font-style: italic;
+      opacity: 0.9;
+    }
+  }
+
+  // 🔵 BLUE TEAM (A Auditoria Corporativa com privilégios Root)
+  .broklin-audit-note {
+    margin-top: 3rem !important;
+    padding: 1.5rem !important;
+    background-color: rgba(0, 68, 255, 0.05) !important;
+    border: 1px solid rgba(0, 68, 255, 0.4) !important;
+    border-top: 4px solid #0044ff !important;
+    border-radius: 6px !important;
+
+    .audit-header {
+      display: flex !important;
+      align-items: center !important;
+      gap: 0.5rem !important;
+      color: #0044ff !important;
+      margin-bottom: 1rem !important;
+      border-bottom: 1px dashed rgba(0, 68, 255, 0.3) !important;
+      padding-bottom: 0.5rem !important;
+    }
+
+    .warning {
+      color: #ff3333 !important;
+      font-weight: bold !important;
+      margin-top: 1rem !important;
+    }
+  }
+}
+
+:host-context(.mode-jonah) ::ng-deep .system-log-detail {
+
+  .broklin-audit-note {
+    background-color: rgba(255, 69, 0, 0.05)!important;
+    border-color: rgba(255, 69, 0, 0.4)!important;
+    border-top-color: #ff4500!important;
+
+    .audit-header {
+      color: #ff4500!important;
+      border-bottom-color: rgba(255, 69, 0, 0.3)!important;
+    }
+  }
+}
+:host-context(.mode-jonah) ::ng-deep .chat-log {
+  background: rgba(20, 5, 0, 0.4);
+  border-color: #ff4500;
+
+  em {
+    color: #ff4500;
+  }
 }
