@@ -33,16 +33,16 @@ export class ContentService {
     // --- 🕰️ MÁQUINA DO TEMPO (QA & TESTES DE UI) ---
      //const dataFutura = new Date('2030-01-01'); // Viajamos para 2030
      //where("releasedDate", "<=", dataFutura)
-    
+
     // 1. DECIDE QUAL COLEÇÃO USAR BASEADO NO MODO
-    const collectionName = mode === 'jonah' ? 'lore-jonah' : 'lore'; 
-    
+    const collectionName = mode === 'jonah' ? 'lore-jonah' : 'lore';
+
     // 2. CONECTA NA COLEÇÃO CERTA
     const colRef = collection(this.firestore, collectionName);
     const q = query(
       colRef,
       where('mode', '==', mode),
-      orderBy('releaseDate', 'desc'), 
+      orderBy('releaseDate', 'desc'),
       where('releaseDate', '<=', new Date().toISOString()), // Em prod, só traz se a data já passou!
       where('published', '==', true)
     );
@@ -51,7 +51,7 @@ export class ContentService {
       take(1), // 🔥 A TRAVA DO PAGESPEED: Ouve 1 vez, entrega os dados e desliga a rede.
       map(episodes => {
         // A MÁGICA ESTÁ AQUI: { numeric: true }
-        return (episodes as LoreEpisode[]).sort((a, b) => 
+        return (episodes as LoreEpisode[]).sort((a, b) =>
           (a.id || '').localeCompare(b.id || '', undefined, { numeric: true, sensitivity: 'base' })
         );
       })
@@ -72,20 +72,30 @@ export class ContentService {
     return (collectionData(colRef, { idField: 'id' }) as Observable<Department[]>).pipe(take(1));
   }
 
- // 📜 4. LOGS (Fofocas e Bastidores)
-  getLogs(): Observable<any[]> {
-    if (!isPlatformBrowser(this.platformId)) return of([]);
-    const colRef = collection(this.firestore, 'logs');
-    const q = query(colRef, orderBy('date', 'desc')); 
-    return (collectionData(q, { idField: 'id' }) as Observable<any[]>).pipe(take(1));
-  }
+// 📜 4. LOGS (Fofocas e Bastidores)
+  getLogs(): Observable<any[]> {
+    if (!isPlatformBrowser(this.platformId)) return of([]);
+    const colRef = collection(this.firestore, 'logs');
+
+    // --- 🕰️ MÁQUINA DO TEMPO (QA & TESTES DE LOGS) ---
+    // const dataFutura = new Date('2030-12-31').toISOString();
+
+    const q = query(
+      colRef,
+      // 🛡️ O ESCUDO: Só traz os logs se a data for de hoje para trás
+      where('date', '<=', new Date().toISOString()),
+      orderBy('date', 'desc')
+    ); 
+
+    return (collectionData(q, { idField: 'id' }) as Observable<any[]>).pipe(take(1));
+  }
   // 📜 4.1 LOG ESPECÍFICO (O Sniper)
   getLogById(id: string): Observable<any> {
     if (!isPlatformBrowser(this.platformId)) return of(null);
-    
+
     // Conecta direto no documento específico usando o ID da URL
     const docRef = doc(this.firestore, `logs/${id}`);
-    
+
     // Puxa os dados e anexa o ID junto no objeto
    return docData(docRef) as Observable<any>;
   }

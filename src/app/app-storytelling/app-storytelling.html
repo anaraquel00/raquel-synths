@@ -24,16 +24,16 @@
 
             @if (event.image) {
              <div class="img-wrapper-wide">
-             <img [ngSrc]="event.image" 
+             <img [ngSrc]="event.image"
               fill
-              sizes="(max-width: 768px) 100vw, 50vw" 
+              sizes="(max-width: 768px) 100vw, 50vw"
               [alt]="content?.title">
              </div>
             }
               <div class="content-padding">
 
               <div class="log-header">
-                <span class="date">{{ event.date }}</span>
+                <span class="date">{{ event.date | date:'MMM dd, yyyy' | uppercase }}</span>
                 <h3 class="title">{{ content?.title }}</h3>
               </div>
 
@@ -54,7 +54,7 @@
                   </a>
                 </div>
               }
-              
+
             </div>
            </div> <app-ad-banner></app-ad-banner>}
       }

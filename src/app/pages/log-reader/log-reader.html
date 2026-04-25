@@ -1,14 +1,14 @@
 @if (logData$ | async; as data) {
   <main class="terminal-container">
     <div class="terminal-wrapper">
-      
+
       <header class="log-header">
-        <span class="date">{{ data.date }}</span>
+        <span class="date">{{ data.date | date:'MMM dd, yyyy' | uppercase }}</span>
         <h1 class="title"[innerHTML]="data.title | safeHtml"></h1>
       </header>
 
       <p class="description-lead" [innerHTML]="data.description | safeHtml"></p>
-      
+
       <div class="ad-module">
         <app-ad-article></app-ad-article>
       </div>
@@ -22,7 +22,7 @@
 
       @if (data.jonahComment) {
         <div class="jonah-note">
-          <strong>[JONAH_OVERRIDE]:</strong> 
+          <strong>[JONAH_OVERRIDE]:</strong>
           <span [innerHTML]="data.jonahComment | safeHtml"></span>
         </div>
       }
@@ -32,7 +32,7 @@
       </div>
 
       <footer class="terminal-footer">
-     <a class="btn-back" routerLink="/">{{ translate.isPt() ? '[ < VOLTAR_À_BASE ]' : '[ < BACK_TO_BASE ]' }}</a>  
+     <a class="btn-back" routerLink="/">{{ translate.isPt() ? '[ < VOLTAR_À_BASE ]' : '[ < BACK_TO_BASE ]' }}</a>
      </footer>
 
     </div>
