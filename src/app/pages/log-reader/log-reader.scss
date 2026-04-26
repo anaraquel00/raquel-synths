@@ -194,6 +194,7 @@
     line-height: 1.6;
     color: #e0e0e0 !important;
     box-shadow: inset 5px 0 15px -5px rgba(0,0,0,0.5);
+    clear: both;
 
     em {
       color: var(--accent-color) !important;
@@ -201,7 +202,45 @@
       opacity: 0.9;
     }
   }
+// 🖼️ Alinhamento de Imagens nos Logs
+  .img-side-right {
+    float: right;
+    margin: 0 0 20px 20px !important;
+    max-width: 45%; /* Ajuste a porcentagem conforme o tamanho que desejar */
+// Comportamento Mobile (Telas menores): Ocupa 100% da largura, sem flutuar.
+    width: 45%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 
+    // Comportamento Desktop (A partir de 768px): Flutua para a direita com 45% do tamanho.
+    @media (max-width: 768px) {
+      float: right;
+      width: auto;
+      max-width: 100%;
+      margin: 0 0 20px 20px !important;
+    }
+  }
+  .img-side-left {
+    float: left;
+    margin: 0 20px 20px 0 !important;
+    max-width: 45%; /* Ajuste a porcentagem conforme o tamanho que desejar */
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    // Comportamento Mobile (Telas menores): Ocupa 100% da largura, sem flutuar.
+    width: 45%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+
+    // Comportamento Desktop (A partir de 768px): Flutua para a direita com 45% do tamanho.
+    @media (max-width: 768px) {
+      float: left;
+      width: auto;
+      max-width: 100%;
+      margin: 0 20px 20px 0 !important;
+    }
+  }
   // 🔵 BLUE TEAM (A Auditoria Corporativa com privilégios Root)
   .broklin-audit-note {
     margin-top: 3rem !important;
