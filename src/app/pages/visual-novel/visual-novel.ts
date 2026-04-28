@@ -3,8 +3,8 @@ import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ContentService } from '../../services/content.service';
 import { TranslationService } from '../../services/translation.service';
-// 🛡️ AQUI: Adicionamos o combineLatest e o map nas importações
-import { Observable, BehaviorSubject, switchMap, combineLatest, map, take } from 'rxjs';
+// 🛡️ AQUI: Adicionamos o 'of' para criar a rota de fuga do servidor
+import { Observable, BehaviorSubject, switchMap, combineLatest, map, take, of } from 'rxjs';
 import { NgOptimizedImage } from '@angular/common';
 
 @Component({
@@ -29,18 +29,25 @@ export class VisualNovelComponent implements OnInit, OnDestroy {
   // 📻 NOVO: O sinal de rádio para avisar a matriz que a temporada mudou!
   private temporadaAtivaSubject = new BehaviorSubject<number>(1);
 
-  // ⚡ FUNÇÃO PARA TROCAR DE TEMPORADA (ATUALIZADA)
+  // ⚡ FUNÇÃO PARA TROCAR DE TEMPORADA (MANTIDA INTACTA)
   public setTemporada(numeroDaTemporada: number): void {
     this.temporadaAtiva = numeroDaTemporada;
     this.temporadaAtivaSubject.next(numeroDaTemporada); // 🚀 Dispara o sinal!
   }
 
-  // 🚀 A MÁGICA ORIGINAL: Sempre que o modo mudar, pede novos episódios ao Firebase
+  // 🚀 A MÁGICA ORIGINAL: Blindada para não explodir o Build!
   episodes$: Observable<any[]> = this.modeSubject.asObservable().pipe(
-    switchMap(mode => this.contentService.getEpisodes(mode).pipe(take(1))) // 🛡️ A Guilhotina!
+    switchMap(mode => {
+      // 🛡️ Se for o Servidor do Angular rodando o build, ignora o Firebase e devolve vazio instantaneamente (Adeus Timeout!)
+      if (!isPlatformBrowser(this.platformId)) {
+        return of([]);
+      }
+      // 🌐 Se for o Navegador do Usuário, vai no Firebase e busca os episódios normalmente
+      return this.contentService.getEpisodes(mode).pipe(take(1));
+    })
   );
 
-  // 🛡️ O NOVO FILTRO: Pega todos os episódios e entrega pro HTML SÓ os da temporada certa!
+  // 🛡️ O SEU FILTRO INTACTO: Pega todos os episódios e entrega pro HTML SÓ os da temporada certa
   filteredEpisodes$: Observable<any[]> = combineLatest([this.episodes$, this.temporadaAtivaSubject]).pipe(
     map(([episodes, season]) => {
       if (!episodes) return [];
@@ -69,7 +76,7 @@ export class VisualNovelComponent implements OnInit, OnDestroy {
         attributeFilter: ['class']
       });
     }
-      }
+  }
 
   ngOnDestroy() {
     if (this.themeObserver) this.themeObserver.disconnect();
