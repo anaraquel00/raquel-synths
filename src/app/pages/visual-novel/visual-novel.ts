@@ -4,7 +4,7 @@ import { RouterLink } from '@angular/router';
 import { ContentService } from '../../services/content.service';
 import { TranslationService } from '../../services/translation.service';
 // 🛡️ AQUI: Adicionamos o combineLatest e o map nas importações
-import { Observable, BehaviorSubject, switchMap, combineLatest, map } from 'rxjs';
+import { Observable, BehaviorSubject, switchMap, combineLatest, map, take } from 'rxjs';
 import { NgOptimizedImage } from '@angular/common';
 
 @Component({
@@ -37,7 +37,7 @@ export class VisualNovelComponent implements OnInit, OnDestroy {
 
   // 🚀 A MÁGICA ORIGINAL: Sempre que o modo mudar, pede novos episódios ao Firebase
   episodes$: Observable<any[]> = this.modeSubject.asObservable().pipe(
-    switchMap(mode => this.contentService.getEpisodes(mode))
+    switchMap(mode => this.contentService.getEpisodes(mode).pipe(take(1))) // 🛡️ A Guilhotina!
   );
 
   // 🛡️ O NOVO FILTRO: Pega todos os episódios e entrega pro HTML SÓ os da temporada certa!
