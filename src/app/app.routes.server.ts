@@ -30,6 +30,18 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Server
    },
   {
+    path: 'musical-archives',
+    renderMode: RenderMode.Server // Protege a paginação dinâmica contra pre-render vazio
+  },
+  {
+    path: 'store',
+    renderMode: RenderMode.Server // Renderização dinâmica do e-commerce
+  },
+  {
+    path: 'store/:dept',
+    renderMode: RenderMode.Server // Rastreio de catálogo específico via SSR
+  },
+  {
     path: '**',
     renderMode: RenderMode.Prerender
   }

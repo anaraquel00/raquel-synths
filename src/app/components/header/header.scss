@@ -1,6 +1,6 @@
 :host {
   display: block;
-  
+
 
   /* 👇 O SEGREDO DA FIXAÇÃO 👇 */
   position: fixed;
@@ -46,36 +46,36 @@ mat-toolbar {
 
 /* 🛡️ BLINDAGEM DO LOGO (Verde Neon Restaurado) */
 .brand-logo {
-  text-decoration: none !important; 
-  outline: none; 
+  text-decoration: none !important;
+  outline: none;
   cursor: pointer;
-  
+
   // --- A COR REESTABELECIDA ---
   // Substitua var(--primary-color) pela variável exata do seu verde, ou use #00ff41
-  color: var(--accent-color); 
-  font-family: var(--font-heading); 
-  font-weight: 700; 
-  font-size: 1.5rem; 
-  text-transform: uppercase; 
-  letter-spacing: 2px; 
+  color: var(--accent-color);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
 
   // --- ⚡ EFEITO HOLOGRÁFICO BASE ---
   // Uma sombra sutil da mesma cor do texto para dar o efeito "aceso"
   text-shadow: 0 0 8px rgba(var(--primary-rgb), 0.4);
 
   transition: all 0.3s ease-in-out;
-  opacity: 1; 
+  opacity: 1;
 
   /* 🌸 REAÇÃO AO HOVER (Flash de Ignição) */
   &:hover {
     // Ao passar o mouse, o texto fica branco incandescente e a aura verde expande!
-    color: #ffffff; 
-    text-shadow: 
-      0 0 10px var(--accent-color), 
-      0 0 20px var(--accent-color); 
+    color: #ffffff;
+    text-shadow:
+      0 0 10px var(--accent-color),
+      0 0 20px var(--accent-color);
 
-    transform: scale(1.02); 
-    text-decoration: none; 
+    transform: scale(1.02);
+    text-decoration: none;
   }
 }
 
@@ -85,10 +85,7 @@ mat-toolbar {
 
 /* === BOTÕES DO DESKTOP (A correção da cor) === */
 .desktop-nav {
-  .broklin-escape {
-    display: none !important; /* Esconde o botão de fuga do Broklin, porque ele só aparece no modo Jonah */
-  }
-  
+
  a {
   display: inline-flex;
   align-items: center;
@@ -100,13 +97,13 @@ mat-toolbar {
   min-height: 80px; /* Ajuste para a altura exata do seu header */
   display: flex;
   align-items: center;
-  
+
   /* Font-Fallback de Elite: Define uma linha de defesa caso a Roboto atrase */
   font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
   font-size-adjust: 0.5; /* Equilibra o volume da fonte substituta */
 
    button[mat-button] {
-   
+
     /* 👇 AQUI ESTÁ A LUZ! Força branco sempre 👇 */
     color: #49fa02 !important;
 
@@ -145,7 +142,7 @@ mat-toolbar {
       }
     }
   }
-  
+
   /* O Botão Especial "Creator" (Borda) */
   button[mat-button].btn-creator {
   border: 1px solid var(--accent-color) !important;
@@ -180,7 +177,7 @@ mat-toolbar {
   font-weight: 700 !important;
   color: #050505 !important;
   z-index: 1;
-  
+
   /* O tremor tático vai direto para a GPU (Custo zero de layout) */
   animation: gpu-glitch-shake 2s infinite;
 
@@ -195,20 +192,20 @@ mat-toolbar {
     border-radius: inherit;
     transition: opacity 0.3s ease;
   }
-  
+
   /* Mantendo o texto legível para o Lighthouse aprovar */
   .mdc-button__label, .mat-mdc-button-touch-target, span {
     color: #050505 !important;
-    text-shadow: none !important; 
+    text-shadow: none !important;
   }
-  
+
   &:hover {
     background-color: #ff7733 !important;
-    
+
     /* No hover, o glitch fica ainda mais frenético (0.1s) e a aura acende */
     animation: gpu-glitch-shake 0.1s infinite !important;
     box-shadow: 0 0 15px rgba(255, 85, 0, 0.9) !important;
-    
+
     .mdc-button__label, span {
       color: #000000 !important;
     }
@@ -277,13 +274,13 @@ mat-toolbar {
       }
     }
   }
-   
+
   /* 3. Divisórias */
   .mat-divider {
     border-top-color: rgba(255, 255, 255, 0.15) !important;
     margin: 3px 0;
   }
-/* 2. O BOTÃO AZUL (FUGA PRO BROKLIN) 
+/* 2. O BOTÃO AZUL (FUGA PRO BROKLIN)
    Só aplica estilo NESTE botão específico. */
   .nav-item-broklin {
   background: rgba(0, 255, 255, 0.05) !important;
@@ -323,7 +320,7 @@ mat-toolbar {
 /* 🛡️ CONTENÇÃO DE DANOS: MENU MOBILE BLINDADO       */
 /* ================================================= */
 
-/* 1. O BOTÃO VERMELHO (GATILHO DO JONAH) 
+/* 1. O BOTÃO VERMELHO (GATILHO DO JONAH)
    Só aplica estilo NESTE botão específico. Não vaza pro resto. */
 ::ng-deep .nav-item-jonah {
   background: rgba(255, 0, 0, 0.1) !important; /* Fundo leve */
@@ -334,19 +331,19 @@ mat-toolbar {
   mat-icon {
       display: inline-block !important; /* Força ele a ocupar espaço */
       color: #ff0000 !important;       /* Vermelho Sangue */
-      
+
       /* Dimensões Fixas (Pro celular não esmagar) */
       width: 24px !important;
       height: 24px !important;
-      min-width: 24px !important; 
-      
+      min-width: 24px !important;
+
       /* Margem tática */
-      margin-right: 12px !important; 
-      
+      margin-right: 12px !important;
+
       /* Força a Fonte do Material (Caso o Roboto esteja atropelando) */
       font-family: 'Material Icons' !important;
       font-feature-settings: 'liga' !important;
-      
+
       /* Alinhamento */
       line-height: 1 !important;
       visibility: visible !important;
@@ -358,10 +355,10 @@ mat-toolbar {
       flex: 1;
       text-align: left;
     }
-  
+
 
  /* Animação só aqui */
-  animation: heartbeat 1.5s infinite; 
+  animation: heartbeat 1.5s infinite;
 
   &:hover {
     background: #ff0000 !important;
@@ -372,17 +369,7 @@ mat-toolbar {
 
 /* 3. LÓGICA DE EXIBIÇÃO (QUEM APARECE QUANDO) */
 
-/* Se o site está no MODO JONAH (Vermelho) -> Esconde o botão Jonah, Mostra Broklin */
-::ng-deep body.mode-jonah {
-  .nav-item-jonah { display: none !important; }
-  .nav-item-broklin { display: flex !important; }
-}
-
-/* Se o site está no MODO BROKLIN (Azul/Padrão) -> Esconde Broklin, Mostra Jonah */
-::ng-deep body:not(.mode-jonah) {
-  .nav-item-broklin { display: none !important; }
-  .nav-item-jonah { display: flex !important; }
-}
+/* 🛡️ RQS ADSENSE SENTINEL: Lógica de exibição via CSS purgada. O Angular Control Flow agora aniquila os nós fisicamente. */
 
 /* Mantenha sua animação de heartbeat aqui embaixo */
 @keyframes heartbeat {
@@ -423,13 +410,7 @@ mat-toolbar {
 /* 💀 MODO JONAH: INVASÃO DO HEADER 💀       */
 /* ========================================= */
 :host-context(body.mode-jonah) {
-  .jonah-trigger {
-    display: none !important; /* Esconde o botão de ativar o modo Jonah, porque já estamos no modo Jonah */
-  }
- .nav-item-jonah{
-  display: none !important; /* Esconde o botão de Jonah, porque ele só aparece no modo normal */
- }
-      
+
 
   /* 1. A Barra em si (Vermelho Sangue e Sombra Pesada) */
   mat-toolbar {
@@ -528,14 +509,9 @@ mat-toolbar {
   /* 5. Menu Mobile (Hambúrguer) */
   .mobile-menu-btn {
     color: #ff3d00 !important;
-  
+
     }
 @media (min-width: 768px) {
-  :host-context(.mode-jonah) {
-  .nav-item-jonah {
-    display: none !important;
-  }
-}
 }
 }
 
@@ -546,18 +522,17 @@ mat-toolbar {
    🛡️ O RESGATE DO TECH LEAD (Minimalista & Premium)
    ========================================================================== */
 :host-context(.mode-jonah) .broklin-escape {
-    display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
     gap: 8px !important; /* Espaçamento moderno, dispensa o margin do ícone */
-    z-index: 9999 !important; 
+    z-index: 9999 !important;
 
     /* O Estilo Frio e Estável (Glassmorphism) */
     background: rgba(0, 20, 30, 0.4) !important; /* Fundo escuro levemente azulado */
     backdrop-filter: blur(6px) !important; /* O efeito de vidro fosco chique */
     border: 1px solid rgba(0, 255, 255, 0.15) !important; /* Borda finíssima e sutil */
     border-radius: 6px !important; /* Mais arredondado = menos agressivo */
-    
+
     /* Tipografia de Alta Patente */
     color: rgba(0, 255, 255, 0.8) !important; /* Ciano suave, sem gritar */
     font-family: 'Roboto', 'Segoe UI', sans-serif !important; /* Sai o Courier rústico, entra uma fonte limpa */
@@ -565,12 +540,12 @@ mat-toolbar {
     font-weight: 500 !important;
     letter-spacing: 1.5px !important;
     text-transform: uppercase !important;
-    
+
     padding: 0 20px !important;
     height: 38px !important;
-    
+
     /* Transição de Luxo */
-    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) !important; 
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5) !important; /* Sombra de profundidade, não de neon */
     cursor: pointer !important;
 
@@ -589,16 +564,10 @@ mat-toolbar {
       border: 1px solid rgba(0, 255, 255, 0.4) !important;
       color: #ffffff !important; /* O texto acende num branco puro e limpo */
       box-shadow: 0 0 12px rgba(0, 255, 255, 0.15) !important; /* Brilho interno super sutil */
-      
+
       mat-icon {
         color: #ffffff !important;
       }
     }
 }
-    @media(min-width: 768px) {
-      .broklin-escape {
-        display: none !important; /* Esconde o botão de fuga do Broklin no desktop, porque ele só aparece no modo Jonah */
-      }   
-     
-      }     
-    
+

@@ -11,6 +11,12 @@ export class SafeHtmlPipe implements PipeTransform {
 
   // Esse método diz pro Angular: "Esse HTML é seguro, pode renderizar com estilos!"
   transform(html: string): SafeHtml {
-    return this.sanitizer.bypassSecurityTrustHtml(html);
+    if (!html) return '';
+
+    // 🛡️ ADSENSE SENTINEL FIREWALL: Erradica tentativas de Cloaking inline que venham da Base de Dados.
+    // Purga agressivamente qualquer display:none, visibility:hidden ou opacity:0 injetado em atributos style.
+    const firewallHtml = html.replace(/style=["'][^"']*(display\s*:\s*none|visibility\s*:\s*hidden|opacity\s*:\s*0)[^"']*["']/gi, 'style="/* [RQS PURGED] */"');
+
+    return this.sanitizer.bypassSecurityTrustHtml(firewallHtml);
   }
 }

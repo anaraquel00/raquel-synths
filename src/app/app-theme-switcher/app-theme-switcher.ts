@@ -1,4 +1,5 @@
-import { Component, effect, signal } from '@angular/core';
+import { Component, effect, signal, inject, PLATFORM_ID } from '@angular/core';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { TrackingService } from '../services/tracking.service';
 
 @Component({
@@ -11,15 +12,20 @@ export class AppThemeSwitcher {
   // O NOSSO CABO DE FIBRA ÓTICA (Estado Centralizado)
   currentMode = signal<'broklin' | 'jonah'>('broklin');
 
+  private platformId = inject(PLATFORM_ID);
+  private document = inject(DOCUMENT);
+
   constructor(private trackingService: TrackingService) {
     // A PEÇA 1: O OBSERVADOR AUTOMÁTICO (Passivo)
     effect(() => {
       const modoAtual = this.currentMode();
 
-      // Muda a cor do navegador e salva no disco local
-      document.body.classList.remove('mode-broklin', 'mode-jonah');
-      document.body.classList.add(`mode-${modoAtual}`);
-      localStorage.setItem('rqs-theme', modoAtual);
+      // 🛡️ BLINDAGEM SSR: Executa manipulação de DOM e Storage apenas no Navegador
+      if (isPlatformBrowser(this.platformId)) {
+        this.document.body.classList.remove('mode-broklin', 'mode-jonah');
+        this.document.body.classList.add(`mode-${modoAtual}`);
+        localStorage.setItem('rqs-theme', modoAtual);
+      }
     });
   }
 
@@ -35,7 +41,3 @@ export class AppThemeSwitcher {
     });
   }
 }
-
-
-
-

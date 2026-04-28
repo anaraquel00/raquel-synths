@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, Inject, PLATFORM_ID, afterNextRender } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { TranslationService } from '../../services/translation.service';
 import { ADS_DATA } from '../../data/app-data';
@@ -8,7 +8,8 @@ import { ADS_DATA } from '../../data/app-data';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="ad-container" *ngIf="isBrowser">
+    @if (isBrowser) {
+      <div class="ad-container">
       <div class="ad-label">{{ t.label }}</div>
       @if (!isMobile) {
         <ins class="adsbygoogle"
@@ -22,7 +23,8 @@ import { ADS_DATA } from '../../data/app-data';
             data-ad-slot="8226577285"></ins>
       }
       <div class="ad-standby-bg">[ SYSTEM_STABILIZED ]</div>
-    </div>
+      </div>
+    }
   `,
   styles: [`
     :host { display: block; width: 100%; }
@@ -33,39 +35,27 @@ import { ADS_DATA } from '../../data/app-data';
     @media (min-width: 768px) { .ad-container { max-width: 748px; min-height: 110px; } }
   `]
 })
-export class AdBannerComponent implements AfterViewInit, OnDestroy {
+export class AdBannerComponent {
   isBrowser = false;
   isMobile = false;
-  private timeoutId: any; // 🛡️ O rastreador do processo órfão na RAM
 
   constructor(private translate: TranslationService, @Inject(PLATFORM_ID) private platformId: Object) {
     this.isBrowser = isPlatformBrowser(this.platformId);
     if (this.isBrowser) {
-      // Medição tática selada. O sensor de escuta cíclica foi purgado.
-      this.isMobile = window.innerWidth <= 768; 
+      this.isMobile = window.innerWidth <= 768;
     }
+
+    // 🛡️ MOTOR DE RENDERIZAÇÃO ANGULAR 17+: afterNextRender ancora-se nativamente
+    // no ciclo de pintura do navegador. Elimina callbacks órfãos e previne CLS.
+    afterNextRender(() => {
+      try {
+        (window as any).adsbygoogle = (window as any).adsbygoogle || [];
+        (window as any).adsbygoogle.push({});
+      } catch (e) {
+        console.warn('🛡️ RQS Firewall: Anomalia no AdSense contida na rede isolada.', e);
+      }
+    });
   }
 
   get t() { return this.translate.isPt() ? ADS_DATA.pt : ADS_DATA.en; }
-
-  ngAfterViewInit() {
-    if (this.isBrowser) {
-      this.timeoutId = setTimeout(() => {
-        try {
-          (window as any).adsbygoogle = (window as any).adsbygoogle || [];
-          (window as any).adsbygoogle.push({});
-        } catch (e) {
-          // Os protocolos de absorção garantem que eventuais anomalias da matriz operem silenciosamente
-          console.warn('🛡️ RQS Firewall: Anomalia no AdSense contida na rede isolada.', e);
-        }
-      }, 1000); 
-    }
-  }
-
-  ngOnDestroy() {
-    // 🛡️ Prevenção Ativa: A aniquilação do cronômetro evita colisões com instâncias encerradas
-    if (this.timeoutId) {
-      clearTimeout(this.timeoutId);
-    }
-  }
 }

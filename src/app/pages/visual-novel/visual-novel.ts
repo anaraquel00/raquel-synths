@@ -1,5 +1,5 @@
-import { Component, inject, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, inject, OnInit, OnDestroy, Inject, PLATFORM_ID, signal } from '@angular/core';
+import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ContentService } from '../../services/content.service';
 import { TranslationService } from '../../services/translation.service';
@@ -18,8 +18,9 @@ export class VisualNovelComponent implements OnInit, OnDestroy {
 
   private contentService = inject(ContentService);
   public translate = inject(TranslationService);
+  private document = inject(DOCUMENT);
 
-  public currentMode: 'broklin' | 'jonah' = 'broklin';
+  public currentMode = signal<'broklin' | 'jonah'>('broklin');
   private modeSubject = new BehaviorSubject<'broklin' | 'jonah'>('broklin');
 
   // 🚀 AQUI ESTÁ A NOSSA VARIÁVEL DE ESTADO DAS ABAS
@@ -63,7 +64,7 @@ export class VisualNovelComponent implements OnInit, OnDestroy {
         this.checkTheme();
       });
 
-      this.themeObserver.observe(document.body, {
+      this.themeObserver.observe(this.document.body, {
         attributes: true,
         attributeFilter: ['class']
       });
@@ -76,11 +77,10 @@ export class VisualNovelComponent implements OnInit, OnDestroy {
 
   private checkTheme() {
     if (!isPlatformBrowser(this.platformId)) return;
-    if (!this.isBrowser) return;
-    const isJonah = document.body.classList.contains('mode-jonah');
+    const isJonah = this.document.body.classList.contains('mode-jonah');
     const newMode: 'broklin' | 'jonah' = isJonah ? 'jonah' : 'broklin';
 
-    this.currentMode = newMode;
+    this.currentMode.set(newMode);
 
     if (this.modeSubject.value !== newMode) {
       this.modeSubject.next(newMode);

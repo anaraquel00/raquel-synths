@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslationService } from '../services/translation.service';
 import { VISUAL_NOVEL_PT, VISUAL_NOVEL_EN, VN_INTRO_PT, VN_INTRO_EN, VN_INTRO_JONAH_PT, VN_INTRO_JONAH_EN } from '../data/app-data';
@@ -27,7 +27,7 @@ export class AppVisualNovel implements OnInit, OnDestroy {
 
   // --- ESTADO REATIVO ---
   private modeSubject = new BehaviorSubject<'broklin' | 'jonah'>('broklin');
-  currentMode: 'broklin' | 'jonah' = 'broklin';
+  currentMode = signal<'broklin' | 'jonah'>('broklin');
 
   // Esse Observable vai buscar os episódios do Firebase toda vez que o modo mudar
   episodes$: Observable<LoreEpisode[]> = this.modeSubject.asObservable().pipe(
@@ -39,8 +39,6 @@ export class AppVisualNovel implements OnInit, OnDestroy {
   introEn = VN_INTRO_EN;
   introJonahPt = VN_INTRO_JONAH_PT;
   introJonahEn = VN_INTRO_JONAH_EN;
-  isJonahMode:any;
-
 
  ngOnInit() {
     // 🛡️ BLINDAGEM TOTAL: O MutationObserver SÓ nasce no navegador
@@ -64,8 +62,8 @@ export class AppVisualNovel implements OnInit, OnDestroy {
     // 🛡️ PROTEÇÃO ADICIONAL
     if (!isPlatformBrowser(this.platformId)) return;
     const isJonah = document.body.classList.contains('mode-jonah');
-    this.currentMode = isJonah ? 'jonah' : 'broklin';
-    this.modeSubject.next(this.currentMode);
+    this.currentMode.set(isJonah ? 'jonah' : 'broklin');
+    this.modeSubject.next(this.currentMode());
   }
 
   get text() {
@@ -87,14 +85,9 @@ export class AppVisualNovel implements OnInit, OnDestroy {
     return this.translate.isPt() ? VN_INTRO_JONAH_PT : VN_INTRO_JONAH_EN;
   }
 
- /*  get introText() {
-    return this.translate.isPt() ? this.introPt : this.introEn;
-  } */
-
   // Getter inteligente que escuta as mudanças de estado
   get introText(): string {
-    // Se o Rust & Lord tomou o controle do sistema
-    if (this.isJonahMode) {
+    if (this.currentMode() === 'jonah') {
       return this.translate.isPt() ? VN_INTRO_JONAH_PT : VN_INTRO_JONAH_EN;
     }
 

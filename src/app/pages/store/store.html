@@ -6,14 +6,17 @@
     </button>
 
     <div class="mode-alert-banner">
-      <div class="alert-content broklin-msg">
-        <span>{{ currentLang() === 'pt' ? '⚠️ Procurando a butique do Rust & Lord?' : '⚠️ Looking for the Rust & Lord boutique?' }}</span>
-        <strong>{{ currentLang() === 'pt' ? 'ATIVE O MODO JONAH! 💀' : 'TURN ON JONAH MODE! 💀' }}</strong>
-      </div>
-      <div class="alert-content jonah-msg">
-        <span>{{ currentLang() === 'pt' ? '🛡️ Muito pesado pra você?' : '🛡️ Too heavy for you?' }}</span>
-        <strong>{{ currentLang() === 'pt' ? 'VOLTE PARA A SEGURANÇA! 💠' : 'RETURN TO SAFETY! 💠' }}</strong>
-      </div>
+      @if (activeMode() === 'broklin') {
+        <div class="alert-content broklin-msg fade-in">
+          <span>{{ currentLang() === 'pt' ? '⚠️ Procurando a butique do Rust & Lord?' : '⚠️ Looking for the Rust & Lord boutique?' }}</span>
+          <strong>{{ currentLang() === 'pt' ? 'ATIVE O MODO JONAH! 💀' : 'TURN ON JONAH MODE! 💀' }}</strong>
+        </div>
+      } @else {
+        <div class="alert-content jonah-msg fade-in">
+          <span>{{ currentLang() === 'pt' ? '🛡️ Muito pesado pra você?' : '🛡️ Too heavy for you?' }}</span>
+          <strong>{{ currentLang() === 'pt' ? 'VOLTE PARA A SEGURANÇA! 💠' : 'RETURN TO SAFETY! 💠' }}</strong>
+        </div>
+      }
     </div>
 
     <h1 class="glitch-title" data-text="NEON STORE">NEON STORE</h1>
@@ -22,8 +25,11 @@
 
   @if (currentView === 'LOBBY') {
     <div class="store-lore-container">
-      <div class="lore-broklin" [innerHTML]="currentLang() === 'pt' ? introBroklinPT : introBroklinEN"></div>
-      <div class="lore-jonah" [innerHTML]="currentLang() === 'pt' ? introJonahPT : introJonahEN"></div>
+      @if (activeMode() === 'broklin') {
+        <div class="lore-broklin fade-in" [innerHTML]="currentLang() === 'pt' ? introBroklinPT : introBroklinEN"></div>
+      } @else {
+        <div class="lore-jonah fade-in" [innerHTML]="currentLang() === 'pt' ? introJonahPT : introJonahEN"></div>
+      }
     </div>
 
     <app-store-departments
@@ -60,7 +66,8 @@
 
       <div class="product-grid">
 
-        <div class="product-card" *ngFor="let item of filteredProducts" [class]="item.faction">
+        @for (item of filteredProducts; track item.id || $index) {
+        <div class="product-card fade-in-up" [class]="item.faction">
           <div class="image-wrapper">
             <img [src]="item.image" [alt]="item.content[currentLang()].name">
             <div class="overlay"></div>
@@ -91,10 +98,11 @@
             </div>
           </div>
         </div>
-
-        <div *ngIf="filteredProducts.length === 0" class="empty-state">
+        } @empty {
+        <div class="empty-state">
           <p>⚠️ {{ currentLang() === 'pt' ? 'Nenhum item encontrado neste setor.' : 'No items found in this sector.' }}</p>
         </div>
+        }
 
       </div>
     </div>

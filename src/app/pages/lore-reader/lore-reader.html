@@ -6,7 +6,7 @@
   <header class="saga-header">
     <h1>{{ translate.isPt() ? 'ECOS DA RQS' : 'RQS ECHOES' }}</h1>
     <p class="subtitle">
-      {{ currentMode === 'broklin'
+      {{ currentMode() === 'broklin'
          ? (translate.isPt() ? 'ARCO BROKLIN' : 'BROKLIN ARC')
          : (translate.isPt() ? 'ARCO JONAH' : 'JONAH ARC')
       }}
@@ -23,7 +23,9 @@
           <span class="season-badge" [class.badge-s2]="ep.id && ep.id.startsWith('s2-')">
             {{ translate.isPt() ? ep.category : (ep.category_en || ep.category) }}
           </span>
-          <span class="date" *ngIf="ep.releaseDate">{{ ep.releaseDate | date:'dd/MM/yyyy' }}</span>
+          @if (ep.releaseDate) {
+            <span class="date">{{ ep.releaseDate | date:'dd/MM/yyyy' }}</span>
+          }
         </div>
 
         <h2>{{ translate.isPt() ? ep.title : (ep.title_en || ep.title) }}</h2>
@@ -52,7 +54,7 @@
 
    } @else {
       <div style="padding: 100px; text-align: center; font-family: 'Courier New', monospace;"
-           [style.color]="currentMode === 'jonah' ? '#ff0000' : '#00e5ff'">
+           [style.color]="currentMode() === 'jonah' ? '#ff0000' : '#00e5ff'">
         <p class="glitch-text" style="animation: pulse 1.5s infinite;">
           {{ translate.isPt() ? '[ 🔄 AGUARDANDO SINAL DA MATRIX... ]' : '[ 🔄 WAITING FOR MATRIX SIGNAL... ]' }}
         </p>

@@ -1,38 +1,35 @@
 <section class="bios-container">
   <h2 class="section-title">{{ translate.isPt() ? 'DOSSIÊ OPERATIVO' : 'OPERATIVE DOSSIER' }}</h2>
   <p class="section-subtitle">{{ translate.isPt() ? 'Acesso restrito: decripte os perfis operativos da RQS.' : 'Restricted access: decrypt the operative profiles of RQS.' }}</p>
-<div class="manifesto-text">
-    <div [innerHTML]="translate.isPt() ? manifestoPt : manifestoEn" (click)="handleClick($event)">
+
+  @if (!isJonahMode()) {
+    <div class="manifesto-text fade-in">
+      <div [innerHTML]="translate.isPt() ? manifestoPt : manifestoEn" (click)="handleClick($event)"></div>
     </div>
-  </div>
-  
-  <div class="manifesto_jonah">
-    <div [innerHTML]="translate.isPt() ? manifesto_jonah_pt : manifesto_jonah_en" (click)="handleClick($event)">    
+  } @else {
+    <div class="manifesto_jonah fade-in">
+      <div [innerHTML]="translate.isPt() ? manifesto_jonah_pt : manifesto_jonah_en" (click)="handleClick($event)"></div>
     </div>
-  </div>
+  }
 
   <div class="members-grid">
     @for (member of members; track member.name; let i = $index) {
       <div class="member-card">
  <div class="image-frame">
-  <img [ngSrc]="member.imageBroklin" 
-       fill
-       sizes="(max-width: 768px) 100vw, 15vw"
-       [priority]="i === 0" 
-       class="img-broklin" 
-       alt="Foto Normal">
-  
-  <img [ngSrc]="member.imageJonah" 
-       fill
-       sizes="(max-width: 768px) 100vw, 15vw"
-       class="img-jonah" 
-       alt="Foto Glitch">
+   @if (!isJonahMode()) {
+     <img [ngSrc]="member.imageBroklin" fill sizes="(max-width: 768px) 100vw, 15vw" [priority]="i === 0" class="img-broklin fade-in" alt="Foto Normal">
+   } @else {
+     <img [ngSrc]="member.imageJonah" fill sizes="(max-width: 768px) 100vw, 15vw" class="img-jonah fade-in" alt="Foto Glitch">
+   }
  </div>
         <div class="info-box">
           <h3>{{ member.name }}</h3>
           <span class="role">{{ member.role }}</span>
-          <p class="bio-text normal-text">{{ member.bioNormal }}</p>
-          <p class="bio-text jonah-text">{{ member.bioJonah }}</p>
+          @if (!isJonahMode()) {
+            <p class="bio-text normal-text fade-in">{{ member.bioNormal }}</p>
+          } @else {
+            <p class="bio-text jonah-text fade-in">{{ member.bioJonah }}</p>
+          }
         </div>
       </div>
     }

@@ -31,11 +31,6 @@
   font-style: italic;
 }
 
-/* Estado Normal (General no Comando) */
-.text-jonah {
-  display: none; /* Mantém o caos oculto */
-}
-
 .text-general {
   display: block;
   color: #e0e0e0;
@@ -44,10 +39,6 @@
 
 /* ☢️ Estado Corrompido (Rust & Lord assumiu o Body) */
 :host-context(body.mode-jonah) {
-  .text-general {
-    display: none; /* Apaga a General da tela */
-  }
-  
   .text-jonah {
     display: block; /* Libera o caos */
     color: #faa600;

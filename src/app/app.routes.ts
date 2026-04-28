@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { StoreComponent } from './pages/store/store';
 
 export const routes: Routes = [
   // 🏠 ROTA 1: A Vitrine (Landing Page)
@@ -178,7 +177,7 @@ export const routes: Routes = [
   },
  {
     path: 'store/:dept',
-    component: StoreComponent,
+    loadComponent: () => import('./pages/store/store').then(m => m.StoreComponent),
     data: {
       seo: {
         title: {

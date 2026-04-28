@@ -6,8 +6,8 @@
 
   <div class="cards-grid">
 
+  @for (item of departments; track item.id) {
   <article
-    *ngFor="let item of departments"
     class="dept-card"
     [ngClass]="item.id"
     (click)="onCardClick(item.id)"> <div class="card-image">
@@ -27,6 +27,7 @@
     </div>
 
   </article>
+  }
 
 </div>
 

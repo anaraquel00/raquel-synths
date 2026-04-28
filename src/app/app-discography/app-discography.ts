@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, HostListener, inject, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, HostListener, inject, Input, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -85,14 +85,16 @@ get limitToHome(): number {
   isLoading = true;
   last: any;
 
-// O componente lê o barramento global em tempo real
-get isJonahMode(): boolean {
-  // 🛡️ BLINDAGEM: No servidor, 'document' não existe. Retorne false.
-  if (isPlatformBrowser(this.platformId)) {
-    return document.body.classList.contains('mode-jonah');
+  // 1. Criamos um signal privado que guarda o estado
+private _modeSignal = signal<'broklin' | 'jonah'>('broklin');
+
+isJonahMode(): boolean {
+    // Proteção SSR (Server-Side Rendering) para não quebrar o servidor do Google
+    if (isPlatformBrowser(this.platformId)) {
+      return document.body.classList.contains('mode-jonah');
+    }
+    return false; // Valor seguro para os bots de rastreio
   }
-  return false;
-}
 
 @HostListener('window:theme-changed')
 onThemeChange() {

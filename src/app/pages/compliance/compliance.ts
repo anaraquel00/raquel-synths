@@ -27,8 +27,8 @@ export class ComplianceComponent implements OnInit, OnDestroy {
   // 2. MODO CAOS: Detectamos manualmente, já que o serviço é burro
   isJonah = signal(false);
   private themeObserver: MutationObserver | undefined;
-currentModeClass: string|string[]|Set<string>|{ [klass: string]: any; }|null|undefined;
-complianceData: any;
+
+  // 🛡️ ADSENSE SENTINEL: Variáveis órfãs (currentModeClass, complianceData) expurgadas.
 
   ngOnInit() {
     if (this.isBrowser) {
@@ -53,8 +53,10 @@ complianceData: any;
   }
 
   private checkMode() {
-    // A verdade está no HTML, não no serviço
-    this.isJonah.set(this._document.body.classList.contains('mode-jonah'));
+    // 🛡️ BLINDAGEM SSR: Trava de plataforma interna obrigatória
+    if (this.isBrowser) {
+      this.isJonah.set(this._document.body.classList.contains('mode-jonah'));
+    }
   }
 
   // 3. O GETTER DE DADOS (Blindado)

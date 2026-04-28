@@ -23,15 +23,15 @@ export class Home implements OnInit, OnDestroy {
 
 // 2. A porta dos fundos tática atualizada
   forcarModoJonah() {
-    if (typeof document !== 'undefined') {
+    if (isPlatformBrowser(this.platformId)) {
       // Injeta ou remove a ferrugem do sistema
-      document.body.classList.toggle('mode-jonah');
+      this.document.body.classList.toggle('mode-jonah');
 
       // Atualiza a nossa variável de controle instantaneamente
-      this.isJonahMode = document.body.classList.contains('mode-jonah');
+      this.isJonahMode.set(this.document.body.classList.contains('mode-jonah'));
 
       // O log do console atualizado
-      if (this.isJonahMode) {
+      if (this.isJonahMode()) {
         console.warn('⚠️ [ALERTA DE SISTEMA] O arquivo corrompido MODO_JONAH.bat comprometeu a interface.');
       } else {
         console.log('🛡️ [SISTEMA RESTAURADO] Ameaça isolada. Protocolo Neon reativado.');
@@ -40,8 +40,8 @@ export class Home implements OnInit, OnDestroy {
   }
 
 executarQuickhack(targetId: string) {
-  if (typeof document !== 'undefined') {
-    const element = document.getElementById(targetId);
+  if (isPlatformBrowser(this.platformId)) {
+    const element = this.document.getElementById(targetId);
 
     if (element) {
       // 🛡️ O SALTO QUÂNTICO: Troque 'smooth' por 'auto'.
@@ -53,7 +53,7 @@ executarQuickhack(targetId: string) {
       // O radar dá pequenos "snaps" invisíveis para garantir que a tela não saia do lugar.
       let varreduras = 0;
       const radarInterval = setInterval(() => {
-        const alvo = document.getElementById(targetId);
+        const alvo = this.document.getElementById(targetId);
         if (alvo) {
           alvo.scrollIntoView({ behavior: 'auto', block: 'start' });
         }
@@ -72,7 +72,7 @@ executarQuickhack(targetId: string) {
 }
 
   showUplink = false; // Controle do Modal
- isJonahMode = true; // Controle do Modo (Broklin/Jonah)
+ isJonahMode = signal<boolean>(false); // 🛡️ SSR FIX: Padrão Broklin para alinhar hidratação do Servidor
  public currentMode: 'broklin' | 'jonah' = 'broklin';
 
 
@@ -111,13 +111,14 @@ currentLanguage: any;
   }
 
   ngOnInit() {
-    if (typeof document !== 'undefined') {
-      this.isJonahMode = document.body.classList.contains('mode-jonah');
+    if (isPlatformBrowser(this.platformId)) {
+      this.isJonahMode.set(this.document.body.classList.contains('mode-jonah'));
     }
 
      // 👇 2. O VIGIA DO BODY (SEU CÓDIGO)
     if (isPlatformBrowser(this.platformId)) {
       this.themeObserver = new MutationObserver(() => {
+        this.isJonahMode.set(this.document.body.classList.contains('mode-jonah')); // Sincroniza o sinal com o DOM
         this.updateContent();
       });
 
@@ -141,12 +142,12 @@ currentLanguage: any;
     // A. ATUALIZA TEXTOS (SEU CÓDIGO)
     const lang = this.translate.isPt() ? 'pt' : 'en';
     const rawHome = HOME_DATA[lang];
-    const isJonahMode = this.document.body.classList.contains('mode-jonah');
+    const isJonahModeActive = this.isJonahMode(); // 🛡️ Usa a Single Source of Truth reativa!
 
     this.homeSignal.set({
       title: rawHome.title,
-      subtitle: isJonahMode ? (rawHome as any).subtitleJonah || rawHome.subtitle : rawHome.subtitle,
-      cta: isJonahMode ? (rawHome as any).ctaJonah || rawHome.cta : rawHome.cta
+      subtitle: isJonahModeActive ? (rawHome as any).subtitleJonah || rawHome.subtitle : rawHome.subtitle,
+      cta: isJonahModeActive ? (rawHome as any).ctaJonah || rawHome.cta : rawHome.cta
     });
 
     this.contactSignal.set(CONTACT_DATA[lang]);

@@ -52,7 +52,7 @@
       </button>
 
       <button class="hack-btn jonah-hack" (click)="forcarModoJonah()">
-        <span class="cmd-arrow">> </span>{{ isJonahMode
+        <span class="cmd-arrow">> </span>{{ isJonahMode()
            ? (translate.isPt() ? '[ OVR: MODO_BROKLIN.bat ]' : '[ OVR: BROKLIN_MODE.bat ]')
            : (translate.isPt() ? '[ OVR: MODO_JONAH.bat ]' : '[ OVR: JONAH_MODE.bat ]')
         }}

@@ -1,5 +1,5 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { RouterLink, RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
@@ -21,14 +21,18 @@ import { SeoService } from '../../services/seo.service';
   templateUrl: './musical-archives.html',
   styleUrl: './musical-archives.scss',
 })
-export class MusicalArchives implements OnInit {
+export class MusicalArchives implements OnInit, OnDestroy {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private contentService = inject(ContentService);
   public translate = inject(TranslationService);
   private sanitizer = inject(DomSanitizer);
   private platformId = inject(PLATFORM_ID);
+  private document = inject(DOCUMENT);
   private seoService = inject(SeoService);
+
+  isJonahMode = signal<boolean>(false);
+  private themeObserver: MutationObserver | null = null;
 
   legacyReleases: Album[] = [];
   isLoading = true;
@@ -40,6 +44,15 @@ export class MusicalArchives implements OnInit {
 
 
   ngOnInit() {
+    // 🛡️ MOTOR DE ESTADO E PREVENÇÃO DE CLOAKING (SSR SAFE)
+    if (isPlatformBrowser(this.platformId)) {
+      this.isJonahMode.set(this.document.body.classList.contains('mode-jonah'));
+      this.themeObserver = new MutationObserver(() => {
+        this.isJonahMode.set(this.document.body.classList.contains('mode-jonah'));
+      });
+      this.themeObserver.observe(this.document.body, { attributes: true, attributeFilter: ['class'] });
+    }
+
     this.getArchives();
     // 🔥 BLINDAGEM SEO: O terminal agora rastreia a URL
     this.route.queryParams.subscribe(params => {
@@ -47,6 +60,10 @@ export class MusicalArchives implements OnInit {
       this.currentPageBroklin = params['broPage'] ? Number(params['broPage']) : 1;
       this.currentPageJonah = params['joPage'] ? Number(params['joPage']) : 1;
     });
+  }
+
+  ngOnDestroy() {
+    if (this.themeObserver) this.themeObserver.disconnect();
   }
 
 getArchives() {

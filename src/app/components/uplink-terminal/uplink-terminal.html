@@ -1,43 +1,43 @@
-<div class="terminal-overlay" (click)="closeTerminal()" [class.jonah-theme]="isJonahMode">
+<div class="terminal-overlay" (click)="closeTerminal()" [class.jonah-theme]="isJonahMode()">
   <div class="terminal-window" (click)="$event.stopPropagation()">
-    
+
     <div class="terminal-header">
       <span class="dot red" (click)="closeTerminal()"></span>
       <span class="dot yellow"></span>
       <span class="dot green"></span>
       <span class="title">
-        {{ isJonahMode ? 'RUST_VIRUS_INJECTOR.exe' : 'RQS_SECURE_UPLINK_V3.0.exe' }}
+        {{ isJonahMode() ? 'RUST_VIRUS_INJECTOR.exe' : 'RQS_SECURE_UPLINK_V3.0.exe' }}
       </span>
     </div>
 
     <div class="terminal-body">
-      @for (line of logs; track line) {
-        <div class="log-line" [class.danger]="isJonahMode">
+      @for (line of logs(); track line) {
+        <div class="log-line" [class.danger]="isJonahMode()">
           <span class="prompt">></span> {{ line }}
         </div>
       }
 
-      @if (!isFinished) { <span class="cursor">_</span> }
+      @if (!isFinished()) { <span class="cursor">_</span> }
 
-      @if (isFinished) {
+      @if (isFinished()) {
         <div class="access-granted-panel fade-in">
-          
-          <h3 class="glitch-text" [class.danger-text]="isJonahMode">
-            @if (isJonahMode) {
+
+          <h3 class="glitch-text" [class.danger-text]="isJonahMode()">
+            @if (isJonahMode()) {
               {{ translate.isPt() ? '🛑 INICIAR CONTAMINAÇÃO' : '🛑 INITIATE CONTAMINATION' }}
             } @else {
               {{ translate.isPt() ? 'ACESSO CONCEDIDO' : 'ACCESS GRANTED' }}
             }
           </h3>
-          
+
           <p>
-            @if (isJonahMode) {
+            @if (isJonahMode()) {
               {{ translate.isPt() ? '⚠️ Nenhum canal é seguro. Boa sorte.' : '⚠️ No channel is safe. Good luck.' }}
             } @else {
               {{ translate.isPt() ? 'Escolha um canal seguro:' : 'Choose a secure channel:' }}
             }
           </p>
-          
+
           <div class="action-buttons">
             <a (click)="acessarArquivosMaster()" style="cursor: pointer;" class="cyber-btn spotify">
               <i class="ph-spotify-logo"></i> {{ translate.isPt() ? '[ Extrair Arquivos Master ]' : '[Extract Master Files]' }}
@@ -54,7 +54,7 @@
           </div>
 
           <button class="close-btn" (click)="closeTerminal()">
-             @if (isJonahMode) {
+             @if (isJonahMode()) {
                 {{ translate.isPt() ? '[ ABORTAR MISSÃO ]' : '[ ABORT MISSION ]' }}
              } @else {
                 {{ translate.isPt() ? '[ ENCERRAR CONEXÃO ]' : '[ TERMINATE CONNECTION ]' }}

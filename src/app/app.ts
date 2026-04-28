@@ -68,8 +68,11 @@ export class App implements OnInit {
 
 ngOnInit() {
     // 1. --- LÓGICA DE COOKIES (Seguro, pois tem verificação de window) ---
-    if (typeof window !== 'undefined' && localStorage) {
-      this.cookiesAccepted = localStorage.getItem('rqs_cookies_consent') === 'true';
+    if (isPlatformBrowser(this.platformId)) {
+      const win = this.document.defaultView as any;
+      if (win && win.localStorage) {
+        this.cookiesAccepted = win.localStorage.getItem('rqs_cookies_consent') === 'true';
+      }
     }
 
     // 2. --- 🚀 PROTOCOLO DE RASTREAMENTO E IDIOMA (O Cofre do Navegador) ---
@@ -89,13 +92,16 @@ ngOnInit() {
     }
 
     // 3. --- LEITURA BRUTA DA URL ---
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      const modeNaURL = params.get('mode');
-      if (modeNaURL === 'jonah') {
-        this.aplicarModo('jonah');
-      } else {
-        this.aplicarModo('broklin');
+    if (isPlatformBrowser(this.platformId)) {
+      const win = this.document.defaultView as any;
+      if (win) {
+        const params = new URLSearchParams(win.location.search);
+        const modeNaURL = params.get('mode');
+        if (modeNaURL === 'jonah') {
+          this.aplicarModo('jonah');
+        } else {
+          this.aplicarModo('broklin');
+        }
       }
     }
 
@@ -122,35 +128,45 @@ ngOnInit() {
 
   // --- MÉTODOS DE SISTEMA ---
   aplicarModo(mode: string) {
-    if (typeof document !== 'undefined') {
-      document.body.classList.remove('mode-broklin', 'mode-jonah');
-      document.body.classList.add(`mode-${mode}`);
-    }
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('rqs-theme', mode);
-    }
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(new Event('theme-changed'));
+    if (isPlatformBrowser(this.platformId)) {
+      const win = this.document.defaultView as any;
+
+      this.document.body.classList.remove('mode-broklin', 'mode-jonah');
+      this.document.body.classList.add(`mode-${mode}`);
+
+      if (win && win.localStorage) {
+        win.localStorage.setItem('rqs-theme', mode);
+      }
+      if (win) {
+        win.dispatchEvent(new Event('theme-changed'));
+      }
     }
   }
 
   acceptCookies() {
     this.cookiesAccepted = true;
-    if (typeof localStorage !== 'undefined') {
-      localStorage.setItem('rqs_cookies_consent', 'true');
+    if (isPlatformBrowser(this.platformId)) {
+      const win = this.document.defaultView as any;
+      if (win && win.localStorage) {
+        win.localStorage.setItem('rqs_cookies_consent', 'true');
+      }
     }
   }
 
   private iniciarProtocoloDeIdioma() {
-    const idiomaGuardado = localStorage.getItem('rqs_lang_override');
+    if (isPlatformBrowser(this.platformId)) {
+      const win = this.document.defaultView as any;
+      if (!win) return;
 
-    if (!idiomaGuardado) {
-      const idiomaNavegador = navigator.language || navigator.languages[0];
-      // ATENÇÃO AQUI: Mudamos para usar this.translate.setLanguage(xxx)
-      if (idiomaNavegador.startsWith('en')) {
-        this.translate.setLanguage('en');
-      } else {
-        this.translate.setLanguage('pt');
+      const idiomaGuardado = win.localStorage.getItem('rqs_lang_override');
+
+      if (!idiomaGuardado) {
+        const idiomaNavegador = win.navigator.language || win.navigator.languages[0];
+        if (idiomaNavegador.startsWith('en')) {
+          this.translate.setLanguage('en');
+        } else {
+          this.translate.setLanguage('pt');
+        }
       }
     }
   }

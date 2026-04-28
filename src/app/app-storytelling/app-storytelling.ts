@@ -1,5 +1,5 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, PLATFORM_ID, signal, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
@@ -17,11 +17,16 @@ import { NgOptimizedImage } from '@angular/common';
   templateUrl: './app-storytelling.html',
   styleUrls: ['./app-storytelling.scss']
 })
-export class StorytellingComponent {
+export class StorytellingComponent implements OnInit, OnDestroy {
 
   private router = inject(Router);
   public translate = inject(TranslationService);
   private contentService = inject(ContentService);
+  private platformId = inject(PLATFORM_ID);
+  private document = inject(DOCUMENT);
+
+  public isJonahMode = signal<boolean>(false);
+  private themeObserver: MutationObserver | undefined;
 
 // 🔥 HOME: Corta os 4 primeiros e não liga pro ano!
   logs$: Observable<any[]> = this.contentService.getLogs().pipe(
@@ -50,8 +55,39 @@ export class StorytellingComponent {
     })
   );
 
+  ngOnInit() {
+    // Prevenção blindada contra quebra de Hidratação SSR
+    if (isPlatformBrowser(this.platformId)) {
+      this.isJonahMode.set(this.document.body.classList.contains('mode-jonah'));
+
+      this.themeObserver = new MutationObserver(() => {
+        this.isJonahMode.set(this.document.body.classList.contains('mode-jonah'));
+      });
+
+      this.themeObserver.observe(this.document.body, {
+        attributes: true,
+        attributeFilter: ['class']
+      });
+    }
+  }
+
+  ngOnDestroy() {
+    this.themeObserver?.disconnect();
+  }
+
   getEventContent(event: any) {
-    return this.translate.isPt() ? event.pt : event.en;
+    let content = this.translate.isPt() ? event.pt : event.en;
+    if (!content || !content.description) return content;
+
+    let processedContent = { ...content };
+
+    // 🛡️ MOTOR DE DESTRUIÇÃO FÍSICA: Remove as notas se não for o caos, erradicando o cloaking.
+    if (!this.isJonahMode()) {
+      // A expressão limpa fisicamente tags <div>, <p> ou <span> que possuam 'jonah-note' em suas classes.
+      processedContent.description = processedContent.description.replace(/<(div|p|span)[^>]*class=["']?[^"']*jonah-note[^"']*["']?[^>]*>[\s\S]*?<\/\1>/gi, '');
+    }
+
+    return processedContent;
   }
 
   toggleLog(event: any) {

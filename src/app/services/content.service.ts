@@ -19,17 +19,12 @@ export class ContentService {
 
   // 🎵 1. DISCOGRAFIA
   getDiscography(): Observable<any[]> {
-    if (!isPlatformBrowser(this.platformId)) return of([]);
     const colRef = collection(this.firestore, 'discography');
     // Envolvemos a busca original em parênteses, e conectamos o pipe POR FORA
     return (collectionData(colRef, { idField: 'id' }) as Observable<any[]>).pipe(take(1));
   }
 
   getEpisodes(mode: 'broklin' | 'jonah'): Observable<LoreEpisode[]> {
-    if (!isPlatformBrowser(this.platformId)) {
-      return of([]); // Devolve vazio, sem travar o build!
-    }
-
     // --- 🕰️ MÁQUINA DO TEMPO (QA & TESTES DE UI) ---
      //const dataFutura = new Date('2030-01-01'); // Viajamos para 2030
      //where("releasedDate", "<=", dataFutura)
@@ -60,21 +55,18 @@ export class ContentService {
 
  // 🛒 2. LOJA (Produtos)
   getProducts(): Observable<Product[]> {
-     if (!isPlatformBrowser(this.platformId)) return of([]);
     const colRef = collection(this.firestore, 'products');
     return (collectionData(colRef, { idField: 'id' }) as Observable<Product[]>).pipe(take(1));
     }
 
   // 🏪 3. DEPARTAMENTOS
   getDepartments(): Observable<Department[]> {
-    if (!isPlatformBrowser(this.platformId)) return of([]);
     const colRef = collection(this.firestore, 'departments');
     return (collectionData(colRef, { idField: 'id' }) as Observable<Department[]>).pipe(take(1));
   }
 
 // 📜 4. LOGS (Fofocas e Bastidores)
   getLogs(): Observable<any[]> {
-    if (!isPlatformBrowser(this.platformId)) return of([]);
     const colRef = collection(this.firestore, 'logs');
 
     // --- 🕰️ MÁQUINA DO TEMPO (QA & TESTES DE LOGS) ---
@@ -91,12 +83,11 @@ export class ContentService {
   }
   // 📜 4.1 LOG ESPECÍFICO (O Sniper)
   getLogById(id: string): Observable<any> {
-    if (!isPlatformBrowser(this.platformId)) return of(null);
 
     // Conecta direto no documento específico usando o ID da URL
     const docRef = doc(this.firestore, `logs/${id}`);
 
     // Puxa os dados e anexa o ID junto no objeto
-   return docData(docRef) as Observable<any>;
+   return (docData(docRef) as Observable<any>).pipe(take(1));
   }
 }

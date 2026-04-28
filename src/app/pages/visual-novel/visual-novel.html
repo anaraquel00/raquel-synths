@@ -9,7 +9,7 @@
 
     <header class="catalog-header">
 
-      @if (currentMode === 'broklin') {
+      @if (currentMode() === 'broklin') {
         <h1>
           {{ translate.isPt() ? '📚 Ecos da RQS: A Guerra de Servidores' : '📚 RQS Echoes: The Server War' }}
         </h1>
@@ -36,7 +36,7 @@
     <div class="synopsis-container">
     <div class="synopsis-content">
 
-        @if (currentMode === 'broklin') {
+        @if (currentMode() === 'broklin') {
 
           @if (translate.isPt()) {
            <p>

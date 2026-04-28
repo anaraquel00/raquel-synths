@@ -50,10 +50,6 @@
   text-shadow: 0 0 10px var(--primary-color);
 }
 
-/* --- ESTADO PADRÃO (O Nosso Ecossistema RQS) --- */
-.jonah-text {
-  display: none; /* Mantém o parasita silenciado por padrão */
-}
 
 .broklin-text {
   display: block; /* A nossa transmissão rola solta */
@@ -63,10 +59,6 @@
 /* --- QUANDO O MODO INFERNO É ATIVADO --- */
 /* O host-context detecta a classe global e inverte o estado imediatamente */
 :host-context(.mode-jonah) {
-  
-  .broklin-text {
-    display: none; /* A nossa transmissão é "derrubada" */
-  }
 
   .jonah-text {
     display: block; /* O texto corrompido toma conta da tela */
@@ -109,7 +101,7 @@
   @media (max-width: 992px) {
     flex-direction: column;
 
-    app-last-releases, 
+    app-last-releases,
     .grid-col.right-col {
       width: 100%;
       flex: none;
@@ -120,25 +112,25 @@
 .album-cover {
   /* Controle de tamanho do container pai (protege contra expansão infinita) */
   width: 100%;
-  max-width: 250px; 
+  max-width: 250px;
   flex-shrink: 0;
-  
+
   img {
     width: 100%;       /* Ocupa 100% dos 250px (ou menos no celular) */
     height: auto;      /* Desliga a altura fixa */
-    
+
     /* 🛡️ MOTOR GEOMÉTRICO: Força o quadrado perfeito sob qualquer tela */
-    aspect-ratio: 1 / 1; 
+    aspect-ratio: 1 / 1;
     object-fit: cover; /* Se a imagem original for retangular, ele dá um "zoom" e corta as bordas pra caber no quadrado */
-    
+
     border-radius: 8px;
     box-shadow: 0 5px 20px rgba(0,0,0,0.5);
-    
+
     /* Aceleração de Hardware que injetamos antes */
     transition: transform 0.3s ease;
-  
-    &:hover { 
-      transform: scale(1.02); 
+
+    &:hover {
+      transform: scale(1.02);
     }
   }
 }
@@ -199,7 +191,7 @@
     gap: 8px;
     cursor: pointer;
     box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-    
+
     /* 🛡️ BLINDAGEM DE HARDWARE: Transições explícitas para latência zero */
     transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
 
@@ -207,9 +199,9 @@
       background: #ff5500;
       color: rgb(0, 0, 0);
       border: 1px solid #ff5500;
-      &:hover, &:active { 
-        background: #ff5500; 
-        transform: translateY(-2px); 
+      &:hover, &:active {
+        background: #ff5500;
+        transform: translateY(-2px);
         box-shadow: 0 6px 12px rgba(255, 85, 0, 0.4); /* Otimização da sombra no hover */
       }
     }
@@ -218,9 +210,9 @@
       background: #1db954;
       color: white;
       border: 1px solid #1db954;
-      &:hover, &:active { 
-        background: #1ed760; 
-        transform: translateY(-2px); 
+      &:hover, &:active {
+        background: #1ed760;
+        transform: translateY(-2px);
         box-shadow: 0 6px 12px rgba(29, 185, 84, 0.4);
       }
     }
@@ -229,9 +221,9 @@
       width: 25px !important;
       height: 25px !important;
       min-width: 25px;
-      flex-shrink: 0; 
+      flex-shrink: 0;
       display: inline-block;
-      fill: currentColor !important; 
+      fill: currentColor !important;
 
       path {
         fill: currentColor !important;
@@ -260,9 +252,6 @@
   /* 👇 O SEGREDO DA LEITURA: Fundo Escuro + Blur */
   backdrop-filter: blur(10px);
   box-shadow: 0 15px 40px rgba(0,0,0,0.6);
-}
-.jonah-theme {
-  display: none;
 }
 
 /* --- BOTÕES GERAIS --- */
@@ -319,7 +308,7 @@ button {
 
 
 /* =========================================
-   SMART CARD SPOTIFY (Deep Link) 
+   SMART CARD SPOTIFY (Deep Link)
    ========================================= */
 .rqs-spotify-card {
   background: linear-gradient(135deg, rgba(20, 20, 20, 0.9), rgba(10, 10, 10, 0.95));
@@ -330,7 +319,7 @@ button {
   flex-direction: column;
   gap: 15px;
   max-width: 400px; /* Mantém o card elegante na grid */
-  margin: 0 auto; 
+  margin: 0 auto;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   border-left: 4px solid #1DB954; /* Linha de energia verde do Spotify */
   transition: transform 0.3s ease;
@@ -340,7 +329,7 @@ button {
     border-color: rgba(29, 185, 84, 0.6);
   }
 
-  
+
   .card-content {
     display: flex;
     align-items: center;
@@ -366,7 +355,7 @@ button {
         font-size: 0.95rem;
         font-weight: bold;
         line-height: 1.4;
-        margin: 0;      
+        margin: 0;
       }
     }
   }
@@ -388,7 +377,7 @@ button {
 
     /* AQUI ESTÁ A COLEIRA DO KRAKEN AZUL */
     .spotify-logo {
-      width: 22px; 
+      width: 22px;
       height: 22px;
       fill: #000; /* Força o ícone a ficar preto */
     }
@@ -412,9 +401,9 @@ button {
    ========================================= */
 .card-broklin {
   border-color: rgba(0, 255, 255, 0.4) !important;
-  border-left-color: #00ffff !important; 
+  border-left-color: #00ffff !important;
   margin-top: -2rem;
-  
+
   /* O MOTOR DE LEVITAÇÃO */
   animation: floatCard 4s ease-in-out infinite;
 
@@ -429,8 +418,8 @@ button {
   }
 
   &:hover {
-    animation-play-state: paused; 
-    transform: translateY(-8px) scale(1.02); 
+    animation-play-state: paused;
+    transform: translateY(-8px) scale(1.02);
     border-color: #00ffff !important;
     box-shadow: 0 15px 35px rgba(0, 255, 255, 0.3), inset 0 0 15px rgba(0, 255, 255, 0.1) !important;
   }
@@ -440,12 +429,12 @@ button {
   .card-broklin {
       margin-top: -0.5rem;
       margin-bottom: 0.2rem;
-      animation: none; 
-      transform: translateY(0); 
-      
+      animation: none;
+      transform: translateY(0);
+
       /* Mantemos a transição explícita no mobile, caso haja interação por toque */
       transition: box-shadow 0.3s ease, border-color 0.3s ease;
-      
+
       &:hover {
         /* Removemos o translateY do hover no mobile para evitar saltos na interface ao tocar */
         transform: translateY(0) scale(1);
@@ -460,19 +449,11 @@ button {
 
 /* ========================================= */
 
-/* ESTADO PADRÃO (Modo Ordem / Broklin Ativo) */
-.card-jonah {
-  display: none !important; /* Esconde o Jonah por padrão */
-}
 
 /* ESTADO HACKEADO (Modo Caos / Jonah Ativo) */
 :host-context(.mode-jonah) {
-  
-  .card-broklin {
-    display: none !important;
-  }
 
-  .card-jonah {
+   .card-jonah {
     display: flex !important;
     border-left: 4px solid #ff3300; /* Vermelho Cyberpunk Agressivo */
     background: linear-gradient(135deg, rgba(30, 0, 0, 0.9), rgba(10, 10, 10, 0.95)); /* Fundo com tom de sangue oxidado */
@@ -503,7 +484,7 @@ button {
 
     /* O BOTÃO DE AUTODESTRUIÇÃO (CTA Otimizado) */
     .btn-spotify-deep {
-      background-color: #ff3300; 
+      background-color: #ff3300;
       color: #ffffff;
       border: 1px solid #ff3300;
       border-radius: 1px;
@@ -518,7 +499,7 @@ button {
 
       /* Efeito de Curto-Circuito no Hover */
       &:hover {
-        background-color: transparent; 
+        background-color: transparent;
         border-color: rgba(255, 51, 0, 0.8);
         color: rgb(255, 51, 0);
         box-shadow: 0 15px 40px rgba(255, 51, 0, 0.3);
@@ -550,8 +531,6 @@ button {
 /* ========================================== */
 :host-context(.mode-jonah) {
 
-  /* Esconde o Broklin */
-  .broklin-theme { display: none; }
  .disco-container{
   border-radius: 1px;
  }

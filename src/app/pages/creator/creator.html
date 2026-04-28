@@ -10,8 +10,11 @@
   <header class="profile-header">
     <div class="profile-grid">
       <div class="profile-photo-container">
-        <img src="images/foto_perfil.webp" alt="Ana Raquel Dev" class="photo-broklin">
-        <img src="images/general_perfil.webp" alt="General Kelma" class="photo-jonah">
+        @if (currentTheme() === 'broklin') {
+          <img src="images/foto_perfil.webp" alt="Ana Raquel Dev" class="photo-broklin fade-in">
+        } @else {
+          <img src="images/general_perfil.webp" alt="General Kelma" class="photo-jonah fade-in">
+        }
       </div>
 
       <div class="profile-bio">
@@ -91,17 +94,25 @@
 
     <div class="business-terminal">
      <div class="terminal-head">
-  <span class="status-led"></span>
+    <span class="status-led"></span>
 
-  <span class="status-text">
-    <span class="msg-broklin">{{ text.business.status }}</span>
-
-    <span class="msg-jonah">{{ text.business.statusJonah }}</span>
-  </span>
- </div>
+    <div class="status-text">
+    @if (currentTheme() === 'broklin') {
+    <div class="msg-broklin">{{ text.business.status }}</div>
+    }
+    @if (currentTheme() === 'jonah') {
+    <div class="msg-jonah">{{ text.business.statusJonah }}</div>
+    }
+  </div>
+   </div>
 
       <div class="terminal-body">
+        @if (currentTheme() === 'broklin') {
         <p>{{ text.business.desc }}</p>
+      }
+        @if (currentTheme() === 'jonah') {
+        <p>{{ text.business.descJonah }}</p>
+      }
 
         <div class="biz-actions">
           <a href="mailto:anaraquel00@gmail.com?subject=Business%20Inquiry%20-%20RQS" class="action-btn email">

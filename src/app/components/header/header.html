@@ -1,5 +1,5 @@
 <mat-toolbar color="primary">
-  <a routerLink="/" class="brand-logo" 
+  <a routerLink="/" class="brand-logo"
   [matTooltip]="translate.isPt() ? 'Voltar para a Base (Home)' : 'Return to Base (Home)'"
    matTooltipPosition="below"
    matTooltipShowDelay="300">
@@ -13,18 +13,18 @@
       {{ translate.isPt() ? '🇺🇸 EN' : '🇧🇷 PT' }}
     </button>
 
-   <!-- SE ESTIVER NO MODO BROKLIN (Mostra o botão pra ir pro Jonah) -->
-
-   <button mat-button class="jonah-trigger" (click)="activateJonahMode()">
-        {{ navText.darkmode }} <!-- Texto: "MODO JONAH" -->
-   </button>
-
-   <!-- SE ESTIVER NO MODO JONAH (Mostra o botão pra voltar pro Broklin) -->
-
-   <button mat-button class="broklin-escape" (click)="activateBroklinMode()">
-    <mat-icon>shield</mat-icon> <!-- Ícone de Escudo/Segurança -->
-    {{ navText.lightmode }} <!-- Texto: "VOLTAR À BASE" -->
-   </button>
+   @if (!isJonahMode()) {
+     <!-- SE ESTIVER NO MODO BROKLIN (Mostra o botão pra ir pro Jonah) -->
+     <button mat-button class="jonah-trigger" (click)="activateJonahMode()">
+          {{ navText.darkmode }} <!-- Texto: "MODO JONAH" -->
+     </button>
+   } @else {
+     <!-- SE ESTIVER NO MODO JONAH (Mostra o botão pra voltar pro Broklin) -->
+     <button mat-button class="broklin-escape" (click)="activateBroklinMode()">
+      <mat-icon>shield</mat-icon> <!-- Ícone de Escudo/Segurança -->
+      {{ navText.lightmode }} <!-- Texto: "VOLTAR À BASE" -->
+     </button>
+   }
 
     <button mat-button [routerLink]="['/dossier']">{{ navText.sobre }}</button>
     <button mat-button [routerLink]="['/saga']">{{ navText.visualNovel }}</button>
@@ -74,13 +74,15 @@
 
     <mat-divider></mat-divider>
 
-    <button mat-menu-item class="nav-item-broklin" (click)="activateBroklinMode()">
-      <mat-icon>diamond</mat-icon> <span>{{ translate.isPt() ? 'Modo Broklin' : 'Broklin Mode' }}</span>
-    </button>
-
-    <button mat-menu-item class="nav-item-jonah" (click)="activateJonahMode()">
-      <mat-icon>warning</mat-icon> <span>{{ translate.isPt() ? 'Modo Jonah' : 'Jonah Mode' }}</span>
-    </button>
+    @if (isJonahMode()) {
+      <button mat-menu-item class="nav-item-broklin" (click)="activateBroklinMode()">
+        <mat-icon>diamond</mat-icon> <span>{{ translate.isPt() ? 'Modo Broklin' : 'Broklin Mode' }}</span>
+      </button>
+    } @else {
+      <button mat-menu-item class="nav-item-jonah" (click)="activateJonahMode()">
+        <mat-icon>warning</mat-icon> <span>{{ translate.isPt() ? 'Modo Jonah' : 'Jonah Mode' }}</span>
+      </button>
+    }
 
     <mat-divider></mat-divider>
 

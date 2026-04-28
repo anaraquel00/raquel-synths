@@ -9,7 +9,7 @@
   </header>
 
   <div class="blog-feed">
-    @let logs = logsPaginated$ | async;
+    @let logs = logsPaginated();
 
     @if (logs) {
       @for (log of logs; track log.id; let i = $index) {
@@ -53,20 +53,20 @@
 
      <nav class="pagination-controls">
         <a [routerLink]="['/logs-archive']"
-           [queryParams]="{ page: currentPage - 1 }"
+           [queryParams]="{ page: currentPage() - 1 }"
            class="btn-pager"
-           [class.disabled]="currentPage === 0"
-           [style.pointer-events]="currentPage === 0 ? 'none' : 'auto'">
+           [class.disabled]="currentPage() === 0"
+           [style.pointer-events]="currentPage() === 0 ? 'none' : 'auto'">
           [ < VOLTAR ]
         </a>
 
-        <span class="page-counter">{{ currentPage + 1 }} / {{ totalPages }}</span>
+        <span class="page-counter">{{ currentPage() + 1 }} / {{ totalPages() }}</span>
 
         <a [routerLink]="['/logs-archive']"
-           [queryParams]="{ page: currentPage + 1 }"
+           [queryParams]="{ page: currentPage() + 1 }"
            class="btn-pager"
-           [class.disabled]="currentPage === totalPages - 1"
-           [style.pointer-events]="currentPage === totalPages - 1 ? 'none' : 'auto'">
+           [class.disabled]="currentPage() === totalPages() - 1"
+           [style.pointer-events]="currentPage() === totalPages() - 1 ? 'none' : 'auto'">
           [ AVANÇAR > ]
         </a>
       </nav>

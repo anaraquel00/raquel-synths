@@ -1,5 +1,5 @@
-import { Component, Inject, inject } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+import { Component, Inject, inject, PLATFORM_ID, signal, OnInit, OnDestroy } from '@angular/core';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,8 +17,12 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   templateUrl: './header.html',
   styleUrl: './header.scss'
 })
-export class Header {
-  isJonahMode: boolean = false; 
+export class Header implements OnInit, OnDestroy {
+  // 🛡️ REATIVIDADE ABSOLUTA: A variável de estado foi promovida a Signal
+  isJonahMode = signal<boolean>(false);
+
+  private platformId = inject(PLATFORM_ID);
+  private themeObserver: MutationObserver | null = null;
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -26,10 +30,25 @@ export class Header {
     private router: Router
   ) {}
 
+  ngOnInit() {
+    // 🛡️ PROTEÇÃO SSR: O rastreador Googlebot nãofaz loop infinito no servidor
+    if (isPlatformBrowser(this.platformId)) {
+      this.isJonahMode.set(this.document.body.classList.contains('mode-jonah'));
+      this.themeObserver = new MutationObserver(() => {
+        this.isJonahMode.set(this.document.body.classList.contains('mode-jonah'));
+      });
+      this.themeObserver.observe(this.document.body, { attributes: true, attributeFilter: ['class'] });
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.themeObserver) this.themeObserver.disconnect();
+  }
+
   // 🛡️ A FUNÇÃO DO BOTÃO MANUAL AGORA USA O SERVIÇO CORRETO
   mudarIdioma(novoIdioma: string) {
     this.translate.setLanguage(novoIdioma); // USA O MÉTODO 'setLanguage'
-    localStorage.setItem('rqs_lang_override', novoIdioma); 
+    localStorage.setItem('rqs_lang_override', novoIdioma);
   }
 
   get navText() {
@@ -60,12 +79,18 @@ export class Header {
   }
 
   activateBroklinMode() {
-    this.document.body.classList.remove('mode-jonah');
-    this.document.body.classList.add('mode-broklin');
+    if (isPlatformBrowser(this.platformId)) {
+      this.document.body.classList.remove('mode-jonah');
+      this.document.body.classList.add('mode-broklin');
+      this.isJonahMode.set(false);
+    }
   }
 
   activateJonahMode() {
-    this.document.body.classList.remove('mode-broklin');
-    this.document.body.classList.add('mode-jonah');
+    if (isPlatformBrowser(this.platformId)) {
+      this.document.body.classList.remove('mode-broklin');
+      this.document.body.classList.add('mode-jonah');
+      this.isJonahMode.set(true);
+    }
   }
 }

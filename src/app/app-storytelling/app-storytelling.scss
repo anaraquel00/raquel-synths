@@ -24,19 +24,19 @@
   font-size: 0.95rem;
   text-align: center;
   line-height: 1.5;
-  
+
   /* A Caixa do Terminal (MANTIDA) */
-  margin: 15px auto 30px auto; 
+  margin: 15px auto 30px auto;
   padding: 12px 20px;
-  max-width: 1200px; 
-  
+  max-width: 1200px;
+
   /* Estética Blue Team (Santuário - SEM SHADOWS) */
   background-color: rgba(0, 10, 20, 0.98); /* Fundo quase 100% opaco para zero sombras */
   border: 1px solid rgba(0, 243, 255, 0.4);
-  margin-top: -10px; 
+  margin-top: -10px;
   border-radius: 4px;
   color: #00f3ff;
-  
+
    display: block;
 
   /* 🚨 O CURSOR VIRTUAL DO SANTUÁRIO */
@@ -47,13 +47,13 @@
     /* O cursor herda o text-shadow: none, mas vamos garantir */
     animation: blinkCursor 1s step-end infinite;
   }
-  
+
   /* ☢️ O OVERRIDE DO CAOS (Red Team) */
   :host-context(.mode-jonah) & {
     background-color: rgba(20, 0, 0, 0.98);
     border-color: rgba(255, 0, 50, 0.4);
     color: #ff9900;
-    
+
      }
 }
 
@@ -119,15 +119,15 @@
 .img-wrapper-wide {
   position: relative; /* 🛡️ Obrigatório para a diretiva 'fill' funcionar */
   width: 100%;
-  
+
   /* 📐 O MOTOR 16:9: Força o formato panorâmico exato em qualquer tela */
-  aspect-ratio: 16 / 9; 
-  
+  aspect-ratio: 16 / 9;
+
   overflow: hidden;
   margin-bottom: 1.5rem;
-  
+
   /* Estética de Classificados / Data Feed */
-  background: #050505; 
+  background: #050505;
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-bottom: 2px solid var(--accent-color); /* A linha de destaque de manchete */
   border-radius: 4px;
@@ -205,7 +205,7 @@
 
 /* --- COMENTÁRIOS DO JONAH --- */
 .jonah-note {
-  display: none; /* [BROKLIN FIX]: O vírus fica adormecido por padrão */
+  /* 🛡️ ADSENSE SENTINEL: display: none REMOVIDO. A destruição física do nó agora é feita no Motor do Angular (TS). */
 }
 
 /* --- BOTÕES --- */
@@ -264,10 +264,10 @@
   }
   .date{
     font-size: 0.75rem;
-    padding: 3px 8px;    
+    padding: 3px 8px;
   }
   .title {
-    font-size: 1.5rem;    
+    font-size: 1.5rem;
   }
 
   .description-lead {
@@ -290,7 +290,7 @@
   border-radius: 4px;
   text-transform: uppercase;
   transition: all 0.3s ease;
-  
+
   &:hover {
     background: rgba(0, 255, 204, 0.2);
     box-shadow: 0 0 25px rgba(0, 255, 204, 0.6), inset 0 0 10px rgba(0, 255, 204, 0.2);
@@ -328,7 +328,6 @@
 
   /* Mostra o comentário do Jonah (que normalmente fica escondido ou discreto) */
   .jonah-note {
-    display: block;
     border: 2px dashed #ff5722;
     background: #000;
     color: #ff5722;
@@ -362,7 +361,7 @@
   color: #ff5722 !important;
   box-shadow: 0 0 10px rgba(255, 87, 34, 0.4);
   text-shadow: 0 0 8px #ff5722;
-  
+
   &:hover {
     background: rgba(255, 87, 34, 0.2);
     box-shadow: 0 0 25px rgba(255, 87, 34, 0.6), inset 0 0 10px rgba(255, 87, 34, 0.2);
@@ -372,4 +371,3 @@
 }
 }
 }
-

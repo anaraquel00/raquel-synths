@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, Inject, PLATFORM_ID, signal } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslationService } from '../../services/translation.service';
@@ -26,7 +26,7 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
-  currentMode: 'broklin' | 'jonah' = 'broklin';
+  currentMode = signal<'broklin' | 'jonah'>('broklin');
   // 🛡️ O CANAL DE RÁDIO DO TEMA
   private mode$ = new BehaviorSubject<'broklin' | 'jonah'>('broklin');
 
@@ -125,8 +125,8 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
     const newMode: 'broklin' | 'jonah' = isJonah ? 'jonah' : 'broklin';
 
     // 3. Só dispara o gatilho reativo se houver mudança real
-    if (this.currentMode !== newMode) {
-      this.currentMode = newMode;
+    if (this.currentMode() !== newMode) {
+      this.currentMode.set(newMode);
       this.mode$.next(newMode); // 🚀 Envia o sinal de rádio pra trocar de episódio
     }
   }

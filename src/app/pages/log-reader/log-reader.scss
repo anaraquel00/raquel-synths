@@ -62,7 +62,7 @@
   font-weight: bold;
 }
  .jonah-note {
-  display: none; // Escondido por padrão, só aparece no modo Jonah
+  /* 🛡️ ADSENSE SENTINEL: display: none REMOVIDO. A destruição física do nó agora é feita pelo Angular Control Flow (TS). */
  }
 
    ::ng-deep .cyber-play-btn {
@@ -153,7 +153,6 @@
     box-shadow: 0 0 15px rgba(var(--accent-rgb), 0.4);
   }
   .jonah-note {
-    display: block; // Mostra a nota de Jonah no modo caos
     margin-top: 20px;
     padding: 15px;
     background: rgba(29, 9, 2, 0.2);

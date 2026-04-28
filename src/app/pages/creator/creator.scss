@@ -112,10 +112,9 @@
     object-fit: cover;
     transition: opacity 0.4s ease;
   }
-
-  .photo-broklin { opacity: 1; }
-  .photo-jonah { opacity: 0; }
 }
+
+.fade-in { animation: fadeIn 0.4s ease-in; }
 
 /* MANIFESTO (A História) */
 .manifesto-section {
@@ -230,8 +229,7 @@ h3 {
 :host-context(.mode-jonah) .profile-photo-container {
   border-color: #ff5722;
   box-shadow: 0 0 25px #ff56228b;
-  .photo-broklin { opacity: 0; }
-  .photo-jonah { opacity: 1; filter: contrast(1.2); }
+  img { filter: contrast(1.2); }
 }
 
 .profile-bio {
@@ -727,22 +725,9 @@ h3 {
     background: linear-gradient(90deg, transparent, #ff3300, transparent);
   }
 }
-/* --- LÓGICA DE TROCA DE TEXTO (Broklin vs Jonah) --- */
-
-/* 1. Estado Normal (Broklin) */
-.msg-jonah {
-  display: none; /* Esconde o texto do Jonah */
-}
-.msg-broklin {
-  display: inline; /* Mostra o texto do Broklin */
-}
 
 /* 2. Estado Caos (Quando o corpo tem .mode-jonah) */
 :host-context(.mode-jonah) {
-
-  .msg-broklin {
-    display: none; /* Esconde o bonzinho */
-  }
 
   .msg-jonah {
     display: inline; /* MOSTRA O MALVADÃO */

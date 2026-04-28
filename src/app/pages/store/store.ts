@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit, signal, ChangeDetectorRef, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal, ChangeDetectorRef, Inject, PLATFORM_ID, DOCUMENT } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import Swal from 'sweetalert2';
@@ -63,6 +63,7 @@ selectedDepartmentData: any;
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private cdr = inject(ChangeDetectorRef); // Para forçar a atualização da tela
+  private document = inject(DOCUMENT);
   public translate = inject(TranslationService);
   private trackingService = inject(TrackingService); // Para a telemetria de afiliados
 
@@ -71,7 +72,7 @@ selectedDepartmentData: any;
   private dataSubscription: Subscription | null = null;
 
   // --- ESTADO ---
-  activeMode: 'broklin' | 'jonah' = 'broklin';
+  activeMode = signal<'broklin' | 'jonah'>('broklin');
   currentLang = signal<'pt' | 'en'>('pt');
   currentView: 'LOBBY' | 'MINI_STORE' = 'LOBBY';
 
@@ -89,7 +90,7 @@ selectedDepartmentData: any;
     return this.allDepartments.filter(dept => {
        // Se não tiver 'owners' no banco, mostra pra todos.
        // Se tiver, só mostra se o activeMode (broklin/jonah) estiver na lista.
-       return !dept.owners || dept.owners.includes(this.activeMode);
+       return !dept.owners || dept.owners.includes(this.activeMode());
     });
   }
 
@@ -178,28 +179,27 @@ checkCurrentMode() {
     if (!this.isBrowser) return;
 
     // A Loja não dita mais as regras. Ela apenas lê a classe global que o Header já definiu.
-    const isJonahActive = document.body.classList.contains('mode-jonah');
-    this.activeMode = isJonahActive ? 'jonah' : 'broklin';
-
+    const isJonahActive = this.document.body.classList.contains('mode-jonah');
+    this.activeMode.set(isJonahActive ? 'jonah' : 'broklin');
   }
 
 
   private setupThemeObserver() {
     if (!this.isBrowser) return;
     this.observer = new MutationObserver(() => {
-      const isJonah = document.body.classList.contains('mode-jonah');
+      const isJonah = this.document.body.classList.contains('mode-jonah');
       const newMode = isJonah ? 'jonah' : 'broklin';
 
       this.currentLang.set(this.translate.isPt() ? 'pt' : 'en');
 
-      if (this.activeMode !== newMode) {
-        this.activeMode = newMode;
+      if (this.activeMode() !== newMode) {
+        this.activeMode.set(newMode);
         this.backToLobby(); // Reseta para o lobby certo
         this.cdr.detectChanges();
       }
     });
 
-    this.observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    this.observer.observe(this.document.body, { attributes: true, attributeFilter: ['class'] });
   }
 
 // --- NAVEGAÇÃO E BOOST DE SEO ---
@@ -409,7 +409,7 @@ checkCurrentMode() {
   // ✅ CORREÇÃO: Esse método tinha sumido do seu código!
   private openGenericPartnerModal(url: string) {
     const lang = this.currentLang();
-    const isJonah = this.activeMode === 'jonah';
+    const isJonah = this.activeMode() === 'jonah';
     const config = this.getPartnerConfig(url, lang);
 
     Swal.fire({

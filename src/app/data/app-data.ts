@@ -231,9 +231,10 @@ export const CREATOR_DATA = {
     },
     business: {
       title: 'CANAL CORPORATIVO',
-      status: 'SYSTEM STATUS: DISPONÍVEL PARA PROJETOS',
-      statusJonah: 'SYSTEM STATUS: AGUENTA A PRESSÃO? 💀',
-      desc: 'Procurando liderança técnica em Angular, automação de processos ou arquitetura de software moderna? Transformo requisitos complexos em código limpo e produtos digitais funcionais.',
+      status: 'CANAL CORPORATIVO | STATUS: DISPONÍVEL PARA ESCALAR O SEU PROJETO 🚀',
+      statusJonah: 'SINAL INTERCEPTADO | STATUS: AGUENTA A PRESSÃO? 💀',
+      desc: 'Precisa de liderança técnica sólida em Front-End, arquitetura Angular e automações inteligentes? Eu atuo na linha de frente: transformo regras de negócio complexas e designs sofisticados em ecossistemas limpos, responsivos e de alto desempenho. Código sustentável que aprova auditorias e gera valor real de mercado.',
+      descJonah:'A sua infraestrutura é fraca e os seus processos são lentos? Eu construo arquiteturas brutais em Angular e automações que não quebram sob carga pesada. Requisitos absurdos transformados em código letal e interfaces fotorrealistas. Se você quer o sistema rodando no limite da máquina, me contrate. Se tem medo de Deploy na sexta-feira, procure outra desenvolvedora.',
       actionEmail: 'Solicitar Consultoria',
       actionLinkedin: 'Perfil LinkedIn'
     }
@@ -337,9 +338,10 @@ export const CREATOR_DATA = {
     },
     business: {
       title: 'BUSINESS CHANNEL',
-      status: 'SYSTEM STATUS: OPEN FOR BUSINESS',
-      statusJonah: 'SYSTEM STATUS: CAN YOU HANDLE THE PRESSURE? 💀',
-      desc: 'Looking for technical leadership in Angular, process automation, or modern software architecture? I turn complex requirements into clean code and functional digital products.',
+      status: 'CORPORATE CHANNEL | STATUS: AVAILABLE TO SCALE YOUR PROJECT 🚀',
+      statusJonah: 'SIGNAL INTERCEPTED | STATUS: CAN YOU HANDLE THE PRESSURE? 💀',
+      desc: 'Do you need solid technical leadership in Front-End, Angular architecture, and intelligent automation? I work on the front lines: transforming complex business rules and sophisticated designs into clean, responsive, and high-performance ecosystems. Sustainable code that passes audits and generates real market value.',
+      descJonah:'Is your infrastructure weak and your processes slow? I build brutal architectures in Angular and automations that don\'t break under heavy load. Absurd requirements transformed into lethal code and photorealistic interfaces. If you want the system running at the machine\'s limit, hire me. If you\'re afraid of deploying on Friday, look for another developer.',
       actionEmail: 'Contact for Hire',
       actionLinkedin: 'LinkedIn Profile'
     }

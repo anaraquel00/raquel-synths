@@ -1,5 +1,5 @@
-import { Component, EventEmitter, OnInit, OnDestroy, Output, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, OnInit, OnDestroy, Output, PLATFORM_ID, inject, signal } from '@angular/core';
+import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { ContentService } from '../../services/content.service';
 import { TranslationService } from '../../services/translation.service';
 
@@ -13,9 +13,12 @@ import { TranslationService } from '../../services/translation.service';
 export class UplinkTerminalComponent implements OnInit, OnDestroy {
   @Output() close = new EventEmitter<void>();
 
-  logs: string[] = [];
-  isFinished = false;
-  isJonahMode = false; 
+  private platformId = inject(PLATFORM_ID);
+  private document = inject(DOCUMENT);
+
+  logs = signal<string[]>([]);
+  isFinished = signal<boolean>(false);
+  isJonahMode = signal<boolean>(false);
   private themeObserver: MutationObserver | null = null;
 
   // 🛡️ SCRIPT BROKLIN (Sempre em Inglês - Tech Standard)
@@ -43,42 +46,42 @@ export class UplinkTerminalComponent implements OnInit, OnDestroy {
 
   constructor(
     public translate: TranslationService,
-    public contentService: ContentService,
-    private cdr: ChangeDetectorRef
+    public contentService: ContentService
   ) {}
 
   ngOnInit() {
-    this.checkMode();
-    this.themeObserver = new MutationObserver(() => this.checkMode());
-    this.themeObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    // 🛡️ BLINDAGEM SSR ABSOLUTA: DOM só pode ser tocado no navegador
+    if (isPlatformBrowser(this.platformId)) {
+      this.checkMode();
+      this.themeObserver = new MutationObserver(() => this.checkMode());
+      this.themeObserver.observe(this.document.body, { attributes: true, attributeFilter: ['class'] });
+    }
     this.runHackerScript();
   }
 
   private checkMode() {
-    const bodyHasJonah = document.body.classList.contains('mode-jonah');
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    const bodyHasJonah = this.document.body.classList.contains('mode-jonah');
     const serviceIsJonah = this.contentService.currentMode === 'jonah';
     const newState = bodyHasJonah || serviceIsJonah;
 
-    if (this.isJonahMode !== newState) {
-      this.isJonahMode = newState;
-      this.cdr.detectChanges();
-    }
+    this.isJonahMode.set(newState);
   }
 
   async runHackerScript() {
     // 👇 Agora escolhemos só pelo MODO. A língua é sempre EN no log.
-    const currentScript = this.isJonahMode ? this.scriptJonah : this.scriptBroklin;
+    const currentScript = this.isJonahMode() ? this.scriptJonah : this.scriptBroklin;
 
     for (const line of currentScript) {
-      const delayTime = this.isJonahMode ? Math.random() * 200 + 50 : Math.random() * 400 + 100;
+      const delayTime = this.isJonahMode() ? Math.random() * 200 + 50 : Math.random() * 400 + 100;
       await this.delay(delayTime);
-      this.logs.push(line);
+      this.logs.update(logsArray => [...logsArray, line]);
       this.scrollToBottom();
     }
-    
+
     await this.delay(500);
-    this.isFinished = true;
-    this.cdr.detectChanges();
+    this.isFinished.set(true);
   }
 
   ngOnDestroy() {
@@ -87,12 +90,14 @@ export class UplinkTerminalComponent implements OnInit, OnDestroy {
 
   closeTerminal() { this.close.emit(); }
   private delay(ms: number) { return new Promise(resolve => setTimeout(resolve, ms)); }
-  
+
   private scrollToBottom() {
-    setTimeout(() => {
-        const element = document.querySelector('.terminal-body');
-        if (element) element.scrollTop = element.scrollHeight;
-    }, 50);
+    if (isPlatformBrowser(this.platformId)) {
+      setTimeout(() => {
+          const element = this.document.querySelector('.terminal-body');
+          if (element) element.scrollTop = element.scrollHeight;
+      }, 50);
+    }
   }
 acessarArquivosMaster() {
     window.open('https://open.spotify.com/intl-pt/artist/1yrPZaFyIcsCjj876LaHXL?si=m6xr309tQw22RRERSvF2eQ', '_blank');

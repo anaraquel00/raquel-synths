@@ -1,164 +1,176 @@
 <section class="disco-container">
   <h1 class="section-title">{{ translate.isPt() ? 'DISCOGRAFIA E STREAMS' : 'DISCOGRAPHY AND STREAMS' }}</h1>
 
-<div class="disco-intro">
+  <div class="disco-intro">
 
-  <p class="intro-text broklin-text" [innerHTML]="translate.isPt() ? introBroklinPT : introBroklinEN"></p>
-
-  <p class="intro-text jonah-text" [innerHTML]="translate.isPt() ? introJonahPT : introJonahEN"></p>
-
- <app-last-releases [lang]="translate.isPt() ? 'pt' : 'en'"></app-last-releases>
-<div class="grid-col right-col">
-  @defer (on viewport; prefetch on idle) {
-
-    @if (!isJonahMode) {
-      <div class="rqs-spotify-card card-broklin fade-in-up">
-        <div class="card-content">
-          <div class="icon-pulse">📡</div> <div class="text-data">
-            <h2>{{ translate.isPt() ? 'TRANSMISSÃO DO SANTUÁRIO' : 'SANCTUARY TRANSMISSION' }}</h2>
-            <p>
-              {{ translate.isPt() ? 'A colisão entre Ordem e Caos. Sintonize na rádio oficial 24/7 para frequências limpas de Synthwave e Dream Pop.' : 'The collision of Order and Chaos. Tune into the official 24/7 radio for clean Synthwave and Dream Pop frequencies.' }}
-            </p>
-          </div>
-        </div>
-        <div class="terminal-radio-container" style="padding: 15px; background: rgba(0,0,0,0.4); border-top: 1px solid rgba(0, 243, 255, 0.3);">
-          <iframe width="100%" height="200" [src]="radioBroklin" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" loading="lazy" allowfullscreen></iframe>
-        </div>
-      </div>
+    @if (!isJonahMode()) {
+      <p class="intro-text broklin-text" [innerHTML]="translate.isPt() ? introBroklinPT : introBroklinEN"></p>
     }
 
-    @if (isJonahMode) {
-      <div class="rqs-spotify-card card-jonah fade-in-up">
-        <div class="card-content">
-          <div class="icon-pulse warning-icon">☢️</div> <div class="text-data">
-            <h2>{{ translate.isPt() ? 'SINAL INTERCEPTADO' : 'INTERCEPTED SIGNAL' }}</h2>
-            <p>
-              {{ translate.isPt() ? 'Uma injeção letal de frequências pesadas. O caos 24/7 de Jonah Cyperfield. Nu-Metal e ferrugem sem freios.' : 'A lethal injection of heavy frequencies. Jonah\'s 24/7 chaos. Unrestrained Nu-Metal and rust.' }}
-            </p>
-          </div>
-        </div>
-        <div class="terminal-radio-container" style="padding: 15px; background: rgba(0,0,0,0.6); border-top: 1px solid rgba(255, 0, 50, 0.3);">
-          <iframe width="100%" height="200" [src]="radioJonah" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" loading="lazy" allowfullscreen></iframe>
-        </div>
-      </div>
+    @if (isJonahMode()) {
+      <p class="intro-text jonah-text" [innerHTML]="translate.isPt() ? introJonahPT : introJonahEN"></p>
     }
 
-  } @placeholder {
-    <div style="min-height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.2); border: 1px dashed #444; border-radius: 12px;">
-      <div class="icon-pulse" style="font-size: 2rem; margin-bottom: 10px;">🔌</div>
-      <span style="font-family: 'Roboto Mono', monospace; color: #666; font-size: 0.8rem;">[ AGUARDANDO UPLINK... ]</span>
+    <app-last-releases [lang]="translate.isPt() ? 'pt' : 'en'"></app-last-releases>
+
+    <div class="grid-col right-col">
+      @defer (on viewport; prefetch on idle) {
+
+        @if (!isJonahMode()) {
+          <div class="rqs-spotify-card card-broklin fade-in-up">
+            <div class="card-content">
+              <div class="icon-pulse">📡</div> <div class="text-data">
+                <h2>{{ translate.isPt() ? 'TRANSMISSÃO DO SANTUÁRIO' : 'SANCTUARY TRANSMISSION' }}</h2>
+                <p>
+                  {{ translate.isPt() ? 'A colisão entre Ordem e Caos. Sintonize na rádio oficial 24/7 para frequências limpas de Synthwave e Dream Pop.' : 'The collision of Order and Chaos. Tune into the official 24/7 radio for clean Synthwave and Dream Pop frequencies.' }}
+                </p>
+              </div>
+            </div>
+            <div class="terminal-radio-container" style="padding: 15px; background: rgba(0,0,0,0.4); border-top: 1px solid rgba(0, 243, 255, 0.3);">
+              <iframe width="100%" height="200" [src]="radioBroklin" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" loading="lazy" allowfullscreen></iframe>
+            </div>
+          </div>
+        }
+
+        @if (isJonahMode()) {
+          <div class="rqs-spotify-card card-jonah fade-in-up">
+            <div class="card-content">
+              <div class="icon-pulse warning-icon">☢️</div> <div class="text-data">
+                <h2>{{ translate.isPt() ? 'SINAL INTERCEPTADO' : 'INTERCEPTED SIGNAL' }}</h2>
+                <p>
+                  {{ translate.isPt() ? 'Uma injeção letal de frequências pesadas. O caos 24/7 de Jonah Cyperfield. Nu-Metal e ferrugem sem freios.' : 'A lethal injection of heavy frequencies. Jonah\'s 24/7 chaos. Unrestrained Nu-Metal and rust.' }}
+                </p>
+              </div>
+            </div>
+            <div class="terminal-radio-container" style="padding: 15px; background: rgba(0,0,0,0.6); border-top: 1px solid rgba(255, 0, 50, 0.3);">
+              <iframe width="100%" height="200" [src]="radioJonah" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" loading="lazy" allowfullscreen></iframe>
+            </div>
+          </div>
+        }
+
+      } @placeholder {
+        <div style="min-height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.2); border: 1px dashed #444; border-radius: 12px;">
+          <div class="icon-pulse" style="font-size: 2rem; margin-bottom: 10px;">🔌</div>
+          <span style="font-family: 'Roboto Mono', monospace; color: #666; font-size: 0.8rem;">[ AGUARDANDO UPLINK... ]</span>
+        </div>
+      }
+    </div>
+  </div>
+
+  @if (!isJonahMode()) {
+    <div class="artist-section broklin-theme">
+      <div class="section-header">
+        <i class="far fa-gem icon-pulse"></i>
+        <h2>{{ translate.isPt() ? 'PROTOCOLO RQS: LANÇAMENTOS' : 'RQS PROTOCOL: RELEASES' }}</h2>
+      </div>
+
+      @for (album of featuredBroklin; track album; let i = $index; let isLast = $last) {
+        <article class="featured-album">
+          <div class="album-cover">
+            <img [ngSrc]="album.cover" width="512"
+            height="512"
+            sizes="(max-width: 768px) 100vw, 50vw"
+            loading="lazy" [alt]="album.title">
+          </div>
+          <div class="album-content">
+            <div class="header">
+              <span class="release-type">{{ album.type }}</span>
+              <h3>{{ album.title }}</h3>
+            </div>
+            <p [innerHTML]="translate.isPt() ? album.descriptionPT : album.descriptionEN"></p>
+            <div class="actions-bar">
+              @if (album.soundcloudUrl || album.soundcloud || album.embedLink) {
+                <a [href]="album.soundcloudUrl ? album.soundcloudUrl : (album.soundcloud ? album.soundcloud : album.embedLink)"
+                target="_blank" class="btn-listen soundcloud-btn" (click)="trackSoundcloudClick(album.title)">
+                   <svg class="cyber-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+                     <path d="M116.7 284c-3.1-41.2-34.9-74.1-73.4-74.1-23.8 0-45.3 11.8-59 30.6-2.6 3.6-4.9 7.4-6.8 11.5v120.7c0 8.8 7.2 16 16 16h123.2V284zm382.4-71.3c-23.4 0-44.5 8.7-60.6 23.3-12-29.3-39.6-50.6-72.4-53.5-31-2.8-58.9 13.9-72.8 40.5-8.2-5.7-18.1-9.1-28.7-9.1-24.8 0-45.6 17.5-51 40.9H135.5v134.4h363.6c51 0 92.4-41.4 92.4-92.4.1-51.1-41.3-92.5-92.4-92.5M158.4 227v161.7h13.1V210.4c-4.9 4.3-9.4 9.6-13.1 16.6zm31.3-43.2v204.9h13.1V171.1c-4.9 3.3-9.4 7.5-13.1 12.7zm31.3-20.7v225.6h13.1V151c-4.9 2.8-9.4 6.7-13.1 12.7zm31.3-10.6v236.2h13.1V140.7c-4.9 2.5-9.4 6-13.1 10.8z"/>
+                   </svg> SoundCloud
+                </a>
+              }
+
+             @if (album.spotifyUrl || album.spotify) {
+            <a [href]="album.spotifyUrl ? album.spotifyUrl : album.spotify"
+            target="_blank" class="btn-listen spotify-btn" (click)="trackAlbumClick(album.title)"> <svg class="cyber-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512">
+               <path d="M248 8C111.1 8 0 119.1 0 256s111.1 248 248 248 248-111.1 248-248S384.9 8 248 8zm100.7 364.9c-4.2 0-6.8-1.3-10.7-3.6-62.4-37.6-135-39.2-206.7-24.5-3.9 1-9 2.6-11.9 2.6-9.7 0-15.8-7.7-15.8-15.8 0-10.3 6.1-15.2 13.6-16.8 81.9-18.1 165.6-16.5 237 26.2 6.1 3.9 9.7 7.4 9.7 16.5s-7.1 15.4-15.2 15.4zm26.9-65.6c-5.2 0-8.7-2.3-12.3-4.2-72.5-47-160.8-49.8-237.9-30.8-6.1 1.6-12.6 2.9-16.5 2.9-11 0-18.4-9-18.4-19.4s5.8-17.1 15.2-19.7c86.4-22.3 185.1-18.7 267.3 34.6 5.5 3.6 11 8.1 11 18.1 0 11.6-8.7 18.5-19.4 18.5zm31-67.6c-6.5 0-11-2.9-15.5-5.5-85.1-50.5-201.2-56-291-32.4-7.4 2.3-14.9 3.2-19.4 3.2-13.6 0-22.6-11-22.6-23.6 0-14.2 7.7-20.7 17.8-23.9 104.2-28.5 233.5-22.3 331 34.6 7.4 4.2 14.5 9.7 14.5 21.3 0 14.2-10.6 26.3-24.8 26.3z"/>
+               </svg> Spotify
+               </a>
+             }
+             </div>
+             </div>
+        </article>
+
+        @if ((i + 1) % 4 === 0 && !isLast) {
+          <div class="inter-list-ad">
+             <app-ad-banner></app-ad-banner>
+          </div>
+        }
+        @else if (!isLast) {
+          <hr class="separator neon-line">
+        }
+
+      }
+      <button routerLink="/musical-archives" class="btn-archive">
+       {{ translate.isPt() ? '[ 📂 ACESSO AOS ARQUIVOS COMPLETOS ]' : '[ 📂 ACCESS_FULL_ARCHIVES ]' }}
+     </button>
     </div>
   }
-</div>
-  </div>
 
- <div class="artist-section broklin-theme">
-  <div class="section-header">
-    <i class="far fa-gem icon-pulse"></i>
-    <h2>{{ translate.isPt() ? 'PROTOCOLO RQS: LANÇAMENTOS' : 'RQS PROTOCOL: RELEASES' }}</h2>
-  </div>
-
-  @for (album of featuredBroklin; track album; let i = $index; let isLast = $last) {
-    <article class="featured-album">
-      <div class="album-cover">
-        <img [ngSrc]="album.cover" width="512"
-        height="512"
-        sizes="(max-width: 768px) 100vw, 50vw"
-        loading="lazy" [alt]="album.title">
+  @if (isJonahMode()) {
+    <div class="artist-section jonah-theme">
+      <div class="section-header">
+        <i class="fas fa-exclamation-triangle icon-shake"></i>
+        <h2>{{ translate.isPt() ? 'REBELIÃO DE JONAH: CAOS' : 'JONAH\'S REBELLION: CHAOS' }}</h2>
       </div>
-      <div class="album-content">
-        <div class="header">
-          <span class="release-type">{{ album.type }}</span>
-          <h3>{{ album.title }}</h3>
-        </div>
-        <p [innerHTML]="translate.isPt() ? album.descriptionPT : album.descriptionEN"></p>
-        <div class="actions-bar">
-          <a *ngIf="album.soundcloudUrl || album.soundcloud || album.embedLink"
-             [href]="album.soundcloudUrl ? album.soundcloudUrl : (album.soundcloud ? album.soundcloud : album.embedLink)"
-             target="_blank" class="btn-listen soundcloud-btn"(click)="trackSoundcloudClick(album.title)">
-             <svg class="cyber-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
-               <path d="M116.7 284c-3.1-41.2-34.9-74.1-73.4-74.1-23.8 0-45.3 11.8-59 30.6-2.6 3.6-4.9 7.4-6.8 11.5v120.7c0 8.8 7.2 16 16 16h123.2V284zm382.4-71.3c-23.4 0-44.5 8.7-60.6 23.3-12-29.3-39.6-50.6-72.4-53.5-31-2.8-58.9 13.9-72.8 40.5-8.2-5.7-18.1-9.1-28.7-9.1-24.8 0-45.6 17.5-51 40.9H135.5v134.4h363.6c51 0 92.4-41.4 92.4-92.4.1-51.1-41.3-92.5-92.4-92.5M158.4 227v161.7h13.1V210.4c-4.9 4.3-9.4 9.6-13.1 16.6zm31.3-43.2v204.9h13.1V171.1c-4.9 3.3-9.4 7.5-13.1 12.7zm31.3-20.7v225.6h13.1V151c-4.9 2.8-9.4 6.7-13.1 12.7zm31.3-10.6v236.2h13.1V140.7c-4.9 2.5-9.4 6-13.1 10.8z"/>
-             </svg> SoundCloud
-          </a>
 
-         <a *ngIf="album.spotifyUrl || album.spotify"
-         [href]="album.spotifyUrl ? album.spotifyUrl : album.spotify"
-         target="_blank"
-         class="btn-listen spotify-btn"
-         (click)="trackAlbumClick(album.title)"> <svg class="cyber-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512">
-         <path d="M248 8C111.1 8 0 119.1 0 256s111.1 248 248 248 248-111.1 248-248S384.9 8 248 8zm100.7 364.9c-4.2 0-6.8-1.3-10.7-3.6-62.4-37.6-135-39.2-206.7-24.5-3.9 1-9 2.6-11.9 2.6-9.7 0-15.8-7.7-15.8-15.8 0-10.3 6.1-15.2 13.6-16.8 81.9-18.1 165.6-16.5 237 26.2 6.1 3.9 9.7 7.4 9.7 16.5s-7.1 15.4-15.2 15.4zm26.9-65.6c-5.2 0-8.7-2.3-12.3-4.2-72.5-47-160.8-49.8-237.9-30.8-6.1 1.6-12.6 2.9-16.5 2.9-11 0-18.4-9-18.4-19.4s5.8-17.1 15.2-19.7c86.4-22.3 185.1-18.7 267.3 34.6 5.5 3.6 11 8.1 11 18.1 0 11.6-8.7 18.5-19.4 18.5zm31-67.6c-6.5 0-11-2.9-15.5-5.5-85.1-50.5-201.2-56-291-32.4-7.4 2.3-14.9 3.2-19.4 3.2-13.6 0-22.6-11-22.6-23.6 0-14.2 7.7-20.7 17.8-23.9 104.2-28.5 233.5-22.3 331 34.6 7.4 4.2 14.5 9.7 14.5 21.3 0 14.2-10.6 26.3-24.8 26.3z"/>
-         </svg> Spotify
-         </a>
-         </div>
-         </div>
-    </article>
+      @for (album of featuredJonah; track album; let i = $index; let isLast = $last) {
+        <article class="featured-album">
+          <div class="album-cover">
+            <img [ngSrc]="album.cover"
+            width="512" height="512"
+            sizes="(max-width: 768px) 100vw, 50vw"
+            loading="lazy" [alt]="album.title" class="glitch-effect">
+          </div>
+          <div class="album-content">
+              <div class="header">
+              <span class="release-type">{{ album.type }}</span>
+              <h3>{{ album.title }}</h3>
+            </div>
+            <p [innerHTML]="translate.isPt() ? album.descriptionPT : album.descriptionEN"></p>
+          <div class="actions-bar">
+              @if (album.soundcloudUrl || album.soundcloud || album.embedLink) {
+    <a [href]="album.soundcloudUrl ? album.soundcloudUrl : (album.soundcloud ? album.soundcloud : album.embedLink)"
+       target="_blank" class="btn-listen soundcloud-btn" (click)="trackSoundcloudClick(album.title)">
+                   <svg class="cyber-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+                     <path d="M116.7 284c-3.1-41.2-34.9-74.1-73.4-74.1-23.8 0-45.3 11.8-59 30.6-2.6 3.6-4.9 7.4-6.8 11.5v120.7c0 8.8 7.2 16 16 16h123.2V284zm382.4-71.3c-23.4 0-44.5 8.7-60.6 23.3-12-29.3-39.6-50.6-72.4-53.5-31-2.8-58.9 13.9-72.8 40.5-8.2-5.7-18.1-9.1-28.7-9.1-24.8 0-45.6 17.5-51 40.9H135.5v134.4h363.6c51 0 92.4-41.4 92.4-92.4.1-51.1-41.3-92.5-92.4-92.5M158.4 227v161.7h13.1V210.4c-4.9 4.3-9.4 9.6-13.1 16.6zm31.3-43.2v204.9h13.1V171.1c-4.9 3.3-9.4 7.5-13.1 12.7zm31.3-20.7v225.6h13.1V151c-4.9 2.8-9.4 6.7-13.1 12.7zm31.3-10.6v236.2h13.1V140.7c-4.9 2.5-9.4 6-13.1 10.8z"/>
+                   </svg> SoundCloud
+                </a>
+              }
 
-    @if ((i + 1) % 2 === 0 && !isLast) {
-      <div class="inter-list-ad">
-         <app-ad-banner></app-ad-banner>
-      </div>
-    }
-    @else if (!isLast) {
-      <hr class="separator neon-line">
-    }
+              @if (album.spotifyUrl || album.spotify) {
+    <a [href]="album.spotifyUrl ? album.spotifyUrl : album.spotify"
+       target="_blank" class="btn-listen spotify-btn" (click)="trackAlbumClick(album.title)">
+                   <svg class="cyber-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512">
+                     <path d="M248 8C111.1 8 0 119.1 0 256s111.1 248 248 248 248-111.1 248-248S384.9 8 248 8zm100.7 364.9c-4.2 0-6.8-1.3-10.7-3.6-62.4-37.6-135-39.2-206.7-24.5-3.9 1-9 2.6-11.9 2.6-9.7 0-15.8-7.7-15.8-15.8 0-10.3 6.1-15.2 13.6-16.8 81.9-18.1 165.6-16.5 237 26.2 6.1 3.9 9.7 7.4 9.7 16.5s-7.1 15.4-15.2 15.4zm26.9-65.6c-5.2 0-8.7-2.3-12.3-4.2-72.5-47-160.8-49.8-237.9-30.8-6.1 1.6-12.6 2.9-16.5 2.9-11 0-18.4-9-18.4-19.4s5.8-17.1 15.2-19.7c86.4-22.3 185.1-18.7 267.3 34.6 5.5 3.6 11 8.1 11 18.1 0 11.6-8.7 18.5-19.4 18.5zm31-67.6c-6.5 0-11-2.9-15.5-5.5-85.1-50.5-201.2-56-291-32.4-7.4 2.3-14.9 3.2-19.4 3.2-13.6 0-22.6-11-22.6-23.6 0-14.2 7.7-20.7 17.8-23.9 104.2-28.5 233.5-22.3 331 34.6 7.4 4.2 14.5 9.7 14.5 21.3 0 14.2-10.6 26.3-24.8 26.3z"/>
+                   </svg> Spotify
+                </a>
+              }
+            </div>
+          </div>
+        </article>
 
-  } <button routerLink="/musical-archives" class="btn-archive">
-   {{ translate.isPt() ? '[ 📂 ACESSO AOS ARQUIVOS COMPLETOS ]' : '[ 📂 ACCESS_FULL_ARCHIVES ]' }}
- </button>
- </div>
+        @if ((i + 1) % 4 === 0 && !isLast) {
+          <div class="inter-list-ad">
+             <app-ad-banner></app-ad-banner>
+          </div>
+        }
+        @else if (!isLast) {
+          <hr class="separator hazard-line">
+        }
+      }
 
- <div class="artist-section jonah-theme">
-  <div class="section-header">
-    <i class="fas fa-exclamation-triangle icon-shake"></i>
-    <h2>{{ translate.isPt() ? 'REBELIÃO DE JONAH: CAOS' : 'JONAH\'S REBELLION: CHAOS' }}</h2>
-  </div>
-
-  @for (album of featuredJonah; track album; let i = $index; let isLast = $last) {
-    <article class="featured-album">
-      <div class="album-cover">
-        <img [ngSrc]="album.cover"
-        width="512" height="512"
-        sizes="(max-width: 768px) 100vw, 50vw"
-        loading="lazy" [alt]="album.title" class="glitch-effect">
-      </div>
-      <div class="album-content">
-          <div class="header">
-          <span class="release-type">{{ album.type }}</span>
-          <h3>{{ album.title }}</h3>
-        </div>
-        <p [innerHTML]="translate.isPt() ? album.descriptionPT : album.descriptionEN"></p>
-      <div class="actions-bar">
-          <a *ngIf="album.soundcloudUrl || album.soundcloud || album.embedLink"
-             [href]="album.soundcloudUrl ? album.soundcloudUrl : (album.soundcloud ? album.soundcloud : album.embedLink)"
-             target="_blank" class="btn-listen soundcloud-btn"(click)="trackSoundcloudClick(album.title)">
-             <svg class="cyber-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
-               <path d="M116.7 284c-3.1-41.2-34.9-74.1-73.4-74.1-23.8 0-45.3 11.8-59 30.6-2.6 3.6-4.9 7.4-6.8 11.5v120.7c0 8.8 7.2 16 16 16h123.2V284zm382.4-71.3c-23.4 0-44.5 8.7-60.6 23.3-12-29.3-39.6-50.6-72.4-53.5-31-2.8-58.9 13.9-72.8 40.5-8.2-5.7-18.1-9.1-28.7-9.1-24.8 0-45.6 17.5-51 40.9H135.5v134.4h363.6c51 0 92.4-41.4 92.4-92.4.1-51.1-41.3-92.5-92.4-92.5M158.4 227v161.7h13.1V210.4c-4.9 4.3-9.4 9.6-13.1 16.6zm31.3-43.2v204.9h13.1V171.1c-4.9 3.3-9.4 7.5-13.1 12.7zm31.3-20.7v225.6h13.1V151c-4.9 2.8-9.4 6.7-13.1 12.7zm31.3-10.6v236.2h13.1V140.7c-4.9 2.5-9.4 6-13.1 10.8z"/>
-             </svg> SoundCloud
-          </a>
-
-          <a *ngIf="album.spotifyUrl || album.spotify"
-             [href]="album.spotifyUrl ? album.spotifyUrl : album.spotify"
-             target="_blank" class="btn-listen spotify-btn" (click)="trackAlbumClick(album.title)">
-             <svg class="cyber-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512">
-               <path d="M248 8C111.1 8 0 119.1 0 256s111.1 248 248 248 248-111.1 248-248S384.9 8 248 8zm100.7 364.9c-4.2 0-6.8-1.3-10.7-3.6-62.4-37.6-135-39.2-206.7-24.5-3.9 1-9 2.6-11.9 2.6-9.7 0-15.8-7.7-15.8-15.8 0-10.3 6.1-15.2 13.6-16.8 81.9-18.1 165.6-16.5 237 26.2 6.1 3.9 9.7 7.4 9.7 16.5s-7.1 15.4-15.2 15.4zm26.9-65.6c-5.2 0-8.7-2.3-12.3-4.2-72.5-47-160.8-49.8-237.9-30.8-6.1 1.6-12.6 2.9-16.5 2.9-11 0-18.4-9-18.4-19.4s5.8-17.1 15.2-19.7c86.4-22.3 185.1-18.7 267.3 34.6 5.5 3.6 11 8.1 11 18.1 0 11.6-8.7 18.5-19.4 18.5zm31-67.6c-6.5 0-11-2.9-15.5-5.5-85.1-50.5-201.2-56-291-32.4-7.4 2.3-14.9 3.2-19.4 3.2-13.6 0-22.6-11-22.6-23.6 0-14.2 7.7-20.7 17.8-23.9 104.2-28.5 233.5-22.3 331 34.6 7.4 4.2 14.5 9.7 14.5 21.3 0 14.2-10.6 26.3-24.8 26.3z"/>
-             </svg> Spotify
-          </a>
-        </div>
-      </div>
-    </article>
-
-    @if ((i + 1) % 2 === 0 && !isLast) {
-      <div class="inter-list-ad">
-         <app-ad-banner></app-ad-banner>
-      </div>
-    }
-    @else if (!isLast) {
-      <hr class="separator hazard-line">
-    }
+      <a routerLink="/musical-archives" class="btn-archive hazard-border">
+        {{ translate.isPt() ? 'EXPOR MAIS DADOS (+)' : 'EXPOSE MORE DATA (+)' }}
+      </a>
+    </div>
   }
-
-  <a routerLink="/musical-archives" class="btn-archive hazard-border">
-    {{ translate.isPt() ? 'EXPOR MAIS DADOS (+)' : 'EXPOSE MORE DATA (+)' }}
-  </a>
- </div>
 </section>

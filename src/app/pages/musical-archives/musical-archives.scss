@@ -41,10 +41,6 @@
   box-shadow: 0 15px 40px rgba(0,0,0,0.6);
 }
 
-/* POR PADRÃO: Esconde o Jonah */
-.jonah-theme {
-  display: none;
-}
 
 /* --- CABEÇALHOS --- */
 .section-header {
@@ -100,12 +96,8 @@
 /* O SEGREDO: Só ativa se o body tiver .mode-jonah */
 :host-context(.mode-jonah) {
 
-  /* 1. Esconde o Broklin */
-  .broklin-theme { display: none; }
-
   /* 2. Mostra o Jonah */
   .jonah-theme {
-    display: block;
     animation: fadeInRough 0.5s ease-out;
 
     background: linear-gradient(135deg, rgba(20, 10, 0, 0.95) 0%, rgba(10, 10, 10, 0.9) 100%);
@@ -419,9 +411,9 @@ button {
       width: 25px !important;
       height: 25px !important;
       min-width: 25px; /* Trava absoluta contra colapso */
-      flex-shrink: 0; 
+      flex-shrink: 0;
       display: inline-block;
-      fill: currentColor !important; 
+      fill: currentColor !important;
 
       /* Força a tinta digital a penetrar no desenho */
       path {
@@ -430,9 +422,9 @@ button {
     }
    }
   }
-} 
+}
 
- 
+
 .embed-player {
   margin-bottom: 1rem;
 }
@@ -456,5 +448,3 @@ button {
   from { opacity: 0; transform: translateY(10px) skewX(-5deg); }
   to { opacity: 1; transform: translateY(0) skewX(0); }
 }
-
-

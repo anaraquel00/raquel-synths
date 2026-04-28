@@ -1,5 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, OnDestroy, inject, signal, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toObservable } from '@angular/core/rxjs-interop'; // 👈 Essencial
 import { SafeHtmlPipe } from "../../components/pipes/safe-html.pipe";
@@ -16,20 +16,33 @@ import { AdArticleComponent } from '../../components/ad-article/ad-article';
   templateUrl: './log-reader.html',
   styleUrl: './log-reader.scss',
 })
-export class LogReaderComponent implements OnInit {
+export class LogReaderComponent implements OnInit, OnDestroy {
 
   private route = inject(ActivatedRoute);
   public translate = inject(TranslationService);
   private contentService = inject(ContentService);
   private seoService = inject(SeoService);
+  private platformId = inject(PLATFORM_ID);
+  private document = inject(DOCUMENT);
 
   // 🛡️ A CORREÇÃO: toObservable deve ser inicializado aqui, no topo da classe!
   private isPt$ = toObservable(this.translate.isPt);
 
   logData$!: Observable<any>;
+  isJonahMode = signal<boolean>(false);
+  private themeObserver: MutationObserver | null = null;
 
   ngOnInit() {
-    // 🛰️ Captura o ID da URL de forma reativa
+    // 🛡️ MOTOR DE ESTADO (BLINDAGEM SSR CONTRA CLOAKING)
+    if (isPlatformBrowser(this.platformId)) {
+      this.isJonahMode.set(this.document.body.classList.contains('mode-jonah'));
+      this.themeObserver = new MutationObserver(() => {
+        this.isJonahMode.set(this.document.body.classList.contains('mode-jonah'));
+      });
+      this.themeObserver.observe(this.document.body, { attributes: true, attributeFilter: ['class'] });
+    }
+
+    // �️ Captura o ID da URL de forma reativa
     const id$ = this.route.paramMap.pipe(map(params => params.get('id')));
 
     // 🛰️ COMBINAÇÃO TÁTICA
@@ -95,5 +108,9 @@ export class LogReaderComponent implements OnInit {
         );
       })
     );
+  }
+
+  ngOnDestroy() {
+    if (this.themeObserver) this.themeObserver.disconnect();
   }
 }

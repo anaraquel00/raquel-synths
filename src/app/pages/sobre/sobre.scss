@@ -23,15 +23,11 @@
     letter-spacing: 1.5px;
     color: rgba(0, 255, 204, 0.7); /* Mantém o nosso Neon Cyan da Blue Team, mas esmaecido para leitura */
     border-left: 2px solid #00ffcc; /* Barra de sistema lateral para ancorar o texto */
-    padding-left: 28px; 
+    padding-left: 28px;
     font-size: 1.2rem;
     margin-bottom: 2rem;
     margin-top: -1rem;
   }
-
-.manifesto_jonah {
-  display: none;
-}
 
 .manifesto-text {
   max-width: 1200px;
@@ -132,28 +128,25 @@
 }
 
 /* --- A MOLDURA DA FOTO --- */
-/* --- A MOLDURA DA FOTO --- */
 .image-frame {
-  width: 180px; 
+  width: 180px;
   flex-shrink: 0;
-  
+
   /* 🛡️ A ÂNCORA DO FILL: Isso é obrigatório. Segura a imagem dentro da caixa. */
-  position: relative; 
+  position: relative;
   overflow: hidden;
   border-right: 1px solid rgba(255,255,255,0.1);
 
   img {
     /* O Angular agora cuida da largura, altura e posição absoluta via hardware. */
     /* Nós só dizemos como a pintura deve se comportar: */
-    object-fit: cover; 
+    object-fit: cover;
     /* 🛡️ AJUSTE DE ENQUADRAMENTO: Foca no Topo da imagem (no rosto) */
     object-position: top center; // (Ou 50% 0%)
     transition: transform 0.5s ease, opacity 0.5s ease;
   }
 
   /* Lógica Padrão mantida intacta */
-  .img-broklin { opacity: 1; z-index: 2; }
-  .img-jonah { opacity: 0; z-index: 1; }
 }
 
 /* Hover no Card (Apenas Zoom na foto atual, sem trocar!) */
@@ -204,8 +197,6 @@
   }
 
   /* Esconde o texto do Jonah por padrão */
-  .jonah-text { display: none; }
-  .normal-text { display: block; animation: fadeIn 0.5s ease; }
 }
 
 @keyframes fadeIn {
@@ -217,13 +208,13 @@
 :host-context(.mode-jonah) {
   .section-subtitle {
     //estilo do texto mais agressivo e caótico para o modo Jonah
-    border-left: 2px solid #ff5722; 
+    border-left: 2px solid #ff5722;
     font-family: 'Courier New', monospace;
     color: #ff5722; /* Laranja intenso para o modo Jonah */
     font-style: normal;
     text-shadow: 0 0 5px #ff5722;
   }
-  
+
   .manifesto_jonah {
     display: block;
     font-family: 'Courier New', monospace;
@@ -236,8 +227,6 @@
   }
 
   .manifesto-text {
-    /* 2. Adicione a trava de segurança !important */
-    display: none !important; 
   }
 
    .member-card {
@@ -247,9 +236,6 @@
   }
 
   .image-frame {
-    /* AGORA SIM: Troca as fotos fixamente */
-    .img-jonah { opacity: 1; z-index: 3; }
-    .img-broklin { opacity: 0; }
 
     img { filter: contrast(1.2) hue-rotate(-10deg); }
   }
@@ -269,9 +255,7 @@
     .role { color: #ffab91; border-color: #bf360c; }
 
     /* Troca os textos */
-    .normal-text { display: none; }
     .jonah-text {
-      display: block;
       color: #ff5722;
       font-family: 'Courier New', monospace;
       font-weight: bold;
