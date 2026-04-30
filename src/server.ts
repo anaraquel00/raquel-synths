@@ -15,7 +15,7 @@ const angularApp = new AngularNodeAppEngine();
 // =====================================================================
 // 🛰️ [ MÓDULO GOD-TIER ]: GERADOR DE SITEMAP DINÂMICO (BLUE TEAM ONLY)
 // =====================================================================
-app.get('/dynamic-sitemap', async (req, res) => {
+app.get(['/sitemap.xml', '/dynamic-sitemap'], async (req, res) => {
   res.header('Content-Type', 'application/xml');
 
   // 🛡️ BLINDAGEM DE PERFORMANCE (Vercel Edge Network)
