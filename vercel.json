@@ -1,49 +1,24 @@
 {
+  "version": 2,
+  "public": true,
+  "cleanUrls": true,
   "redirects": [
+    { "source": "/spotify", "destination": "/?utm_source=spotify&utm_medium=audio_stream&utm_campaign=link_bio", "permanent": false },
+    { "source": "/soundcloud", "destination": "/?utm_source=soundcloud&utm_medium=audio_stream&utm_campaign=link_bio", "permanent": false },
+    { "source": "/instagram", "destination": "/?utm_source=instagram&utm_medium=organic_social&utm_campaign=link_bio", "permanent": false },
+    { "source": "/youtube", "destination": "/?utm_source=youtube&utm_medium=organic_video&utm_campaign=descricao", "permanent": false },
+    { "source": "/facebook", "destination": "/?utm_source=facebook&utm_medium=organic_social&utm_campaign=link_bio", "permanent": false },
+    { "source": "/linkedin", "destination": "/?utm_source=linkedin&utm_medium=organic_social&utm_campaign=link_bio", "permanent": false },
+    { "source": "/x", "destination": "/?utm_source=x&utm_medium=organic_social&utm_campaign=link_bio", "permanent": false },
+    { "source": "/tiktok", "destination": "/?utm_source=tiktok&utm_medium=organic_social&utm_campaign=link_bio", "permanent": false },
+    { "source": "/reddit", "destination": "/?utm_source=reddit&utm_medium=organic_social&utm_campaign=link_bio", "permanent": false }
+  ],
+
+  "rewrites": [
     {
-      "source": "/spotify",
-      "destination": "/?utm_source=spotify&utm_medium=audio_stream&utm_campaign=link_bio",
-      "permanent": false
-    },
-    {
-      "source": "/soundcloud",
-      "destination": "/?utm_source=soundcloud&utm_medium=audio_stream&utm_campaign=link_bio",
-      "permanent": false
-    },
-    {
-      "source": "/facebook",
-      "destination": "/?utm_source=facebook&utm_medium=organic_social&utm_campaign=link_bio",
-      "permanent": false
-    },
-    {
-      "source": "/linkedin",
-      "destination": "/?utm_source=linkedin&utm_medium=organic_social&utm_campaign=link_bio",
-      "permanent": false
-    },
-    {
-      "source": "/x",
-      "destination": "/?utm_source=x&utm_medium=organic_social&utm_campaign=link_bio",
-      "permanent": false
-    },
-    {
-      "source": "/instagram",
-      "destination": "/?utm_source=instagram&utm_medium=organic_social&utm_campaign=link_bio",
-      "permanent": false
-    },
-    {
-      "source": "/tiktok",
-      "destination": "/?utm_source=tiktok&utm_medium=organic_social&utm_campaign=link_bio",
-      "permanent": false
-    },
-    {
-      "source": "/youtube",
-      "destination": "/?utm_source=youtube&utm_medium=organic_video&utm_campaign=descricao",
-      "permanent": false
-    },
-    {
-      "source": "/reddit",
-      "destination": "/?utm_source=reddit&utm_medium=organic_social&utm_campaign=link_bio",
-      "permanent": false
+      "source": "/(.*)",
+      "destination": "/api/index"
     }
   ]
 }
+
