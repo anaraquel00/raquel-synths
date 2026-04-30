@@ -1,13 +1,13 @@
 /* src/app/components/ad-article/ad-article.ts */
-import { Component, AfterViewInit, Inject, PLATFORM_ID, Input, afterNextRender } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, Inject, PLATFORM_ID, Input, afterNextRender, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-ad-article', // <--- Nome novo para usar no meio do texto
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="ad-native-container" *ngIf="isBrowser">
+    <div class="ad-native-container" *ngIf="isBrowser()">
       <div class="system-label">/// SUGGESTED_DATA_STREAM ///</div>
 
       <ins class="adsbygoogle"
@@ -45,18 +45,21 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 })
 export class AdArticleComponent {
   @Input() adSlot: string = '6867170250'; // Para poder mudar se criar outro
-  isBrowser = false;
+  isBrowser = signal(false);
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
-    this.isBrowser = isPlatformBrowser(this.platformId);
-
     // 🛡️ MOTOR DE RENDERIZAÇÃO ANGULAR 17+: afterNextRender roda SOMENTE no navegador
     // após o DOM estar pronto. Elimina os hacks de setTimeout e o ngAfterViewInit.
     afterNextRender(() => {
+      this.isBrowser.set(true); // Libera o HTML do banner apenas pós-hidratação
+
+      // 🛡️ TRAVA TÁTICA: Aguarda o Angular atualizar o DOM real com a tag <ins>
+      setTimeout(() => {
         try {
           (window as any).adsbygoogle = (window as any).adsbygoogle || [];
           (window as any).adsbygoogle.push({});
-        } catch (e) { console.error('AdArticle Error:', e); }
+        } catch (e) { /* 🛡️ Silenciado: Falso positivo do AdSense em SPAs ignorado */ }
+      }, 100);
     });
   }
 }

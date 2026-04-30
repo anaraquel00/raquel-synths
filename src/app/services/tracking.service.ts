@@ -1,4 +1,4 @@
-import { Injectable, PLATFORM_ID, inject } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject, afterNextRender, Injector } from '@angular/core';
 import { isPlatformBrowser, DOCUMENT } from '@angular/common';
 
 @Injectable({
@@ -8,6 +8,7 @@ export class TrackingService {
 
   private platformId = inject(PLATFORM_ID);
   private document = inject(DOCUMENT);
+  private injector = inject(Injector);
   private scriptsLoaded = false;
 
   trackAffiliateClick(productName: string, platform: string) {
@@ -31,43 +32,45 @@ export class TrackingService {
     // Aborta se estiver a correr no servidor (SSR) ou se já estiver carregado
     if (!isPlatformBrowser(this.platformId) || this.scriptsLoaded) return;
 
+    // 🛡️ TRAVA TÁTICA: Move a inicialização do rastreamento para pós-hidratação
+    afterNextRender(() => {
+      const loadScripts = () => {
+        if (this.scriptsLoaded) return;
+        const win = this.document.defaultView as any;
+        if (!win) return;
 
-    const loadScripts = () => {
-      if (this.scriptsLoaded) return;
+        // Injeta o Google Tag Manager silenciosamente
+        const script = this.document.createElement('script');
+        script.src = `https://www.googletagmanager.com/gtag/js?id=${gtmId}`;
+        script.async = true;
+        this.document.head.appendChild(script);
+
+        // Inicializa o DataLayer
+        const scriptInline = this.document.createElement('script');
+        scriptInline.innerHTML = `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', '${gtmId}');
+        `;
+        this.document.head.appendChild(scriptInline);
+
+        this.scriptsLoaded = true;
+        console.log('🛡️ [Tracking Service] GTM/Analytics injetados com sucesso após interação.');
+
+        // Desliga os radares para não consumir RAM do telemóvel
+        ['scroll', 'mousemove', 'touchstart', 'keydown'].forEach(event =>
+          win.removeEventListener(event, loadScripts)
+        );
+      };
+
       const win = this.document.defaultView as any;
       if (!win) return;
-
-      // Injeta o Google Tag Manager silenciosamente
-      const script = this.document.createElement('script');
-      script.src = `https://www.googletagmanager.com/gtag/js?id=${gtmId}`;
-      script.async = true;
-      this.document.head.appendChild(script);
-
-      // Inicializa o DataLayer
-      const scriptInline = this.document.createElement('script');
-      scriptInline.innerHTML = `
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', '${gtmId}');
-      `;
-      this.document.head.appendChild(scriptInline);
-
-      this.scriptsLoaded = true;
-      console.log('🛡️ [Tracking Service] GTM/Analytics injetados com sucesso após interação.');
-
-      // Desliga os radares para não consumir RAM do telemóvel
+      // Fica à espreita do primeiro toque ou scroll no ecrã
       ['scroll', 'mousemove', 'touchstart', 'keydown'].forEach(event =>
-        win.removeEventListener(event, loadScripts)
+        win.addEventListener(event, loadScripts, { once: true, passive: true })
       );
-    };
-
-    const win = this.document.defaultView as any;
-    if (!win) return;
-    // Fica à espreita do primeiro toque ou scroll no ecrã
-    ['scroll', 'mousemove', 'touchstart', 'keydown'].forEach(event =>
-      win.addEventListener(event, loadScripts, { once: true, passive: true })
-    );
+    }, { injector: this.injector });
   }
   /**
    * Dispara um evento personalizado para o painel do Google Analytics

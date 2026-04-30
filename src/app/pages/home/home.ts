@@ -28,7 +28,12 @@ export class Home implements OnInit, OnDestroy {
       this.document.body.classList.toggle('mode-jonah');
 
       // Atualiza a nossa variável de controle instantaneamente
-      this.isJonahMode.set(this.document.body.classList.contains('mode-jonah'));
+      const isJonah = this.document.body.classList.contains('mode-jonah');
+      this.isJonahMode.set(isJonah);
+
+      // 🛡️ Sincroniza com o ecossistema global e persiste a escolha
+      localStorage.setItem('rqs-theme', isJonah ? 'jonah' : 'broklin');
+      this.document.defaultView?.dispatchEvent(new CustomEvent('theme-changed'));
 
       // O log do console atualizado
       if (this.isJonahMode()) {
@@ -108,15 +113,12 @@ currentLanguage: any;
     effect(() => {
       this.updateContent();
     });
-  }
 
-  ngOnInit() {
-    if (isPlatformBrowser(this.platformId)) {
+    // 🛡️ TRAVA TÁTICA: O Observer e a leitura do DOM iniciam APENAS após a hidratação (DOM Estável)
+    afterNextRender(() => {
       this.isJonahMode.set(this.document.body.classList.contains('mode-jonah'));
-    }
+      this.updateContent(); // 🛡️ Sincroniza os textos (Broklin/Jonah) com segurança
 
-     // 👇 2. O VIGIA DO BODY (SEU CÓDIGO)
-    if (isPlatformBrowser(this.platformId)) {
       this.themeObserver = new MutationObserver(() => {
         this.isJonahMode.set(this.document.body.classList.contains('mode-jonah')); // Sincroniza o sinal com o DOM
         this.updateContent();
@@ -126,8 +128,10 @@ currentLanguage: any;
         attributes: true,
         attributeFilter: ['class']
       });
-    }
+    });
+  }
 
+  ngOnInit() {
     // Inicializa conteúdo
     this.updateContent();
   }

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal, afterNextRender } from '@angular/core';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { RouterLink, RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -42,16 +42,18 @@ export class MusicalArchives implements OnInit, OnDestroy {
   introPT: any;
   isLast: any;
 
-
-  ngOnInit() {
-    // 🛡️ MOTOR DE ESTADO E PREVENÇÃO DE CLOAKING (SSR SAFE)
-    if (isPlatformBrowser(this.platformId)) {
+  constructor() {
+    // 🛡️ TRAVA TÁTICA: O Observer e a leitura do DOM nascem apenas pós-hidratação
+    afterNextRender(() => {
       this.isJonahMode.set(this.document.body.classList.contains('mode-jonah'));
       this.themeObserver = new MutationObserver(() => {
         this.isJonahMode.set(this.document.body.classList.contains('mode-jonah'));
       });
       this.themeObserver.observe(this.document.body, { attributes: true, attributeFilter: ['class'] });
-    }
+    });
+  }
+
+  ngOnInit() {
 
     this.getArchives();
     // 🔥 BLINDAGEM SEO: O terminal agora rastreia a URL

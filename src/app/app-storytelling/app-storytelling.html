@@ -37,7 +37,7 @@
                 <h3 class="title">{{ content?.title }}</h3>
               </div>
 
-              <p class="description-lead" [innerHTML]="content.description | safeHtml"></p>
+              <div class="description-lead" [innerHTML]="content.description | safeHtml"></div>
 
               @if (!event.isArchiveLink) {
                 <div class="action-area" style="margin-top: 15px;">

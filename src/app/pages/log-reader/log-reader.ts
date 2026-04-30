@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, signal, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, PLATFORM_ID, afterNextRender } from '@angular/core';
 import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toObservable } from '@angular/core/rxjs-interop'; // 👈 Essencial
@@ -32,16 +32,18 @@ export class LogReaderComponent implements OnInit, OnDestroy {
   isJonahMode = signal<boolean>(false);
   private themeObserver: MutationObserver | null = null;
 
-  ngOnInit() {
-    // 🛡️ MOTOR DE ESTADO (BLINDAGEM SSR CONTRA CLOAKING)
-    if (isPlatformBrowser(this.platformId)) {
+  constructor() {
+    // 🛡️ TRAVA TÁTICA: O Observer e a leitura do DOM nascem apenas pós-hidratação
+    afterNextRender(() => {
       this.isJonahMode.set(this.document.body.classList.contains('mode-jonah'));
       this.themeObserver = new MutationObserver(() => {
         this.isJonahMode.set(this.document.body.classList.contains('mode-jonah'));
       });
       this.themeObserver.observe(this.document.body, { attributes: true, attributeFilter: ['class'] });
-    }
+    });
+  }
 
+  ngOnInit() {
     // �️ Captura o ID da URL de forma reativa
     const id$ = this.route.paramMap.pipe(map(params => params.get('id')));
 

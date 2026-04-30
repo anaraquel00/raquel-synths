@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy, Inject, PLATFORM_ID, signal } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, Inject, PLATFORM_ID, signal, afterNextRender } from '@angular/core';
 import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ContentService } from '../../services/content.service';
@@ -61,10 +61,9 @@ export class VisualNovelComponent implements OnInit, OnDestroy {
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     this.isBrowser = isPlatformBrowser(this.platformId);
-  }
 
-  ngOnInit() {
-    if (this.isBrowser) {
+    // 🛡️ TRAVA TÁTICA: O Observer e a leitura do DOM nascem apenas pós-hidratação
+    afterNextRender(() => {
       this.checkTheme();
 
       this.themeObserver = new MutationObserver(() => {
@@ -75,8 +74,10 @@ export class VisualNovelComponent implements OnInit, OnDestroy {
         attributes: true,
         attributeFilter: ['class']
       });
-    }
+    });
   }
+
+  ngOnInit() {}
 
   ngOnDestroy() {
     if (this.themeObserver) this.themeObserver.disconnect();

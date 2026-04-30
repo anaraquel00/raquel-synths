@@ -1,4 +1,4 @@
-import { Component, Inject, inject, PLATFORM_ID, signal, OnInit, OnDestroy } from '@angular/core';
+import { Component, Inject, inject, PLATFORM_ID, signal, OnInit, OnDestroy, afterNextRender } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,17 +28,19 @@ export class Header implements OnInit, OnDestroy {
     @Inject(DOCUMENT) private document: Document,
     public translate: TranslationService, // ← SERVIÇO CORRETO INJETADO
     private router: Router
-  ) {}
-
-  ngOnInit() {
-    // 🛡️ PROTEÇÃO SSR: O rastreador Googlebot nãofaz loop infinito no servidor
-    if (isPlatformBrowser(this.platformId)) {
+  ) {
+    // 🛡️ TRAVA TÁTICA: Sincroniza o estado do tema apenas após a hidratação (DOM Estável)
+    afterNextRender(() => {
       this.isJonahMode.set(this.document.body.classList.contains('mode-jonah'));
       this.themeObserver = new MutationObserver(() => {
         this.isJonahMode.set(this.document.body.classList.contains('mode-jonah'));
       });
       this.themeObserver.observe(this.document.body, { attributes: true, attributeFilter: ['class'] });
-    }
+    });
+  }
+
+  ngOnInit() {
+    // Removido - Movido para afterNextRender no construtor para proteção de Hidratação
   }
 
   ngOnDestroy() {
@@ -83,6 +85,10 @@ export class Header implements OnInit, OnDestroy {
       this.document.body.classList.remove('mode-jonah');
       this.document.body.classList.add('mode-broklin');
       this.isJonahMode.set(false);
+
+      // 🛡️ Mantém a consistência global e avisa o resto da matriz
+      localStorage.setItem('rqs-theme', 'broklin');
+      this.document.defaultView?.dispatchEvent(new CustomEvent('theme-changed'));
     }
   }
 
@@ -91,6 +97,10 @@ export class Header implements OnInit, OnDestroy {
       this.document.body.classList.remove('mode-broklin');
       this.document.body.classList.add('mode-jonah');
       this.isJonahMode.set(true);
+
+      // 🛡️ Mantém a consistência global e avisa o resto da matriz
+      localStorage.setItem('rqs-theme', 'jonah');
+      this.document.defaultView?.dispatchEvent(new CustomEvent('theme-changed'));
     }
   }
 }

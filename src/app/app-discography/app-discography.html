@@ -4,11 +4,11 @@
   <div class="disco-intro">
 
     @if (!isJonahMode()) {
-      <p class="intro-text broklin-text" [innerHTML]="translate.isPt() ? introBroklinPT : introBroklinEN"></p>
+      <div class="intro-text broklin-text" [innerHTML]="translate.isPt() ? introBroklinPT : introBroklinEN"></div>
     }
 
     @if (isJonahMode()) {
-      <p class="intro-text jonah-text" [innerHTML]="translate.isPt() ? introJonahPT : introJonahEN"></p>
+      <div class="intro-text jonah-text" [innerHTML]="translate.isPt() ? introJonahPT : introJonahEN"></div>
     }
 
     <app-last-releases [lang]="translate.isPt() ? 'pt' : 'en'"></app-last-releases>
@@ -77,7 +77,7 @@
               <span class="release-type">{{ album.type }}</span>
               <h3>{{ album.title }}</h3>
             </div>
-            <p [innerHTML]="translate.isPt() ? album.descriptionPT : album.descriptionEN"></p>
+            <div class="album-description" [innerHTML]="translate.isPt() ? album.descriptionPT : album.descriptionEN"></div>
             <div class="actions-bar">
               @if (album.soundcloudUrl || album.soundcloud || album.embedLink) {
                 <a [href]="album.soundcloudUrl ? album.soundcloudUrl : (album.soundcloud ? album.soundcloud : album.embedLink)"
@@ -135,7 +135,7 @@
               <span class="release-type">{{ album.type }}</span>
               <h3>{{ album.title }}</h3>
             </div>
-            <p [innerHTML]="translate.isPt() ? album.descriptionPT : album.descriptionEN"></p>
+            <div class="album-description" [innerHTML]="translate.isPt() ? album.descriptionPT : album.descriptionEN"></div>
           <div class="actions-bar">
               @if (album.soundcloudUrl || album.soundcloud || album.embedLink) {
     <a [href]="album.soundcloudUrl ? album.soundcloudUrl : (album.soundcloud ? album.soundcloud : album.embedLink)"

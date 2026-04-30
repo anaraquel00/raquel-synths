@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, computed, HostListener, inject, Input, OnInit, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, HostListener, inject, Input, OnInit, signal, afterNextRender } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -88,23 +88,33 @@ get limitToHome(): number {
   // 1. Criamos um signal privado que guarda o estado
 private _modeSignal = signal<'broklin' | 'jonah'>('broklin');
 
+  constructor() {
+    // 🛡️ TRAVA TÁTICA: Sincroniza o estado do tema apenas após a hidratação ser concluída
+    afterNextRender(() => {
+      const isJonah = document.body.classList.contains('mode-jonah');
+      this._modeSignal.set(isJonah ? 'jonah' : 'broklin');
+    });
+  }
+
 isJonahMode(): boolean {
-    // Proteção SSR (Server-Side Rendering) para não quebrar o servidor do Google
-    if (isPlatformBrowser(this.platformId)) {
-      return document.body.classList.contains('mode-jonah');
-    }
-    return false; // Valor seguro para os bots de rastreio
+    // Retorna o valor do signal. No SSR e hidratação inicial, será sempre 'broklin', evitando Mismatch.
+    return this._modeSignal() === 'jonah';
   }
 
 @HostListener('window:theme-changed')
 onThemeChange() {
+  if (isPlatformBrowser(this.platformId)) {
+    const isJonah = document.body.classList.contains('mode-jonah');
+    this._modeSignal.set(isJonah ? 'jonah' : 'broklin');
+  }
   this.cdr.detectChanges(); // Força o redesenho físico
 }
 
   ngOnInit() {
-    if (isPlatformBrowser(this.platformId)) {
-      document.body.classList.add('mode-broklin'); // Começa no modo Broklin por padrão
-    }
+    // 🛡️ BLINDAGEM: Removido o código que forçava a classe 'mode-broklin' no ngOnInit.
+    // O script inline no index.html já cuida do tema baseado no localStorage.
+    // Forçar aqui destruía a preferência do usuário e gerava flash de estilo.
+
     this.getDiscography();
   }
 

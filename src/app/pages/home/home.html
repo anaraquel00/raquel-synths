@@ -63,7 +63,7 @@
   </div>
 
   @if (showUplink) {
-    <app-uplink-terminal (close)="closeUplink()"></app-uplink-terminal>
+    <app-uplink-terminal ngSkipHydration (close)="closeUplink()"></app-uplink-terminal>
   }
 
 </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, Inject, PLATFORM_ID, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, Inject, PLATFORM_ID, signal, afterNextRender } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslationService } from '../../services/translation.service';
@@ -38,10 +38,9 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     this.isBrowser = isPlatformBrowser(this.platformId);
-  }
 
-  ngOnInit() {
-    if (this.isBrowser) {
+    // 🛡️ TRAVA TÁTICA: Move a verificação de tema e o observer para após a hidratação
+    afterNextRender(() => {
       this.checkTheme();
 
       this.themeObserver = new MutationObserver(() => {
@@ -49,8 +48,10 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
         // A reatividade lida com a mudança de modo automaticamente!
       });
       this.themeObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
-    }
+    });
+  }
 
+  ngOnInit() {
     // 🛰️ CAPTURA O ID DA URL
     const id$ = this.route.paramMap.pipe(map(params => params.get('id')));
 

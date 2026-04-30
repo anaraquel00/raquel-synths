@@ -4,10 +4,10 @@
 
       <header class="log-header">
         <span class="date">{{ data.date | date:'MMM dd, yyyy' | uppercase }}</span>
-        <h1 class="title"[innerHTML]="data.title | safeHtml"></h1>
+        <h1 class="title" [innerHTML]="data.title | safeHtml"></h1>
       </header>
 
-      <p class="description-lead" [innerHTML]="data.description | safeHtml"></p>
+      <div class="description-lead" [innerHTML]="data.description | safeHtml"></div>
 
       <div class="ad-module">
         <app-ad-article></app-ad-article>
@@ -23,7 +23,7 @@
       @if (data.jonahComment && isJonahMode()) {
         <div class="jonah-note">
           <strong>[JONAH_OVERRIDE]:</strong>
-          <span [innerHTML]="data.jonahComment | safeHtml"></span>
+          <div [innerHTML]="data.jonahComment | safeHtml"></div>
         </div>
       }
 

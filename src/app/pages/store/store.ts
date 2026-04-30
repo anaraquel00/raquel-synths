@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit, signal, ChangeDetectorRef, Inject, PLATFORM_ID, DOCUMENT } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal, ChangeDetectorRef, Inject, PLATFORM_ID, DOCUMENT, afterNextRender } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import Swal from 'sweetalert2';
@@ -54,6 +54,12 @@ selectedDepartmentData: any;
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     this.isBrowser = isPlatformBrowser(this.platformId);
+
+    // 🛡️ TRAVA TÁTICA: A checagem do modo Jonah e o observer só iniciam pós-hidratação
+    afterNextRender(() => {
+      this.checkCurrentMode();
+      this.setupThemeObserver();
+    });
   }
   isBrowser: boolean;
 
@@ -96,9 +102,7 @@ selectedDepartmentData: any;
 
 ngOnInit(): void {
     this.currentLang.set(this.translate.isPt() ? 'pt' : 'en');
-    this.checkCurrentMode();
     this.loadData();
-    this.setupThemeObserver();
 
     // 👇 OUVINTE DE URL (A Mágica do Deep Link com Query Params)
     this.route.queryParams.subscribe(params => {

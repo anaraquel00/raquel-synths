@@ -18,7 +18,7 @@
         <article class="blog-post">
           <div class="post-header">
             <span class="post-date">{{ log.date | date:'MMM dd, yyyy' | uppercase }}</span>
-            <h2 class="post-title"[innerHTML]=" content?.title "></h2>
+            <h2 class="post-title" [innerHTML]=" content?.title "></h2>
           </div>
 
           <div class="post-body">
@@ -31,7 +31,7 @@
             }
 
            <div class="post-content-wrapper">
-              <p class="post-text" [innerHTML]="content?.description"></p>
+              <div class="post-text" [innerHTML]="content?.description"></div>
 
               <div class="action-area" style="margin-top: 20px;">
                 <a [routerLink]="['/log-reader', log.id]" class="btn-decrypt">

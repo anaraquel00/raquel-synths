@@ -1,4 +1,4 @@
-import { Component, inject, PLATFORM_ID, signal, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, PLATFORM_ID, signal, OnInit, OnDestroy, afterNextRender } from '@angular/core';
 import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
@@ -28,6 +28,22 @@ export class StorytellingComponent implements OnInit, OnDestroy {
   public isJonahMode = signal<boolean>(false);
   private themeObserver: MutationObserver | undefined;
 
+  constructor() {
+    // 🛡️ TRAVA TÁTICA: Sincroniza o estado do tema e inicializa o observador apenas após a hidratação (DOM Estável)
+    afterNextRender(() => {
+      this.isJonahMode.set(this.document.body.classList.contains('mode-jonah'));
+
+      this.themeObserver = new MutationObserver(() => {
+        this.isJonahMode.set(this.document.body.classList.contains('mode-jonah'));
+      });
+
+      this.themeObserver.observe(this.document.body, {
+        attributes: true,
+        attributeFilter: ['class']
+      });
+    });
+  }
+
 // 🔥 HOME: Corta os 4 primeiros e não liga pro ano!
   logs$: Observable<any[]> = this.contentService.getLogs().pipe(
     map(logs => {
@@ -56,19 +72,8 @@ export class StorytellingComponent implements OnInit, OnDestroy {
   );
 
   ngOnInit() {
-    // Prevenção blindada contra quebra de Hidratação SSR
-    if (isPlatformBrowser(this.platformId)) {
-      this.isJonahMode.set(this.document.body.classList.contains('mode-jonah'));
-
-      this.themeObserver = new MutationObserver(() => {
-        this.isJonahMode.set(this.document.body.classList.contains('mode-jonah'));
-      });
-
-      this.themeObserver.observe(this.document.body, {
-        attributes: true,
-        attributeFilter: ['class']
-      });
-    }
+    // Removida a verificação síncrona do DOM no OnInit.
+    // Deixamos a inicialização exclusiva para o fluxo assíncrono do Firebase (logs$).
   }
 
   ngOnDestroy() {

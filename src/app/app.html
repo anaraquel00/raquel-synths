@@ -7,7 +7,7 @@
 <app-ad-banner></app-ad-banner>
 <app-footer></app-footer>
 
-@if (!cookiesAccepted) {
+@if (!cookiesAccepted()) {
   <div class="cookie-banner fade-in-up">
     <div class="cookie-content">
       <span class="cookie-icon">🍪</span>
@@ -26,7 +26,3 @@
     </button>
   </div>
 }
-
-
-
-

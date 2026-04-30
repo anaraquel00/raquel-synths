@@ -76,7 +76,7 @@
   margin-bottom: 1rem;
 
   /* 1. O parágrafo de introdução continua ocupando a linha inteira no topo */
-  p {
+  p, .intro-text {
     width: 100%;
     margin-bottom: 1rem;
   }

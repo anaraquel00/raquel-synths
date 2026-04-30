@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, PLATFORM_ID, effect, Renderer2 } from '@angular/core';
+import { Component, inject, OnInit, PLATFORM_ID, effect, Renderer2, signal, afterNextRender } from '@angular/core';
 import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
 
 // 🛡️ IMPORTAÇÕES DA ENGENHARIA DE ROTEAMENTO:
@@ -46,7 +46,7 @@ export class App implements OnInit {
   // 🛡️ INJEÇÃO DO PLATAFORM ID (Necessário para não quebrar o SSR)
   private platformId = inject(PLATFORM_ID);
 
-  cookiesAccepted!: boolean;
+  cookiesAccepted = signal(false);
 
   constructor(
     private adSenseService: AdSenseService,
@@ -64,22 +64,36 @@ export class App implements OnInit {
       // Injeta diretamente na tag <html>
       this.renderer.setAttribute(this.document.documentElement, 'lang', langAttribute);
     });
+
+    // 🛡️ TRAVA TÁTICA: Lógicas que leem o DOM/Storage do cliente são movidas para pós-hidratação.
+    afterNextRender(() => {
+      // 1. --- LÓGICA DE COOKIES ---
+      const win = this.document.defaultView as any;
+      if (win && win.localStorage) {
+        const consent = win.localStorage.getItem('rqs_cookies_consent') === 'true';
+        this.cookiesAccepted.set(consent);
+      }
+
+      // 2. --- PROTOCOLO DE IDIOMA ---
+      this.iniciarProtocoloDeIdioma();
+
+      // 3. --- LEITURA DE PARÂMETRO DE URL (OVERRIDE DE TEMA) ---
+      if (win) {
+        const params = new URLSearchParams(win.location.search);
+        const modeNaURL = params.get('mode');
+        if (modeNaURL === 'jonah') {
+          this.aplicarModo('jonah');
+        }
+        // Removido o 'else' que forçava o modo Broklin, respeitando o localStorage.
+      }
+    });
   }
 
 ngOnInit() {
-    // 1. --- LÓGICA DE COOKIES (Seguro, pois tem verificação de window) ---
-    if (isPlatformBrowser(this.platformId)) {
-      const win = this.document.defaultView as any;
-      if (win && win.localStorage) {
-        this.cookiesAccepted = win.localStorage.getItem('rqs_cookies_consent') === 'true';
-      }
-    }
-
     // 2. --- 🚀 PROTOCOLO DE RASTREAMENTO E IDIOMA (O Cofre do Navegador) ---
     // 🛡️ TUDO o que for de Google Analytics, AdSense ou Idioma DEVE ficar aqui dentro!
     if (isPlatformBrowser(this.platformId)) {
-
-      this.iniciarProtocoloDeIdioma();
+      // A inicialização do idioma foi movida para afterNextRender para evitar Hydration Mismatch.
 
       // Inicia o AdSense em segurança
       const meuAdSenseId = 'ca-pub-5619990751602183';
@@ -89,20 +103,6 @@ ngOnInit() {
       const meuGtmId = 'G-Z1TSQ0NV6T';
       this.trackingService.initLazyTracking(meuGtmId);
 
-    }
-
-    // 3. --- LEITURA BRUTA DA URL ---
-    if (isPlatformBrowser(this.platformId)) {
-      const win = this.document.defaultView as any;
-      if (win) {
-        const params = new URLSearchParams(win.location.search);
-        const modeNaURL = params.get('mode');
-        if (modeNaURL === 'jonah') {
-          this.aplicarModo('jonah');
-        } else {
-          this.aplicarModo('broklin');
-        }
-      }
     }
 
     // 4. --- INTERCEPTADOR GLOBAL DE SEO ---
@@ -144,7 +144,7 @@ ngOnInit() {
   }
 
   acceptCookies() {
-    this.cookiesAccepted = true;
+    this.cookiesAccepted.set(true);
     if (isPlatformBrowser(this.platformId)) {
       const win = this.document.defaultView as any;
       if (win && win.localStorage) {

@@ -1,5 +1,5 @@
-import { Component, Inject, PLATFORM_ID, afterNextRender } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, Inject, PLATFORM_ID, afterNextRender, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { TranslationService } from '../../services/translation.service';
 import { ADS_DATA } from '../../data/app-data';
 
@@ -8,10 +8,10 @@ import { ADS_DATA } from '../../data/app-data';
   standalone: true,
   imports: [CommonModule],
   template: `
-    @if (isBrowser) {
+    @if (isBrowser()) {
       <div class="ad-container">
       <div class="ad-label">{{ t.label }}</div>
-      @if (!isMobile) {
+      @if (!isMobile()) {
         <ins class="adsbygoogle"
              style="display:inline-block;width:728px;height:90px"
              data-ad-client="ca-pub-5619990751602183"
@@ -36,24 +36,25 @@ import { ADS_DATA } from '../../data/app-data';
   `]
 })
 export class AdBannerComponent {
-  isBrowser = false;
-  isMobile = false;
+  isBrowser = signal(false);
+  isMobile = signal(false);
 
   constructor(private translate: TranslationService, @Inject(PLATFORM_ID) private platformId: Object) {
-    this.isBrowser = isPlatformBrowser(this.platformId);
-    if (this.isBrowser) {
-      this.isMobile = window.innerWidth <= 768;
-    }
-
     // 🛡️ MOTOR DE RENDERIZAÇÃO ANGULAR 17+: afterNextRender ancora-se nativamente
     // no ciclo de pintura do navegador. Elimina callbacks órfãos e previne CLS.
     afterNextRender(() => {
-      try {
-        (window as any).adsbygoogle = (window as any).adsbygoogle || [];
-        (window as any).adsbygoogle.push({});
-      } catch (e) {
-        console.warn('🛡️ RQS Firewall: Anomalia no AdSense contida na rede isolada.', e);
-      }
+      this.isMobile.set(window.innerWidth <= 768); // Lê o layout de forma segura
+      this.isBrowser.set(true); // Libera a renderização da tag
+
+      // 🛡️ TRAVA TÁTICA: Aguarda 100ms para que a tag <ins> exista fisicamente no DOM
+      setTimeout(() => {
+        try {
+          (window as any).adsbygoogle = (window as any).adsbygoogle || [];
+          (window as any).adsbygoogle.push({});
+        } catch (e) {
+          // 🛡️ Silenciado: Falso positivo do AdSense em SPAs ignorado pacificamente
+        }
+      }, 100);
     });
   }
 

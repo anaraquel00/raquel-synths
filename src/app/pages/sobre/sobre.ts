@@ -1,4 +1,4 @@
-import { Component, effect, inject, PLATFORM_ID, signal, OnInit, OnDestroy } from '@angular/core';
+import { Component, effect, inject, PLATFORM_ID, signal, OnInit, OnDestroy, afterNextRender } from '@angular/core';
 import { MEMBERS_PT, MEMBERS_EN, MANIFESTO_PT, MANIFESTO_EN, MANIFESTO_JONAH_EN, MANIFESTO_JONAH_PT } from '../../data/app-data';
 import { TranslationService } from '../../services/translation.service';
 import { Router } from '@angular/router';
@@ -29,26 +29,28 @@ members: any;
 
 
   constructor(public translate: TranslationService) {
+    // 🛡️ TRAVA TÁTICA: O Observer e a leitura do DOM nascem apenas pós-hidratação
+    afterNextRender(() => {
+      this.isJonahMode.set(this.document.body.classList.contains('mode-jonah'));
+      this.themeObserver = new MutationObserver(() => {
+        this.isJonahMode.set(this.document.body.classList.contains('mode-jonah'));
+      });
+      this.themeObserver.observe(this.document.body, { attributes: true, attributeFilter: ['class'] });
+    });
+
     effect(() => {
       if (this.translate.isPt()) {
         this.members = MEMBERS_PT;
       } else {
         this.members = MEMBERS_EN;
       }
-    });}
+    });
+  }
 
   ngOnDestroy() {
     if (this.themeObserver) this.themeObserver.disconnect();
   }
   ngOnInit() {
-    // 🛡️ MOTOR DE ESTADO E PREVENÇÃO DE CLOAKING (SSR SAFE)
-    if (isPlatformBrowser(this.platformId)) {
-      this.isJonahMode.set(this.document.body.classList.contains('mode-jonah'));
-      this.themeObserver = new MutationObserver(() => {
-        this.isJonahMode.set(this.document.body.classList.contains('mode-jonah'));
-      });
-      this.themeObserver.observe(this.document.body, { attributes: true, attributeFilter: ['class'] });
-    }
   }
     // A MÁGICA: Sempre que o idioma mudar, ele troca o array inteiro!
 // 👇 FUNÇÃO MÁGICA DE INTERCEPTAÇÃO

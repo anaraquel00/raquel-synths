@@ -17,6 +17,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "outputMode": "server",
             "outputPath": "dist/raquel-synths",
             "index": "src/index.html",
             "browser": "src/main.ts",
@@ -43,7 +44,6 @@
               },
               "src/favicon.ico",
               "src/assets",
-              "src/sitemap.xml",
               "src/robots.txt",
               "src/manifest.webmanifest",
               "src/rqs-logo.png"
@@ -112,7 +112,6 @@
               },
               "src/favicon.ico",
               "src/assets",
-              "src/sitemap.xml",
               "src/robots.txt",
               "src/manifest.webmanifest",
               "src/rqs-logo.png"

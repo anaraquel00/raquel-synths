@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal, afterNextRender } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslationService } from '../services/translation.service';
 import { VISUAL_NOVEL_PT, VISUAL_NOVEL_EN, VN_INTRO_PT, VN_INTRO_EN, VN_INTRO_JONAH_PT, VN_INTRO_JONAH_EN } from '../data/app-data';
@@ -40,19 +40,23 @@ export class AppVisualNovel implements OnInit, OnDestroy {
   introJonahPt = VN_INTRO_JONAH_PT;
   introJonahEn = VN_INTRO_JONAH_EN;
 
- ngOnInit() {
-    // 🛡️ BLINDAGEM TOTAL: O MutationObserver SÓ nasce no navegador
-    if (isPlatformBrowser(this.platformId)) {
+  constructor() {
+    // 🛡️ TRAVA TÁTICA: Sincroniza o estado do tema e o observador apenas após a hidratação (DOM Estável)
+    afterNextRender(() => {
       this.checkTheme();
+
       this.themeObserver = new MutationObserver(() => {
         this.checkTheme();
       });
+
       this.themeObserver.observe(document.body, {
         attributes: true,
         attributeFilter: ['class']
       });
-    }
+    });
   }
+
+  ngOnInit() {}
 
   ngOnDestroy() {
     if (this.themeObserver) this.themeObserver.disconnect();

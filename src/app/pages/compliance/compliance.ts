@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy, signal, computed, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal, computed, Inject, PLATFORM_ID, afterNextRender } from '@angular/core';
 import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { COMPLIANCE_DATA } from '../../data/app-data';
 import { TranslationService } from '../../services/translation.service';
@@ -13,6 +13,21 @@ import { TranslationService } from '../../services/translation.service';
 export class ComplianceComponent implements OnInit, OnDestroy {
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     this.isBrowser = isPlatformBrowser(this.platformId);
+
+    // 🛡️ TRAVA TÁTICA: A leitura do DOM para o tema só ocorre após a hidratação completa
+    afterNextRender(() => {
+      this.themeObserver = new MutationObserver(() => {
+        this.checkMode();
+      });
+
+      this.themeObserver.observe(this._document.body, {
+        attributes: true,
+        attributeFilter: ['class']
+      });
+
+      // Checagem inicial
+      this.checkMode();
+    });
   }
   isBrowser: boolean;
   // Injetamos o serviço de tradução
@@ -31,21 +46,8 @@ export class ComplianceComponent implements OnInit, OnDestroy {
   // 🛡️ ADSENSE SENTINEL: Variáveis órfãs (currentModeClass, complianceData) expurgadas.
 
   ngOnInit() {
-    if (this.isBrowser) {
-    // O Vigia: Se a classe 'mode-jonah' aparecer no body, a gente muda o texto
-    this.themeObserver = new MutationObserver(() => {
-      this.checkMode();
-    });
-
-    this.themeObserver.observe(this._document.body, {
-      attributes: true,
-      attributeFilter: ['class']
-    });
-
-    // Checagem inicial
-    this.checkMode();
+    // Lógica movida para o afterNextRender no construtor
   }
-}
 
   ngOnDestroy() {
     // Desliga o vigia ao sair

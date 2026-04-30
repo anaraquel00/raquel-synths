@@ -1,4 +1,4 @@
-import { Component, Input, inject, OnInit, OnDestroy, PLATFORM_ID, signal, computed } from '@angular/core';
+import { Component, Input, inject, OnInit, OnDestroy, PLATFORM_ID, signal, computed, afterNextRender } from '@angular/core';
 import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { ContentService } from '../../services/content.service';
 import { Subscription } from 'rxjs';
@@ -73,14 +73,10 @@ export class LastReleasesComponent implements OnInit, OnDestroy {
     pt: { badgePre: '🔥 PRÉ-SAVE JÁ', badgeNew: '🚀 LANÇAMENTO', drops: 'Chega em: ', outNow: 'Já Disponível', btnPre: 'FAZER PRE-SAVE', btnListen: 'OUVIR AGORA' }
   };
 
-  ngOnInit() {
-    // Busca dados reais do Firebase (Sem fraudar o Lighthouse)
-    this.sub = this.contentService.getDiscography().subscribe(data => {
-      this.allMusic = data;
-      this.updateCapsule();
-    });
-
-    if (isPlatformBrowser(this.platformId)) {
+  constructor() {
+    // 🛡️ TRAVA TÁTICA: O Observer e a leitura do DOM nascem apenas pós-hidratação
+    // Isso garante que o SSR e o cliente renderizem a mesma capa de álbum inicialmente.
+    afterNextRender(() => {
       this.checkMode();
 
       this.observer = new MutationObserver(() => {
@@ -92,7 +88,15 @@ export class LastReleasesComponent implements OnInit, OnDestroy {
         attributes: true,
         attributeFilter: ['class']
       });
-    }
+    });
+  }
+
+  ngOnInit() {
+    // Busca dados reais do Firebase (Sem fraudar o Lighthouse)
+    this.sub = this.contentService.getDiscography().subscribe(data => {
+      this.allMusic = data;
+      this.updateCapsule();
+    });
   }
 
   ngOnDestroy() {

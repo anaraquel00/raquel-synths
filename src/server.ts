@@ -18,6 +18,10 @@ const angularApp = new AngularNodeAppEngine();
 app.get('/sitemap.xml', async (req, res) => {
   res.header('Content-Type', 'application/xml');
 
+  // 🛡️ BLINDAGEM DE PERFORMANCE (Vercel Edge Network)
+  // Faz o cache do sitemap no Vercel por 24h, zerando o custo de Serverless Functions
+  res.header('Cache-Control', 'public, max-age=3600, s-maxage=86400');
+
   let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
   xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
 
@@ -45,13 +49,16 @@ app.get('/sitemap.xml', async (req, res) => {
     const baseUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents`;
 
     // Dispara apenas as requisições essenciais (Economia de banda)
-    const [logsRes, loreRes] = await Promise.all([
-      fetch(`${baseUrl}/logs`),
-      fetch(`${baseUrl}/lore`)
+    // 🛡️ ADICIONADO pageSize=300 para garantir que o Firebase não oculte os arquivos mais antigos (Paginação)
+    const [logsRes, loreRes, loreJonahRes] = await Promise.all([
+      fetch(`${baseUrl}/logs?pageSize=300`),
+      fetch(`${baseUrl}/lore?pageSize=300`),
+      fetch(`${baseUrl}/lore-jonah?pageSize=300`) // ☢️ Indexando a visão do Jonah!
     ]);
 
     const logsData = await logsRes.json();
     const loreData = await loreRes.json();
+    const loreJonahData = await loreJonahRes.json();
 
     // 💻 INDEXANDO OS LOGS OFICIAIS
     if (logsData.documents) {
@@ -65,6 +72,15 @@ app.get('/sitemap.xml', async (req, res) => {
     if (loreData.documents) {
       loreData.documents.forEach((doc: any) => {
         const epId = doc.name.split('/').pop();
+        xml += `  <url>\n    <loc>https://raquelsynths.com.br/lore-reader/${epId}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
+      });
+    }
+
+    // ☢️ INDEXANDO A SAGA CORROMPIDA (Red Team - Jonah)
+    if (loreJonahData.documents) {
+      loreJonahData.documents.forEach((doc: any) => {
+        const epId = doc.name.split('/').pop();
+        // Encaminha os links do Jonah para a leitora de Sagas para gerar tração
         xml += `  <url>\n    <loc>https://raquelsynths.com.br/lore-reader/${epId}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
       });
     }

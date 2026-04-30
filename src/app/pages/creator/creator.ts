@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, afterNextRender } from '@angular/core';
 import { TranslationService } from '../../services/translation.service';
 import { CREATOR_DATA, NAV_DATA } from '../../data/app-data';
 import { CommonModule, DOCUMENT } from '@angular/common';
@@ -22,15 +22,16 @@ private document = inject(DOCUMENT);
 public currentTheme = signal<'broklin' | 'jonah'>('broklin');
 private themeObserver: MutationObserver | null = null;
 
-constructor(public translate: TranslationService) {}
+constructor(public translate: TranslationService) {
+  // 🛡️ TRAVA TÁTICA: O Observer e a leitura do DOM iniciam APENAS após a hidratação (DOM Estável)
+  afterNextRender(() => {
+    this.checkTheme();
+    this.themeObserver = new MutationObserver(() => this.checkTheme());
+    this.themeObserver.observe(this.document.body, { attributes: true, attributeFilter: ['class'] });
+  });
+}
 
   ngOnInit() {
-    // 🛡️ BLINDAGEM SSR: O rastreador não pode sofrer loops no DOM
-    if (isPlatformBrowser(this.platformId)) {
-      this.checkTheme();
-      this.themeObserver = new MutationObserver(() => this.checkTheme());
-      this.themeObserver.observe(this.document.body, { attributes: true, attributeFilter: ['class'] });
-    }
   }
 
   ngOnDestroy() {

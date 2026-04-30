@@ -57,7 +57,7 @@
     </h2>
 
   @if (selectedDepartmentData?.loreDescription) {
-     <p class="sector-description" [innerHTML]="selectedDepartmentData.loreDescription[currentLang()]"></p>
+     <div class="sector-description" [innerHTML]="selectedDepartmentData.loreDescription[currentLang()]"></div>
   }
 
     <div class="hazard-stripe bottom"></div>
@@ -76,7 +76,7 @@
           <div class="info">
             <h3>{{ item.content[currentLang()]?.name }}</h3>
 
-            <p class="desc" [innerHTML]="item.content[currentLang()]?.description"></p>
+            <div class="desc" [innerHTML]="item.content[currentLang()]?.description"></div>
 
             <div class="price-row">
               <span class="price">{{ item.content[currentLang()]?.price }}</span>

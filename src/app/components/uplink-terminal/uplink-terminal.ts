@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, OnDestroy, Output, PLATFORM_ID, inject, signal } from '@angular/core';
+import { Component, EventEmitter, OnInit, OnDestroy, Output, PLATFORM_ID, inject, signal, afterNextRender } from '@angular/core';
 import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { ContentService } from '../../services/content.service';
 import { TranslationService } from '../../services/translation.service';
@@ -47,17 +47,18 @@ export class UplinkTerminalComponent implements OnInit, OnDestroy {
   constructor(
     public translate: TranslationService,
     public contentService: ContentService
-  ) {}
-
-  ngOnInit() {
-    // 🛡️ BLINDAGEM SSR ABSOLUTA: DOM só pode ser tocado no navegador
-    if (isPlatformBrowser(this.platformId)) {
+  ) {
+    // 🛡️ TRAVA TÁTICA: O script hacker e a leitura do DOM iniciam APENAS após a hidratação
+    afterNextRender(() => {
       this.checkMode();
       this.themeObserver = new MutationObserver(() => this.checkMode());
       this.themeObserver.observe(this.document.body, { attributes: true, attributeFilter: ['class'] });
-    }
-    this.runHackerScript();
+
+      this.runHackerScript();
+    });
   }
+
+  ngOnInit() {}
 
   private checkMode() {
     if (!isPlatformBrowser(this.platformId)) return;

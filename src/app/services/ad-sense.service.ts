@@ -1,4 +1,4 @@
-import { Injectable, PLATFORM_ID, inject } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject, afterNextRender, Injector } from '@angular/core';
 import { isPlatformBrowser, DOCUMENT } from '@angular/common';
 
 @Injectable({
@@ -10,32 +10,36 @@ export class AdSenseService {
   // 🛡️ INJEÇÃO BLINDADA: Atualizado para Angular 19+
   private platformId = inject(PLATFORM_ID);
   private document = inject(DOCUMENT);
+  private injector = inject(Injector);
 
   /**
    * Inicia o radar. Assim que o humano respirar na página, injetamos o anúncio.
    */
   public initLazyLoad(clientId: string): void {
     // Se estiver rodando no servidor ou se o script já carregou, aborta.
-    if (!isPlatformBrowser(this.platformId) || this.scriptLoaded) {
+    if (this.scriptLoaded || !isPlatformBrowser(this.platformId)) {
       return;
     }
 
-    // 🛡️ Evita o uso direto de 'window' para garantir conformidade corporativa
-    const win = this.document.defaultView;
-    if (!win) return;
+    // 🛡️ TRAVA TÁTICA: afterNextRender garante execução pós-hidratação no DOM real
+    afterNextRender(() => {
+      // 🛡️ Evita o uso direto de 'window' para garantir conformidade corporativa
+      const win = this.document.defaultView;
+      if (!win) return;
 
-    const loadAds = () => {
-      this.injectScript(clientId);
-      // Desliga o radar após o primeiro disparo para economizar CPU
+      const loadAds = () => {
+        this.injectScript(clientId);
+        // Desliga o radar após o primeiro disparo para economizar CPU
+        ['scroll', 'mousemove', 'touchstart', 'keydown'].forEach(event =>
+          win.removeEventListener(event, loadAds)
+        );
+      };
+
+      // Liga os sensores de interação do usuário (passive: true para não travar a rolagem)
       ['scroll', 'mousemove', 'touchstart', 'keydown'].forEach(event =>
-        win.removeEventListener(event, loadAds)
+        win.addEventListener(event, loadAds, { once: true, passive: true })
       );
-    };
-
-    // Liga os sensores de interação do usuário (passive: true para não travar a rolagem)
-    ['scroll', 'mousemove', 'touchstart', 'keydown'].forEach(event =>
-      win.addEventListener(event, loadAds, { once: true, passive: true })
-    );
+    }, { injector: this.injector });
   }
 
   /**

@@ -1,4 +1,4 @@
-import { Component, effect, signal, inject, PLATFORM_ID } from '@angular/core';
+import { Component, signal, inject, PLATFORM_ID, afterNextRender } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { TrackingService } from '../services/tracking.service';
 
@@ -16,25 +16,33 @@ export class AppThemeSwitcher {
   private document = inject(DOCUMENT);
 
   constructor(private trackingService: TrackingService) {
-    // A PEÇA 1: O OBSERVADOR AUTOMÁTICO (Passivo)
-    effect(() => {
-      const modoAtual = this.currentMode();
-
-      // 🛡️ BLINDAGEM SSR: Executa manipulação de DOM e Storage apenas no Navegador
-      if (isPlatformBrowser(this.platformId)) {
-        this.document.body.classList.remove('mode-broklin', 'mode-jonah');
-        this.document.body.classList.add(`mode-${modoAtual}`);
-        localStorage.setItem('rqs-theme', modoAtual);
-      }
+    // 🛡️ TRAVA TÁTICA: Lê o tema atual do body (injetado pelo script do index.html)
+    // APENAS após a hidratação, protegendo o SSR e evitando sobrescrever a escolha do usuário.
+    afterNextRender(() => {
+      const isJonah = this.document.body.classList.contains('mode-jonah');
+      this.currentMode.set(isJonah ? 'jonah' : 'broklin');
     });
   }
 
   // A PEÇA 2: A AÇÃO DIRETA (Ativada pelo clique do usuário)
   switchMode(mode: 'broklin' | 'jonah') {
-    // 1. Injeta o novo valor na fibra ótica (o effect lá em cima vai reagir sozinho!)
+    // Previne repetição de ações se clicar no botão que já está ativo
+    if (this.currentMode() === mode) return;
+
+    // 1. Injeta o novo valor na fibra ótica
     this.currentMode.set(mode);
 
-    // 2. Dispara o laser de rastreio de métricas
+    // 2. Manipula o DOM, Storage e avisa a matriz
+    if (isPlatformBrowser(this.platformId)) {
+      this.document.body.classList.remove('mode-broklin', 'mode-jonah');
+      this.document.body.classList.add(`mode-${mode}`);
+      localStorage.setItem('rqs-theme', mode);
+
+      // 🛡️ Dispara o sinal global para atualizar a Discografia e Narrativas instantaneamente
+      this.document.defaultView?.dispatchEvent(new CustomEvent('theme-changed'));
+    }
+
+    // 3. Dispara o laser de rastreio de métricas
     this.trackingService.trackCustomEvent('theme_switched', {
       selected_mode: mode,
       location: 'header_switcher'

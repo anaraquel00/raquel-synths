@@ -23,7 +23,7 @@
                 <span class="release-type">{{ album.type }}</span>
                 <h4>{{ album.title }}</h4>
              </div>
-             <p [innerHTML]="translate.isPt() ? album.descriptionPT : album.descriptionEN"></p>
+             <div class="album-description" [innerHTML]="translate.isPt() ? album.descriptionPT : album.descriptionEN"></div>
 
              <div class="actions-bar">
                 @if (album.soundcloud || album.embedLink) {
@@ -109,7 +109,7 @@
                 <span class="release-type">{{ album.type }}</span>
                 <h4>{{ album.title }}</h4>
              </div>
-             <p [innerHTML]="translate.isPt() ? album.descriptionPT : album.descriptionEN"></p>
+             <div class="album-description" [innerHTML]="translate.isPt() ? album.descriptionPT : album.descriptionEN"></div>
              <div class="actions-bar">
                 @if (album.soundcloud || album.embedLink) {
                 <a [href]="album.soundcloud ? album.soundcloud : album.embedLink"
