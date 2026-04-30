@@ -12,13 +12,7 @@
     { "source": "/x", "destination": "/?utm_source=x&utm_medium=organic_social&utm_campaign=link_bio", "permanent": false },
     { "source": "/tiktok", "destination": "/?utm_source=tiktok&utm_medium=organic_social&utm_campaign=link_bio", "permanent": false },
     { "source": "/reddit", "destination": "/?utm_source=reddit&utm_medium=organic_social&utm_campaign=link_bio", "permanent": false }
-  ],
-
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/api/main"
-    }
   ]
+
 }
 
