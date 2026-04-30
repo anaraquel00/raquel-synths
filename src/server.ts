@@ -60,7 +60,7 @@ app.get(['/sitemap.xml', '/dynamic-sitemap'], async (req, res) => {
     const loreData = await loreRes.json();
     const loreJonahData = await loreJonahRes.json();
 
-    // 💻 INDEXANDO OS LOGS OFICIAIS
+    // � INDEXANDO OS LOGS OFICIAIS
     if (logsData.documents) {
       logsData.documents.forEach((doc: any) => {
         const logId = doc.name.split('/').pop();
