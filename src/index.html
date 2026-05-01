@@ -43,43 +43,26 @@
   <link rel="preload" as="image" href="/images/background3_rqs_mobile.webp" type="image/webp" media="(max-width: 768px)" fetchpriority="high">
   <link rel="manifest" href="manifest.webmanifest">
 
- <script>
-  let metaRadarAtivado = false;
+<script>
+  window.metaRadarAtivado = false;
+  window.acionarRadarMeta = function() {
+    if (window.metaRadarAtivado) return;
+    window.metaRadarAtivado = true;
 
-  function acionarRadarMeta() {
-    if (metaRadarAtivado) return; // Se já ligou, ignora
-    metaRadarAtivado = true;
-
-    // 1. O Código Oficial da Corporação
     !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
     n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
     n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];}(window,document,'script');
 
-    // 2. A Injeção Assíncrona do Arquivo Pesado
     var t=document.createElement('script');
     t.async=!0;
     t.src='https://connect.facebook.net/en_US/fbevents.js';
     var s=document.getElementsByTagName('script')[0];
     s.parentNode.insertBefore(t,s);
 
-    // 3. A Inicialização
     fbq('init', '2358502707934592');
     fbq('track', 'PageView');
-    console.log("🛡️ [SISTEMA] Radar da Meta ativado por intervenção humana.");
-
-    // 4. Limpeza de Memória (Removemos os ouvintes para poupar CPU)
-    ['scroll', 'mousemove', 'touchstart'].forEach(function(evento) {
-      window.removeEventListener(evento, acionarRadarMeta);
-    });
-  }
-
-  // 🎧 A ARMADILHA: Fica escutando qualquer sinal de vida do usuário
-  ['scroll', 'mousemove', 'touchstart'].forEach(function(evento) {
-    window.addEventListener(evento, acionarRadarMeta, { once: true, passive: true });
-  });
-
-  // ⏳ FALLBACK: Se o usuário abrir a página e ficar olhando pro nada por 8 segundos, o radar liga sozinho.
-  setTimeout(acionarRadarMeta, 8000);
+    console.log("🛡️ [SISTEMA] Radar da Meta ativado de forma segura (SSR-friendly).");
+  };
 </script>
 
 </head>
