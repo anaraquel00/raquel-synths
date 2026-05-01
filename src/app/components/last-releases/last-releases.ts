@@ -1,8 +1,9 @@
-import { Component, Input, inject, OnInit, OnDestroy, PLATFORM_ID, signal, computed, afterNextRender } from '@angular/core';
+import { Component, Input, inject, OnInit, OnDestroy, PLATFORM_ID, signal, computed, afterNextRender, Injector } from '@angular/core';
 import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { ContentService } from '../../services/content.service';
 import { Subscription } from 'rxjs';
 import { NgOptimizedImage } from '@angular/common';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-last-releases',
@@ -57,7 +58,7 @@ export class LastReleasesComponent implements OnInit, OnDestroy {
   // 🛡️ INJEÇÃO CORRETA E BLINDADA
   private platformId = inject(PLATFORM_ID);
   private document = inject(DOCUMENT);
-  private contentService = inject(ContentService);
+  private injector = inject(Injector);
 
   // 🚀 DECLARAÇÃO DE SIGNALS VERDADEIROS (A cura para o sublinhado vermelho)
   currentTrack = signal<any>(null);
@@ -92,8 +93,20 @@ export class LastReleasesComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    // 🛡️ IGNORA O FIREBASE NO SERVIDOR PARA PREVENIR TIMEOUTS
+    if (!isPlatformBrowser(this.platformId)) {
+      this.currentTrack.set({
+        title: 'RaQuel Synths Latest Drop',
+        cover: 'images/banner-seo-global.jpg',
+        isLatest: true
+      });
+      return;
+    }
+
     // Busca dados reais do Firebase (Sem fraudar o Lighthouse)
-    this.sub = this.contentService.getDiscography().subscribe(data => {
+    this.sub = this.injector.get(ContentService).getDiscography().pipe(
+      take(1)
+    ).subscribe(data => {
       this.allMusic = data;
       this.updateCapsule();
     });

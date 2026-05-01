@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy, signal, afterNextRender } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal, afterNextRender, Injector } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslationService } from '../services/translation.service';
 import { VISUAL_NOVEL_PT, VISUAL_NOVEL_EN, VN_INTRO_PT, VN_INTRO_EN, VN_INTRO_JONAH_PT, VN_INTRO_JONAH_EN } from '../data/app-data';
@@ -6,10 +6,11 @@ import { Router } from '@angular/router';
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from '@angular/material/button';
 import { ContentService } from '../services/content.service'; // 👈 IMPORTANTE
-import { Observable, BehaviorSubject, switchMap } from 'rxjs'; // 👈 IMPORTANTE
+import { Observable, BehaviorSubject, switchMap, of } from 'rxjs'; // 👈 IMPORTANTE
 import { LoreEpisode } from '../data/lore-data';
 import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-visual-novel',
@@ -22,8 +23,8 @@ export class AppVisualNovel implements OnInit, OnDestroy {
   // --- INJEÇÕES ---
   translate = inject(TranslationService);
   private router = inject(Router);
-  private contentService = inject(ContentService); // 👈 INJETE O SERVIÇO AQUI
   private platformId = inject(PLATFORM_ID);
+  private injector = inject(Injector);
 
   // --- ESTADO REATIVO ---
   private modeSubject = new BehaviorSubject<'broklin' | 'jonah'>('broklin');
@@ -31,7 +32,13 @@ export class AppVisualNovel implements OnInit, OnDestroy {
 
   // Esse Observable vai buscar os episódios do Firebase toda vez que o modo mudar
   episodes$: Observable<LoreEpisode[]> = this.modeSubject.asObservable().pipe(
-    switchMap(mode => this.contentService.getEpisodes(mode))
+    take(1),
+    switchMap(mode => {
+      if (!isPlatformBrowser(this.platformId)) {
+        return of([{ id: 'seo-mock', title: 'Visual Novel: Cyberpunk Story', description: 'Interactive audio civil war narrative.', mode: 'broklin', route: '/saga' } as any]);
+      }
+      return this.injector.get(ContentService).getEpisodes(mode).pipe(take(1)); // 🛡️ INJEÇÃO LAZY E TAKE(1)
+    })
   );
 
   private themeObserver: MutationObserver | null = null;

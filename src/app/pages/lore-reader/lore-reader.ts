@@ -1,11 +1,11 @@
-import { Component, OnInit, OnDestroy, inject, Inject, PLATFORM_ID, signal, afterNextRender } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, Inject, PLATFORM_ID, signal, afterNextRender, Injector } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslationService } from '../../services/translation.service';
 import { ContentService } from '../../services/content.service';
 import { SeoService } from '../../services/seo.service'; // 🛡️ Importante para SEO
 import { Observable, combineLatest, of, BehaviorSubject } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap, tap, take } from 'rxjs/operators';
 import { SplitContentPipe } from "../../components/pipes/content-splitter.pipe";
 import { LoreEpisode } from '../../data/lore-data';
 import { AdArticleComponent } from "../../components/ad-article/ad-article";
@@ -20,11 +20,11 @@ import { AuthorSignatureComponent } from '../../components/author-signature/auth
   styleUrls: ['./lore-reader.scss']
 })
 export class LoreReaderComponent implements OnInit, OnDestroy {
-  private contentService = inject(ContentService);
   public translate = inject(TranslationService);
   private seoService = inject(SeoService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private injector = inject(Injector);
 
   currentMode = signal<'broklin' | 'jonah'>('broklin');
   // 🛡️ O CANAL DE RÁDIO DO TEMA
@@ -60,8 +60,21 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
       switchMap(([id, mode]) => {
         if (!id) return of(null);
 
-        // Puxa o array do servidor usando o modo atualizado instantaneamente!
-        return this.contentService.getEpisodes(mode).pipe(
+        // 🛡️ O BYPASS DO SERVIDOR (Bloqueia o Firebase no Build para não dar Timeout)
+        const source$ = !this.isBrowser
+          ? of([{
+              id: id,
+              title: 'RQS Lore Archive',
+              title_en: 'RQS Lore Archive',
+              description: 'Transmedia Cyberpunk storytelling from RaQuel Synths.',
+              description_en: 'Transmedia Cyberpunk storytelling from RaQuel Synths.',
+              image: 'https://raquelsynths.com.br/images/banner-seo-global.jpg',
+              releaseDate: new Date().toISOString()
+            } as LoreEpisode])
+          // 🌐 O MUNDO REAL: Puxa o array do Firebase no navegador do usuário
+          : this.injector.get(ContentService).getEpisodes(mode).pipe(take(1));
+
+        return source$.pipe(
           map(episodes => episodes ? episodes.find(ep => ep.id === id) || null : null),
           tap(ep => {
             if (ep) {

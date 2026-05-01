@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, computed, HostListener, inject, Input, OnInit, signal, afterNextRender } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, HostListener, inject, Input, OnInit, signal, afterNextRender, Injector } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,6 +17,8 @@ import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { TrackingService } from '../services/tracking.service';
 import { SeoService } from '../services/seo.service';
+import { catchError, take, timeout } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 
 @Component({
@@ -28,10 +30,10 @@ import { SeoService } from '../services/seo.service';
 })
 export class DiscographyComponent implements OnInit {
   private router = inject(Router);
-  private contentService = inject(ContentService);
   public translate = inject(TranslationService);
   private sanitizer = inject(DomSanitizer);
   private platformId = inject(PLATFORM_ID);
+  private injector = inject(Injector);
   private cdr = inject(ChangeDetectorRef);
   private seoService = inject(SeoService);
 
@@ -119,7 +121,30 @@ onThemeChange() {
   }
 
  getDiscography() {
-  this.contentService.getDiscography().subscribe({
+    // 🛡️ SE FOR O SERVIDOR NODE.JS (BUILD/SSR), INJETA MOCK PARA SEO E ESTABILIZA IMEDIATAMENTE
+    if (!isPlatformBrowser(this.platformId)) {
+      this.allAlbums = [{
+        title: 'RaQuel Synths - Official Discography',
+        faction: 'hybrid',
+        releaseDate: '2026-01-01',
+        cover: 'images/banner-seo-global.jpg',
+        descriptionPT: 'Discografia oficial da banda virtual RaQuel Synths. Synthwave, Nu-Metal e caos Industrial.',
+        descriptionEN: 'Official discography of the virtual band RaQuel Synths. Synthwave, Nu-Metal, and Industrial chaos.',
+        spotify: 'https://open.spotify.com/artist/1yrPZaFyIcsCjj876LaHXL'
+      } as any];
+      this.isLoading = false;
+      return;
+    }
+
+    // 🌐 SE FOR O NAVEGADOR, FAZ A BUSCA REAL NO FIREBASE
+  this.injector.get(ContentService).getDiscography().pipe(
+    take(1),
+    timeout(4000),
+    catchError(err => {
+      console.warn('⚠️ Timeout do Firebase no SSR. Renderizando vazio...', err);
+      return of([]); // Salva o servidor do colapso
+    })
+  ).subscribe({
     next: (data: any[]) => {
       this.allAlbums = data as Album[];
       this.isLoading = false;

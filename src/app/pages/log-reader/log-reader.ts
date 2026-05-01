@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, signal, PLATFORM_ID, afterNextRender } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, PLATFORM_ID, afterNextRender, Injector } from '@angular/core';
 import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toObservable } from '@angular/core/rxjs-interop'; // 👈 Essencial
@@ -7,6 +7,7 @@ import { ContentService } from '../../services/content.service';
 import { TranslationService } from '../../services/translation.service';
 import { SeoService } from '../../services/seo.service';
 import { Observable, combineLatest, map, switchMap, of, tap } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { AdArticleComponent } from '../../components/ad-article/ad-article';
 
 @Component({
@@ -20,10 +21,10 @@ export class LogReaderComponent implements OnInit, OnDestroy {
 
   private route = inject(ActivatedRoute);
   public translate = inject(TranslationService);
-  private contentService = inject(ContentService);
   private seoService = inject(SeoService);
   private platformId = inject(PLATFORM_ID);
   private document = inject(DOCUMENT);
+  private injector = inject(Injector);
 
   // 🛡️ A CORREÇÃO: toObservable deve ser inicializado aqui, no topo da classe!
   private isPt$ = toObservable(this.translate.isPt);
@@ -52,8 +53,24 @@ export class LogReaderComponent implements OnInit, OnDestroy {
       switchMap(([id, isPt]) => {
         if (!id) return of(null);
 
-        // Abre o uplink com o Firebase
-        return this.contentService.getLogById(id).pipe(
+        // 🛡️ O BYPASS DO SERVIDOR (Bloqueia o Firebase no Build para não dar Timeout)
+        const source$ = !isPlatformBrowser(this.platformId)
+          ? of({
+              date: new Date().toISOString(),
+              pt: {
+                title: 'RQS System Log Archive',
+                description: 'Acesso aos logs criptografados da RaQuel Synths. Cyberpunk, Synthwave e narrativa imersiva.',
+                techContent: 'Dados de sistema criptografados. Acesse pelo terminal.'
+              },
+              en: {
+                title: 'RQS System Log Archive',
+                description: 'Access to RaQuel Synths encrypted logs. Cyberpunk, Synthwave, and immersive narrative.',
+                techContent: 'Encrypted system data. Access via terminal.'
+              }
+            })
+          : this.injector.get(ContentService).getLogById(id).pipe(take(1));
+
+        return source$.pipe(
           map((data: any) => {
             if (!data) return null;
 
