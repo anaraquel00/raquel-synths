@@ -12,7 +12,7 @@
 <div id="storytelling" style="position: relative; top: -80px;"></div>
 <section class="anchor-pad">
   @defer (on idle) {
-    <app-storytelling></app-storytelling>
+    <app-storytelling ngSkipHydration></app-storytelling>
   } @placeholder {
     <div style="min-height: 400px; width: 100%; display: flex; align-items: center; justify-content: center; color: #00f3ff; font-family: monospace;">
       [ AGUARDANDO DECRIPTOGRAFIA DOS LOGS... ]
@@ -34,7 +34,7 @@
 </section>
 
 @defer (on idle) {
-  <app-visual-novel></app-visual-novel>
+  <app-visual-novel ngSkipHydration></app-visual-novel>
 } @placeholder {
   <div style="min-height: 400px; width: 100%; display: flex; align-items: center; justify-content: center; color: var(--primary-color); font-family: monospace;">
     [ INICIANDO NARRATIVA DE MATRIZ... ]
@@ -50,7 +50,7 @@
 </section>
 
 @defer (on idle) {
-  <app-discography [limitToHome]="5"></app-discography>
+  <app-discography [limitToHome]="5" ngSkipHydration></app-discography>
 } @placeholder {
   <div style="min-height: 500px; width: 100%; display: flex; align-items: center; justify-content: center; color: var(--primary-color); font-family: monospace;">
     [ SINTONIZANDO FREQUÊNCIAS DE ÁUDIO... ]
@@ -65,4 +65,4 @@
   }
 </section>
 
-<app-contato></app-contato>
+<app-contato ></app-contato>
