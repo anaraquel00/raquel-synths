@@ -10,7 +10,11 @@
       <div class="description-lead" [innerHTML]="data.description | safeHtml"></div>
 
       <div class="ad-module">
-        <app-ad-article></app-ad-article>
+        @defer (on viewport) {
+    <app-ad-article ngSkipHydration></app-ad-article>
+   } @placeholder {
+    <div style="min-height: 250px; width: 100%;"></div>
+   }
       </div>
 
       @if (data.techContent) {
@@ -28,7 +32,11 @@
       }
 
       <div class="ad-module" style="margin: 30px 0;">
-        <app-ad-article></app-ad-article>
+        @defer (on viewport) {
+  <app-ad-article ngSkipHydration></app-ad-article>
+  } @placeholder {
+  <div style="min-height: 250px; width: 100%;"></div>
+  }
       </div>
 
       <footer class="terminal-footer">

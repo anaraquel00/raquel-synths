@@ -51,7 +51,11 @@
       @if ((i + 1) % 2 === 0 && !isLast) {
 
     <div class="inter-list-ad">
-       <app-ad-article></app-ad-article>
+       @defer (on viewport) {
+  <app-ad-article ngSkipHydration></app-ad-article>
+  } @placeholder {
+  <div style="min-height: 250px; width: 100%;"></div>
+  }
     </div>
 
     <hr class="separator neon-line">
@@ -136,12 +140,15 @@
       @if ((i + 1) % 2 === 0 && !isLast) {
 
     <div class="inter-list-ad">
-       <app-ad-article></app-ad-article>
+       @defer (on viewport) {
+  <app-ad-article ngSkipHydration></app-ad-article>
+  } @placeholder {
+  <div style="min-height: 250px; width: 100%;"></div>
+  }
     </div>
 
     <hr class="separator hazard-line">
   }
-
     }
 
     <div class="terminal-pagination hazard-mode">

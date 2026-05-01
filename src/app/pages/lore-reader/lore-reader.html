@@ -42,7 +42,11 @@
 
             @if ($index === 1 || $index === 5 || $index === 10) {
               <div class="inner-ad" style="margin: 30px 0;">
-                <app-ad-article></app-ad-article>
+                @defer (on viewport) {
+  <app-ad-article ngSkipHydration></app-ad-article>
+   } @placeholder {
+  <div style="min-height: 250px; width: 100%;"></div>
+   }
               </div>
             }
           }

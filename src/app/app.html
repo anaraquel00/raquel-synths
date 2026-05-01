@@ -4,7 +4,13 @@
   <router-outlet></router-outlet>
 </main>
 
-<app-ad-banner></app-ad-banner>
+<section class="ads-section">
+  @defer (on viewport) {
+    <app-ad-banner ngSkipHydration></app-ad-banner>
+  } @placeholder {
+    <div style="min-height: 100px; width: 100%;"></div>
+  }
+</section>
 <app-footer></app-footer>
 
 @if (!cookiesAccepted()) {

@@ -11,7 +11,10 @@
       <div class="intro-text jonah-text" [innerHTML]="translate.isPt() ? introJonahPT : introJonahEN"></div>
     }
 
-    <app-last-releases [lang]="translate.isPt() ? 'pt' : 'en'"></app-last-releases>
+    <app-last-releases
+    [lang]="translate.isPt() ? 'pt' : 'en'"
+    ngSkipHydration>
+    </app-last-releases>
 
     <div class="grid-col right-col">
       @defer (on viewport; prefetch on idle) {
@@ -101,7 +104,11 @@
 
         @if ((i + 1) % 4 === 0 && !isLast) {
           <div class="inter-list-ad">
-             <app-ad-banner></app-ad-banner>
+             @defer (on viewport) {
+    <app-ad-banner ngSkipHydration></app-ad-banner>
+      } @placeholder {
+    <div style="min-height: 100px; width: 100%;"></div>
+      }
           </div>
         }
         @else if (!isLast) {
@@ -160,7 +167,11 @@
 
         @if ((i + 1) % 4 === 0 && !isLast) {
           <div class="inter-list-ad">
-             <app-ad-banner></app-ad-banner>
+             @defer (on viewport) {
+       <app-ad-banner ngSkipHydration></app-ad-banner>
+       } @placeholder {
+       <div style="min-height: 100px; width: 100%;"></div>
+         }
           </div>
         }
         @else if (!isLast) {
