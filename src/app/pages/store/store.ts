@@ -3,6 +3,9 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import Swal from 'sweetalert2';
 import { Subscription, combineLatest } from 'rxjs';
+import { take, timeout, catchError } from 'rxjs/operators';
+import{ of } from 'rxjs';
+
 
 // 👇 IMPORTANTE: O ContentService traz os dados do Firebase
 import { ContentService } from '../../services/content.service';
@@ -152,15 +155,24 @@ ngOnInit(): void {
     this.dataSubscription = combineLatest({
       products: this.contentService.getProducts(),
       departments: this.contentService.getDepartments()
-    }).subscribe({
+    })
+    .pipe(
+      take(1),
+      timeout(5000),
+      catchError(err => {
+        console.warn('⚠️ Erro ou Timeout no Firebase', err);
+        // Retorna arrays vazios para salvar o servidor
+        return of({ products: new Array<any>(), departments: new Array<any>() });
+      })
+    )
+    .subscribe({
       next: (data) => {
         console.log('📦 Estoque recebido:', data);
 
         this.allProducts = data.products;
         this.allDepartments = data.departments;
 
-        // 👇 INJEÇÃO DE ROTEAMENTO:
-        // Se o usuário entrou por link direto, filtra os produtos AGORA que o Firebase respondeu!
+        // Se o usuário entrou por link direto, filtra os produtos
         if (this.selectedDepartmentId) {
            this.filteredProducts = this.allProducts.filter(item => item.faction === this.selectedDepartmentId);
         }
@@ -170,7 +182,6 @@ ngOnInit(): void {
       },
       error: (err) => {
         console.error('🚨 Erro ao baixar estoque:', err);
-        // Se der erro de permissão (aquele XML do seu print), vai avisar aqui
         if (err.code === 'permission-denied') {
              console.warn('⚠️ VERIFIQUE AS REGRAS DE SEGURANÇA DO FIRESTORE!');
         }

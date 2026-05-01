@@ -1,11 +1,11 @@
-<div class="nav-bar">
+<div class="nav-bar" ngSkipHydration>
   <button mat-button [routerLink]="['/']" class="back-btn">
     <mat-icon>arrow_back</mat-icon>
     {{ text.nav.back }}
   </button>
 </div>
 
-<div class="creator-container">
+<div class="creator-container" ngSkipHydration>
 
   <header class="profile-header">
     <div class="profile-grid">
