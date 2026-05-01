@@ -132,17 +132,6 @@ ngOnInit(): void {
         this.selectedDepartmentId = null;
       }
     });
-
-    // 🛡️ BLINDAGEM: Só o celular do fã roda esse cronômetro!
-    if (this.isBrowser) {
-      setInterval(() => {
-        const newLang = this.translate.isPt() ? 'pt' : 'en';
-        if (this.currentLang() !== newLang) {
-          this.currentLang.set(newLang);
-          this.cdr.detectChanges();
-        }
-      }, 500);
-    }
   }
 
   ngOnDestroy(): void {
