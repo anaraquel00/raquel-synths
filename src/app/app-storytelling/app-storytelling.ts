@@ -47,8 +47,14 @@ export class StorytellingComponent implements OnInit, OnDestroy {
 // 🔥 HOME: Corta os 4 primeiros e não liga pro ano!
   logs$: Observable<any[]> = isPlatformBrowser(this.platformId)
     ? this.injector.get(ContentService).getLogs().pipe(
-        take(1),
-        timeout(4000),
+        // ==========================================
+    // --- 🛑 INTERRUPTOR: TRAVA DO SERVIDOR ---
+    // ==========================================
+    // [TESTE QA / LOCALHOST]: Deixe essas linhas COMENTADAS para ver os logs novos!
+    // [PRODUÇÃO / VERCEL]: Descomente antes de fazer o build.
+
+     take(1),
+     timeout(4000),
         map(logs => {
           if (!logs) return [];
           const archiveLinkDoc = logs.find(log => log.isArchiveLink);
@@ -58,10 +64,16 @@ export class StorytellingComponent implements OnInit, OnDestroy {
           contentLogs.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
           // Pega do 0 ao 4 (Os 4 mais recentes)
           const recentLogs = contentLogs.slice(0, 4);
-          if (archiveLinkDoc) {
-            return [...recentLogs, archiveLinkDoc];
-          }
-          return recentLogs;
+           if (archiveLinkDoc) {
+        // 🛡️ O ESCUDO MÁXIMO: Se o documento de arquivo não tiver 'pt' ou 'en' (o que estava causando o crash na linha 40),
+        // nós criamos eles vazios aqui na hora! Assim o HTML nunca vai ler um "undefined".
+        if (!archiveLinkDoc.pt) archiveLinkDoc.pt = { description: '' };
+        if (!archiveLinkDoc.en) archiveLinkDoc.en = { description: '' };
+
+        return [...recentLogs, archiveLinkDoc];
+      }
+
+      return recentLogs;
         }),
         catchError(error => {
           console.error('🔥 [FIREBASE TIMEOUT/ERROR]:', error);

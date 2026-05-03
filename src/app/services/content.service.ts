@@ -6,6 +6,7 @@ import { map, Observable, of, take } from 'rxjs'; // 🔥 Importamos o 'take' AQ
 import { LoreEpisode } from '../data/lore-data';
 import { Product, Department } from '../data/store-data';
 import { isPlatformBrowser } from '@angular/common';
+import { isPlatformServer } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
@@ -66,21 +67,37 @@ export class ContentService {
   }
 
 // 📜 4. LOGS (Fofocas e Bastidores)
-  getLogs(): Observable<any[]> {
-    const colRef = collection(this.firestore, 'logs');
+  getLogs(): Observable<any[]> {
+    const colRef = collection(this.firestore, 'logs');
 
-    // --- 🕰️ MÁQUINA DO TEMPO (QA & TESTES DE LOGS) ---
-    //const dataFutura = new Date('2030-12-31').toISOString();
-
-    const q = query(
+    const q = query(
       colRef,
-      // 🛡️ O ESCUDO: Só traz os logs se a data for de hoje para trás
-      where('date', '<=', new Date().toISOString()),
-      orderBy('date', 'desc')
-    ); 
 
-    return (collectionData(q, { idField: 'id' }) as Observable<any[]>).pipe(take(1));
-  }
+      // --- 🛑 INTERRUPTOR 1: DATA DOS LOGS ---
+      // [PRODUÇÃO]: Deixe DESCOMENTADO para o site real (filtra o futuro)
+      // [TESTE QA]: Deixe COMENTADO para ver os logs do futuro no localhost
+       where('date', '<=', new Date().toISOString()),
+
+      orderBy('date', 'desc')
+    );
+
+    const firebaseData$ = collectionData(q, { idField: 'id' }) as Observable<any[]>;
+
+    // ==========================================
+    // --- 🛑 INTERRUPTOR 2: TRAVA DO SERVIDOR ---
+    // ==========================================
+
+    // 👇 [MODO TESTE QA / LOCALHOST]
+    // Descomente a linha abaixo e comente a de Produção.
+    // O Firebase vai ficar "aberto" e ignorar o cache, mostrando o log novo na hora!
+     //return firebaseData$;
+
+    // 👇 [MODO PRODUÇÃO / VERCEL]
+    // Descomente a linha abaixo antes de fazer o Deploy (push).
+    // O take(1) fecha a conexão e salva o servidor do erro de Timeout.
+    return firebaseData$.pipe(take(1));
+  }
+
   // 📜 4.1 LOG ESPECÍFICO (O Sniper)
   getLogById(id: string): Observable<any> {
 
