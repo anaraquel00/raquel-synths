@@ -118,9 +118,17 @@ ngOnInit() {
     ).subscribe(data => {
       if (data['seo']) {
         const lang = this.translate.isPt() ? 'pt' : 'en';
+
+        // 🛡️ O FIO CONECTADO: Pegamos a URL exata do Angular
+        const currentPath = this.router.url.split('?')[0];
+
+        // Montamos a URL Canônica Oficial
+        const urlCanonica = `https://raquelsynths.com.br${currentPath === '/' ? '' : currentPath}`;
+
         this.seoService.updateMetaTags({
           title: data['seo'].title ? data['seo'].title[lang] : undefined,
-          description: data['seo'].description ? data['seo'].description[lang] : undefined
+          description: data['seo'].description ? data['seo'].description[lang] : undefined,
+          url: urlCanonica
         });
       }
     });
