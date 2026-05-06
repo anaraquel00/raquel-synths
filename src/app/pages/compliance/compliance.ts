@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy, signal, computed, Inject, PLATFORM_ID, afterNextRender } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal, PLATFORM_ID, afterNextRender } from '@angular/core';
 import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { COMPLIANCE_DATA } from '../../data/app-data';
 import { TranslationService } from '../../services/translation.service';
@@ -9,67 +9,55 @@ import { TranslationService } from '../../services/translation.service';
   imports: [CommonModule],
   templateUrl: './compliance.html',
   styleUrl: './compliance.scss',
-  // 🛡️ A ARMADURA ESTÁ AQUI: Isso diz ao Angular para blindar a página
-  // toda vez que ela for acessada diretamente pela URL.
-  host: { 'ngSkipHydration': 'true' }
 })
 export class ComplianceComponent implements OnInit, OnDestroy {
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
-    this.isBrowser = isPlatformBrowser(this.platformId);
+  private translationService = inject(TranslationService);
+  private _document = inject(DOCUMENT);
+  private platformId = inject(PLATFORM_ID);
 
-    // 🛡️ TRAVA TÁTICA: A leitura do DOM para o tema só ocorre após a hidratação completa
+  isBrowser = isPlatformBrowser(this.platformId);
+  private themeObserver: MutationObserver | undefined;
+
+  // 🛡️ A MÁGICA DA HIDRATAÇÃO DO ANGULAR 20:
+  // Inicia FIXO no padrão do Servidor (Inglês / Broklin). O Googlebot vai amar.
+  public data = signal<any>(COMPLIANCE_DATA['en']['broklin']);
+
+  constructor() {
+    // 🛡️ TRAVA TÁTICA: Tudo o que muda texto visualmente SÓ roda após o DOM estabilizar
     afterNextRender(() => {
+      // 1. Atualiza a tela imediatamente para o idioma e tema do fã
+      this.atualizarDados();
+
+      // 2. Fica vigiando o botão de Jonah/Broklin
       this.themeObserver = new MutationObserver(() => {
-        this.checkMode();
+        this.atualizarDados();
       });
 
       this.themeObserver.observe(this._document.body, {
         attributes: true,
-        attributeFilter: ['class']
+        attributeFilter:['class']
       });
-
-      // Checagem inicial
-      this.checkMode();
     });
   }
-  isBrowser: boolean;
-  // Injetamos o serviço de tradução
-
-  private translationService = inject(TranslationService);
-  // Injetamos o DOCUMENT para vigiar o corpo da página
-  private _document = inject(DOCUMENT);
-
-  // 1. TRADUÇÃO: Convertemos o boolean do serviço para string ('pt' ou 'en')
-  lang = computed(() => this.translationService.isPt() ? 'pt' : 'en');
-
-  // 2. MODO CAOS: Detectamos manualmente, já que o serviço é burro
-  isJonah = signal(false);
-  private themeObserver: MutationObserver | undefined;
-
-  // 🛡️ ADSENSE SENTINEL: Variáveis órfãs (currentModeClass, complianceData) expurgadas.
 
   ngOnInit() {
-    // Lógica movida para o afterNextRender no construtor
+    // Vazio. Deixamos a inicialização de tela apenas para o afterNextRender!
   }
 
   ngOnDestroy() {
-    // Desliga o vigia ao sair
     this.themeObserver?.disconnect();
   }
 
-  private checkMode() {
-    // 🛡️ BLINDAGEM SSR: Trava de plataforma interna obrigatória
-    if (this.isBrowser) {
-      this.isJonah.set(this._document.body.classList.contains('mode-jonah'));
-    }
-  }
+  // 🔥 O MOTOR DE TRANSIÇÃO SEGURA
+  private atualizarDados() {
+    if (!this.isBrowser) return;
 
-  // 3. O GETTER DE DADOS (Blindado)
-  get data() {
-    const langKey = this.lang(); // 'pt' ou 'en'
-    const modeKey = this.isJonah() ? 'jonah' : 'broklin';
+    // Descobre a realidade atual do navegador
+    const langKey = this.translationService.isPt() ? 'pt' : 'en';
+    const isJonah = this._document.body.classList.contains('mode-jonah');
+    const modeKey = isJonah ? 'jonah' : 'broklin';
 
-    // Retorna o texto correto do arquivo de dados
-    return COMPLIANCE_DATA[langKey][modeKey];
+    // Injeta os dados corretos no Signal (Atualiza o HTML de forma limpa)
+    this.data.set(COMPLIANCE_DATA[langKey][modeKey]);
   }
 }

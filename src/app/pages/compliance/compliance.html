@@ -1,39 +1,39 @@
 <div class="compliance-page">
-  <h1>{{ data.title }}</h1>
+  <h1>{{ data().title }}</h1>
 
   <article>
-    <h2>{{ data.privacyTitle }}</h2>
-    <p>{{ data.privacyText }}</p>
+    <h2>{{ data().privacyTitle }}</h2>
+    <p>{{ data().privacyText }}</p>
   </article>
 
   <article>
-    <h2>{{ data.deletionTitle }}</h2>
-    <p>{{ data.deletionText }}</p>
+    <h2>{{ data().deletionTitle }}</h2>
+    <p>{{ data().deletionText }}</p>
   </article>
 
   <article>
-  <h2>{{ data.storeTitle }}</h2>
-  <div class="text-content" [innerHTML]="data.storeText"></div>
+  <h2>{{ data().storeTitle }}</h2>
+  <div class="text-content" [innerHTML]="data().storeText"></div>
 </article>
 
 <article>
-  <h2>{{ data.affiliateTitle }}</h2>
-  <div class="text-content" [innerHTML]="data.affiliateText"></div>
+  <h2>{{ data().affiliateTitle }}</h2>
+  <div class="text-content" [innerHTML]="data().affiliateText"></div>
 </article>
 
    <article>
-    <h2>{{ data.policyTitle }}</h2>
-    <div class="text-content" [innerHTML]="data.policyText"></div>
+    <h2>{{ data().policyTitle }}</h2>
+    <div class="text-content" [innerHTML]="data().policyText"></div>
   </article>
 
   <article>
-    <h2>{{ data.lgpdTitle }}</h2>
-   <div class="text-content" [innerHTML]="data.lgpdText"></div>
+    <h2>{{ data().lgpdTitle }}</h2>
+   <div class="text-content" [innerHTML]="data().lgpdText"></div>
   </article>
 
   <article>
-    <h2>{{ data.contactTitle }}</h2>
-    <div class="text-content" [innerHTML]="data.contactText"></div>
+    <h2>{{ data().contactTitle }}</h2>
+    <div class="text-content" [innerHTML]="data().contactText"></div>
   </article>
 
 </div>
