@@ -14,10 +14,9 @@ export class ComplianceComponent implements OnInit, OnDestroy {
   private translationService = inject(TranslationService);
   private _document = inject(DOCUMENT);
 
-  // 🛡️ O PADRÃO OURO DE SSR (ANGULAR 20)
-  // Iniciamos o Signal FIXO com o valor que o Servidor (Vercel) renderiza.
-  // O Googlebot lê isso, vê que o HTML e o Dado são iguais (Inglês) e dá OK!
-  public data = signal<any>(COMPLIANCE_DATA['en']['broklin']);
+  public data = signal<any>(
+    COMPLIANCE_DATA[this.translationService.currentLang() as 'en' | 'pt']['broklin']
+  );
 
   private themeObserver: MutationObserver | undefined;
 
