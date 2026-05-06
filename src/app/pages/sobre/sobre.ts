@@ -10,7 +10,11 @@ import { NgOptimizedImage } from '@angular/common';
   standalone: true,
   imports: [CommonModule, NgOptimizedImage],
   templateUrl: './sobre.html',
-  styleUrl: './sobre.scss'
+  styleUrl: './sobre.scss',
+  // 🛡️ O ESCUDO TOTAL: Desativa a hidratação no HOST do componente
+  host: {
+    'ngSkipHydration': 'true'
+  }
 })
 export class SobreComponent implements OnInit, OnDestroy {
 

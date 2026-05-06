@@ -12,7 +12,11 @@ import { Firestore, collection, addDoc } from '@angular/fire/firestore';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './contato.html',
-  styleUrls: ['./contato.scss']
+  styleUrls: ['./contato.scss'],
+  // 🛡️ O ESCUDO TOTAL: Desativa a hidratação no HOST do componente
+  host: {
+    'ngSkipHydration': 'true'
+  }
 })
 export class ContatoComponent {
   public translate = inject(TranslationService);
