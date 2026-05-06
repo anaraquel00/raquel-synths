@@ -8,7 +8,10 @@ import { TranslationService } from '../../services/translation.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './compliance.html',
-  styleUrl: './compliance.scss'
+  styleUrl: './compliance.scss',
+  // 🛡️ A ARMADURA ESTÁ AQUI: Isso diz ao Angular para blindar a página
+  // toda vez que ela for acessada diretamente pela URL.
+  host: { 'ngSkipHydration': 'true' }
 })
 export class ComplianceComponent implements OnInit, OnDestroy {
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
