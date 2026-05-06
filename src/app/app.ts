@@ -67,6 +67,7 @@ export class App implements OnInit {
 
     // 🛡️ TRAVA TÁTICA: Lógicas que leem o DOM/Storage do cliente são movidas para pós-hidratação.
     afterNextRender(() => {
+
       // 1. --- LÓGICA DE COOKIES ---
       const win = this.document.defaultView as any;
       if (win && win.localStorage) {
@@ -74,36 +75,28 @@ export class App implements OnInit {
         this.cookiesAccepted.set(consent);
       }
 
-      // 2. --- PROTOCOLO DE IDIOMA ---
+      // 2. --- PROTOCOLO DE IDIOMA E TEMA ---
       this.iniciarProtocoloDeIdioma();
-
-      // 3. --- LEITURA DE PARÂMETRO DE URL (OVERRIDE DE TEMA) ---
       if (win) {
         const params = new URLSearchParams(win.location.search);
         const modeNaURL = params.get('mode');
         if (modeNaURL === 'jonah') {
           this.aplicarModo('jonah');
         }
-        // Removido o 'else' que forçava o modo Broklin, respeitando o localStorage.
       }
+
+      // 🚀 3. --- DISPARO SEGURO DE SCRIPTS EXTERNOS ---
+      // Agora o Analytics e o AdSense só injetam código DEPOIS que o DOM está 100% estável!
+      const meuAdSenseId = 'ca-pub-5619990751602183';
+      this.adSenseService.initLazyLoad(meuAdSenseId);
+
+      const meuGtmId = 'G-Z1TSQ0NV6T';
+      this.trackingService.initLazyTracking(meuGtmId);
+
     });
   }
 
 ngOnInit() {
-    // 2. --- 🚀 PROTOCOLO DE RASTREAMENTO E IDIOMA (O Cofre do Navegador) ---
-    // 🛡️ TUDO o que for de Google Analytics, AdSense ou Idioma DEVE ficar aqui dentro!
-    if (isPlatformBrowser(this.platformId)) {
-      // A inicialização do idioma foi movida para afterNextRender para evitar Hydration Mismatch.
-
-      // Inicia o AdSense em segurança
-      const meuAdSenseId = 'ca-pub-5619990751602183';
-      this.adSenseService.initLazyLoad(meuAdSenseId);
-
-      // Inicia o Analytics/GTM em segurança
-      const meuGtmId = 'G-Z1TSQ0NV6T';
-      this.trackingService.initLazyTracking(meuGtmId);
-
-    }
 
     // 4. --- INTERCEPTADOR GLOBAL DE SEO ---
     this.router.events.pipe(
