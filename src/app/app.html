@@ -1,4 +1,5 @@
-<app-header></app-header>
+<!-- 🛡️ ESCUDO 1: Protege o Cabeçalho dinâmico -->
+<app-header ngSkipHydration></app-header>
 
 <main id="main-content" role="main">
   <router-outlet></router-outlet>
@@ -11,24 +12,30 @@
     <div style="min-height: 100px; width: 100%;"></div>
   }
 </section>
-<app-footer></app-footer>
 
-@if (!cookiesAccepted()) {
-  <div class="cookie-banner fade-in-up">
-    <div class="cookie-content">
-      <span class="cookie-icon">🍪</span>
-      <p>
-        {{ translate.isPt()
-           ? 'Utilizamos cookies do Google e Stripe para melhorar sua experiência e segurança.'
-           : 'We use Google and Stripe cookies to enhance your experience and security.' }}
-        <a [routerLink]="['/compliance']" class="cookie-link">
-          {{ translate.isPt() ? 'Ler Protocolos' : 'Read Protocols' }}
-        </a>
-      </p>
+<!-- 🛡️ ESCUDO 2: Protege o Rodapé dinâmico -->
+<app-footer ngSkipHydration></app-footer>
+
+<!-- 🛡️ ESCUDO 3: Tira a tradução do Cookie Banner da Hidratação -->
+<!-- O servidor ignora isso. O banner surge suavemente 1s após a página carregar -->
+@defer (on timer(1s)) {
+  @if (!cookiesAccepted()) {
+    <div class="cookie-banner fade-in-up">
+      <div class="cookie-content">
+        <span class="cookie-icon">🍪</span>
+        <p>
+          {{ translate.isPt()
+             ? 'Utilizamos cookies do Google e Stripe para melhorar sua experiência e segurança.'
+             : 'We use Google and Stripe cookies to enhance your experience and security.' }}
+          <a [routerLink]="['/compliance']" class="cookie-link">
+            {{ translate.isPt() ? 'Ler Protocolos' : 'Read Protocols' }}
+          </a>
+        </p>
+      </div>
+
+      <button (click)="acceptCookies()" class="btn-accept">
+        {{ translate.isPt() ? 'ACEITAR DADOS' : 'ACCEPT DATA' }}
+      </button>
     </div>
-
-    <button (click)="acceptCookies()" class="btn-accept">
-      {{ translate.isPt() ? 'ACEITAR DADOS' : 'ACCEPT DATA' }}
-    </button>
-  </div>
+  }
 }
