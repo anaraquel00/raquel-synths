@@ -1,12 +1,14 @@
-import { Component, OnInit, OnDestroy, signal, afterNextRender } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, afterNextRender, inject } from '@angular/core';
 import { TranslationService } from '../../services/translation.service';
 import { CREATOR_DATA, NAV_DATA } from '../../data/app-data';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
-import { PLATFORM_ID, inject } from '@angular/core';
+import { PLATFORM_ID} from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { SeoService } from '../../services/seo.service';
+import { Router } from '@angular/router'; 
 
 @Component({
   selector: 'app-creator',
@@ -22,6 +24,8 @@ private document = inject(DOCUMENT);
 
 public currentTheme = signal<'broklin' | 'jonah'>('broklin');
 private themeObserver: MutationObserver | null = null;
+router: Router = inject(Router);
+seoService: SeoService = inject(SeoService);
 
 constructor(public translate: TranslationService) {
   // 🛡️ TRAVA TÁTICA: O Observer e a leitura do DOM iniciam APENAS após a hidratação (DOM Estável)
@@ -33,6 +37,30 @@ constructor(public translate: TranslationService) {
 }
 
   ngOnInit() {
+    const isPt = this.translate.isPt();
+    const currentPath = this.router.url.split('?')[0];
+
+    this.seoService.updateMetaTags({
+      title: isPt ? 'A Criadora | Ana Raquel' : 'The Creator | Ana Raquel',
+      description: isPt ? 'Engenharia Musical fundindo Angular, IA e a alma humana.' : 'Musical Engineering fusing Angular, AI, and the human soul.',
+      url: `https://raquelsynths.com.br${currentPath}`
+    });
+
+    // 🚀 Injeção JSON-LD de Perfil Profissional
+    this.seoService.setJsonLd({
+      "@context": "https://schema.org",
+      "@type": "ProfilePage",
+      "mainEntity": {
+        "@type": "Person",
+        "name": "Ana Raquel de Holanda",
+        "jobTitle": "Front-End Developer & AI Music Designer",
+        "url": `https://raquelsynths.com.br${currentPath}`,
+        "sameAs":[
+          "https://www.linkedin.com/in/ana-raquel-de-holanda",
+          "https://github.com/anaraquel00"
+        ]
+      }
+    });
   }
 
   ngOnDestroy() {
