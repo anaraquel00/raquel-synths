@@ -35,11 +35,9 @@ export class LogReaderComponent implements OnInit, OnDestroy {
 
   constructor() { // Construtor único
     // 🛡️ INICIALIZAÇÃO CONSISTENTE: Define o estado inicial para SSR e Browser
-    let initialJonahMode = false;
-    if (isPlatformBrowser(this.platformId)) {
-      initialJonahMode = this.document.body.classList.contains('mode-jonah');
-    }
-    this.isJonahMode.set(initialJonahMode);
+
+    // ⚠️ Evita Hydration Mismatch fatal que trava o Router
+    this.isJonahMode.set(false);
 
     // 🛡️ TRAVA TÁTICA: O Observer e a leitura do DOM nascem apenas pós-hidratação
     afterNextRender(() => {

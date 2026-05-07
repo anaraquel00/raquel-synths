@@ -1,6 +1,6 @@
 <section class="vn-container">
-  <h2 class="section-title">{{ text.title }}</h2>
-  <p class="section-subtitle">{{ text.subtitle }}</p>
+  <h2 class="section-title">{{ text?.title }}</h2>
+  <p class="section-subtitle">{{ text?.subtitle }}</p>
  <div class="sagas-container">
 
   <header class="saga-header">
@@ -23,9 +23,9 @@
      <div class="poster" [style.backgroundImage]="'url(' + arc.image + ')'">
           </div>
         <div class="arc-info">
-          <h3>{{ arc.title }}</h3>
-          <span class="subtitle">{{ arc.subtitle }}</span>
-          <p>{{ arc.description }}</p>
+          <h3>{{ arc?.title }}</h3>
+          <span class="subtitle">{{ arc?.subtitle }}</span>
+          <p>{{ arc?.description }}</p>
 
           @if (arc.mode === 'chaos') {
             @if (currentMode() === 'broklin') {

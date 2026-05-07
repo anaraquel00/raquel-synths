@@ -83,8 +83,8 @@
  <app-root>
     <div id="boot-screen" ngSkipHydration style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; width: 100vw; background-color: #0a0a12; font-family: 'Montserrat', sans-serif; transition: all 0.3s ease;">
 
-      <h2 id="boot-title" style="margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px;">INIT SYSTEM...</h2>
-      <p id="boot-subtitle" style="color: #888; font-family: 'Roboto', sans-serif; font-size: 14px;">Buscando pacotes de dados...</p>
+      <h2 id="boot-title" style="margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; text-align: center;">INIT SYSTEM...</h2>
+      <p id="boot-subtitle" style="color: #888; font-family: 'Roboto', sans-serif; text-align: center; padding: 0 20px;">Buscando pacotes de dados...</p>
 
       <style>
         @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
@@ -99,6 +99,14 @@
 
         .tech-mode { color: #00f3ff; text-shadow: 0 0 10px rgba(0, 243, 255, 0.5); animation: pulse 1.5s infinite; }
         .jonah-mode { color: #ff003c; text-shadow: 0 0 15px rgba(255, 0, 60, 0.8); animation: glitch 0.3s infinite alternate !important; }
+
+        /* 📱 RESPONSIVIDADE DO SKELETON LOADER */
+        #boot-title { font-size: 2rem; }
+        #boot-subtitle { font-size: 14px; }
+        @media (max-width: 768px) {
+          #boot-title { font-size: 1.3rem; }
+          #boot-subtitle { font-size: 12px; }
+        }
       </style>
 
       <script>

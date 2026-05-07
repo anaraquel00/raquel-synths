@@ -6,11 +6,12 @@ import { CONTACT_DATA } from '../../data/app-data';
 
 // 1. IMPORTAR AS FERRAMENTAS DO FIREBASE
 import { Firestore, collection, addDoc } from '@angular/fire/firestore';
+import { SafeHtmlPipe } from '../../components/pipes/safe-html.pipe';
 
 @Component({
   selector: 'app-contato',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, SafeHtmlPipe],
   templateUrl: './contato.html',
   styleUrls: ['./contato.scss']
 })

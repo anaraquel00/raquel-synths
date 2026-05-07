@@ -29,13 +29,9 @@ export class ComplianceComponent implements OnInit, OnDestroy {
   constructor() {
     // 🛡️ INICIALIZAÇÃO CONSISTENTE: Define o estado inicial para SSR e Browser
     const langKey = this.translationService.currentLang() === 'pt' ? 'pt' : 'en';
-    let modeKey: 'broklin' | 'jonah' = 'broklin';
 
-    // Apenas no navegador, verifica a classe do body. No SSR, assume 'broklin'.
-    if (isPlatformBrowser(this.platformId)) {
-      modeKey = this._document.body.classList.contains('mode-jonah') ? 'jonah' : 'broklin';
-    }
-    this.data.set(COMPLIANCE_DATA[langKey][modeKey]);
+    // ⚠️ SEMPRE inicializa como broklin para evitar Hydration Mismatch e Crash do Angular
+    this.data.set(COMPLIANCE_DATA[langKey]['broklin']);
 
     // 🛡️ TRAVA TÁTICA: O Observer e a leitura do DOM nascem apenas pós-hidratação
     afterNextRender(() => {

@@ -73,14 +73,14 @@
             <img [ngSrc]="album.cover" width="512"
             height="512"
             sizes="(max-width: 768px) 100vw, 50vw"
-            loading="lazy" [alt]="album.title">
+            loading="lazy" [alt]="album?.title">
           </div>
           <div class="album-content">
             <div class="header">
-              <span class="release-type">{{ album.type }}</span>
-              <h3>{{ album.title }}</h3>
+              <span class="release-type">{{ album?.type }}</span>
+              <h3>{{ album?.title }}</h3>
             </div>
-            <div class="album-description" [innerHTML]="translate.isPt() ? album.descriptionPT : album.descriptionEN"></div>
+            <div class="album-description" [innerHTML]="translate.isPt() ? album?.descriptionPT : album?.descriptionEN"></div>
             <div class="actions-bar">
               @if (album.soundcloudUrl || album.soundcloud || album.embedLink) {
                 <a [href]="album.soundcloudUrl ? album.soundcloudUrl : (album.soundcloud ? album.soundcloud : album.embedLink)"
@@ -107,7 +107,7 @@
              @defer (on viewport) {
     <app-ad-banner ngSkipHydration></app-ad-banner>
       } @placeholder {
-    <div style="min-height: 100px; width: 100%;"></div>
+    <div style="min-height: 280px; width: 100%; display: block;"></div>
       }
           </div>
         }
@@ -135,14 +135,14 @@
             <img [ngSrc]="album.cover"
             width="512" height="512"
             sizes="(max-width: 768px) 100vw, 50vw"
-            loading="lazy" [alt]="album.title" class="glitch-effect">
+            loading="lazy" [alt]="album?.title" class="glitch-effect">
           </div>
           <div class="album-content">
               <div class="header">
-              <span class="release-type">{{ album.type }}</span>
-              <h3>{{ album.title }}</h3>
+              <span class="release-type">{{ album?.type }}</span>
+              <h3>{{ album?.title }}</h3>
             </div>
-            <div class="album-description" [innerHTML]="translate.isPt() ? album.descriptionPT : album.descriptionEN"></div>
+            <div class="album-description" [innerHTML]="translate.isPt() ? album?.descriptionPT : album?.descriptionEN"></div>
           <div class="actions-bar">
               @if (album.soundcloudUrl || album.soundcloud || album.embedLink) {
     <a [href]="album.soundcloudUrl ? album.soundcloudUrl : (album.soundcloud ? album.soundcloud : album.embedLink)"
@@ -170,7 +170,7 @@
              @defer (on viewport) {
        <app-ad-banner ngSkipHydration></app-ad-banner>
        } @placeholder {
-       <div style="min-height: 100px; width: 100%;"></div>
+       <div style="min-height: 280px; width: 100%; display: block;"></div>
          }
           </div>
         }

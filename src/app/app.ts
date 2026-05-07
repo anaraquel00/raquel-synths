@@ -99,7 +99,7 @@ export class App implements OnInit {
 
         this.seoService.updateMetaTags({
           title: data['seo'].title ? data['seo'].title[lang] : undefined,
-          description: data['seo'].description ? data['seo'].description[lang] : undefined,
+          description: data['seo'].description? data['seo'].description[lang] : undefined,
           url: urlCanonica
         });
       }

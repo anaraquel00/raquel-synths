@@ -7,7 +7,7 @@ import { RouterLink } from '@angular/router';
 import { PLATFORM_ID} from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { SeoService } from '../../services/seo.service';
-import { Router } from '@angular/router'; 
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-creator',
@@ -28,11 +28,9 @@ export class Creator implements OnInit, OnDestroy {
 
   constructor(public translate: TranslationService) {
     // 🛡️ INICIALIZAÇÃO CONSISTENTE: Define o estado inicial para SSR e Browser
-    let initialTheme: 'broklin' | 'jonah' = 'broklin';
-    if (isPlatformBrowser(this.platformId)) {
-      initialTheme = this.document.body.classList.contains('mode-jonah') ? 'jonah' : 'broklin';
-    }
-    this.currentTheme.set(initialTheme);
+
+    // ⚠️ Evita Hydration Mismatch fatal que trava o Router
+    this.currentTheme.set('broklin');
 
     // 🛡️ TRAVA TÁTICA: O Observer e a leitura do DOM iniciam APENAS após a hidratação (DOM Estável)
     afterNextRender(() => {

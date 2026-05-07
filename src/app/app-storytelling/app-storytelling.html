@@ -1,4 +1,4 @@
-<section class="story-container">
+<section class="story-container" style="min-height: 1200px; display: flex; flex-direction: column;">
   <h2 class="section-title">SYSTEM_LOGS<br>LATEST</h2>
   <p class="terminal-subtitle">
   {{translate.isPt() ? '> [ DIR: /var/log/rqs/ ] Decodificando interceptações de áudio, ataques de rede e a verdade nua e crua do Apartamento 14. Acesso concedido.' : '> [ DIR: /var/log/rqs/ ] Decoding audio intercepts, network attacks and the raw truth of Apartment 14. Access granted.'}}
@@ -14,9 +14,12 @@
         @let content = getEventContent(event);
 
         @if (event._isError) {
-          <div class="error-card">
-            <h3>🔥 SYSTEM FAILURE</h3>
-            <p>CRITICAL ERROR: {{ event.message }}</p>
+          <div class="error-card" style="text-align: center; padding: 2rem; border: 1px dashed #ff003c; border-radius: 8px; background: rgba(255,0,0,0.05); margin-bottom: 2rem;">
+            <h3 style="color: #ff003c; text-shadow: 0 0 10px #ff003c; font-family: 'Courier New', monospace;">[ UPLINK FAILED ]</h3>
+            <p style="color: #ccc; margin-bottom: 1.5rem;">CRITICAL ERROR: {{ event.message }}</p>
+            <button (click)="retryConnection()" class="btn-decrypt" style="cursor: pointer; border-color: #ff003c; color: #ff003c;">
+               {{ translate.isPt() ? '[ 🔄 REESTABELECER CONEXÃO ]' : '[ 🔄 RETRY UPLINK ]' }}
+            </button>
           </div>
         } @else {
 
@@ -37,7 +40,7 @@
                 <h3 class="title">{{ content?.title }}</h3>
               </div>
 
-              <div class="description-lead" [innerHTML]="content.description | safeHtml"></div>
+              <div class="description-lead" [innerHTML]="content?.description | safeHtml"></div>
 
               @if (!event.isArchiveLink) {
                 <div class="action-area" style="margin-top: 15px;">
@@ -56,7 +59,11 @@
               }
 
             </div>
-           </div> <app-ad-banner></app-ad-banner>}
+           </div>
+           <div style="min-height: 280px; width: 100%; margin-top: 15px; display: block;">
+             <app-ad-banner></app-ad-banner>
+           </div>
+          }
       }
 
       @if (events.length === 0) {
@@ -69,8 +76,9 @@
       }
 
     } @else {
-      <div class="loading-state">
-        <p>📡 ESTABLISHING UPLINK...</p>
+      <div class="loading-state" style="min-height: 800px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px dashed #333; border-radius: 12px; background: rgba(0,0,0,0.2);">
+        <div class="icon-pulse" style="font-size: 2rem; margin-bottom: 10px;">🔌</div>
+        <span style="font-family: 'Roboto Mono', monospace; color: #666; font-size: 0.8rem; animation: pulse 1.5s infinite;">[ AGUARDANDO UPLINK... ]</span>
       </div>
     }
 
