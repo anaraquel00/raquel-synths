@@ -57,7 +57,7 @@
     </h2>
 
   @if (selectedDepartmentData?.loreDescription) {
-     <div class="sector-description" [innerHTML]="selectedDepartmentData.loreDescription[currentLang()]"></div>
+     <div class="sector-description" [innerHTML]="selectedDepartmentData.loreDescription?.[currentLang()]"></div>
   }
 
     <div class="hazard-stripe bottom"></div>
@@ -66,20 +66,20 @@
 
       <div class="product-grid">
 
-        @for (item of filteredProducts; track item.id || $index) {
+        @for (item of filteredProducts; track item.id) {
         <div class="product-card fade-in-up" [class]="item.faction">
           <div class="image-wrapper">
-            <img [src]="item.image" [alt]="item.content[currentLang()].name">
+            <img [src]="item.image" [alt]="item.content?.[currentLang()]?.name || 'Produto RQS'">
             <div class="overlay"></div>
           </div>
 
           <div class="info">
-            <h3>{{ item.content[currentLang()]?.name }}</h3>
+            <h3>{{ item.content?.[currentLang()]?.name }}</h3>
 
-            <div class="desc" [innerHTML]="item.content[currentLang()]?.description"></div>
+            <div class="desc" [innerHTML]="item.content?.[currentLang()]?.description"></div>
 
             <div class="price-row">
-              <span class="price">{{ item.content[currentLang()]?.price }}</span>
+              <span class="price">{{ item.content?.[currentLang()]?.price }}</span>
 
               <button
  (click)="handleShopClick(item)"

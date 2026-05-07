@@ -1,10 +1,9 @@
-import { Component, inject, OnDestroy, OnInit, signal, ChangeDetectorRef, Inject, PLATFORM_ID, DOCUMENT, afterNextRender } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal, ChangeDetectorRef, PLATFORM_ID, DOCUMENT, afterNextRender, Injector, Inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import Swal from 'sweetalert2';
-import { Subscription, combineLatest } from 'rxjs';
+import { Subscription, combineLatest, of } from 'rxjs';
 import { take, timeout, catchError } from 'rxjs/operators';
-import{ of } from 'rxjs';
 
 
 // 👇 IMPORTANTE: O ContentService traz os dados do Firebase
@@ -55,30 +54,32 @@ selectedDepartmentData: any;
     <p>We operate in the shadows of the motherboard. Our heavy artifacts are built to survive Kernel Panic and the total collapse of their infrastructure. Forget network security. Wear the anomaly, wear the revolt, turn your guitar's gain up to the maximum limit, and show the General that our pain cannot be silenced with crystal-clear mixing. Decode your access to the underworld and arm yourself now.</p>
   `;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
-    this.isBrowser = isPlatformBrowser(this.platformId);
+  // --- INJEÇÕES BLINDADAS ---
+  private injector = inject(Injector);
+  private seoService = inject(SeoService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private cdr = inject(ChangeDetectorRef);
+  private document = inject(DOCUMENT);
+  public translate = inject(TranslationService);
+  private trackingService = inject(TrackingService);
+  
+  // 🛡️ Inicialização segura em uma linha para não dar erro de ordem
+  isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
+  // --- OBSERVERS & SUBSCRIPTIONS ---
+  private observer: MutationObserver | null = null;
+  private dataSubscription: Subscription | null = null;
+  private querySub: Subscription | null = null; // Adicionado para gerenciar a inscrição
+  private intervalId: any = null; // Adicionado para gerenciar o setInterval
+
+  constructor() {
     // 🛡️ TRAVA TÁTICA: A checagem do modo Jonah e o observer só iniciam pós-hidratação
     afterNextRender(() => {
       this.checkCurrentMode();
       this.setupThemeObserver();
     });
   }
-  isBrowser: boolean;
-
-  // --- INJEÇÕES ---
-  private contentService = inject(ContentService); // Conexão com o Firebase
-  private seoService = inject(SeoService);
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
-  private cdr = inject(ChangeDetectorRef); // Para forçar a atualização da tela
-  private document = inject(DOCUMENT);
-  public translate = inject(TranslationService);
-  private trackingService = inject(TrackingService); // Para a telemetria de afiliados
-
-  // --- OBSERVERS & SUBSCRIPTIONS ---
-  private observer: MutationObserver | null = null;
-  private dataSubscription: Subscription | null = null;
 
   // --- ESTADO ---
   activeMode = signal<'broklin' | 'jonah'>('broklin');
@@ -108,7 +109,7 @@ ngOnInit(): void {
     this.loadData();
 
     // 👇 OUVINTE DE URL (A Mágica do Deep Link com Query Params)
-    this.route.queryParams.subscribe(params => {
+    this.querySub = this.route.queryParams.subscribe(params => { // Atribuir a querySub
       const dept = params['dept'];
 
       if (dept) {
@@ -137,21 +138,30 @@ ngOnInit(): void {
   ngOnDestroy(): void {
     if (this.isBrowser && this.observer) this.observer.disconnect();
     if (this.dataSubscription) this.dataSubscription.unsubscribe();
+    if (this.querySub) this.querySub.unsubscribe(); // Desinscrever querySub
+    if (this.intervalId) clearInterval(this.intervalId); // Limpar intervalId
   }
 
   // --- FUNÇÃO DE CARREGAMENTO (CORRIGIDA) ---
  private loadData() {
+    // 🛡️ MOCK DO SERVIDOR: Evita o Firebase no momento do Build
+    if (!this.isBrowser) {
+      this.allProducts = [];
+      this.allDepartments = [];
+      return;
+    }
+
     this.dataSubscription = combineLatest({
-      products: this.contentService.getProducts(),
-      departments: this.contentService.getDepartments()
+      products: this.injector.get(ContentService).getProducts().pipe(take(1)), // Usar injector
+      departments: this.injector.get(ContentService).getDepartments().pipe(take(1)) // Usar injector
     })
     .pipe(
       take(1),
       timeout(5000),
-      catchError(err => {
-        console.warn('⚠️ Erro ou Timeout no Firebase', err);
+      catchError((err: any) => { // Tipagem para 'err'
+        console.warn('⚠️ [SSR/FIREBASE]: Timeout ou erro na conexão. Retornando vazio para não travar o build.', err);
         // Retorna arrays vazios para salvar o servidor
-        return of({ products: new Array<any>(), departments: new Array<any>() });
+        return of({ products: [], departments: [] }); // Retorno consistente
       })
     )
     .subscribe({
@@ -169,7 +179,7 @@ ngOnInit(): void {
         // Força o Angular a pintar a tela
         this.cdr.detectChanges();
       },
-      error: (err) => {
+      error: (err: any) => { // Tipagem para 'err'
         console.error('🚨 Erro ao baixar estoque:', err);
         if (err.code === 'permission-denied') {
              console.warn('⚠️ VERIFIQUE AS REGRAS DE SEGURANÇA DO FIRESTORE!');
@@ -305,7 +315,7 @@ checkCurrentMode() {
  // --- 💸 MONETIZAÇÃO BLINDADA V2.0 (AGORA COM TELEMETRIA) ---
 
   handleShopClick(item: any) { // 👈 AGORA RECEBE O ITEM COMPLETO
-    const productUrl = item.stripeUrl; // 👈 Extrai a URL original aqui
+    const productUrl = item.stripeUrl || item.link || item.url; // 👈 Extrai a URL original aqui, mais robusto
 
     if (!productUrl) {
       console.warn('🚫 Link vazio detectado.');
@@ -324,7 +334,7 @@ checkCurrentMode() {
     // 🎯 🚀 DISPARO DA TELEMETRIA PARA A META 🚀 🎯
     const lang = this.currentLang();
     const productName = item.content[lang]?.name || 'Produto RQS';
-    const platform = this.detectPlatformForPixel(cleanUrl);
+    const platform = this.detectPlatformForPixel(cleanUrl); // item.content[lang]?.name já está correto
 
     // Avisa o algoritmo ANTES de abrir o modal
     this.trackingService.trackAffiliateClick(productName, platform);

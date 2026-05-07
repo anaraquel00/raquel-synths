@@ -1,5 +1,5 @@
-import { Component, inject, OnInit, OnDestroy, signal, afterNextRender } from '@angular/core';
-import { CommonModule, DOCUMENT } from '@angular/common';
+import { Component, inject, OnInit, OnDestroy, signal, afterNextRender, PLATFORM_ID } from '@angular/core';
+import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { COMPLIANCE_DATA } from '../../data/app-data';
 import { TranslationService } from '../../services/translation.service';
 import { SeoService } from '../../services/seo.service';
@@ -17,17 +17,27 @@ export class ComplianceComponent implements OnInit, OnDestroy {
   private _document = inject(DOCUMENT);
   private seoService = inject(SeoService);
   private router = inject(Router);
+  private platformId = inject(PLATFORM_ID); // Injetar PLATFORM_ID
 
   public data = signal<any>(
-    COMPLIANCE_DATA[this.translationService.currentLang() as 'en' | 'pt']['broklin']
+    null // Inicializar com null, será definido no constructor
   );
 
   private themeObserver: MutationObserver | undefined;
   translate: TranslationService = inject(TranslationService);
 
   constructor() {
-    // 🛡️ A MÁGICA: Só atualiza para o Português (ou modo Jonah)
-    // DEPOIS que o Angular terminou a hidratação e o DOM está estável!
+    // 🛡️ INICIALIZAÇÃO CONSISTENTE: Define o estado inicial para SSR e Browser
+    const langKey = this.translationService.currentLang() === 'pt' ? 'pt' : 'en';
+    let modeKey: 'broklin' | 'jonah' = 'broklin';
+
+    // Apenas no navegador, verifica a classe do body. No SSR, assume 'broklin'.
+    if (isPlatformBrowser(this.platformId)) {
+      modeKey = this._document.body.classList.contains('mode-jonah') ? 'jonah' : 'broklin';
+    }
+    this.data.set(COMPLIANCE_DATA[langKey][modeKey]);
+
+    // 🛡️ TRAVA TÁTICA: O Observer e a leitura do DOM nascem apenas pós-hidratação
     afterNextRender(() => {
       this.atualizarDados();
 

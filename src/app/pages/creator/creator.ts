@@ -1,12 +1,11 @@
-import { Component, OnInit, OnDestroy, signal, afterNextRender, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, afterNextRender, inject, DOCUMENT } from '@angular/core';
 import { TranslationService } from '../../services/translation.service';
 import { CREATOR_DATA, NAV_DATA } from '../../data/app-data';
-import { CommonModule, DOCUMENT } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { PLATFORM_ID} from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { SeoService } from '../../services/seo.service';
 import { Router } from '@angular/router'; 
 
@@ -19,22 +18,29 @@ standalone: true
 })
 export class Creator implements OnInit, OnDestroy {
 
-private platformId = inject(PLATFORM_ID);
-private document = inject(DOCUMENT);
+  private platformId = inject(PLATFORM_ID);
+  private document = inject(DOCUMENT);
 
-public currentTheme = signal<'broklin' | 'jonah'>('broklin');
-private themeObserver: MutationObserver | null = null;
-router: Router = inject(Router);
-seoService: SeoService = inject(SeoService);
+  public currentTheme = signal<'broklin' | 'jonah'>('broklin'); // Default para SSR
+  private themeObserver: MutationObserver | null = null;
+  router: Router = inject(Router);
+  seoService: SeoService = inject(SeoService);
 
-constructor(public translate: TranslationService) {
-  // 🛡️ TRAVA TÁTICA: O Observer e a leitura do DOM iniciam APENAS após a hidratação (DOM Estável)
-  afterNextRender(() => {
-    this.checkTheme();
-    this.themeObserver = new MutationObserver(() => this.checkTheme());
-    this.themeObserver.observe(this.document.body, { attributes: true, attributeFilter: ['class'] });
-  });
-}
+  constructor(public translate: TranslationService) {
+    // 🛡️ INICIALIZAÇÃO CONSISTENTE: Define o estado inicial para SSR e Browser
+    let initialTheme: 'broklin' | 'jonah' = 'broklin';
+    if (isPlatformBrowser(this.platformId)) {
+      initialTheme = this.document.body.classList.contains('mode-jonah') ? 'jonah' : 'broklin';
+    }
+    this.currentTheme.set(initialTheme);
+
+    // 🛡️ TRAVA TÁTICA: O Observer e a leitura do DOM iniciam APENAS após a hidratação (DOM Estável)
+    afterNextRender(() => {
+      this.checkTheme(); // Re-avalia o tema após a hidratação
+      this.themeObserver = new MutationObserver(() => this.checkTheme());
+      this.themeObserver.observe(this.document.body, { attributes: true, attributeFilter: ['class'] });
+    });
+  }
 
   ngOnInit() {
     const isPt = this.translate.isPt();

@@ -30,10 +30,17 @@ export class LogReaderComponent implements OnInit, OnDestroy {
   private isPt$ = toObservable(this.translate.isPt);
 
   logData$!: Observable<any>;
-  isJonahMode = signal<boolean>(false);
+  isJonahMode = signal<boolean>(false); // Default para SSR
   private themeObserver: MutationObserver | null = null;
 
-  constructor() {
+  constructor() { // Construtor único
+    // 🛡️ INICIALIZAÇÃO CONSISTENTE: Define o estado inicial para SSR e Browser
+    let initialJonahMode = false;
+    if (isPlatformBrowser(this.platformId)) {
+      initialJonahMode = this.document.body.classList.contains('mode-jonah');
+    }
+    this.isJonahMode.set(initialJonahMode);
+
     // 🛡️ TRAVA TÁTICA: O Observer e a leitura do DOM nascem apenas pós-hidratação
     afterNextRender(() => {
       this.isJonahMode.set(this.document.body.classList.contains('mode-jonah'));
@@ -42,7 +49,7 @@ export class LogReaderComponent implements OnInit, OnDestroy {
       });
       this.themeObserver.observe(this.document.body, { attributes: true, attributeFilter: ['class'] });
     });
-  }
+  };
 
   ngOnInit() {
     // �️ Captura o ID da URL de forma reativa

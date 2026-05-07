@@ -8,7 +8,6 @@
       "resources": {
         "files": [
           "/favicon.ico",
-          "/index.csr.html",
           "/index.html",
           "/manifest.webmanifest",
           "/*.css",
@@ -19,11 +18,25 @@
     {
       "name": "assets",
       "installMode": "lazy",
-      "updateMode": "lazy",
+      "updateMode": "prefetch",
       "resources": {
         "files": [
-          "/assets/*.(svg|cur|jpg|jpeg|png|apng|webp|avif|gif|otf|ttf|woff|woff2)"
+          "/assets/**"
         ]
+      }
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "api-firebase",
+      "urls": [
+        "https://firestore.googleapis.com/**"
+      ],
+      "cacheConfig": {
+        "maxSize": 20,
+        "maxAge": "1h",
+        "timeout": "10s",
+        "strategy": "freshness"
       }
     }
   ]
