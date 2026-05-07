@@ -447,7 +447,7 @@ export const CONTACT_DATA = {
     subtitle: "A rede corporativa monitora as frequências abertas, mas este terminal está blindado por criptografia de ponta a ponta. Se você é um produtor buscando colaboração em faixas de Synthwave ou Metal, imprensa solicitando interceptação de rádio para entrevistas, ou um membro da Horda reportando anomalias no sistema (bugs) e discutindo a nossa Lore, este é o seu canal seguro. Preencha os logs de transmissão abaixo com extrema precisão. A General Kelma e eu analisamos cada pacote de dados em ambiente isolado antes de autorizar qualquer conexão direta.",
 
     socialCards: [
-      { name: 'Discord', icon: 'fab fa-discord', link: 'https://discord.gg/mVpzuFtfJh', color: '#38419e', desc: 'Terminal Pirata & Lore' },
+      { name: 'X', icon: 'fab fa-x-twitter', link: 'https://x.com/anaraquel00', color: '#000000', desc: 'Terminal Pirata & Lore' },
       { name: 'Instagram', icon: 'fab fa-instagram', link: 'https://www.instagram.com/rqs_synths', color: '#d946ef', desc: 'Arquivos Visuais' },
       { name: 'Facebook', icon: 'fab fa-facebook', link: 'https://www.facebook.com/profile.php?id=61585926695560', color: '#0115ef', desc: 'Matriz Global' }
     ],
@@ -476,7 +476,7 @@ export const CONTACT_DATA = {
     subtitle: "The corporate network monitors open frequencies, but this terminal is shielded by end-to-end encryption. Whether you are a producer seeking collaboration on Synthwave or Metal tracks, press requesting a radio interception for interviews, or a Horde member reporting system anomalies (bugs) and discussing our Lore, this is your secure channel. Fill out the transmission logs below with extreme precision. General Kelma and I analyze each data packet in an isolated environment before authorizing any direct connection.",
 
     socialCards: [
-      { name: 'Discord', icon: 'fab fa-discord', link: 'https://discord.gg/ryvhdRnQpQ',color: '#38419e', desc: 'Pirate Terminal & Lore' },
+      { name: 'X', icon: 'fab fa-x-twitter', link: 'https://x.com/anaraquel00',color: '#000000', desc: 'Pirate Terminal & Lore' },
       { name: 'Instagram', icon: 'fab fa-instagram', link: 'https://www.instagram.com/rqs_synths', color: '#d946ef', desc: 'Visual Archives' },
       { name: 'Facebook', icon: 'fab fa-facebook', link: 'https://www.facebook.com/profile.php?id=61585926695560', color: '#0115ef', desc: 'Global Matrix' }
     ],

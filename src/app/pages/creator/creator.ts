@@ -13,11 +13,7 @@ import { isPlatformBrowser } from '@angular/common';
   imports: [CommonModule, MatButtonModule, MatIconModule, RouterLink],
   templateUrl: './creator.html',
   styleUrl: './creator.scss',
-  // 🛡️ O ESCUDO TOTAL: Desativa a hidratação no HOST do componente
-  host: {
-    'ngSkipHydration': 'true'
-  },
-  standalone: true
+standalone: true
 })
 export class Creator implements OnInit, OnDestroy {
 

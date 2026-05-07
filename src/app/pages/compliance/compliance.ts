@@ -8,11 +8,7 @@ import { TranslationService } from '../../services/translation.service';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './compliance.html',
-  styleUrls: ['./compliance.scss'],
-  // 🛡️ O ESCUDO TOTAL: Desativa a hidratação no HOST do componente
-  host: {
-    'ngSkipHydration': 'true'
-  }
+  styleUrls: ['./compliance.scss']
 })
 export class ComplianceComponent implements OnInit, OnDestroy {
   private translationService = inject(TranslationService);

@@ -20,11 +20,7 @@ import { DEPARTMENTS_DATA } from '../../data/store-data';
   standalone: true,
   imports: [CommonModule, StoreDepartmentsComponent,RouterLink],
   templateUrl: './store.html',
-  styleUrls: ['./store.scss'],
-  // 🛡️ O ESCUDO TOTAL: Desativa a hidratação no HOST do componente
-  host: {
-    'ngSkipHydration': 'true'
-  }
+  styleUrls: ['./store.scss']
 })
 export class StoreComponent implements OnInit, OnDestroy {
 selectedDepartmentData: any;
