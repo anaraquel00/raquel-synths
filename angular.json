@@ -24,7 +24,19 @@
             "ssr": {
               "entry": "src/server.ts"
             },
-
+            "prerender": {
+              "discoverRoutes": true,
+              "routes": [
+                "/",
+                "/compliance",
+                "/dossier",
+                "/saga",
+                "/creator",
+                "/discografia",
+                "/store",
+                "/musical-archives"
+              ]
+            },
             "polyfills": [
               "zone.js"
             ],
