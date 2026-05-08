@@ -97,22 +97,30 @@ export class App implements OnInit {
       filter(route => route.outlet === 'primary'),
       mergeMap(route => route.data)
     ).subscribe(data => {
-      if (data['seo']) {
-        // 🛡️ A TRAVA CONTRA O ERRO DE HEAD MISMATCH
-        // O servidor já mandou as metatags perfeitas. O navegador NÃO PODE alterá-las
-        // no milissegundo 0. Nós ignoramos o primeiro evento e atualizamos nos próximos cliques.
-        if (this.initialLoad && isPlatformBrowser(this.platformId)) {
-          this.initialLoad = false;
-          return;
-        }
+      const isPt = this.translate.isPt();
+      const currentPath = this.router.url.split('?')[0];
+      const isHome = currentPath === '/' || currentPath === '';
 
-        const lang = this.translate.isPt() ? 'pt' : 'en';
-        const currentPath = this.router.url.split('?')[0];
-        const urlCanonica = `https://raquelsynths.com.br${currentPath === '/' ? '' : currentPath}`;
+      // 🛡️ RESET DE SOBERANIA: Se cair na Home, força os dados reais
+      // mesmo que o data['seo'] seja nulo.
+      if (isHome) {
+        this.seoService.updateMetaTags({
+          title: isPt ? 'RaQuel Synths | Sagas Cyberpunk & Banda Virtual' : 'RaQuel Synths | Cyberpunk Sagas & Virtual Band',
+          description: isPt ? 'Onde o analógico sangra no digital. Mergulhe na Guerra Sonora.' : 'Where analog bleeds into digital. Dive into the Sonic War.',
+          url: 'https://raquelsynths.com.br/'
+        });
+        return; // Sai da função, Home protegida.
+      }
+
+      // Lógica para as outras páginas que TÊM seo data nas rotas
+      if (data['seo']) {
+        // Removemos a trava do initialLoad aqui para permitir a correção se o SSR falhar
+        const lang = isPt ? 'pt' : 'en';
+        const urlCanonica = `https://raquelsynths.com.br${currentPath}`;
 
         this.seoService.updateMetaTags({
           title: data['seo'].title ? data['seo'].title[lang] : undefined,
-          description: data['seo'].description? data['seo'].description[lang] : undefined,
+          description: data['seo'].description ? data['seo'].description[lang] : undefined,
           url: urlCanonica
         });
       }
