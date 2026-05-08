@@ -29,15 +29,13 @@ export default async function handler(req, res) {
     const projectId = 'raquel-synths-platform';
     const baseUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents`;
 
-    const [logsRes, loreRes, loreJonahRes] = await Promise.all([
+    const [logsRes, loreRes] = await Promise.all([
       fetch(`${baseUrl}/logs?pageSize=300`),
-      fetch(`${baseUrl}/lore?pageSize=300`),
-      fetch(`${baseUrl}/lore-jonah?pageSize=300`)
+      fetch(`${baseUrl}/lore?pageSize=300`)
     ]);
 
     const logsData = await logsRes.json();
     const loreData = await loreRes.json();
-    const loreJonahData = await loreJonahRes.json();
 
     const extractUrls = (data, basePath) => {
       if (data.documents) {
@@ -50,7 +48,6 @@ export default async function handler(req, res) {
 
     extractUrls(logsData, 'log-reader');
     extractUrls(loreData, 'lore-reader');
-    extractUrls(loreJonahData, 'lore-reader');
 
   } catch (error) {
     console.error('🛡️ [ERRO MAINFRAME] Falha ao acessar o Firebase:', error);

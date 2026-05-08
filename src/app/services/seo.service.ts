@@ -23,6 +23,12 @@ export class SeoService {
     const pageImage = config.image || this.defaultImage;
     const pageType = config.type || 'website'; // Padrão é website, mas episódios serão 'article'
 
+    // 🛡️ BLINDAGEM DE DOMÍNIO: Garante que a URL seja ABSOLUTA (Exigência do Google)
+    let absoluteUrl = config.url || '';
+    if (absoluteUrl && !absoluteUrl.startsWith('http')) {
+      absoluteUrl = `https://raquelsynths.com.br${absoluteUrl.startsWith('/') ? '' : '/'}${absoluteUrl}`;
+    }
+
     this.title.setTitle(pageTitle);
     this.meta.updateTag({ name: 'description', content: pageDesc });
 
@@ -39,18 +45,18 @@ export class SeoService {
     this.meta.updateTag({ name: 'twitter:image', content: pageImage });
 
     // Dispara o protocolo Canônico
-    if (config.url) {
-      this.setCanonicalUrl(config.url);
-      this.meta.updateTag({ property: 'og:url', content: config.url });
+    if (absoluteUrl) {
+      // Removemos parâmetros (como ?mode=jonah) para unificar o SEO na versão oficial
+      const cleanUrl = absoluteUrl.split('?')[0];
+      this.setCanonicalUrl(cleanUrl);
+      this.meta.updateTag({ property: 'og:url', content: cleanUrl });
     }
   }
 
   // 🛡️ Módulo de Blindagem de Rota
-  private setCanonicalUrl(url: string) {
+  private setCanonicalUrl(cleanUrl: string) {
     const head = this.dom.getElementsByTagName('head')[0];
     let element: HTMLLinkElement | null = this.dom.querySelector(`link[rel='canonical']`);
-
-    const cleanUrl = url.split('?')[0];
 
     if (!element) {
       element = this.dom.createElement('link') as HTMLLinkElement;

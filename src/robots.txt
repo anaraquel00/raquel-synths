@@ -4,6 +4,7 @@ Allow: /
 
 # Quarentena: Setores de memoria que nao devem ser rastreados
 Disallow: /assets/private/
+Disallow: /*?mode=jonah
 
 # Prioridade total para o Drone do AdSense
 User-agent: Mediapartners-Google

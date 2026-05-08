@@ -16,7 +16,6 @@
 
   <!-- Meta Tags (Open Graph / Twitter) -->
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://raquelsynths.com.br/">
   <meta property="og:site_name" content="RaQuel Synths Official">
   <meta property="og:title" content="RaQuel Synths: Audio Civil War">
   <meta property="og:description" content="Broklin's Tech vs. Jonah's Chaos. A Cyberpunk Literary Saga & Musical Experiment. The story has begun.">
@@ -68,13 +67,16 @@
 </head>
 <body style="background-color: #04043a69; margin: 0; display: flex; flex-direction: column; min-height: 100vh;">
 
-  <!-- 🛡️ SSR THEME FIX: Protege a First Contentful Paint contra Flash of Unstyled Content -->
+  <!-- 🛡️ SSR THEME & ADSENSE FIX: Protege a FCP e ajusta a tag Lang globalmente -->
   <script>
     (function() {
       try {
         var savedTheme = localStorage.getItem('rqs-theme');
         if (savedTheme === 'jonah') document.body.classList.add('mode-jonah');
         else document.body.classList.add('mode-broklin');
+
+        var savedLang = localStorage.getItem('lang') || navigator.language || navigator.userLanguage;
+        document.documentElement.lang = savedLang.toLowerCase().includes('pt') ? 'pt-BR' : 'en';
       } catch (e) {}
     })();
   </script>
@@ -115,7 +117,8 @@
             var savedTheme = localStorage.getItem('rqs-theme');
 
             // 🌍 RADAR DE IDIOMA: Lê a configuração do navegador do usuário
-            var userLang = navigator.language || navigator.userLanguage;
+            var savedLang = localStorage.getItem('lang');
+            var userLang = savedLang || navigator.language || navigator.userLanguage;
             var isPt = userLang.toLowerCase().includes('pt');
 
             var title = document.getElementById('boot-title');
