@@ -42,11 +42,14 @@ export class App implements OnInit {
     private adSenseService: AdSenseService,
     private trackingService: TrackingService
   ) {
-     if (isPlatformBrowser(this.platformId)) {
-      this.isBrowser.set(true);
-    }
+
     // 🛡️ A CAIXA FORTE ABSOLUTA: TUDO QUE TOCA O DOM (SCRIPTS E ATRIBUTOS) VAI AQUI!
     afterNextRender(() => {
+
+      // ✅ AQUI É O LUGAR CORRETO!
+      // Agora a hidratação já terminou com sucesso. Podemos mostrar o banner!
+      this.isBrowser.set(true);
+
       // 1. Vercel Speed Insights (Injeta script de forma segura, pós-hidratação)
       injectSpeedInsights();
 
