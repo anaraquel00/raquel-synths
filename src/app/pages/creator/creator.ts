@@ -22,6 +22,7 @@ export class Creator implements OnInit, OnDestroy {
   private document = inject(DOCUMENT);
 
   public currentTheme = signal<'broklin' | 'jonah'>('broklin'); // Default para SSR
+  public currentLang = signal<'pt' | 'en'>('pt'); // Default para SSR
   private themeObserver: MutationObserver | null = null;
   router: Router = inject(Router);
   seoService: SeoService = inject(SeoService);
@@ -31,9 +32,11 @@ export class Creator implements OnInit, OnDestroy {
 
     // ⚠️ Evita Hydration Mismatch fatal que trava o Router
     this.currentTheme.set('broklin');
+    this.currentLang.set('pt'); // 🛡️ Sincronia absoluta com o servidor
 
     // 🛡️ TRAVA TÁTICA: O Observer e a leitura do DOM iniciam APENAS após a hidratação (DOM Estável)
     afterNextRender(() => {
+      this.currentLang.set(this.translate.isPt() ? 'pt' : 'en');
       this.checkTheme(); // Re-avalia o tema após a hidratação
       this.themeObserver = new MutationObserver(() => this.checkTheme());
       this.themeObserver.observe(this.document.body, { attributes: true, attributeFilter: ['class'] });
@@ -78,9 +81,9 @@ export class Creator implements OnInit, OnDestroy {
 
   // Atalho para pegar os textos
   get navText() {
-    return this.translate.isPt() ? NAV_DATA.pt : NAV_DATA.en;
+    return this.currentLang() === 'pt' ? NAV_DATA.pt : NAV_DATA.en;
   }
  get text() {
-    return this.translate.isPt() ? CREATOR_DATA.pt : CREATOR_DATA.en;
+    return this.currentLang() === 'pt' ? CREATOR_DATA.pt : CREATOR_DATA.en;
   }
 }

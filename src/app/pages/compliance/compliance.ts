@@ -27,11 +27,8 @@ export class ComplianceComponent implements OnInit, OnDestroy {
   translate: TranslationService = inject(TranslationService);
 
   constructor() {
-    // 🛡️ INICIALIZAÇÃO CONSISTENTE: Define o estado inicial para SSR e Browser
-    const langKey = this.translationService.currentLang() === 'pt' ? 'pt' : 'en';
-
-    // ⚠️ SEMPRE inicializa como broklin para evitar Hydration Mismatch e Crash do Angular
-    this.data.set(COMPLIANCE_DATA[langKey]['broklin']);
+    // 🛡️ INICIALIZAÇÃO ESTRITA: Força 'pt' e 'broklin' para casar 100% com o Servidor
+    this.data.set(COMPLIANCE_DATA['pt']['broklin']);
 
     // 🛡️ TRAVA TÁTICA: O Observer e a leitura do DOM nascem apenas pós-hidratação
     afterNextRender(() => {

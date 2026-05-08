@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal, afterNextRender } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TranslationService } from '../../services/translation.service';
@@ -22,6 +22,9 @@ export class ContatoComponent {
   // 2. INJETAR O BANCO DE DADOS
   private firestore = inject(Firestore);
 
+  // 🛡️ ESTADO SSR: Trava inicial no Português para passar pela Hidratação
+  public currentLang = signal<'pt' | 'en'>('pt');
+
   uplinkForm: FormGroup;
   isSending = false;
   successMessage = false;
@@ -35,10 +38,14 @@ export class ContatoComponent {
       message: ['', Validators.required],
       website: [''] // 🍯 Honeypot
     });
+
+    afterNextRender(() => {
+      this.currentLang.set(this.translate.isPt() ? 'pt' : 'en');
+    });
   }
 
   get text() {
-    return this.translate.isPt() ? CONTACT_DATA.pt : CONTACT_DATA.en;
+    return this.currentLang() === 'pt' ? CONTACT_DATA.pt : CONTACT_DATA.en;
   }
 
   // AQUI É ONDE A MÁGICA ACONTECE
