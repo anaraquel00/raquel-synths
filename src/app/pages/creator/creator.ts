@@ -14,8 +14,7 @@ import { Router } from '@angular/router';
   imports: [CommonModule, MatButtonModule, MatIconModule, RouterLink],
   templateUrl: './creator.html',
   styleUrl: './creator.scss',
-  standalone: true,
-  host: { 'ngSkipHydration': 'true' }
+  standalone: true
 })
 export class Creator implements OnInit, OnDestroy {
 

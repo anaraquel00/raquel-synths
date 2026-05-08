@@ -17,11 +17,7 @@ import { take } from 'rxjs/operators';
   standalone: true,
   imports: [CommonModule, MatIconModule, MatButtonModule],
   templateUrl: './app-visual-novel.html',
-  styleUrls: ['./app-visual-novel.scss'],
-  // 🛡️ O ESCUDO TOTAL: Desativa a hidratação no HOST do componente
-  host: {
-    'ngSkipHydration': 'true'
-  }
+  styleUrls: ['./app-visual-novel.scss']
 })
 export class AppVisualNovel implements OnInit, OnDestroy {
   // --- INJEÇÕES ---

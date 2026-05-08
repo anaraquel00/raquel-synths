@@ -21,6 +21,7 @@ import { TrackingService } from './services/tracking.service';
   styleUrl: './app.scss'
 })
 export class App implements OnInit {
+ isBrowser = signal(false);
   title = 'raquel-synths';
 
   public translate = inject(TranslationService);
@@ -41,6 +42,9 @@ export class App implements OnInit {
     private adSenseService: AdSenseService,
     private trackingService: TrackingService
   ) {
+     if (isPlatformBrowser(this.platformId)) {
+      this.isBrowser.set(true);
+    }
     // 🛡️ A CAIXA FORTE ABSOLUTA: TUDO QUE TOCA O DOM (SCRIPTS E ATRIBUTOS) VAI AQUI!
     afterNextRender(() => {
       // 1. Vercel Speed Insights (Injeta script de forma segura, pós-hidratação)

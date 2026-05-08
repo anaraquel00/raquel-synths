@@ -16,26 +16,21 @@
 <!-- 🛡️ ESCUDO 2: Protege o Rodapé dinâmico -->
 <app-footer ngSkipHydration></app-footer>
 
-<!-- 🛡️ ESCUDO 3: Tira a tradução do Cookie Banner da Hidratação -->
-<!-- O servidor ignora isso. O banner surge suavemente 1s após a página carregar -->
-@defer (on timer(1s)) {
-  @if (!cookiesAccepted()) {
-    <div class="cookie-banner fade-in-up">
-      <div class="cookie-content">
-        <span class="cookie-icon">🍪</span>
-        <p>
-          {{ translate.isPt()
-             ? 'Utilizamos cookies do Google e Stripe para melhorar sua experiência e segurança.'
-             : 'We use Google and Stripe cookies to enhance your experience and security.' }}
-          <a [routerLink]="['/compliance']" class="cookie-link">
-            {{ translate.isPt() ? 'Ler Protocolos' : 'Read Protocols' }}
-          </a>
-        </p>
+<!-- Se não é navegador (SSR), não renderiza nada. O erro de hidratação deixa de existir. -->
+@if (isBrowser()) {
+  @defer (on timer(1s)) {
+    @if (!cookiesAccepted()) {
+      <div class="cookie-banner fade-in-up">
+        <div class="cookie-content">
+          <span class="cookie-icon">🍪</span>
+          <p>
+            {{ translate.isPt() ? 'Utilizamos cookies do Google...' : 'We use Google and Stripe...' }}
+          </p>
+        </div>
+        <button (click)="acceptCookies()" class="btn-accept">
+           {{ translate.isPt() ? 'ACEITAR DADOS' : 'ACCEPT DATA' }}
+        </button>
       </div>
-
-      <button (click)="acceptCookies()" class="btn-accept">
-        {{ translate.isPt() ? 'ACEITAR DADOS' : 'ACCEPT DATA' }}
-      </button>
-    </div>
+    }
   }
 }
