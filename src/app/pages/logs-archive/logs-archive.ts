@@ -1,5 +1,6 @@
 import { Component, inject, PLATFORM_ID, signal, computed, effect, OnInit } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { DOCUMENT } from '@angular/common';
 import { ActivatedRoute, RouterModule, Router} from '@angular/router';
 import { TranslationService } from '../../services/translation.service';
 import { ContentService } from '../../services/content.service';
@@ -24,6 +25,7 @@ export class LogsArchiveComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private seoService = inject(SeoService);
   private router = inject(Router); // <-- Inject Router
+  private document = inject(DOCUMENT);
 
   public pageSize = 5; // 5 logs por página é o ideal para mobile
 
@@ -65,24 +67,26 @@ export class LogsArchiveComponent implements OnInit {
       }
     });
   }
-  
+
   ngOnInit() {
     const isPt = this.translate.isPt();
     const currentPath = this.router.url.split('?')[0];
+    // 🛡️ O PATCH FINAL: Sincroniza o crachá do site com o conteúdo
+    this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
 
     this.seoService.updateMetaTags({
       title: isPt ? 'Arquivo de Logs' : 'Logs Archive',
-      description: isPt 
-        ? 'Os bastidores da narrativa transmídia e DevNotes da RQS.' 
+      description: isPt
+        ? 'Os bastidores da narrativa transmídia e DevNotes da RQS.'
         : 'The behind-the-scenes of the transmedia narrative and RQS DevNotes.',
       url: `https://raquelsynths.com.br${currentPath}`
     });
     this.seoService.setJsonLd({
       "@context": "https://schema.org",
-      "@type": "CollectionPage", 
+      "@type": "CollectionPage",
       "name": isPt ? 'Arquivo de Logs | RaQuel Synths' : 'Logs Archive | RaQuel Synths',
-      "description": isPt 
-        ? 'Acesse os bastidores, diários de desenvolvimento e arquivos interceptados.' 
+      "description": isPt
+        ? 'Acesse os bastidores, diários de desenvolvimento e arquivos interceptados.'
         : 'Access behind-the-scenes, dev diaries, and intercepted archives.',
       "url": `https://raquelsynths.com.br${currentPath}`,
       "publisher": {

@@ -11,6 +11,7 @@ import { LoreEpisode } from '../../data/lore-data';
 import { AdArticleComponent } from "../../components/ad-article/ad-article";
 import { NgOptimizedImage } from '@angular/common';
 import { AuthorSignatureComponent } from '../../components/author-signature/author-signature';
+import { DOCUMENT } from '@angular/core';
 
 @Component({
   selector: 'app-lore-reader',
@@ -25,7 +26,7 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private injector = inject(Injector);
-
+  private document = inject(DOCUMENT);
   currentMode = signal<'broklin' | 'jonah'>('broklin');
   // 🛡️ O CANAL DE RÁDIO DO TEMA
   private mode$ = new BehaviorSubject<'broklin' | 'jonah'>('broklin');
@@ -38,6 +39,7 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     this.isBrowser = isPlatformBrowser(this.platformId);
+    this.document = document;
 
     // 🛡️ TRAVA TÁTICA: Move a verificação de tema e o observer para após a hidratação
     afterNextRender(() => {
@@ -52,6 +54,10 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    const isPt = this.translate.isPt();
+
+    // 🛡️ SINCRONIA DE BIOS: Hardware em dia
+    this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
     // 🛰️ CAPTURA O ID DA URL
     const id$ = this.route.paramMap.pipe(map(params => params.get('id')));
 

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy, signal, afterNextRender, Injector } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal, afterNextRender, Injector, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslationService } from '../services/translation.service';
 import { VISUAL_NOVEL_PT, VISUAL_NOVEL_EN, VN_INTRO_PT, VN_INTRO_EN, VN_INTRO_JONAH_PT, VN_INTRO_JONAH_EN } from '../data/app-data';
@@ -11,6 +11,8 @@ import { LoreEpisode } from '../data/lore-data';
 import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { take } from 'rxjs/operators';
+import { DOCUMENT } from '@angular/common';
+import { SeoService } from '../services/seo.service';
 
 @Component({
   selector: 'app-visual-novel',
@@ -25,6 +27,7 @@ export class AppVisualNovel implements OnInit, OnDestroy {
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
   private injector = inject(Injector);
+  private seoService = inject(SeoService);
 
   // --- ESTADO REATIVO ---
   private modeSubject = new BehaviorSubject<'broklin' | 'jonah'>('broklin');
@@ -47,7 +50,9 @@ export class AppVisualNovel implements OnInit, OnDestroy {
   introJonahPt = VN_INTRO_JONAH_PT;
   introJonahEn = VN_INTRO_JONAH_EN;
 
-  constructor() {
+  constructor(
+    @Inject(DOCUMENT) private document: Document
+  ) {
     // 🛡️ TRAVA TÁTICA: Sincroniza o estado do tema e o observador apenas após a hidratação (DOM Estável)
     afterNextRender(() => {
       this.checkTheme();
@@ -63,7 +68,38 @@ export class AppVisualNovel implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    const isPt = this.translate.isPt();
+
+    // 🛡️ SINCRONIA DE BIOS: Hardware em dia
+    this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
+
+    // 🎯 SEO DE ALTO IMPACTO: Palavras-chave táticas (Cyberpunk, Transmedia, Lore)
+    this.seoService.updateMetaTags({
+      title: isPt
+        ? 'Ecos da RQS: Sagas Cyberpunk & Transmídia | RaQuel Synths'
+        : 'Echoes of RQS: Cyberpunk & Transmedia Sagas | RaQuel Synths',
+      description: isPt
+        ? 'Decodifique os arquivos da guerra sonora. Explore as Sagas Literárias que expandem o universo da RaQuel Synths — onde o código de Broklin encontra o caos de Jonah.'
+        : 'Decode the sonic war archives. Explore the Literary Sagas expanding the RaQuel Synths universe — where Broklin’s code meets Jonah’s chaos.',
+      url: 'https://raquelsynths.com.br/saga'
+    });
+
+    // 🚀 INJEÇÃO DE SÉRIE CRIATIVA (JSON-LD): Avisa ao Google que isso é uma Série Literária
+    this.seoService.setJsonLd({
+      "@context": "https://schema.org",
+      "@type": "CreativeWorkSeries",
+      "name": isPt ? "Sagas Literárias RaQuel Synths" : "RaQuel Synths Literary Sagas",
+      "genre": "Cyberpunk, Sci-Fi",
+      "author": {
+        "@type": "Person",
+        "name": "Ana Raquel"
+      },
+      "description": isPt
+        ? "Crônicas literárias que narram a guerra sonora entre as facções Broklin e Jonah."
+        : "Literary chronicles narrating the sonic war between Broklin and Jonah factions."
+    });
+  }
 
   ngOnDestroy() {
     if (this.themeObserver) this.themeObserver.disconnect();

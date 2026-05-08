@@ -50,6 +50,10 @@ export class LogReaderComponent implements OnInit, OnDestroy {
   };
 
   ngOnInit() {
+     const isPt = this.translate.isPt();
+
+    // 🛡️ SINCRONIA DE BIOS: Hardware em dia
+    this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
     // �️ Captura o ID da URL de forma reativa
     const id$ = this.route.paramMap.pipe(map(params => params.get('id')));
 

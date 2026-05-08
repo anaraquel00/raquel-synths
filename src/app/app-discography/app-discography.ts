@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, computed, HostListener, inject, Input, OnInit, signal, afterNextRender, Injector } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DOCUMENT } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -36,6 +37,7 @@ export class DiscographyComponent implements OnInit {
   private injector = inject(Injector);
   private cdr = inject(ChangeDetectorRef);
   private seoService = inject(SeoService);
+  private document = inject(DOCUMENT);
 
 // 2. Crie os links confiáveis
  radioBroklin = this.sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/u7JI-dyajuA?autoplay=1&loop=1&playlist=u7JI-dyajuA');
@@ -113,10 +115,21 @@ onThemeChange() {
 }
 
   ngOnInit() {
-    // 🛡️ BLINDAGEM: Removido o código que forçava a classe 'mode-broklin' no ngOnInit.
-    // O script inline no index.html já cuida do tema baseado no localStorage.
-    // Forçar aqui destruía a preferência do usuário e gerava flash de estilo.
+   // 1. Radar de Idioma
+    const isPt = this.translate.isPt();
 
+    // 2. 🛡️ PATCH DO CRAWLER: Sincroniza o hardware (HTML lang)
+    this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
+
+    // 3. 🛡️ INJEÇÃO DE PRONTIDÃO: Define os metadados ANTES da chamada ao Firebase
+    // Isso garante que o SSR entregue o título correto mesmo se o banco de dados demorar
+    this.seoService.updateMetaTags({
+      title: isPt ? 'Discografia | RaQuel Synths' : 'Discography | RaQuel Synths',
+      description: isPt
+        ? 'Acesse o banco de áudio mestre da Raquel Synths.'
+        : 'Access the master audio bank of Raquel Synths.',
+      type: 'website'
+    });
     this.getDiscography();
   }
 

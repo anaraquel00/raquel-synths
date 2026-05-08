@@ -1,12 +1,12 @@
-import { Component, inject, signal, afterNextRender } from '@angular/core';
+import { Component, inject, signal, afterNextRender, OnInit } from '@angular/core'; // Adicionado OnInit
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DOCUMENT } from '@angular/common'; // Adicionado DOCUMENT
 import { TranslationService } from '../../services/translation.service';
 import { CONTACT_DATA } from '../../data/app-data';
-
-// 1. IMPORTAR AS FERRAMENTAS DO FIREBASE
 import { Firestore, collection, addDoc } from '@angular/fire/firestore';
 import { SafeHtmlPipe } from '../../components/pipes/safe-html.pipe';
+import { SeoService } from '../../services/seo.service'; // Importado
+import { Router } from '@angular/router'; // Importado
 
 @Component({
   selector: 'app-contato',
@@ -15,20 +15,19 @@ import { SafeHtmlPipe } from '../../components/pipes/safe-html.pipe';
   templateUrl: './contato.html',
   styleUrls: ['./contato.scss']
 })
-export class ContatoComponent {
+export class ContatoComponent implements OnInit { // Implementando OnInit
   public translate = inject(TranslationService);
   private fb = inject(FormBuilder);
-
-  // 2. INJETAR O BANCO DE DADOS
   private firestore = inject(Firestore);
+  private seoService = inject(SeoService);
+  private router = inject(Router);
+  private document = inject(DOCUMENT);
 
-  // 🛡️ ESTADO SSR: Trava inicial no Português para passar pela Hidratação
   public currentLang = signal<'pt' | 'en'>('pt');
-
   uplinkForm: FormGroup;
   isSending = false;
   successMessage = false;
-  errorMessage = false; // Pra avisar se der ruim
+  errorMessage = false;
 
   constructor() {
     this.uplinkForm = this.fb.group({
@@ -36,11 +35,44 @@ export class ContatoComponent {
       email: ['', [Validators.required, Validators.email]],
       subject: ['', Validators.required],
       message: ['', Validators.required],
-      website: [''] // 🍯 Honeypot
+      website: ['']
     });
 
     afterNextRender(() => {
       this.currentLang.set(this.translate.isPt() ? 'pt' : 'en');
+    });
+  }
+
+  // 🛡️ MOTOR DE AUTORIDADE: Identificação e SEO para Google Partners
+  ngOnInit() {
+    const isPt = this.translate.isPt();
+    const currentPath = this.router.url.split('?')[0];
+
+    // 1. SINCRONIA DE BIOS: Garante o idioma para os robôs de política
+    this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
+
+    // 2. SEO DE TRANSPARÊNCIA: Essencial para parceiros comerciais
+    this.seoService.updateMetaTags({
+      title: isPt ? 'Uplink de Comunicação | Contato | RQS' : 'Communication Uplink | Contact | RQS',
+      description: isPt
+        ? 'Estabeleça uma conexão direta com a RaQuel Synths. Suporte, parcerias e interceptações de sinal.'
+        : 'Establish a direct connection with RaQuel Synths. Support, partnerships, and signal interceptions.',
+      url: `https://raquelsynths.com.br${currentPath}`
+    });
+
+    // 3. JSON-LD DE CONTATO: O Google ama páginas de contato estruturadas
+    this.seoService.setJsonLd({
+      "@context": "https://schema.org",
+      "@type": "ContactPage",
+      "name": isPt ? "Página de Contato RaQuel Synths" : "RaQuel Synths Contact Page",
+      "description": isPt ? "Formulário oficial para contato e parcerias." : "Official form for contact and partnerships.",
+      "url": `https://raquelsynths.com.br${currentPath}`,
+      "mainEntity": {
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "email": "contato@raquelsynths.com.br",
+        "url": `https://raquelsynths.com.br${currentPath}`
+      }
     });
   }
 

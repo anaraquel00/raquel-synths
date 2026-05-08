@@ -132,7 +132,38 @@ currentLanguage: any;
   }
 
   ngOnInit() {
-    // Inicializa conteúdo
+    const isPt = this.translate.isPt();
+    this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
+
+    // 🛡️ MOTOR DE AUTORIDADE CENTRALIZADO
+    this.seoService.updateMetaTags({
+      title: isPt
+        ? 'RaQuel Synths | Sagas Cyberpunk & Banda Virtual'
+        : 'RaQuel Synths | Cyberpunk Sagas & Virtual Band',
+      description: isPt
+        ? 'Onde o analógico sangra no digital. Mergulhe na Guerra Sonora entre Synthwave e Industrial Metal. Leia as Sagas de Broklin e Jonah.'
+        : 'Where analog bleeds into digital. Dive into the Audio Civil War between Synthwave and Industrial Metal. Read the Broklin and Jonah Sagas.',
+      url: 'https://raquelsynths.com.br/', // 🔥 O CARIMBO CANÔNICO FICA AQUI!
+      type: 'website'
+    });
+
+    // 🚀 INJEÇÃO DE ENTIDADE (JSON-LD): Transforma o site em uma Organização para o Google
+    this.seoService.setJsonLd({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "RaQuel Synths",
+      "url": "https://raquelsynths.com.br",
+      "logo": "https://raquelsynths.com.br/rqs-logo.webp",
+      "description": isPt
+        ? "Banda virtual e universo transmídia de ficção científica cyberpunk."
+        : "Virtual band and cyberpunk sci-fi transmedia universe.",
+      "sameAs": [
+        "https://raquelsynths.com.br/logs-archive",
+        "https://www.youtube.com/@raquelsynths"
+      ]
+    });
+
+    // Inicializa conteúdo dinâmico
     this.updateContent();
   }
 
@@ -155,13 +186,6 @@ currentLanguage: any;
     });
 
     this.contactSignal.set(CONTACT_DATA[lang]);
-
-     // 🛡️ MOTOR DE AUTORIDADE: Atestado de URL Canônica da Home
-    this.seoService.updateMetaTags({
-      title: this.translate.isPt() ? 'Início' : 'Home',
-      description: rawHome.subtitle, // Usa o subtítulo atualizado como descrição pro Google
-      url: 'https://raquelsynths.com.br/' // 🔥 O CARIMBO QUE EXTERMINA O "?mode=jonah"
-    });
 
   }
   // --- SEUS GETTERS E HELPERS ORIGINAIS ---

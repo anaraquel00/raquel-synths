@@ -63,7 +63,7 @@ selectedDepartmentData: any;
   private document = inject(DOCUMENT);
   public translate = inject(TranslationService);
   private trackingService = inject(TrackingService);
-  
+
   // 🛡️ Inicialização segura em uma linha para não dar erro de ordem
   isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
@@ -105,7 +105,32 @@ selectedDepartmentData: any;
   }
 
 ngOnInit(): void {
-    this.currentLang.set(this.translate.isPt() ? 'pt' : 'en');
+   const isPt = this.translate.isPt();
+
+    // 🛡️ SINCRONIA DE BIOS: Hardware em dia
+    this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
+
+    // 🎯 SEO DE ALTO IMPACTO: Palavras-chave táticas (Industrial, Merch, Cyberpunk)
+    this.seoService.updateMetaTags({
+      title: isPt ? 'Suprimentos da Horda | Neon Store | RQS' : 'Horde Supplies | Neon Store | RQS',
+      description: isPt
+        ? 'Faça o upgrade do seu hardware humano. Vestuário industrial, artefatos digitais e suprimentos táticos da RaQuel Synths para quem vive na fronteira entre o código e o caos.'
+        : 'Upgrade your human hardware. Industrial apparel, digital artifacts, and tactical supplies from RaQuel Synths for those living on the edge of code and chaos.',
+      type: 'website'
+    });
+
+    // 🚀 INJEÇÃO COMERCIAL (JSON-LD): Avisa ao Google que isso é um E-commerce
+    this.seoService.setJsonLd({
+      "@context": "https://schema.org",
+      "@type": "Store",
+      "name": "Neon Store | RaQuel Synths",
+      "description": isPt ? "Loja oficial de merchandising e artefatos da RaQuel Synths." : "Official merchandising and artifacts store for RaQuel Synths.",
+      "url": "https://raquelsynths.com.br/store",
+      "parentOrganization": {
+        "@type": "Organization",
+        "name": "RaQuel Synths"
+      }
+    });
     this.loadData();
 
     // 👇 OUVINTE DE URL (A Mágica do Deep Link com Query Params)

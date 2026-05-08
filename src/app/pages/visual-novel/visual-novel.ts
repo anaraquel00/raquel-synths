@@ -6,6 +6,7 @@ import { TranslationService } from '../../services/translation.service';
 // 🛡️ AQUI: Adicionamos o 'of' para criar a rota de fuga do servidor
 import { Observable, BehaviorSubject, switchMap, combineLatest, map, take, of } from 'rxjs';
 import { NgOptimizedImage } from '@angular/common';
+import { SeoService } from '../../services/seo.service';
 
 @Component({
   selector: 'app-visual-novel',
@@ -19,6 +20,7 @@ export class VisualNovelComponent implements OnInit, OnDestroy {
   private contentService = inject(ContentService);
   public translate = inject(TranslationService);
   private document = inject(DOCUMENT);
+  private seoService = inject(SeoService);
 
   public currentMode = signal<'broklin' | 'jonah'>('broklin');
   private modeSubject = new BehaviorSubject<'broklin' | 'jonah'>('broklin');
@@ -77,7 +79,41 @@ export class VisualNovelComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    // 1. Radar de Idioma (Lê a configuração da matriz)
+    const isPt = this.translate.isPt();
+
+    // 2. 🛡️ PATCH DO CRAWLER: Sincroniza o hardware (Tag HTML)
+    // Isso mata a "Síndrome do Idioma Misto" no GSC
+    this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
+
+    // 3. 🛡️ MOTOR DE AUTORIDADE: Meta Tags da Visual Novel
+    this.seoService.updateMetaTags({
+      title: isPt ? 'Sagas Interativas | RaQuel Synths' : 'Visual Novel | RaQuel Synths',
+      description: isPt
+        ? 'Mergulhe nas Sagas de Cyberpunk da RaQuel Synths. Escolha entre o código de Broklin ou o caos de Jonah e decida o futuro da rede.'
+        : 'Dive into RaQuel Synths’ Cyberpunk Sagas. Choose between Broklin’s code or Jonah’s chaos and decide the future of the network.',
+      type: 'website'
+    });
+
+    // 4. 🚀 INJEÇÃO DE LORE (JSON-LD): Avisa ao Google que isso é uma Série Criativa
+    this.seoService.setJsonLd({
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": isPt ? "Sagas Interativas RaQuel Synths" : "RaQuel Synths Interactive Sagas",
+      "description": isPt
+        ? "Arquivos de episódios da narrativa transmídia Ecos da RQS."
+        : "Episode archives of the Echoes of RQS transmedia narrative.",
+      "publisher": {
+        "@type": "Organization",
+        "name": "RaQuel Synths",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://raquelsynths.com.br/rqs-logo.webp"
+        }
+      }
+    });
+  }
 
   ngOnDestroy() {
     if (this.themeObserver) this.themeObserver.disconnect();

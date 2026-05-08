@@ -49,25 +49,46 @@ export class ComplianceComponent implements OnInit, OnDestroy {
     const isPt = this.translate.isPt();
     const currentPath = this.router.url.split('?')[0];
 
-    // Meta tags padrão
+    // 1. 🛡️ PATCH DO CRAWLER: Sincroniza o hardware (Tag HTML)
+    // Essencial para o AdSense saber se os anúncios de política são em PT ou EN
+    this._document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
+
+    // 2. 🎯 SEO DE AUTORIDADE LEGAL: Transmite confiança para os auditores
     this.seoService.updateMetaTags({
-      title: isPt ? 'Compliance | RaQuel Synths' : 'Compliance | RaQuel Synths',
-      description: isPt ? 'Protocolos de Sistema: Transparência, afiliações e regras.' : 'System Protocols: Transparency, affiliations, and rules.',
+      title: isPt
+        ? 'Protocolos de Sistema | Compliance | RaQuel Synths'
+        : 'System Protocols | Compliance | RaQuel Synths',
+      description: isPt
+        ? 'Diretrizes oficiais, transparência de dados e termos de uso da RaQuel Synths. Conheça as regras que regem o nosso ecossistema digital.'
+        : 'Official guidelines, data transparency, and terms of use for RaQuel Synths. Learn the rules governing our digital ecosystem.',
       url: `https://raquelsynths.com.br${currentPath}`
     });
 
-    // 🚀 Injeção JSON-LD
+    // 3. 🚀 INJEÇÃO DE CONFIANÇA (JSON-LD): Define a página como documento oficial
     this.seoService.setJsonLd({
       "@context": "https://schema.org",
       "@type": "WebPage",
-      "name": isPt ? 'Políticas de Privacidade e Cookies' : 'Privacy and Cookies Policy',
-      "description": isPt ? 'Transparência, afiliações e as regras do nosso universo digital.' : 'Transparency, affiliations, and the rules of our digital universe.',
-      "url": `https://raquelsynths.com.br${currentPath}`,
-      "publisher": {
-        "@type": "Organization",
-        "name": "RaQuel Synths"
+      "name": isPt ? 'Transparência e Protocolos de Sistema' : 'System Protocols & Transparency',
+      "description": isPt
+        ? 'Central de compliance e termos legais da banda virtual RaQuel Synths.'
+        : 'Compliance center and legal terms for the virtual band RaQuel Synths.',
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [{
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://raquelsynths.com.br"
+        },{
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Compliance"
+        }]
       }
     });
+
+    // 🛡️ GARANTIA DE DADOS: Força a atualização do conteúdo baseado no idioma
+    this.atualizarDados();
   }
 
   ngOnDestroy() {

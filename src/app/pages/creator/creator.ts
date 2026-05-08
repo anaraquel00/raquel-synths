@@ -43,25 +43,38 @@ export class Creator implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+ngOnInit() {
     const isPt = this.translate.isPt();
     const currentPath = this.router.url.split('?')[0];
 
+    // 1. 🛡️ PATCH DO CRAWLER: Sincroniza o hardware (Tag HTML)
+    // Define se a "Arquiteta" fala PT ou EN para o robô
+    this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
+
+    // 2. 🎯 SEO DE AUTORIDADE: Elevando o nível do portfólio
     this.seoService.updateMetaTags({
-      title: isPt ? 'A Criadora | Ana Raquel' : 'The Creator | Ana Raquel',
-      description: isPt ? 'Engenharia Musical fundindo Angular, IA e a alma humana.' : 'Musical Engineering fusing Angular, AI, and the human soul.',
+      title: isPt
+        ? 'A Arquiteta | Ana Raquel de Holanda | RQS'
+        : 'The Architect | Ana Raquel de Holanda | RQS',
+      description: isPt
+        ? 'Engenharia de Front-End e Design de Música com IA. Conheça a mente por trás da RaQuel Synths e a fusão entre código, Angular e narrativas transmídia.'
+        : 'Front-End Engineering & AI Music Design. Meet the mind behind RaQuel Synths and the fusion of code, Angular, and transmedia narratives.',
       url: `https://raquelsynths.com.br${currentPath}`
     });
 
-    // 🚀 Injeção JSON-LD de Perfil Profissional
+    // 3. 🚀 INJEÇÃO DE AUTORIDADE (JSON-LD): Perfil Profissional Verificado
     this.seoService.setJsonLd({
       "@context": "https://schema.org",
       "@type": "ProfilePage",
       "mainEntity": {
         "@type": "Person",
         "name": "Ana Raquel de Holanda",
-        "jobTitle": "Front-End Developer & AI Music Designer",
+        "jobTitle": "Arquiteta de Software & AI Music Producer",
+        "description": isPt
+          ? "Desenvolvedora Front-End especializada em Angular e criação de universos transmídia com inteligência artificial."
+          : "Front-End Developer specializing in Angular and building transmedia universes with artificial intelligence.",
         "url": `https://raquelsynths.com.br${currentPath}`,
+        "image": "images/foto_perfil.webp",
         "sameAs":[
           "https://www.linkedin.com/in/ana-raquel-de-holanda",
           "https://github.com/anaraquel00"
