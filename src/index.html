@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <!-- 1. PRÉ-CONEXÕES CORRIGIDAS (Apenas as reais) -->
   <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
@@ -66,20 +66,6 @@
 
 </head>
 <body style="background-color: #04043a69; margin: 0; display: flex; flex-direction: column; min-height: 100vh;">
-
-  <!-- 🛡️ SSR THEME & ADSENSE FIX: Protege a FCP e ajusta a tag Lang globalmente -->
-  <script>
-    (function() {
-      try {
-        var savedTheme = localStorage.getItem('rqs-theme');
-        if (savedTheme === 'jonah') document.body.classList.add('mode-jonah');
-        else document.body.classList.add('mode-broklin');
-
-        var savedLang = localStorage.getItem('lang') || navigator.language || navigator.userLanguage;
-        document.documentElement.lang = savedLang.toLowerCase().includes('pt') ? 'pt-BR' : 'en';
-      } catch (e) {}
-    })();
-  </script>
 
   <!-- 4. SKELETON LOADER - Tática agressiva de Retenção -->
  <app-root>

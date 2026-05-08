@@ -58,8 +58,14 @@ export class App implements OnInit {
       const langAttribute = currentLang === 'en' ? 'en-US' : 'pt-BR';
       this.renderer.setAttribute(this.document.documentElement, 'lang', langAttribute);
 
-      // 3. Lógica de Cookies
+      // Pegamos a referência da janela (window) com segurança
       const win = this.document.defaultView as any;
+
+      // 2.5. Injeta o Tema Base de forma segura pós-hidratação
+      const savedTheme = win && win.localStorage ? win.localStorage.getItem('rqs-theme') : null;
+      this.aplicarModo(savedTheme === 'jonah' ? 'jonah' : 'broklin');
+
+      // 3. Lógica de Cookies
       if (win && win.localStorage) {
         const consent = win.localStorage.getItem('rqs_cookies_consent') === 'true';
         this.cookiesAccepted.set(consent);
