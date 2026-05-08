@@ -10,7 +10,8 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './compliance.html',
-  styleUrls: ['./compliance.scss']
+  styleUrls: ['./compliance.scss'],
+  host: { 'ngSkipHydration': 'true' }
 })
 export class ComplianceComponent implements OnInit, OnDestroy {
   private translationService = inject(TranslationService);

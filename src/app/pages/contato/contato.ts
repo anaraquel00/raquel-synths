@@ -13,7 +13,8 @@ import { SafeHtmlPipe } from '../../components/pipes/safe-html.pipe';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, SafeHtmlPipe],
   templateUrl: './contato.html',
-  styleUrls: ['./contato.scss']
+  styleUrls: ['./contato.scss'],
+  host: { 'ngSkipHydration': 'true' }
 })
 export class ContatoComponent {
   public translate = inject(TranslationService);
