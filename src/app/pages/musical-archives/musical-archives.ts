@@ -45,6 +45,7 @@ export class MusicalArchives implements OnInit, OnDestroy {
   constructor() {
     // 🛡️ TRAVA TÁTICA: O Observer e a leitura do DOM nascem apenas pós-hidratação
     afterNextRender(() => {
+
       this.isJonahMode.set(this.document.body.classList.contains('mode-jonah'));
       this.themeObserver = new MutationObserver(() => {
         this.isJonahMode.set(this.document.body.classList.contains('mode-jonah'));
@@ -54,6 +55,11 @@ export class MusicalArchives implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    // 1. Armazena o estado do idioma para não recalcular à toa
+    const isPt = this.translate.isPt();
+
+    // 2. 🛡️ PATCH DO CRAWLER: Altera o idioma da tag HTML raiz dinamicamente
+    this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
 
     this.getArchives();
     // 🔥 BLINDAGEM SEO: O terminal agora rastreia a URL
@@ -91,10 +97,12 @@ getArchives() {
 
         // Se você usar a variável legacyReleases globalmente, aplique o corte nela também:
         this.legacyReleases = sortedData.slice(5);
-        // 🛡️ MOTOR DE AUTORIDADE: Meta Tags da Discografia Completa
+     // 🛡️ MOTOR DE AUTORIDADE: Meta Tags da Discografia Completa
       this.seoService.updateMetaTags({
         title: this.translate.isPt() ? 'Arquivos Musicais | RQS' : 'Musical Archives | RQS',
-        description: 'O diretório completo de áudio da RaQuel Synths. Explore o legado de Broklin Garpeter e as anomalias de Jonah Cyperfield.',
+        description: this.translate.isPt()
+          ? 'O diretório completo de áudio da RaQuel Synths. Explore o legado de Broklin Garpeter e as anomalias de Jonah Cyperfield.'
+          : 'The complete audio directory of RaQuel Synths. Explore the legacy of Broklin Garpeter and the anomalies of Jonah Cyperfield.',
         type: 'website'
       });
 

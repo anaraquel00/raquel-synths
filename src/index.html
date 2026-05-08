@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html>
 <head>
   <!-- 1. PRÉ-CONEXÕES CORRIGIDAS (Apenas as reais) -->
   <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
@@ -96,41 +96,36 @@
           #boot-subtitle { font-size: 12px; }
         }
       </style>
+<script>
+  (function() {
+    try {
+      var savedTheme = localStorage.getItem('rqs-theme');
+      var savedLang = localStorage.getItem('lang');
+      var userLang = savedLang || navigator.language || navigator.userLanguage;
+      var isPt = userLang.toLowerCase().includes('pt');
 
-      <script>
-        (function() {
-          try {
-            var savedTheme = localStorage.getItem('rqs-theme');
+      // 🛡️ PATCH DE IDIOMA: Sincroniza a tag HTML com o radar do usuário
+      document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
 
-            // 🌍 RADAR DE IDIOMA: Lê a configuração do navegador do usuário
-            var savedLang = localStorage.getItem('lang');
-            var userLang = savedLang || navigator.language || navigator.userLanguage;
-            var isPt = userLang.toLowerCase().includes('pt');
+      var title = document.getElementById('boot-title');
+      var subtitle = document.getElementById('boot-subtitle');
+      var bootScreen = document.getElementById('boot-screen');
 
-            var title = document.getElementById('boot-title');
-            var subtitle = document.getElementById('boot-subtitle');
-            var bootScreen = document.getElementById('boot-screen');
-
-            // Modo Jonah (Caos)
-            if (savedTheme === 'jonah') {
-              title.innerText = 'SYSTEM OVERRIDE...';
-              title.className = 'jonah-mode';
-              // Entrega a ameaça no idioma correto
-              subtitle.innerText = isPt ? '[ Infiltrando vírus e corrompendo a matriz de áudio ]' : '[ Injecting virus and corrupting the audio matrix ]';
-              bootScreen.style.backgroundColor = '#050000';
-            }
-            // Modo Broklin (Tech Lead)
-            else {
-              title.innerText = 'STARTING UPLINK...';
-              title.className = 'tech-mode';
-              // Entrega a blindagem no idioma correto
-              subtitle.innerText = isPt ? '[ Carregando blindagem e módulos de áudio Synthwave ]' : '[ Loading armor and Synthwave audio modules ]';
-            }
-          } catch (e) {
-            console.error('Falha na ignição do bootloader:', e);
-          }
-        })();
-      </script>
+      if (savedTheme === 'jonah') {
+        title.innerText = isPt ? 'SISTEMA CORROMPIDO...' : 'SYSTEM OVERRIDE...';
+        title.className = 'jonah-mode';
+        subtitle.innerText = isPt ? '[ Infiltrando vírus e corrompendo a matriz ]' : '[ Injecting virus and corrupting matrix ]';
+        bootScreen.style.backgroundColor = '#050000';
+      } else {
+        title.innerText = isPt ? 'INICIANDO UPLINK...' : 'STARTING UPLINK...';
+        title.className = 'tech-mode';
+        subtitle.innerText = isPt ? '[ Carregando blindagem e módulos Synthwave ]' : '[ Loading armor and Synthwave modules ]';
+      }
+    } catch (e) {
+      console.error('Falha na ignição do bootloader:', e);
+    }
+  })();
+</script>
     </div>
   </app-root>
 
