@@ -115,6 +115,7 @@ onThemeChange() {
 }
 
   ngOnInit() {
+    if (this.router.url === '/discografia') {
    // 1. Radar de Idioma
     const isPt = this.translate.isPt();
 
@@ -132,6 +133,7 @@ onThemeChange() {
     });
     this.getDiscography();
   }
+}
 
  getDiscography() {
     // 🛡️ SE FOR O SERVIDOR NODE.JS (BUILD/SSR), INJETA MOCK PARA SEO E ESTABILIZA IMEDIATAMENTE

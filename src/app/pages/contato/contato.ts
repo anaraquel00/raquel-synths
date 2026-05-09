@@ -45,19 +45,15 @@ export class ContatoComponent implements OnInit { // Implementando OnInit
 
   // 🛡️ MOTOR DE AUTORIDADE: Identificação e SEO para Google Partners
   ngOnInit() {
+    // 🛡️ TRAVA DE HIERARQUIA: Só executa o SEO se a rota for exatamente /contato
+  if (this.router.url === '/contato') {
     const isPt = this.translate.isPt();
-    const currentPath = this.router.url.split('?')[0];
-
-    // 1. SINCRONIA DE BIOS: Garante o idioma para os robôs de política
     this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
 
-    // 2. SEO DE TRANSPARÊNCIA: Essencial para parceiros comerciais
     this.seoService.updateMetaTags({
-      title: isPt ? 'Uplink de Comunicação | Contato | RQS' : 'Communication Uplink | Contact | RQS',
-      description: isPt
-        ? 'Estabeleça uma conexão direta com a RaQuel Synths. Suporte, parcerias e interceptações de sinal.'
-        : 'Establish a direct connection with RaQuel Synths. Support, partnerships, and signal interceptions.',
-      url: `https://raquelsynths.com.br${currentPath}`
+      title: isPt ? 'Uplink | Contato' : 'Uplink | Contact',
+      description: isPt ? 'Fale com a RQS.' : 'Contact RQS.',
+      url: 'https://raquelsynths.com.br/contato'
     });
 
     // 3. JSON-LD DE CONTATO: O Google ama páginas de contato estruturadas
@@ -66,15 +62,16 @@ export class ContatoComponent implements OnInit { // Implementando OnInit
       "@type": "ContactPage",
       "name": isPt ? "Página de Contato RaQuel Synths" : "RaQuel Synths Contact Page",
       "description": isPt ? "Formulário oficial para contato e parcerias." : "Official form for contact and partnerships.",
-      "url": `https://raquelsynths.com.br${currentPath}`,
+      "url": `https://raquelsynths.com.br/contato`,
       "mainEntity": {
         "@type": "ContactPoint",
         "contactType": "customer support",
         "email": "contato@raquelsynths.com.br",
-        "url": `https://raquelsynths.com.br${currentPath}`
+        "url": `https://raquelsynths.com.br/contato`
       }
     });
   }
+}
 
   get text() {
     return this.currentLang() === 'pt' ? CONTACT_DATA.pt : CONTACT_DATA.en;

@@ -132,6 +132,7 @@ currentLanguage: any;
   }
 
   ngOnInit() {
+    if (this.router.url === '/') {
     const isPt = this.translate.isPt();
     this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
 
@@ -166,6 +167,7 @@ currentLanguage: any;
     // Inicializa conteúdo dinâmico
     this.updateContent();
   }
+}
 
   ngOnDestroy() {
     this.themeObserver?.disconnect();

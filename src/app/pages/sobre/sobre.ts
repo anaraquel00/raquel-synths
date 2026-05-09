@@ -4,6 +4,7 @@ import { TranslationService } from '../../services/translation.service';
 import { Router } from '@angular/router';
 import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { NgOptimizedImage } from '@angular/common';
+import { SeoService } from '../../services/seo.service';
 
 @Component({
   selector: 'app-sobre',
@@ -29,7 +30,8 @@ export class SobreComponent implements OnInit, OnDestroy {
 
   isJonahMode = signal<boolean>(false);
   private themeObserver: MutationObserver | null = null;
-members: any;
+  members: any;
+  private seoService = inject(SeoService);
 
 
   constructor(public translate: TranslationService) {
@@ -50,12 +52,28 @@ members: any;
       }
     });
   }
+  ngOnInit() {
+    // 🛡️ A TRAVA DE SOBERANIA
+    // Só injeta SEO se o usuário estiver na página /dossier pura.
+    // Se estiver na Landing Page, o componente fica em "Silent Mode".
+    if (this.router.url.includes('/dossier')) {
+      const isPt = this.translate.isPt();
+      this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
+
+      this.seoService.updateMetaTags({
+        title: isPt ? 'Dossiê Operativo | RQS' : 'Operative Dossier | RQS',
+        description: isPt
+          ? 'Perfis classificados da Blue Team: Broklin, Kelma e a arquitetura da RQS.'
+          : 'Blue Team classified profiles: Broklin, Kelma, and RQS architecture.',
+        url: 'https://raquelsynths.com.br/dossier'
+      });
+    }
+  }
 
   ngOnDestroy() {
     if (this.themeObserver) this.themeObserver.disconnect();
   }
-  ngOnInit() {
-  }
+
     // A MÁGICA: Sempre que o idioma mudar, ele troca o array inteiro!
 // 👇 FUNÇÃO MÁGICA DE INTERCEPTAÇÃO
   handleClick(event: MouseEvent) {

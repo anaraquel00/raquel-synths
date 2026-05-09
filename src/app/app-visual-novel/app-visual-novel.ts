@@ -69,6 +69,7 @@ export class AppVisualNovel implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    if (this.router.url === '/saga') {
     const isPt = this.translate.isPt();
 
     // 🛡️ SINCRONIA DE BIOS: Hardware em dia
@@ -100,6 +101,7 @@ export class AppVisualNovel implements OnInit, OnDestroy {
         : "Literary chronicles narrating the sonic war between Broklin and Jonah factions."
     });
   }
+}
 
   ngOnDestroy() {
     if (this.themeObserver) this.themeObserver.disconnect();
