@@ -114,26 +114,26 @@ onThemeChange() {
   this.cdr.detectChanges(); // Força o redesenho físico
 }
 
-  ngOnInit() {
-    if (this.router.url === '/discografia') {
-   // 1. Radar de Idioma
+ngOnInit() {
     const isPt = this.translate.isPt();
+    const isDedicatedPage = this.router.url.includes('/discografia') || this.router.url.includes('/musical-archives');
 
-    // 2. 🛡️ PATCH DO CRAWLER: Sincroniza o hardware (HTML lang)
-    this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
+    // 🛡️ TRAVA DE SOBERANIA: SEO e Lang só rodam na página exclusiva
+    if (isDedicatedPage) {
+      this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
 
-    // 3. 🛡️ INJEÇÃO DE PRONTIDÃO: Define os metadados ANTES da chamada ao Firebase
-    // Isso garante que o SSR entregue o título correto mesmo se o banco de dados demorar
-    this.seoService.updateMetaTags({
-      title: isPt ? 'Discografia | RaQuel Synths' : 'Discography | RaQuel Synths',
-      description: isPt
-        ? 'Acesse o banco de áudio mestre da Raquel Synths.'
-        : 'Access the master audio bank of Raquel Synths.',
-      type: 'website'
-    });
+      this.seoService.updateMetaTags({
+        title: isPt ? 'Discografia | RaQuel Synths' : 'Discography | RaQuel Synths',
+        description: isPt
+          ? 'Acesse o banco de áudio mestre da Raquel Synths.'
+          : 'Access the master audio bank of Raquel Synths.',
+        type: 'website'
+      });
+    }
+
+    // 🚀 UPLINK DE DADOS: Isso deve rodar SEMPRE, seja na Home ou na página dedicada
     this.getDiscography();
   }
-}
 
  getDiscography() {
     // 🛡️ SE FOR O SERVIDOR NODE.JS (BUILD/SSR), INJETA MOCK PARA SEO E ESTABILIZA IMEDIATAMENTE
@@ -210,31 +210,30 @@ onThemeChange() {
   }
 
 // ✅ BROKLIN: Mostra TUDO de 2026 (ou fatiado se o limite for passado)
-  get featuredBroklin(): Album[] {
+get featuredBroklin(): Album[] {
     const filtered = this.allAlbums
       .filter(a => a.faction === 'broklin' || a.faction === 'hybrid')
-      .filter(a => a.releaseDate && a.releaseDate.includes('2026'))
       .sort((a, b) => {
-         const dateA = a.releaseDate ? new Date(a.releaseDate).getTime() : 0;
-         const dateB = b.releaseDate ? new Date(b.releaseDate).getTime() : 0;
-         return dateB - dateA;
+         const dateB = a.releaseDate ? new Date(a.releaseDate).getTime() : 0;
+         const dateA = b.releaseDate ? new Date(b.releaseDate).getTime() : 0;
+         return dateA - dateB; // Mais novos primeiro
       });
 
-    return this.limitToHome ? filtered.slice(0, this.limitToHome) : filtered;
+    // Se estiver na Home (limitToHome existe), pega os 5. Se não, mostra TUDO.
+    return (this.router.url === '/') ? filtered.slice(0, 5) : filtered;
   }
 
   // ✅ JONAH: Mostra TUDO de 2026 (ou fatiado se o limite for passado)
   get featuredJonah(): Album[] {
     const filtered = this.allAlbums
       .filter(a => a.faction === 'jonah' || a.faction === 'hybrid')
-      .filter(a => a.releaseDate && a.releaseDate.includes('2026'))
       .sort((a, b) => {
-         const dateA = a.releaseDate ? new Date(a.releaseDate).getTime() : 0;
-         const dateB = b.releaseDate ? new Date(b.releaseDate).getTime() : 0;
-         return dateB - dateA;
+         const dateB = a.releaseDate ? new Date(a.releaseDate).getTime() : 0;
+         const dateA = b.releaseDate ? new Date(b.releaseDate).getTime() : 0;
+         return dateA - dateB;
       });
 
-    return this.limitToHome ? filtered.slice(0, this.limitToHome) : filtered;
+    return (this.router.url === '/') ? filtered.slice(0, 5) : filtered;
   }
 
   // --- FUNÇÕES DO HTML ---
