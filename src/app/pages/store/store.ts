@@ -83,7 +83,7 @@ selectedDepartmentData: any;
 
   // --- ESTADO ---
   activeMode = signal<'broklin' | 'jonah'>('broklin');
-  currentLang = signal<'pt' | 'en'>('pt');
+  currentLang = signal<'pt' | 'en'>(this.translate.isPt() ? 'pt' : 'en');
   currentView: 'LOBBY' | 'MINI_STORE' = 'LOBBY';
 
   // --- DADOS (Vindos do Firebase) ---
