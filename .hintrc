@@ -6,5 +6,11 @@
     "apple-touch-icons": "off",
     "disown-opener": "off",
     "axe/text-alternatives": "off"
-  }
+  },
+  "browserslist": [
+    "defaults",
+    "not ie 11",
+    "not ios_saf <= 26.4",
+    "not safari <= 26.4"
+  ]
 }
