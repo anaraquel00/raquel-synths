@@ -54,8 +54,8 @@ ngOnInit() {
     // 2. 🎯 SEO DE AUTORIDADE: Elevando o nível do portfólio
     this.seoService.updateMetaTags({
       title: isPt
-        ? 'A Arquiteta | Ana Raquel de Holanda | RQS'
-        : 'The Architect | Ana Raquel de Holanda | RQS',
+        ? 'A Arquiteta | Desenvolvimento & Direção Criativa'
+        : 'The Architect | Development & Creative Direction',
       description: isPt
         ? 'Engenharia de Front-End e Design de Música com IA. Conheça a mente por trás da RaQuel Synths e a fusão entre código, Angular e narrativas transmídia.'
         : 'Front-End Engineering & AI Music Design. Meet the mind behind RaQuel Synths and the fusion of code, Angular, and transmedia narratives.',
