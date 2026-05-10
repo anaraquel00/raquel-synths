@@ -28,16 +28,16 @@ export class Creator implements OnInit, OnDestroy {
   seoService: SeoService = inject(SeoService);
 
   constructor(public translate: TranslationService) {
-    // 🛡️ INICIALIZAÇÃO CONSISTENTE: Define o estado inicial para SSR e Browser
+    // 🛡️ SINCRONIA DE HEMISFÉRIOS: Espelha o serviço imediatamente no SSR
+    const lang = this.translate.isPt() ? 'pt' : 'en';
 
     // ⚠️ Evita Hydration Mismatch fatal que trava o Router
     this.currentTheme.set('broklin');
-    this.currentLang.set('pt'); // 🛡️ Sincronia absoluta com o servidor
+    this.currentLang.set(lang); // Agora o conteúdo segue a mesma bússola do SEO
 
     // 🛡️ TRAVA TÁTICA: O Observer e a leitura do DOM iniciam APENAS após a hidratação (DOM Estável)
     afterNextRender(() => {
-      this.currentLang.set(this.translate.isPt() ? 'pt' : 'en');
-      this.checkTheme(); // Re-avalia o tema após a hidratação
+      this.checkTheme();
       this.themeObserver = new MutationObserver(() => this.checkTheme());
       this.themeObserver.observe(this.document.body, { attributes: true, attributeFilter: ['class'] });
     });
