@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal, afterNextRender, inject, DOCUMENT } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, afterNextRender, inject, DOCUMENT, effect } from '@angular/core';
 import { TranslationService } from '../../services/translation.service';
 import { CREATOR_DATA, NAV_DATA } from '../../data/app-data';
 import { MatButtonModule } from '@angular/material/button';
@@ -27,6 +27,25 @@ export class Creator implements OnInit, OnDestroy {
   router: Router = inject(Router);
   seoService: SeoService = inject(SeoService);
 
+  // 🛡️ MÓDULO DE INJEÇÃO DINÂMICA
+  private updateSeoAndLang(isPt: boolean) {
+    const currentPath = this.router.url.split('?')[0];
+
+    // Atualiza o hardware (Tag HTML)
+    this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
+
+    // Atualiza o SEO Dinamicamente
+    this.seoService.updateMetaTags({
+      title: isPt
+        ? 'A Arquiteta | Desenvolvimento & Direção Criativa'
+        : 'The Architect | Development & Creative Direction',
+      description: isPt
+        ? 'Engenharia de Front-End e Design de Música com IA. Conheça a mente por trás da RaQuel Synths e a fusão entre código, Angular e narrativas transmídia.'
+        : 'Front-End Engineering & AI Music Design. Meet the mind behind RaQuel Synths and the fusion of code, Angular, and transmedia narratives.',
+      url: `https://raquelsynths.com.br${currentPath}`
+    });
+  }
+
   constructor(public translate: TranslationService) {
     // 🛡️ SINCRONIA DE HEMISFÉRIOS: Espelha o serviço imediatamente no SSR
     const lang = this.translate.isPt() ? 'pt' : 'en';
@@ -37,30 +56,29 @@ export class Creator implements OnInit, OnDestroy {
 
     // 🛡️ TRAVA TÁTICA: O Observer e a leitura do DOM iniciam APENAS após a hidratação (DOM Estável)
     afterNextRender(() => {
+      this.currentLang.set(this.translate.isPt() ? 'pt' : 'en');
       this.checkTheme();
       this.themeObserver = new MutationObserver(() => this.checkTheme());
       this.themeObserver.observe(this.document.body, { attributes: true, attributeFilter: ['class'] });
     });
+    // 📡 O RADAR DE REATIVIDADE
+    effect(() => {
+      const isPt = this.translate.isPt();
+      // 1. Atualiza o DOM Visual
+      this.currentLang.set(isPt ? 'pt' : 'en');
+      // 2. Atualiza o SEO invisível em tempo real no Header do navegador
+      this.updateSeoAndLang(isPt);
+    }, { allowSignalWrites: true });
   }
 
 ngOnInit() {
-    const isPt = this.translate.isPt();
+    const isServer = !isPlatformBrowser(this.platformId);
+    // Vercel lê em Inglês (false), Navegador lê o real
+    const isPt = isServer ? false : this.translate.isPt();
     const currentPath = this.router.url.split('?')[0];
 
-    // 1. 🛡️ PATCH DO CRAWLER: Sincroniza o hardware (Tag HTML)
-    // Define se a "Arquiteta" fala PT ou EN para o robô
-    this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
-
-    // 2. 🎯 SEO DE AUTORIDADE: Elevando o nível do portfólio
-    this.seoService.updateMetaTags({
-      title: isPt
-        ? 'A Arquiteta | Desenvolvimento & Direção Criativa'
-        : 'The Architect | Development & Creative Direction',
-      description: isPt
-        ? 'Engenharia de Front-End e Design de Música com IA. Conheça a mente por trás da RaQuel Synths e a fusão entre código, Angular e narrativas transmídia.'
-        : 'Front-End Engineering & AI Music Design. Meet the mind behind RaQuel Synths and the fusion of code, Angular, and transmedia narratives.',
-      url: `https://raquelsynths.com.br${currentPath}`
-    });
+    // Injeta a primeira carga de SEO
+    this.updateSeoAndLang(isPt);
 
     // 3. 🚀 INJEÇÃO DE AUTORIDADE (JSON-LD): Perfil Profissional Verificado
     this.seoService.setJsonLd({

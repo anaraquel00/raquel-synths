@@ -7,7 +7,7 @@
 
 <div class="creator-container">
 
-  <header class="profile-header" ngSkipHydration>
+  <header class="profile-header">
     <div class="profile-grid">
       <div class="profile-photo-container">
         @if (currentTheme() === 'broklin') {
@@ -17,7 +17,7 @@
         }
       </div>
 
-      <div class="profile-bio" ngSkipHydration>
+      <div class="profile-bio">
         <h2 class="dev-name">{{ text.profile.name }}</h2>
         <h3 class="dev-role glitch-title" [attr.data-text]="text.profile.role">{{ text.profile.role }}</h3>
         <p class="bio-text">{{ text.profile.bio }}</p>
@@ -34,7 +34,7 @@
     </div>
   </header>
 
- <section class="manifesto-section fade-in-up" ngSkipHydration>
+ <section class="manifesto-section fade-in-up">
     @for (block of text.manifesto; track block.title) {
       <div class="manifesto-block">
         <h4>{{ block.title }}</h4>
@@ -45,7 +45,7 @@
 
   <hr class="cyber-divider">
 
-  <section class="skills-section" ngSkipHydration>
+  <section class="skills-section">
     <h3><mat-icon>memory</mat-icon> {{ text.skills.title }}</h3>
 
     <div class="skills-grid">
@@ -64,7 +64,7 @@
     </div>
   </section>
 
-  <section class="projects-section" ngSkipHydration>
+  <section class="projects-section">
     <h3><mat-icon>code</mat-icon> {{ text.projects.title }}</h3>
 
     <div class="projects-grid">
@@ -86,7 +86,7 @@
 
   <hr class="cyber-divider">
 
-  <section class="business-section" ngSkipHydration>
+  <section class="business-section">
     <h3>
       <mat-icon>business_center</mat-icon>
       {{ text.business.title }}
