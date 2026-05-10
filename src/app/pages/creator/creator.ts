@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal, afterNextRender, inject, DOCUMENT, effect } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, afterNextRender, inject, DOCUMENT, effect, NgZone } from '@angular/core';
 import { TranslationService } from '../../services/translation.service';
 import { CREATOR_DATA, NAV_DATA } from '../../data/app-data';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,7 +20,7 @@ export class Creator implements OnInit, OnDestroy {
 
   private platformId = inject(PLATFORM_ID);
   private document = inject(DOCUMENT);
-
+  private ngZone = inject(NgZone); // 🛡️ O Módulo de Fuga de Radar
   public currentTheme = signal<'broklin' | 'jonah'>('broklin'); // Default para SSR
   public currentLang = signal<'pt' | 'en'>('pt'); // Default para SSR
   private themeObserver: MutationObserver | null = null;
@@ -57,10 +57,16 @@ export class Creator implements OnInit, OnDestroy {
     // 🛡️ TRAVA TÁTICA: O Observer e a leitura do DOM iniciam APENAS após a hidratação (DOM Estável)
     afterNextRender(() => {
       this.currentLang.set(this.translate.isPt() ? 'pt' : 'en');
-      this.checkTheme();
-      this.themeObserver = new MutationObserver(() => this.checkTheme());
+      this.ngZone.runOutsideAngular(() => {
+
+        this.checkTheme();
+      this.themeObserver = new MutationObserver(() => {
+          // Quando o usuário clica no botão do menu, VOLTAMOS para a Zona para atualizar o signal
+          this.ngZone.run(() => this.checkTheme());
+        });
       this.themeObserver.observe(this.document.body, { attributes: true, attributeFilter: ['class'] });
     });
+   });
     // 📡 O RADAR DE REATIVIDADE
     effect(() => {
       const isPt = this.translate.isPt();
