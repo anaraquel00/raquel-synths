@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit, signal, ChangeDetectorRef, PLATFORM_ID, DOCUMENT, afterNextRender, Injector, Inject } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal, ChangeDetectorRef, PLATFORM_ID, DOCUMENT, afterNextRender, Injector, Inject, effect } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import Swal from 'sweetalert2';
@@ -73,11 +73,65 @@ selectedDepartmentData: any;
   private querySub: Subscription | null = null; // Adicionado para gerenciar a inscrição
   private intervalId: any = null; // Adicionado para gerenciar o setInterval
 
-  constructor() {
-    // 🛡️ TRAVA TÁTICA: A checagem do modo Jonah e o observer só iniciam pós-hidratação
+ constructor() {
+    // 🛡️ TRAVA TÁTICA: O observer inicia pós-hidratação
     afterNextRender(() => {
       this.checkCurrentMode();
       this.setupThemeObserver();
+    });
+
+    // 📡 O RADAR DE REATIVIDADE
+    effect(() => {
+      const isPt = this.translate.isPt();
+      // 1. Atualiza o DOM Visual da loja
+      this.currentLang.set(isPt ? 'pt' : 'en');
+      // 2. Atualiza o SEO invisível no Header
+      this.updateSeoAndLang(isPt);
+    }, { allowSignalWrites: true });
+  }
+
+ private updateSeoAndLang(isPt: boolean) {
+    const dept = this.selectedDepartmentId;
+    this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
+
+    // 🏗️ MATRIZ DE METADADOS (Configuração por Setor)
+    const seoMap: Record<string, any> = {
+      'tech-lead': {
+        pt: { title: 'Arquitetura de Hardware & Código | Tech Lead', desc: 'Suprimentos de nível sênior. Componentes, periféricos e ferramentas para arquitetos de software e engenheiros de hardware.' },
+        en: { title: 'Hardware Architecture & Code | Tech Lead', desc: 'Senior-level supplies. Components, peripherals, and tools for software architects and hardware engineers.' }
+      },
+      'synth-general': {
+        pt: { title: 'Comando Central & Artefatos | General Kelma', desc: 'A linha de frente da RaQuel Synths. Vestuário oficial e itens táticos selecionados pela liderança da Horda.' },
+        en: { title: 'Central Command & Artifacts | General Kelma', desc: 'The front line of RaQuel Synths. Official apparel and tactical items selected by the Horde leadership.' }
+      },
+      'sonic-arsenal': {
+        pt: { title: 'Armamento Sonoro & Samples | Sonic Arsenal', desc: 'Engenharia de áudio agressiva. Samples, presets e equipamentos para produtores de Industrial Metal e Aggrotech.' },
+        en: { title: 'Sonic Weaponry & Samples | Sonic Arsenal', desc: 'Aggressive audio engineering. Samples, presets, and gear for Industrial Metal and Aggrotech producers.' }
+      },
+      'rust-riot': {
+        pt: { title: 'Guerrilha Industrial | Rust Riot (Jonah)', desc: 'Equipamento pesado e estética de ferrugem. Onde o Metal encontra o caos do Red Team. Proibido para o Blue Team.' },
+        en: { title: 'Industrial Guerrilla | Rust Riot (Jonah)', desc: 'Heavy gear and rust aesthetics. Where Metal meets Red Team chaos. Forbidden for the Blue Team.' }
+      },
+      'neon-witch': {
+        pt: { title: 'Grimórios Digitais & Stealth | Neon Witch (Nyx)', desc: 'Ferramentas de ocultação e estética Dark Synth. O kit de sobrevivência da Bruxa Operativa para infiltração no Mainframe.' },
+        en: { title: 'Digital Grimoires & Stealth | Neon Witch (Nyx)', desc: 'Cloaking tools and Dark Synth aesthetics. The Operative Witch survival kit for Mainframe infiltration.' }
+      }
+    };
+
+    // 🛡️ FALLBACK: Se não houver depto selecionado (Lobby), usa o SEO geral
+    const defaultSeo = {
+      pt: { title: 'Suprimentos da Horda | Neon Store | RQS', desc: 'Faça o upgrade do seu hardware humano. Vestuário industrial e suprimentos táticos da RaQuel Synths.' },
+      en: { title: 'Horde Supplies | Neon Store | RQS', desc: 'Upgrade your human hardware. Industrial apparel and tactical supplies from RaQuel Synths.' }
+    };
+
+    const currentSeo = (dept && seoMap[dept]) ? seoMap[dept] : defaultSeo;
+    const finalData = isPt ? currentSeo.pt : currentSeo.en;
+
+    // 🚀 INJEÇÃO DE METADADOS
+    this.seoService.updateMetaTags({
+      title: finalData.title,
+      description: finalData.desc,
+      url: `https://raquelsynths.com.br/store${dept ? '?dept=' + dept : ''}`
     });
   }
 
@@ -105,19 +159,11 @@ selectedDepartmentData: any;
   }
 
 ngOnInit(): void {
-   const isPt = this.translate.isPt();
+   // Se for o servidor da Vercel (GSC), trava em Inglês. Se for o navegador, pega o idioma real.
+    const isPt = !this.isBrowser ? false : this.translate.isPt();
 
-    // 🛡️ SINCRONIA DE BIOS: Hardware em dia
-    this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
-
-    // 🎯 SEO DE ALTO IMPACTO: Palavras-chave táticas (Industrial, Merch, Cyberpunk)
-    this.seoService.updateMetaTags({
-      title: isPt ? 'Suprimentos da Horda | Neon Store | RQS' : 'Horde Supplies | Neon Store | RQS',
-      description: isPt
-        ? 'Faça o upgrade do seu hardware humano. Vestuário industrial, artefatos digitais e suprimentos táticos da RaQuel Synths para quem vive na fronteira entre o código e o caos.'
-        : 'Upgrade your human hardware. Industrial apparel, digital artifacts, and tactical supplies from RaQuel Synths for those living on the edge of code and chaos.',
-      type: 'website'
-    });
+    // Injeta o SEO da primeira carga
+    this.updateSeoAndLang(isPt);
 
     // 🚀 INJEÇÃO COMERCIAL (JSON-LD): Avisa ao Google que isso é um E-commerce
     this.seoService.setJsonLd({
@@ -229,7 +275,8 @@ checkCurrentMode() {
       const isJonah = this.document.body.classList.contains('mode-jonah');
       const newMode = isJonah ? 'jonah' : 'broklin';
 
-      this.currentLang.set(this.translate.isPt() ? 'pt' : 'en');
+      const isPt = this.translate.isPt();
+      this.currentLang.set(isPt ? 'pt' : 'en');
 
       if (this.activeMode() !== newMode) {
         this.activeMode.set(newMode);
@@ -243,7 +290,6 @@ checkCurrentMode() {
 
 // --- NAVEGAÇÃO E BOOST DE SEO ---
   onDepartmentSelected(deptId: string) {
-    // 🛡️ UNIFICAÇÃO: Busca os dados uma única vez no LOCAL
     const deptData = DEPARTMENTS_DATA.find(d => d.id === deptId) || null;
     this.selectedDepartmentId = deptId;
     this.selectedDepartmentData = deptData;
@@ -252,71 +298,53 @@ checkCurrentMode() {
 
     if (this.isBrowser) window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // 🚀 INJEÇÃO DE SEO & METADADOS
-    if (deptData) {
+    // 🛡️ MOTOR 1: Dispara o SEO visual limpo e bilíngue
+    this.updateSeoAndLang(this.translate.isPt());
+
+    // 🚀 MOTOR 2 (O BOOST JSON-LD): Permanece intacto para catalogar os produtos no Google
+    if (deptData && this.filteredProducts.length > 0) {
       const lang = this.currentLang();
       const seoTitle = deptData.title || deptId.toUpperCase();
       const seoDesc = deptData.loreDescription ? deptData.loreDescription[lang] : (deptData.description ? deptData.description[lang] : 'RQS Protocol');
       const imgPath = deptData.image || 'assets/images/banner-seo-global.jpg';
       const seoImage = imgPath.startsWith('http') ? imgPath : `https://raquelsynths.com.br/${imgPath}`;
 
-      // 🛡️ MOTOR 1: Atualiza a vitrine visual
-      this.seoService.updateMetaTags({
-        title: `${seoTitle} | Neon Store`,
-        description: seoDesc,
-        image: seoImage,
-        type: 'website'
-      });
-
-      // 🚀 MOTOR 2 (O BOOST!): Informa ao Google que isso é uma página de Produtos
-      // Só dispara se houver produtos carregados no departamento
-      if (this.filteredProducts.length > 0) {
-        this.seoService.setJsonLd({
-          "@context": "https://schema.org",
-          "@type": "ItemList",
-          "name": seoTitle,
-          "description": seoDesc,
-          "url": `https://raquelsynths.com.br/store?dept=${deptId}`,
-          "itemListElement": this.filteredProducts.map((product, index) => ({
-            "@type": "ListItem",
-            "position": index + 1,
-            "item": {
-              "@type": "Product",
-              "name": product.name ? product.name[lang] : 'RQS Item',
-              "image": product.images ? product.images[0] : seoImage,
-              "description": product.description ? product.description[lang] : seoDesc,
-              "brand": {
-                "@type": "Brand",
-                "name": "RaQuel Synths"
-              },
-              "offers": {
-                "@type": "Offer",
-                "url": product.link || `https://raquelsynths.com.br/store?dept=${deptId}`,
-                // Colocamos o BRL por padrão. O Google entende BRL.
-                "priceCurrency": "BRL",
-                "price": product.price || "0.00",
-                "availability": "https://schema.org/InStock"
-              }
+      // O JSON-LD aceita textos mais longos e formatação diferente, não afeta a Meta Tag suja
+      this.seoService.setJsonLd({
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": seoTitle,
+        "description": seoDesc, // Aqui não tem problema ser a Lore inteira
+        "url": `https://raquelsynths.com.br/store?dept=${deptId}`,
+        "itemListElement": this.filteredProducts.map((product, index) => ({
+          "@type": "ListItem",
+          "position": index + 1,
+          "item": {
+            "@type": "Product",
+            "name": product.name ? product.name[lang] : 'RQS Item',
+            "image": product.images ? product.images[0] : seoImage,
+            "description": product.description ? product.description[lang] : seoDesc,
+            "brand": { "@type": "Brand", "name": "RaQuel Synths" },
+            "offers": {
+              "@type": "Offer",
+              "url": product.link || `https://raquelsynths.com.br/store?dept=${deptId}`,
+              "priceCurrency": "BRL",
+              "price": product.price || "0.00",
+              "availability": "https://schema.org/InStock"
             }
-          }))
-        });
-      }
+          }
+        }))
+      });
     }
   }
 
-
- backToLobby() {
+  backToLobby() {
     this.currentView = 'LOBBY';
     this.selectedDepartmentId = null;
     this.filteredProducts = [];
 
-    // ♻️ --- RESET DE SEO (O FIX DO ERRO) ---
-    // Agora passamos o título explicitamente para o compilador não chiar.
-    this.seoService.updateMetaTags({
-      title: 'Neon Store | RQS Oficial',
-      description: 'Mercado Negro Cyberpunk. Equipamentos, Vestuário e Arquivos Confidenciais.',
-      type: 'website'
-    });
+    // ♻️ --- RESET DE SEO LIMPO E BILÍNGUE ---
+    this.updateSeoAndLang(this.translate.isPt());
 
     // 🚀 RETORNA O JSON-LD PARA A HOME DA LOJA
     this.seoService.setJsonLd({
@@ -324,7 +352,7 @@ checkCurrentMode() {
       "@type": "WebSite",
       "name": "RQS Neon Store",
       "url": "https://raquelsynths.com.br/store",
-      "description": "Oficial Merchandise from RaQuel Synths virtual band."
+      "description": this.translate.isPt() ? "Mercadoria oficial da RaQuel Synths." : "Official Merchandise from RaQuel Synths virtual band."
     });
   }
 
