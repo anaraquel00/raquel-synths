@@ -12,21 +12,19 @@ export class TrackingService {
   private scriptsLoaded = false;
 
   trackAffiliateClick(productName: string, platform: string) {
-  if (isPlatformBrowser(this.platformId)) {
-    const win = this.document.defaultView as any;
-    if (win && typeof win.fbq === 'function') {
-
-      // 🎯 EVENTO 'ViewContent': Avisa que o fã quer ver o produto na loja parceira
-      win.fbq('track', 'ViewContent', {
-        content_name: productName,
-        content_category: `Affiliate - ${platform}`,
-        status: 'Redirecting to Partner'
-      });
-
-      console.log(`🔗 [UPLINK AFILIADO] Redirecionando para ${platform}: ${productName}`);
+    if (isPlatformBrowser(this.platformId)) {
+      const win = this.document.defaultView as any;
+      if (win && typeof win.fbq === 'function') {
+        // 🎯 EVENTO 'ViewContent': Avisa que o fã quer ver o produto na loja parceira
+        win.fbq('track', 'ViewContent', {
+          content_name: productName,
+          content_category: `Affiliate - ${platform}`,
+          status: 'Redirecting to Partner'
+        });
+        console.log(`🔗 [UPLINK AFILIADO] Redirecionando para ${platform}: ${productName}`);
+      }
     }
   }
-}
 
   public initLazyTracking(gtmId: string): void {
     // Aborta se estiver a correr no servidor (SSR) ou se já estiver carregado
@@ -39,24 +37,19 @@ export class TrackingService {
         const win = this.document.defaultView as any;
         if (!win) return;
 
-        // Injeta o Google Tag Manager silenciosamente
-        const script = this.document.createElement('script');
-        script.src = `https://www.googletagmanager.com/gtag/js?id=${gtmId}`;
-        script.async = true;
-        this.document.head.appendChild(script);
-
-        // Inicializa o DataLayer
+        // 🚀 INJEÇÃO DO VERDADEIRO MOTOR DO GTM
         const scriptInline = this.document.createElement('script');
         scriptInline.innerHTML = `
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', '${gtmId}');
+          (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+          new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+          j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+          'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+          })(window,document,'script','dataLayer','${gtmId}');
         `;
         this.document.head.appendChild(scriptInline);
 
         this.scriptsLoaded = true;
-        console.log('🛡️ [Tracking Service] GTM/Analytics injetados com sucesso após interação.');
+        console.log(`🛡️ [Tracking Service] GTM (${gtmId}) ativo e operante após interação.`);
 
         // Desliga os radares para não consumir RAM do telemóvel
         ['scroll', 'mousemove', 'touchstart', 'keydown'].forEach(event =>
@@ -72,6 +65,7 @@ export class TrackingService {
       );
     }, { injector: this.injector });
   }
+
   /**
    * Dispara um evento personalizado para o painel do Google Analytics
    */
@@ -90,19 +84,13 @@ export class TrackingService {
 
   // 🎯 O GATILHO: Dispara quando o botão do Spotify for clicado
   trackSpotifyClick(albumName: string) {
-    // 🛡️ BLINDAGEM: O servidor não pode enviar eventos pra Meta, só o humano!
     if (isPlatformBrowser(this.platformId)) {
-
       const win = this.document.defaultView as any;
-      // Verifica se o Pixel carregou com sucesso no index.html
       if (win && typeof win.fbq === 'function') {
-
-        // Envia o sinal "Lead" (Conversão) para a Meta
         win.fbq('trackCustom', 'SpotifyClick', {
           content_name: albumName,
           content_category: 'Music'
         });
-
         console.log(`🛡️ [TELEMETRIA META] Disparo confirmado para: ${albumName}`);
       }
     }
@@ -110,19 +98,13 @@ export class TrackingService {
 
   // 🎯 O GATILHO: Dispara quando o botão do SoundCloud for clicado
   trackSoundcloudClick(albumName: string) {
-    // 🛡️ BLINDAGEM: O servidor não pode enviar eventos pra Meta, só o browser do usuário!
     if (isPlatformBrowser(this.platformId)) {
-
       const win = this.document.defaultView as any;
-      // Verifica se o Pixel carregou com sucesso no index.html
       if (win && typeof win.fbq === 'function') {
-
-        // Envia o sinal customizado para a Meta criar o nosso "Lookalike"
         win.fbq('trackCustom', 'SoundcloudClick', {
           content_name: albumName,
           content_category: 'Music Stream'
         });
-
         console.log(`🛡️ [TELEMETRIA META] Disparo SoundCloud confirmado para: ${albumName}`);
       }
     }

@@ -82,8 +82,8 @@ export class App implements OnInit {
 
       // 6. AdSense e Tracking Injetados em Segurança
       this.adSenseService.initLazyLoad('ca-pub-5619990751602183');
-      this.trackingService.initLazyTracking('G-Z1TSQ0NV6T');
-    });
+      this.trackingService.initLazyTracking('GTM-P3KFK5T5');
+      });
   }
 
   ngOnInit() {
