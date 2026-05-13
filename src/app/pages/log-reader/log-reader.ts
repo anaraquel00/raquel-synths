@@ -9,11 +9,12 @@ import { SeoService } from '../../services/seo.service';
 import { Observable, combineLatest, map, switchMap, of, tap } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { AdArticleComponent } from '../../components/ad-article/ad-article';
+import { SplitContentPipe } from '../../components/pipes/content-splitter.pipe';
 
 @Component({
   selector: 'app-log-reader',
   standalone: true,
-  imports: [CommonModule, SafeHtmlPipe, RouterLink, AdArticleComponent],
+  imports: [CommonModule, SafeHtmlPipe, RouterLink, AdArticleComponent, SplitContentPipe],
   templateUrl: './log-reader.html',
   styleUrl: './log-reader.scss',
 })

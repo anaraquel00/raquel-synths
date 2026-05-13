@@ -9,39 +9,49 @@
 
       <div class="description-lead" [innerHTML]="data.description | safeHtml"></div>
 
-      <div class="ad-module">
-        @defer (on viewport) {
-    <app-ad-article ngSkipHydration></app-ad-article>
-   } @placeholder {
-    <div style="min-height: 250px; width: 100%;"></div>
-   }
-      </div>
-
       @if (data.techContent) {
         <div class="tech-box">
           <span class="tech-label">[ DEV_NOTES ]</span>
-          <div class="tech-body" [innerHTML]="data.techContent | safeHtml"></div>
+
+          <div class="tech-body">
+            @for (chunk of (data.techContent | splitContent:300); track $index) {
+
+              <div [innerHTML]="chunk | safeHtml"></div>
+
+              @if (!$last) {
+                <div class="ad-module" style="margin: 30px 0;">
+                  @defer (on viewport) {
+                    <app-ad-article ngSkipHydration></app-ad-article>
+                  } @placeholder {
+                    <div style="min-height: 250px; width: 100%;"></div>
+                  }
+                </div>
+              }
+
+            }
+          </div>
+
         </div>
       }
 
       @if (data.jonahComment && isJonahMode()) {
+        <div class="ad-module" style="margin: 25px 0;">
+          @defer (on viewport) {
+            <!-- <app-ad-article ngSkipHydration></app-ad-article> -->
+          } @placeholder {
+            <div style="min-height: 250px; width: 100%;"></div>
+          }
+        </div>
+
         <div class="jonah-note">
           <strong>[JONAH_OVERRIDE]:</strong>
           <div [innerHTML]="data.jonahComment | safeHtml"></div>
         </div>
       }
 
-      <div class="ad-module" style="margin: 30px 0;">
-        @defer (on viewport) {
-  <app-ad-article ngSkipHydration></app-ad-article>
-  } @placeholder {
-  <div style="min-height: 250px; width: 100%;"></div>
-  }
-      </div>
-
       <footer class="terminal-footer">
-     <a class="btn-back" routerLink="/">{{ translate.isPt() ? '[ < VOLTAR_À_BASE ]' : '[ < BACK_TO_BASE ]' }}</a>
-     </footer>
+        <a class="btn-back" routerLink="/">{{ translate.isPt() ? '[ < VOLTAR_À_BASE ]' : '[ < BACK_TO_BASE ]' }}</a>
+      </footer>
 
     </div>
   </main>
