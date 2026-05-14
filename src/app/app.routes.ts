@@ -162,35 +162,11 @@ export const routes: Routes = [
   {
     path: 'store',
     loadComponent: () => import('./pages/store/store').then(m => m.StoreComponent),
-    data: {
-      seo: {
-        title: {
-          pt: 'Neon Store | Merch Oficial',
-          en: 'Neon Store | Official Merch'
-        },
-        description: {
-          pt: 'Equipamentos, vestuário e hardware. Escolha sua facção: Blue Team ou Red Team na Neon Store.',
-          en: 'Gear, apparel, and hardware. Choose your faction: Blue Team or Red Team at the Neon Store.'
-        }
-      }
-    }
   },
  {
     path: 'store/:dept',
     loadComponent: () => import('./pages/store/store').then(m => m.StoreComponent),
-    data: {
-      seo: {
-        title: {
-          pt: 'Neon Store | Setores Classificados',
-          en: 'Neon Store | Classified Sectors'
-        },
-        description: {
-          pt: 'Explore os 5 setores da Neon Store: Tech Lead, Synth General, Sonic Arsenal, Rust Riot e Neon Witch. O arsenal de hardware e o merch oficial dos operativos da RQS.',
-          en: 'Explore the 5 sectors of the Neon Store: Tech Lead, Synth General, Sonic Arsenal, Rust Riot, and Neon Witch. The hardware arsenal and official merch for RQS operatives.'
-        }
-      }
-    }
-  },
+     },
 
   // 📡 ROTA 12: O Terminal de Comunicação (Contato/Uplink)
   {

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, inject, signal, PLATFORM_ID, afterNextRender, Injector } from '@angular/core';
 import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toObservable } from '@angular/core/rxjs-interop'; // 👈 Essencial
 import { SafeHtmlPipe } from "../../components/pipes/safe-html.pipe";
 import { ContentService } from '../../services/content.service';
@@ -26,6 +26,7 @@ export class LogReaderComponent implements OnInit, OnDestroy {
   private platformId = inject(PLATFORM_ID);
   private document = inject(DOCUMENT);
   private injector = inject(Injector);
+  private router = inject(Router);
 
   // 🛡️ A CORREÇÃO: toObservable deve ser inicializado aqui, no topo da classe!
   private isPt$ = toObservable(this.translate.isPt);
@@ -33,6 +34,7 @@ export class LogReaderComponent implements OnInit, OnDestroy {
   logData$!: Observable<any>;
   isJonahMode = signal<boolean>(false); // Default para SSR
   private themeObserver: MutationObserver | null = null;
+
 
   constructor() { // Construtor único
     // 🛡️ INICIALIZAÇÃO CONSISTENTE: Define o estado inicial para SSR e Browser
@@ -99,6 +101,7 @@ export class LogReaderComponent implements OnInit, OnDestroy {
           tap(mappedData => {
             if (mappedData) {
               // 🛡️ MOTOR 1: Meta Tags Básicas e Open Graph
+              this.seoService.updateCanonical(this.router.url);
               this.seoService.updateMetaTags({
                 title: `${mappedData.title} | RQS Logs`,
                 description: mappedData.description,

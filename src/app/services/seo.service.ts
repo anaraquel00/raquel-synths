@@ -6,6 +6,16 @@ import { DOCUMENT } from '@angular/core';
   providedIn: 'root'
 })
 export class SeoService {
+  updateCanonical(currentPath: string) {
+  if (!currentPath) return;
+
+  // Garante URL absoluta para o Google não se perder no Mainframe
+  const absoluteUrl = currentPath.startsWith('http')
+    ? currentPath
+    : `https://raquelsynths.com.br${currentPath.startsWith('/') ? '' : '/'}${currentPath}`;
+
+  this.setCanonicalUrl(absoluteUrl);
+}
 
   // O núcleo da nossa narrativa
   private defaultTitle = 'RaQuel Synths | Cyberpunk Sagas & Virtual Band';
@@ -16,41 +26,54 @@ export class SeoService {
               private meta: Meta,
              @Inject(DOCUMENT) private dom: Document) { }
 
-  // 🛡️ MÉTODO ATUALIZADO: Agora aceita o 'type' para o Open Graph
+  // 🛡️ MÉTODO ATUALIZADO E BLINDADO
   updateMetaTags(config: { title: string; description?: any; image?: string; url?: string; type?: string }) {
     const pageTitle = config.title ? `${config.title} | RaQuel Synths` : this.defaultTitle;
     const pageDesc = config.description || this.defaultDesc;
     const pageImage = config.image || this.defaultImage;
-    const pageType = config.type || 'website'; // Padrão é website, mas episódios serão 'article'
+    const pageType = config.type || 'website';
 
-    // 🛡️ BLINDAGEM DE DOMÍNIO: Garante que a URL seja ABSOLUTA (Exigência do Google)
+    // 🛡️ BLINDAGEM DE DOMÍNIO: Garante que a URL seja ABSOLUTA antes de sofrer o parsing
     let absoluteUrl = config.url || '';
-    if (absoluteUrl && !absoluteUrl.startsWith('http')) {
-      absoluteUrl = `https://raquelsynths.com.br${absoluteUrl.startsWith('/') ? '' : '/'}${absoluteUrl}`;
+    if (absoluteUrl) {
+      // 1. CORREÇÃO VITAL: Adiciona o domínio se vier apenas a rota (Ex: /store?dept=...)
+      if (!absoluteUrl.startsWith('http')) {
+        absoluteUrl = `https://raquelsynths.com.br${absoluteUrl.startsWith('/') ? '' : '/'}${absoluteUrl}`;
+      }
+
+      try {
+        const urlObj = new URL(absoluteUrl);
+
+        // 2. FILTRO DE PERSONA: Remove parâmetros que não interessam pro SEO
+        const forbiddenParams = ['mode', 'fbclid', 'utm_source', 'utm_medium', 'gclid'];
+        forbiddenParams.forEach(p => urlObj.searchParams.delete(p));
+
+        const finalUrl = urlObj.toString();
+
+        // 3. Atualiza as tags com a URL imaculada
+        this.setCanonicalUrl(finalUrl);
+        this.meta.updateTag({ property: 'og:url', content: finalUrl });
+
+      } catch (e) {
+        // Fallback apenas se a URL for genuinamente bizarra
+        this.setCanonicalUrl(absoluteUrl.split('?')[0]);
+      }
     }
 
     this.title.setTitle(pageTitle);
     this.meta.updateTag({ name: 'description', content: pageDesc });
 
-    // Open Graph (Facebook/Discord/LinkedIn)
-    this.meta.updateTag({ property: 'og:type', content: pageType }); // 🔥 O BOOST AQUI!
+    // Open Graph
+    this.meta.updateTag({ property: 'og:type', content: pageType });
     this.meta.updateTag({ property: 'og:title', content: pageTitle });
     this.meta.updateTag({ property: 'og:description', content: pageDesc });
     this.meta.updateTag({ property: 'og:image', content: pageImage });
 
-    // Twitter (X)
-    this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' }); // 🔥 Define o banner grandão no Twitter!
+    // Twitter
+    this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
     this.meta.updateTag({ name: 'twitter:title', content: pageTitle });
     this.meta.updateTag({ name: 'twitter:description', content: pageDesc });
     this.meta.updateTag({ name: 'twitter:image', content: pageImage });
-
-    // Dispara o protocolo Canônico
-    if (absoluteUrl) {
-      // Removemos parâmetros (como ?mode=jonah) para unificar o SEO na versão oficial
-      const cleanUrl = absoluteUrl.split('?')[0];
-      this.setCanonicalUrl(cleanUrl);
-      this.meta.updateTag({ property: 'og:url', content: cleanUrl });
-    }
   }
 
   // 🛡️ Módulo de Blindagem de Rota

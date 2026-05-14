@@ -80,60 +80,61 @@ selectedDepartmentData: any;
       this.setupThemeObserver();
     });
 
-    // 📡 O RADAR DE REATIVIDADE
     effect(() => {
-      const isPt = this.translate.isPt();
-      // 1. Atualiza o DOM Visual da loja
-      this.currentLang.set(isPt ? 'pt' : 'en');
-      // 2. Atualiza o SEO invisível no Header
-      this.updateSeoAndLang(isPt);
-    }, { allowSignalWrites: true });
+    const isPt = this.translate.isPt();
+    const dept = this.selectedDepartmentId(); // 🔥 Faz o effect rastrear o departamento
+
+    this.currentLang.set(isPt ? 'pt' : 'en');
+    this.updateSeoAndLang(isPt);
+  }, { allowSignalWrites: true });
   }
 
- private updateSeoAndLang(isPt: boolean) {
-    const dept = this.selectedDepartmentId;
-    this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
+private updateSeoAndLang(isPt: boolean) {
+  const dept = this.selectedDepartmentId(); // 📡 Lê o Signal atualizado
+  this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
 
-    // 🏗️ MATRIZ DE METADADOS (Configuração por Setor)
-    const seoMap: Record<string, any> = {
-      'tech-lead': {
-        pt: { title: 'Arquitetura de Hardware & Código | Tech Lead', desc: 'Suprimentos de nível sênior. Componentes, periféricos e ferramentas para arquitetos de software e engenheiros de hardware.' },
-        en: { title: 'Hardware Architecture & Code | Tech Lead', desc: 'Senior-level supplies. Components, peripherals, and tools for software architects and hardware engineers.' }
-      },
-      'synth-general': {
-        pt: { title: 'Comando Central & Artefatos | General Kelma', desc: 'A linha de frente da RaQuel Synths. Vestuário oficial e itens táticos selecionados pela liderança da Horda.' },
-        en: { title: 'Central Command & Artifacts | General Kelma', desc: 'The front line of RaQuel Synths. Official apparel and tactical items selected by the Horde leadership.' }
-      },
-      'sonic-arsenal': {
-        pt: { title: 'Armamento Sonoro & Samples | Sonic Arsenal', desc: 'Engenharia de áudio agressiva. Samples, presets e equipamentos para produtores de Industrial Metal e Aggrotech.' },
-        en: { title: 'Sonic Weaponry & Samples | Sonic Arsenal', desc: 'Aggressive audio engineering. Samples, presets, and gear for Industrial Metal and Aggrotech producers.' }
-      },
-      'rust-riot': {
-        pt: { title: 'Guerrilha Industrial | Rust Riot (Jonah)', desc: 'Equipamento pesado e estética de ferrugem. Onde o Metal encontra o caos do Red Team. Proibido para o Blue Team.' },
-        en: { title: 'Industrial Guerrilla | Rust Riot (Jonah)', desc: 'Heavy gear and rust aesthetics. Where Metal meets Red Team chaos. Forbidden for the Blue Team.' }
-      },
-      'neon-witch': {
-        pt: { title: 'Grimórios Digitais & Stealth | Neon Witch (Nyx)', desc: 'Ferramentas de ocultação e estética Dark Synth. O kit de sobrevivência da Bruxa Operativa para infiltração no Mainframe.' },
-        en: { title: 'Digital Grimoires & Stealth | Neon Witch (Nyx)', desc: 'Cloaking tools and Dark Synth aesthetics. The Operative Witch survival kit for Mainframe infiltration.' }
-      }
-    };
+  // 🏗️ MATRIZ DE METADADOS (Mantida conforme o seu original)
+  const seoMap: Record<string, any> = {
+    'tech-lead': {
+      pt: { title: 'Arquitetura de Hardware & Código | Tech Lead', desc: 'Suprimentos de nível sênior. Componentes, periféricos e ferramentas para arquitetos de software e engenheiros de hardware.' },
+      en: { title: 'Hardware Architecture & Code | Tech Lead', desc: 'Senior-level supplies. Components, peripherals, and tools for software architects and hardware engineers.' }
+    },
+    'synth-general': {
+      pt: { title: 'Comando Central & Artefatos | General Kelma', desc: 'A linha de frente da RaQuel Synths. Vestuário oficial e itens táticos selecionados pela liderança da Horda.' },
+      en: { title: 'Central Command & Artifacts | General Kelma', desc: 'The front line of RaQuel Synths. Official apparel and tactical items selected by the Horde leadership.' }
+    },
+    'sonic-arsenal': {
+      pt: { title: 'Armamento Sonoro & Samples | Sonic Arsenal', desc: 'Engenharia de áudio agressiva. Samples, presets e equipamentos para produtores de Industrial Metal e Aggrotech.' },
+      en: { title: 'Sonic Weaponry & Samples | Sonic Arsenal', desc: 'Aggressive audio engineering. Samples, presets, and gear for Industrial Metal and Aggrotech producers.' }
+    },
+    'rust-riot': {
+      pt: { title: 'Guerrilha Industrial | Rust Riot (Jonah)', desc: 'Equipamento pesado e estética de ferrugem. Onde o Metal encontra o caos do Red Team. Proibido para o Blue Team.' },
+      en: { title: 'Industrial Guerrilla | Rust Riot (Jonah)', desc: 'Heavy gear and rust aesthetics. Where Metal meets Red Team chaos. Forbidden for the Blue Team.' }
+    },
+    'neon-witch': {
+      pt: { title: 'Grimórios Digitais & Stealth | Neon Witch (Nyx)', desc: 'Ferramentas de ocultação e estética Dark Synth. O kit de sobrevivência da Bruxa Operativa para infiltração no Mainframe.' },
+      en: { title: 'Digital Grimoires & Stealth | Neon Witch (Nyx)', desc: 'Cloaking tools and Dark Synth aesthetics. The Operative Witch survival kit for Mainframe infiltration.' }
+    }
+  };
 
-    // 🛡️ FALLBACK: Se não houver depto selecionado (Lobby), usa o SEO geral
-    const defaultSeo = {
-      pt: { title: 'Suprimentos da Horda | Neon Store | RQS', desc: 'Faça o upgrade do seu hardware humano. Vestuário industrial e suprimentos táticos da RaQuel Synths.' },
-      en: { title: 'Horde Supplies | Neon Store | RQS', desc: 'Upgrade your human hardware. Industrial apparel and tactical supplies from RaQuel Synths.' }
-    };
+  const defaultSeo = {
+    pt: { title: 'Suprimentos da Horda | Neon Store | RQS', desc: 'Faça o upgrade do seu hardware humano. Vestuário industrial e suprimentos táticos da RaQuel Synths.' },
+    en: { title: 'Horde Supplies | Neon Store | RQS', desc: 'Upgrade your human hardware. Industrial apparel and tactical supplies from RaQuel Synths.' }
+  };
 
-    const currentSeo = (dept && seoMap[dept]) ? seoMap[dept] : defaultSeo;
-    const finalData = isPt ? currentSeo.pt : currentSeo.en;
+  const currentSeo = (dept && seoMap[dept]) ? seoMap[dept] : defaultSeo;
+  const finalData = isPt ? currentSeo.pt : currentSeo.en;
 
-    // 🚀 INJEÇÃO DE METADADOS
-    this.seoService.updateMetaTags({
-      title: finalData.title,
-      description: finalData.desc,
-      url: `https://raquelsynths.com.br/store${dept ? '?dept=' + dept : ''}`
-    });
-  }
+  // 🚀 CONSTRUÇÃO DETERMINÍSTICA: Não dependemos do delay do Router
+  const canonicalPath = `/store${dept ? '?dept=' + dept : ''}`;
+
+  //this.seoService.updateCanonical(canonicalPath);
+  this.seoService.updateMetaTags({
+    title: finalData.title,
+    description: finalData.desc,
+    url: canonicalPath
+  });
+}
 
   // --- ESTADO ---
   activeMode = signal<'broklin' | 'jonah'>('broklin');
@@ -146,7 +147,7 @@ selectedDepartmentData: any;
   allDepartments: any[] = [];
 
   // --- FILTROS ---
-  selectedDepartmentId: string | null = null;
+  selectedDepartmentId = signal<string | null>(null);
   filteredProducts: any[] = [];
 
   // Getter inteligente para o Lobby (Filtra por Dono)
@@ -185,7 +186,7 @@ ngOnInit(): void {
 
       if (dept) {
         // A URL pediu um departamento específico! Pula o Lobby.
-        this.selectedDepartmentId = dept;
+        this.selectedDepartmentId.set(dept);
         this.currentView = 'MINI_STORE';
 
         // Puxa a Lore imediatamente (pois vem do arquivo estático local)
@@ -201,7 +202,7 @@ ngOnInit(): void {
       } else {
         // Se não tem departamento na URL, mostra o Lobby normal
         this.currentView = 'LOBBY';
-        this.selectedDepartmentId = null;
+        this.selectedDepartmentId.set(null);
       }
     });
   }
@@ -243,8 +244,8 @@ ngOnInit(): void {
         this.allDepartments = data.departments;
 
         // Se o usuário entrou por link direto, filtra os produtos
-        if (this.selectedDepartmentId) {
-           this.filteredProducts = this.allProducts.filter(item => item.faction === this.selectedDepartmentId);
+        if (this.selectedDepartmentId()) {
+           this.filteredProducts = this.allProducts.filter(item => item.faction === this.selectedDepartmentId());
         }
 
         // Força o Angular a pintar a tela
@@ -290,16 +291,14 @@ checkCurrentMode() {
 
 // --- NAVEGAÇÃO E BOOST DE SEO ---
   onDepartmentSelected(deptId: string) {
-    const deptData = DEPARTMENTS_DATA.find(d => d.id === deptId) || null;
-    this.selectedDepartmentId = deptId;
-    this.selectedDepartmentData = deptData;
-    this.filteredProducts = this.allProducts.filter(item => item.faction === deptId);
-    this.currentView = 'MINI_STORE';
+  const deptData = DEPARTMENTS_DATA.find(d => d.id === deptId) || null;
+  this.selectedDepartmentId.set(deptId); // Atualiza o Signal
+  this.router.navigate([], { queryParams: { dept: deptId }, queryParamsHandling: 'merge' });
+  this.selectedDepartmentData = deptData;
+  this.filteredProducts = this.allProducts.filter(item => item.faction === deptId);
+  this.currentView = 'MINI_STORE';
 
-    if (this.isBrowser) window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    // 🛡️ MOTOR 1: Dispara o SEO visual limpo e bilíngue
-    this.updateSeoAndLang(this.translate.isPt());
+  if (this.isBrowser) window.scrollTo({ top: 0, behavior: 'smooth' });
 
     // 🚀 MOTOR 2 (O BOOST JSON-LD): Permanece intacto para catalogar os produtos no Google
     if (deptData && this.filteredProducts.length > 0) {
@@ -308,7 +307,7 @@ checkCurrentMode() {
       const seoDesc = deptData.loreDescription ? deptData.loreDescription[lang] : (deptData.description ? deptData.description[lang] : 'RQS Protocol');
       const imgPath = deptData.image || 'assets/images/banner-seo-global.jpg';
       const seoImage = imgPath.startsWith('http') ? imgPath : `https://raquelsynths.com.br/${imgPath}`;
-
+      this.seoService.updateCanonical(this.router.url);
       // O JSON-LD aceita textos mais longos e formatação diferente, não afeta a Meta Tag suja
       this.seoService.setJsonLd({
         "@context": "https://schema.org",
@@ -339,12 +338,13 @@ checkCurrentMode() {
   }
 
   backToLobby() {
-    this.currentView = 'LOBBY';
-    this.selectedDepartmentId = null;
-    this.filteredProducts = [];
+  this.selectedDepartmentId.set(null); // Reseta o Signal
+  this.router.navigate([], { queryParams: { dept: null } });
+  this.currentView = 'LOBBY';
+  this.selectedDepartmentId.set(null);
+  this.filteredProducts = [];
 
-    // ♻️ --- RESET DE SEO LIMPO E BILÍNGUE ---
-    this.updateSeoAndLang(this.translate.isPt());
+  this.updateSeoAndLang(this.translate.isPt());
 
     // 🚀 RETORNA O JSON-LD PARA A HOME DA LOJA
     this.seoService.setJsonLd({

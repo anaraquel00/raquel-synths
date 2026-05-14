@@ -48,12 +48,12 @@
     &larr; {{ currentLang() === 'pt' ? 'ESCOLHER OUTRO SETOR' : 'CHOOSE ANOTHER SECTOR' }}
   </button>
 
-  <div class="sector-header" [class.jonah-mode]="isJonahSector(selectedDepartmentId)">
+  <div class="sector-header" [class.jonah-mode]="isJonahSector(selectedDepartmentId())">
 
     <div class="hazard-stripe"></div>
 
     <h2 class="sector-label">
-       <span class="folder-icon">📂</span> {{ selectedDepartmentId | uppercase }}
+       <span class="folder-icon">📂</span> {{ selectedDepartmentId() | uppercase }}
     </h2>
 
   @if (selectedDepartmentData?.loreDescription) {

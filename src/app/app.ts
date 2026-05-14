@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, PLATFORM_ID, Renderer2, signal, afterNextRender } from '@angular/core';
+import { Component, inject, OnInit, PLATFORM_ID, Renderer2, signal, afterNextRender, effect } from '@angular/core';
 import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
 
 import { Router, NavigationEnd, ActivatedRoute, RouterModule, RouterOutlet } from '@angular/router';
@@ -34,6 +34,8 @@ export class App implements OnInit {
   private platformId = inject(PLATFORM_ID);
 
   cookiesAccepted = signal(false);
+   // 📡 NOVO SIGNAL: Vai guardar o contexto da rota para o SEO processar
+  activeRouteState = signal<{ isHome: boolean; path: string; seoData: any } | null>(null);
 
   // 🛡️ TRAVA DO SEO: Evita atualizar as tags no 1º load do cliente
   private initialLoad = true;
@@ -42,6 +44,48 @@ export class App implements OnInit {
     private adSenseService: AdSenseService,
     private trackingService: TrackingService
   ) {
+
+     // 📡 O NOVO RADAR GLOBAL DE SEO
+    effect(() => {
+      const lang = this.translate.currentLang(); // Vigia o botão de Idioma!
+      const isPt = lang === 'pt';
+       if (isPlatformBrowser(this.platformId)) {
+        const langAttribute = isPt ? 'pt-BR' : 'en-US';
+        this.renderer.setAttribute(this.document.documentElement, 'lang', langAttribute);
+      }
+
+      const routeState = this.activeRouteState(); // Angular vigia o Roteador!
+
+      if (routeState) {
+
+        // Mantive o seu comentário sobre a trava do initialLoad
+        // Se quiser pular a trava para o cliente forçar o SEO logo de cara (SSR Fallback):
+        // Basta apagar esse IF abaixo, mas manter ele garante segurança contra o erro NG05604
+         if (this.initialLoad && isPlatformBrowser(this.platformId)) {
+          this.initialLoad = false;
+          return;
+        }
+
+        const urlCanonica = `https://raquelsynths.com.br${routeState.path}`;
+
+        // 🛡️ O SEU RESET DE SOBERANIA DA HOME
+        if (routeState.isHome) {
+          this.seoService.updateMetaTags({
+            title: isPt ? 'RaQuel Synths | Sagas Cyberpunk & Banda Virtual' : 'RaQuel Synths | Cyberpunk Sagas & Virtual Band',
+            description: isPt ? 'Onde o analógico sangra no digital. Mergulhe na Guerra Sonora.' : 'Where analog bleeds into digital. Dive into the Sonic War.',
+            url: urlCanonica
+          });
+        }
+        // Lógica para as outras páginas (Sagas, Dossier, etc)
+        else if (routeState.seoData) {
+          this.seoService.updateMetaTags({
+            title: routeState.seoData.title ? routeState.seoData.title[lang] : undefined,
+            description: routeState.seoData.description ? routeState.seoData.description[lang] : undefined,
+            url: urlCanonica
+          });
+        }
+      }
+    }, { allowSignalWrites: true });
 
     // 🛡️ A CAIXA FORTE ABSOLUTA: TUDO QUE TOCA O DOM (SCRIPTS E ATRIBUTOS) VAI AQUI!
     afterNextRender(() => {
@@ -86,7 +130,7 @@ export class App implements OnInit {
       });
   }
 
-  ngOnInit() {
+ngOnInit() {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
       map(() => this.activatedRoute),
@@ -97,33 +141,17 @@ export class App implements OnInit {
       filter(route => route.outlet === 'primary'),
       mergeMap(route => route.data)
     ).subscribe(data => {
-      const isPt = this.translate.isPt();
+
       const currentPath = this.router.url.split('?')[0];
       const isHome = currentPath === '/' || currentPath === '';
 
-      // 🛡️ RESET DE SOBERANIA: Se cair na Home, força os dados reais
-      // mesmo que o data['seo'] seja nulo.
-      if (isHome) {
-        this.seoService.updateMetaTags({
-          title: isPt ? 'RaQuel Synths | Sagas Cyberpunk & Banda Virtual' : 'RaQuel Synths | Cyberpunk Sagas & Virtual Band',
-          description: isPt ? 'Onde o analógico sangra no digital. Mergulhe na Guerra Sonora.' : 'Where analog bleeds into digital. Dive into the Sonic War.',
-          url: 'https://raquelsynths.com.br/'
-        });
-        return; // Sai da função, Home protegida.
-      }
+      // Apenas entrega as coordenadas para o Radar (effect) trabalhar!
+      this.activeRouteState.set({
+        isHome: isHome,
+        path: currentPath,
+        seoData: data['seo'] || null
+      });
 
-      // Lógica para as outras páginas que TÊM seo data nas rotas
-      if (data['seo']) {
-        // Removemos a trava do initialLoad aqui para permitir a correção se o SSR falhar
-        const lang = isPt ? 'pt' : 'en';
-        const urlCanonica = `https://raquelsynths.com.br${currentPath}`;
-
-        this.seoService.updateMetaTags({
-          title: data['seo'].title ? data['seo'].title[lang] : undefined,
-          description: data['seo'].description ? data['seo'].description[lang] : undefined,
-          url: urlCanonica
-        });
-      }
     });
   }
 

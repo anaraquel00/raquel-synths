@@ -4,6 +4,7 @@ export interface LoreBlock {
 }
 
 export interface LoreEpisode {
+
   id: string;          // O ID do documento (s1-e1) vêm automático
   title: string;
   title_en?: string;   // Opcional (?) pq pode não ter em todos ainda

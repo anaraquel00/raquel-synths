@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, Inject, PLATFORM_ID, signal, afterNextRender, Injector } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, Inject, PLATFORM_ID, signal, afterNextRender, Injector, effect } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslationService } from '../../services/translation.service';
@@ -20,6 +20,8 @@ import { DOCUMENT } from '@angular/core';
   templateUrl: './lore-reader.html',
   styleUrls: ['./lore-reader.scss']
 })
+// Lembre-se de garantir que 'effect' esteja importado do '@angular/core' lá em cima!
+
 export class LoreReaderComponent implements OnInit, OnDestroy {
   public translate = inject(TranslationService);
   private seoService = inject(SeoService);
@@ -28,11 +30,13 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
   private injector = inject(Injector);
   private document = inject(DOCUMENT);
   currentMode = signal<'broklin' | 'jonah'>('broklin');
+
   // 🛡️ O CANAL DE RÁDIO DO TEMA
   private mode$ = new BehaviorSubject<'broklin' | 'jonah'>('broklin');
 
-  // 🛡️ O CANO AGORA ENTREGA APENAS UM EPISÓDIO, NÃO UM ARRAY
+  // 🛡️ O CANO QUE ALIMENTA A TELA E O SIGNAL DO SEO
   episode$!: Observable<LoreEpisode | null>;
+  activeEpisode = signal<LoreEpisode | null>(null);
 
   private themeObserver: MutationObserver | null = null;
   isBrowser: boolean;
@@ -41,32 +45,81 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
     this.isBrowser = isPlatformBrowser(this.platformId);
     this.document = document;
 
-    // 🛡️ TRAVA TÁTICA: Move a verificação de tema e o observer para após a hidratação
+    // 🛡️ TRAVA TÁTICA
     afterNextRender(() => {
       this.checkTheme();
-
       this.themeObserver = new MutationObserver(() => {
         this.checkTheme();
-        // A reatividade lida com a mudança de modo automaticamente!
       });
       this.themeObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
     });
+
+  // 📡 O RADAR DE SEO REATIVO (CORRIGIDO SEM DADOS FANTASMAS)
+    effect(() => {
+      const lang = this.translate.currentLang(); // 1. Escuta o botão de idioma
+      const isPt = lang === 'pt';
+      const ep = this.activeEpisode();           // 2. Escuta a chegada do episódio
+
+      if (ep) {
+        // 🛡️ Sincronia instantânea do <html lang="x">
+        this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
+
+        // 🛡️ LÊ ESTRITAMENTE O QUE EXISTE NA INTERFACE
+        const title = isPt ? ep.title : (ep.title_en || ep.title);
+        const desc = isPt ? ep.description : (ep.description_en || ep.description);
+        const imageUrl = ep.image || 'https://raquelsynths.com.br/images/banner-seo-global.jpg';
+
+        this.seoService.updateCanonical(`https://raquelsynths.com.br/lore-reader/${ep.id}`);
+
+        // 🚀 TÍTULO EXATO COMO VOCÊ HAVIA PROGRAMADO ORIGINALMENTE
+        this.seoService.updateMetaTags({
+          title: `${title} | RQS Saga`,
+          description: desc,
+          image: imageUrl,
+          type: 'article'
+        });
+
+        // 🚀 O SEGUNDO MOTOR: Structured Data JSON-LD
+        this.seoService.setJsonLd({
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          "headline": title,
+          "description": desc,
+          "image": [ imageUrl ],
+          "datePublished": ep.releaseDate,
+          "author": [{
+              "@type": "Person",
+              "name": "Ana Raquel",
+              "jobTitle": "Dev & Creator",
+              "url": "https://raquelsynths.com.br/creator"
+            }],
+          "publisher": {
+            "@type": "Organization",
+            "name": "RaQuel Synths",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://raquelsynths.com.br/rqs-logo.webp"
+            }
+          },
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": `https://raquelsynths.com.br/lore-reader/${ep.id}`
+          }
+        });
+      }
+    }, { allowSignalWrites: true });
   }
 
   ngOnInit() {
-    const isPt = this.translate.isPt();
+    // A inicialização estática do HTML foi apagada daqui e foi pro effect()
 
-    // 🛡️ SINCRONIA DE BIOS: Hardware em dia
-    this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
-    // 🛰️ CAPTURA O ID DA URL
     const id$ = this.route.paramMap.pipe(map(params => params.get('id')));
 
-    // 💻 CONECTA O CANO DE FORMA REATIVA DUPLA
     this.episode$ = combineLatest([id$, this.mode$]).pipe(
       switchMap(([id, mode]) => {
         if (!id) return of(null);
 
-        // 🛡️ O BYPASS DO SERVIDOR (Bloqueia o Firebase no Build para não dar Timeout)
+        // 🛡️ O BYPASS DO SERVIDOR
         const source$ = !this.isBrowser
           ? of([{
               id: id,
@@ -77,54 +130,15 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
               image: 'https://raquelsynths.com.br/images/banner-seo-global.jpg',
               releaseDate: new Date().toISOString()
             } as LoreEpisode])
-          // 🌐 O MUNDO REAL: Puxa o array do Firebase no navegador do usuário
           : this.injector.get(ContentService).getEpisodes(mode).pipe(take(1));
 
         return source$.pipe(
           map(episodes => episodes ? episodes.find(ep => ep.id === id) || null : null),
           tap(ep => {
-            if (ep) {
-               // 🛡️ O QUE JÁ EXISTE: Atualiza as abas e Open Graph
-               const title = this.translate.isPt() ? ep.title : (ep.title_en || ep.title);
-               const desc = this.translate.isPt() ? ep.description : (ep.description_en || ep.description);
-               const imageUrl = ep.image || 'https://raquelsynths.com.br/images/banner-seo-global.jpg';
-
-               this.seoService.updateMetaTags({
-                 title: `${title} | RQS Saga`,
-                 description: desc,
-                 image: imageUrl,
-                 type: 'article' // 🚀 Boost de OG que configuramos no serviço!
-               });
-
-               // 🚀 O SEGUNDO MOTOR: Structured Data JSON-LD
-               // Isso é o que o webcode.tools gerou, agora automatizado!
-               this.seoService.setJsonLd({
-                 "@context": "https://schema.org",
-                 "@type": "BlogPosting",
-                 "headline": title,
-                 "description": desc,
-                 "image": [ imageUrl ],
-                 "datePublished": ep.releaseDate,
-                 "author": [{
-                     "@type": "Person",
-                     "name": "Ana Raquel",
-                     "jobTitle": "Dev & Creator",
-                     "url": "https://raquelsynths.com.br/creator"
-                   }],
-                 "publisher": {
-                   "@type": "Organization",
-                   "name": "RaQuel Synths",
-                   "logo": {
-                     "@type": "ImageObject",
-                     "url": "https://raquelsynths.com.br/rqs-logo.webp"
-                   }
-                 },
-                 "mainEntityOfPage": {
-                   "@type": "WebPage",
-                   "@id": `https://raquelsynths.com.br/lore-reader/${ep.id}`
-                 }
-               });
-            }
+            // 🔌 O CABO ESTÁ CONECTADO!
+            // Agora o RxJS não atualiza o SEO, ele apenas joga o episódio pro Signal.
+            // Quem atualiza o SEO automaticamente na hora é o effect() lá em cima!
+            this.activeEpisode.set(ep);
           })
         );
       })
@@ -135,19 +149,15 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
     if (this.themeObserver) this.themeObserver.disconnect();
   }
 
- private checkTheme() {
+  private checkTheme() {
     if (!this.isBrowser) return;
 
-    // 1. O radar verifica se a classe de perigo existe
     const isJonah = document.body.classList.contains('mode-jonah');
-
-    // 2. APRESENTAMOS o newMode pro compilador (A linha que faltava!)
     const newMode: 'broklin' | 'jonah' = isJonah ? 'jonah' : 'broklin';
 
-    // 3. Só dispara o gatilho reativo se houver mudança real
     if (this.currentMode() !== newMode) {
       this.currentMode.set(newMode);
-      this.mode$.next(newMode); // 🚀 Envia o sinal de rádio pra trocar de episódio
+      this.mode$.next(newMode);
     }
   }
 
