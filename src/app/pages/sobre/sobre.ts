@@ -78,6 +78,17 @@ const dossierSchema = {
   "url": "https://raquelsynths.com.br/",
   "logo": "https://raquelsynths.com.br/rqs-logo.webp",
   "description": "RaQuel Synths (RQS) is a living experiment in Musical Engineering and Transmedia Storytelling, fusing human curation with generative AI models to chronicle a digital corporate war.",
+  "sameAs": [
+    "https://suno.com/@raquel_holanda",
+    "https://youtube.com/@RaQuelSynths",
+    "https://soundcloud.com/rqs_official",
+    "https://open.spotify.com/intl-pt/artist/1yrPZaFyIcsCjj876LaHXL?si=pfg2hClwQVq9apcikNuzXw",
+    "https://x.com/anaraquel00",
+    "https://www.instagram.com/rqs_synths",
+    "https://www.facebook.com/profile.php?id=61585926695560",
+    "https://www.tiktok.com/@raquel_holanda_",
+    "https://www.reddit.com/user/PitifulLow7475",
+  ],
   "genre": [
   "Electronic Dance Music (EDM)",
   "Progressive House",
