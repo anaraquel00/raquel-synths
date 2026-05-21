@@ -12,9 +12,6 @@ export default async function handler(req, res) {
     { path: '/compliance', priority: '0.9' },
     { path: '/dossier', priority: '0.9' },
     { path: '/store', priority: '0.8' },
-    { path: '/store?dept=tech-lead', priority: '0.8' },
-    { path: '/store?dept=synth-general', priority: '0.8' },
-    { path: '/store?dept=sonic-arsenal', priority: '0.8' },
     { path: '/saga', priority: '0.8' },
     { path: '/visual-novel', priority: '0.8' },
     { path: '/logs-archive', priority: '0.9' },
@@ -44,8 +41,29 @@ export default async function handler(req, res) {
 
     const extractUrls = (data, basePath) => {
       if (data.documents) {
+        const now = new Date();
+        const todayStr = now.toISOString().split('T')[0];
+
         data.documents.forEach((doc) => {
           const id = doc.name.split('/').pop();
+
+          // 🛡️ FIREWALL 1: Proteção dos Logs (Pela Data no ID)
+          if (basePath === 'log-reader') {
+            const logDate = id.substring(0, 10);
+            if (logDate > todayStr) return;
+          }
+
+          // 🛡️ FIREWALL 2: Proteção da Lore (Pelo releaseDate no banco)
+          if (basePath === 'lore-reader') {
+            // A API REST do Firebase esconde os dados dentro de fields.campo.tipo
+            const releaseDateStr = doc.fields?.releaseDate?.stringValue;
+
+            if (releaseDateStr) {
+              const releaseDate = new Date(releaseDateStr);
+              if (releaseDate > now) return;
+            }
+          }
+
           xml += `  <url>\n    <loc>https://raquelsynths.com.br/${basePath}/${id}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
         });
       }

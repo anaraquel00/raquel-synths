@@ -20,7 +20,6 @@ import { DOCUMENT } from '@angular/core';
   templateUrl: './lore-reader.html',
   styleUrls: ['./lore-reader.scss']
 })
-// Lembre-se de garantir que 'effect' esteja importado do '@angular/core' lá em cima!
 
 export class LoreReaderComponent implements OnInit, OnDestroy {
   public translate = inject(TranslationService);
@@ -76,7 +75,8 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
           title: `${title} | RQS Saga`,
           description: desc,
           image: imageUrl,
-          type: 'article'
+          type: 'article',
+          url: `https://raquelsynths.com.br/lore-reader/${ep.id}`
         });
 
         // 🚀 O SEGUNDO MOTOR: Structured Data JSON-LD
@@ -119,14 +119,14 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
       switchMap(([id, mode]) => {
         if (!id) return of(null);
 
-        // 🛡️ O BYPASS DO SERVIDOR
+        // 🛡️ O BYPASS DO SERVIDOR (Agora com Dados Únicos!)
         const source$ = !this.isBrowser
           ? of([{
               id: id,
-              title: 'RQS Lore Archive',
-              title_en: 'RQS Lore Archive',
-              description: 'Transmedia Cyberpunk storytelling from RaQuel Synths.',
-              description_en: 'Transmedia Cyberpunk storytelling from RaQuel Synths.',
+              title: `RQS Lore Archive - Arquivo ${id}`,
+              title_en: `RQS Lore Archive - File ${id}`,
+              description: `Acesse o log confidencial ${id} da saga transmedia RaQuel Synths.`,
+              description_en: `Access the confidential log ${id} from the RaQuel Synths saga.`,
               image: 'https://raquelsynths.com.br/images/banner-seo-global.jpg',
               releaseDate: new Date().toISOString()
             } as LoreEpisode])

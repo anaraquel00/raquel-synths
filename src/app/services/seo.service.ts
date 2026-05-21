@@ -45,7 +45,7 @@ export class SeoService {
         const urlObj = new URL(absoluteUrl);
 
         // 2. FILTRO DE PERSONA: Remove parâmetros que não interessam pro SEO
-        const forbiddenParams = ['mode', 'fbclid', 'utm_source', 'utm_medium', 'gclid'];
+        const forbiddenParams = ['mode', 'fbclid', 'utm_source', 'utm_medium', 'gclid', 'dept'];
         forbiddenParams.forEach(p => urlObj.searchParams.delete(p));
 
         const finalUrl = urlObj.toString();

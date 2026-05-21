@@ -1,5 +1,5 @@
 import { Component, effect, inject, PLATFORM_ID, signal, OnInit, OnDestroy, afterNextRender } from '@angular/core';
-import { MEMBERS_PT, MEMBERS_EN, MANIFESTO_PT, MANIFESTO_EN, MANIFESTO_JONAH_EN, MANIFESTO_JONAH_PT } from '../../data/app-data';
+import { MANIFESTO_PT, MANIFESTO_EN, MANIFESTO_JONAH_EN, MANIFESTO_JONAH_PT, BLUE_TEAM_PT, BLUE_TEAM_EN, RED_TEAM_PT, RED_TEAM_EN } from '../../data/app-data';
 import { TranslationService } from '../../services/translation.service';
 import { Router } from '@angular/router';
 import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
@@ -45,13 +45,16 @@ export class SobreComponent implements OnInit, OnDestroy {
     });
 
     effect(() => {
-      if (this.translate.isPt()) {
-        this.members = MEMBERS_PT;
-      } else {
-        this.members = MEMBERS_EN;
-      }
-    });
+  const isPt = this.translate.isPt();
+
+  if (!this.isJonahMode()) {
+    this.members = isPt ? BLUE_TEAM_PT : BLUE_TEAM_EN;
+  } else {
+    this.members = isPt ? RED_TEAM_PT : RED_TEAM_EN;
   }
+}, { allowSignalWrites: true });
+}
+
   ngOnInit() {
     // 🛡️ A TRAVA DE SOBERANIA
     // Só injeta SEO se o usuário estiver na página /dossier pura.

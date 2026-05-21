@@ -65,18 +65,18 @@ export class LogReaderComponent implements OnInit, OnDestroy {
       switchMap(([id, isPt]) => {
         if (!id) return of(null);
 
-        // 🛡️ O BYPASS DO SERVIDOR (Bloqueia o Firebase no Build para não dar Timeout)
+        // 🛡️ O BYPASS DO SERVIDOR (Agora Dinâmico e Blindado!)
         const source$ = !isPlatformBrowser(this.platformId)
           ? of({
               date: new Date().toISOString(),
               pt: {
-                title: 'RQS System Log Archive',
-                description: 'Acesso aos logs criptografados da RaQuel Synths. Cyberpunk, Synthwave e narrativa imersiva.',
+                title: `RQS System Log - Arquivo ${id}`,
+                description: `Acesso ao log criptografado ${id} da RaQuel Synths.`,
                 techContent: 'Dados de sistema criptografados. Acesse pelo terminal.'
               },
               en: {
-                title: 'RQS System Log Archive',
-                description: 'Access to RaQuel Synths encrypted logs. Cyberpunk, Synthwave, and immersive narrative.',
+                title: `RQS System Log - File ${id}`,
+                description: `Access to RaQuel Synths encrypted log ${id}.`,
                 techContent: 'Encrypted system data. Access via terminal.'
               }
             })
@@ -101,11 +101,13 @@ export class LogReaderComponent implements OnInit, OnDestroy {
           tap(mappedData => {
             if (mappedData) {
               // 🛡️ MOTOR 1: Meta Tags Básicas e Open Graph
+              const absoluteUrl = `https://raquelsynths.com.br/log-reader/${mappedData.id}`;
               this.seoService.updateCanonical(this.router.url);
               this.seoService.updateMetaTags({
                 title: `${mappedData.title} | RQS Logs`,
                 description: mappedData.description,
-                type: 'article' // Classifica como artigo nas redes sociais
+                type: 'article',
+                url: absoluteUrl
               });
 
               // 🚀 MOTOR 2: O Injetor Neural JSON-LD (Structured Data)
