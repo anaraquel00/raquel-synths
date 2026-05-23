@@ -4,7 +4,7 @@ Allow: /
 
 # Quarentena: Setores de memoria que nao devem ser rastreados
 Disallow: /assets/private/
-Disallow: /*?mode=jonah
+# [REDACTED BY RED TEAM]: Disallow: /*?mode=jonah  <-- Removido para permitir consolidação de Link Juice
 
 # Prioridade total para o Drone do AdSense
 User-agent: Mediapartners-Google
