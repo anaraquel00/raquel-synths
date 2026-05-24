@@ -135,7 +135,7 @@ ngOnInit() {
     this.getDiscography();
   }
 
- getDiscography() {
+getDiscography() {
     // 🛡️ SE FOR O SERVIDOR NODE.JS (BUILD/SSR), INJETA MOCK PARA SEO E ESTABILIZA IMEDIATAMENTE
     if (!isPlatformBrowser(this.platformId)) {
       this.allAlbums = [{
@@ -152,46 +152,73 @@ ngOnInit() {
     }
 
     // 🌐 SE FOR O NAVEGADOR, FAZ A BUSCA REAL NO FIREBASE
-  this.injector.get(ContentService).getDiscography().pipe(
-    take(1),
-    timeout(4000),
-    catchError(err => {
-      console.warn('⚠️ Timeout do Firebase no SSR. Renderizando vazio...', err);
-      return of([]); // Salva o servidor do colapso
-    })
-  ).subscribe({
-    next: (data: any[]) => {
-      this.allAlbums = data as Album[];
-      this.isLoading = false;
+    this.injector.get(ContentService).getDiscography().pipe(
+      take(1),
+      timeout(4000),
+      catchError(err => {
+        console.warn('⚠️ Timeout do Firebase no SSR. Renderizando vazio...', err);
+        return of([]); // Salva o servidor do colapso
+      })
+    ).subscribe({
+      next: (data: any[]) => {
+        this.allAlbums = data as Album[];
+        this.isLoading = false;
 
-      // 🚀 INJEÇÃO NEURAL: Structured Data para a Vitrine
-      if (this.allAlbums.length > 0) {
-        this.seoService.setJsonLd({
-          "@context": "https://schema.org",
-          "@type": "MusicGroup",
-          "name": "RaQuel Synths",
-          "alternateName": "RQS",
-          "genre": ["Cyberpunk", "Nu-Metal", "Synthwave"],
-          "description": this.translate.isPt()
-            ? "Banda Virtual Cyberpunk mesclando frequências puras com o caos industrial."
-            : "Cyberpunk Virtual Band blending pure frequencies with industrial chaos.",
-          "album": this.featuredBroklin.map(a => ({
-            "@type": "MusicAlbum",
-            "name": a.title,
-            "image": a.cover,
-            "datePublished": a.releaseDate,
-            "description": this.translate.isPt() ? a.descriptionPT : (a.descriptionEN || a.descriptionPT),
-            "byArtist": { "@type": "MusicGroup", "name": "RaQuel Synths" }
-          }))
-        });
+        // 🚀 INJEÇÃO NEURAL: Structured Data para a Vitrine
+        if (this.allAlbums.length > 0) {
+          const isPt = this.translate.isPt();
+          const isDedicatedPage = this.router.url.includes('/discografia') || this.router.url.includes('/musical-archives');
+
+          // Schema 1: O Grupo Musical e seus Álbuns
+          const schemas: any[] = [
+            {
+              "@context": "https://schema.org",
+              "@type": "MusicGroup",
+              "name": "RaQuel Synths",
+              "alternateName": "RQS",
+              "genre": ["Cyberpunk", "Nu-Metal", "Synthwave"],
+              "description": isPt
+                ? "Banda Virtual Cyberpunk mesclando frequências puras com o caos industrial."
+                : "Cyberpunk Virtual Band blending pure frequencies with industrial chaos.",
+              "album": this.featuredBroklin.map(a => ({
+                "@type": "MusicAlbum",
+                "name": a.title,
+                "image": a.cover,
+                "datePublished": a.releaseDate,
+                "description": isPt ? a.descriptionPT : (a.descriptionEN || a.descriptionPT),
+                "byArtist": { "@type": "MusicGroup", "name": "RaQuel Synths" }
+              }))
+            }
+          ];
+
+          // Schema 2: A Acoplagem do Vídeo (Apenas na página dedicada)
+          if (isDedicatedPage) {
+            schemas.push({
+              "@context": "https://schema.org",
+              "@type": "VideoObject",
+              "name": "BLUE TEAM 24/7 // THE PRISTINE CODE - RaQuel Synths",
+              "description": isPt
+                ? "Transmissão do Santuário. Sintonize na rádio oficial 24/7 para frequências limpas de Synthwave e Dream Pop."
+                : "Sanctuary Broadcast. Tune in to the official 24/7 radio for clean Synthwave and Dream Pop frequencies.",
+              "thumbnailUrl": [
+                "https://img.youtube.com/vi/u7JI-dyajuA/maxresdefault.jpg",
+                "https://img.youtube.com/vi/u7JI-dyajuA/hqdefault.jpg"
+              ],
+              "uploadDate": "2026-05-09T00:00:00-03:00",
+              "embedUrl": "https://www.youtube.com/embed/u7JI-dyajuA"
+            });
+          }
+
+          // Envia o lote de dados estruturados unificado para o serviço de SEO
+          this.seoService.setJsonLd(schemas);
+        }
+      },
+      error: (err) => {
+        console.error('Erro ao carregar álbuns:', err);
+        this.isLoading = false;
       }
-    },
-    error: (err) => {
-      console.error('Erro ao carregar álbuns:', err);
-      this.isLoading = false;
-    }
-  });
-}
+    });
+  }
 
   // --- GETTERS (A Mágica que conserta o HTML) ---
 
@@ -209,7 +236,7 @@ ngOnInit() {
     releaseDate.getFullYear() === today.getFullYear();
   }
 
-// ✅ BROKLIN: Mostra TUDO de 2026 (ou fatiado se o limite for passado)
+// ✅ BROKLIN: Mostra fatiado na Home/Discografia (5 álbuns) e completo no Arquivo Paginado
 get featuredBroklin(): Album[] {
     const filtered = this.allAlbums
       .filter(a => a.faction === 'broklin' || a.faction === 'hybrid')
@@ -219,12 +246,14 @@ get featuredBroklin(): Album[] {
          return dateA - dateB; // Mais novos primeiro
       });
 
-    // Se estiver na Home (limitToHome existe), pega os 5. Se não, mostra TUDO.
-    return (this.router.url === '/') ? filtered.slice(0, 5) : filtered;
-  }
+    // Isola o comportamento de exibição total apenas para a página de arquivos paginados
+    const isArchivePage = this.router.url.includes('/musical-archives');
 
-  // ✅ JONAH: Mostra TUDO de 2026 (ou fatiado se o limite for passado)
-  get featuredJonah(): Album[] {
+    return isArchivePage ? filtered : filtered.slice(0, this.limitToHome);
+}
+
+// ✅ JONAH: Mostra fatiado na Home/Discografia (5 álbuns) e completo no Arquivo Paginado
+get featuredJonah(): Album[] {
     const filtered = this.allAlbums
       .filter(a => a.faction === 'jonah' || a.faction === 'hybrid')
       .sort((a, b) => {
@@ -233,8 +262,10 @@ get featuredBroklin(): Album[] {
          return dateA - dateB;
       });
 
-    return (this.router.url === '/') ? filtered.slice(0, 5) : filtered;
-  }
+    const isArchivePage = this.router.url.includes('/musical-archives');
+
+    return isArchivePage ? filtered : filtered.slice(0, this.limitToHome);
+}
 
   // --- FUNÇÕES DO HTML ---
 
