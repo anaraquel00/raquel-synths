@@ -153,6 +153,28 @@ ngOnInit() {
       });
 
     });
+    if (isPlatformBrowser(this.platformId)) {
+
+      // 🔑 BACKDOOR TÁTICO: Ativa o modo dev apenas acessando uma URL secreta
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('rqs_dev') === 'true') {
+        window.localStorage.setItem('RQS_DEV_MODE', 'true');
+        alert('⚡ [RQS SECURITY] Modo Stealth ATIVADO neste dispositivo. GA4 bloqueado.');
+      } else if (urlParams.get('rqs_dev') === 'false') {
+        window.localStorage.removeItem('RQS_DEV_MODE');
+        alert('🔴 [RQS SECURITY] Modo Stealth DESATIVADO. GA4 rastreando novamente.');
+      }
+
+      // 🛡️ A TRAVA DE TELEMETRIA
+      const isDeveloper = window.localStorage.getItem('RQS_DEV_MODE') === 'true';
+      const isLocalhost = window.location.hostname === 'localhost';
+
+      if (isLocalhost || isDeveloper) {
+        // ⚠️ ATENÇÃO GENERAL: Substitua o 'G-XXXXXXXXXX' pelo seu ID real de métricas do GA4!
+        (window as any)['ga-disable-G-Z1TSQ0NV6T'] = true;
+        console.warn('⚡ [RQS SECURITY] Navegação fantasma em andamento. O GA4 não está te vendo.');
+      }
+    }
   }
 
   // --- MÉTODOS MANTIDOS INTACTOS ---
