@@ -15,6 +15,28 @@ import Swal from 'sweetalert2';
   styleUrl: './footer.scss'
 })
 export class Footer {
+  clickCount = 0;
+
+  togglePwaStealthMode() {
+    this.clickCount++;
+
+    if (this.clickCount === 5) {
+      const currentState = window.localStorage.getItem('RQS_DEV_MODE');
+
+      if (!currentState) {
+        window.localStorage.setItem('RQS_DEV_MODE', 'true');
+        (window as any)['ga-disable-G-Z1TSQ0NV6T'] = true;
+        alert('⚡ [PWA SECURITY] Modo Fantasma ATIVADO. O GA4 está cego.');
+      } else {
+        window.localStorage.removeItem('RQS_DEV_MODE');
+        (window as any)['ga-disable-G-Z1TSQ0NV6T'] = false;
+        alert('🔴 [PWA SECURITY] Modo Fantasma DESATIVADO.');
+      }
+      this.clickCount = 0;
+    }
+
+    setTimeout(() => { this.clickCount = 0; }, 2000);
+ }
 
    // DADOS REAIS
   paypalLink = 'https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=anaraquel00@gmail.com&currency_code=USD&item_name=Support_RQS';
