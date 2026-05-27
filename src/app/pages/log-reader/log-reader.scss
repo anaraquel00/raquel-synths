@@ -19,7 +19,7 @@
     bottom: 100%;
     animation: scan 4s linear infinite;
   }
-}
+  }
 
 .terminal-wrapper {
   max-width: 900px;
@@ -194,6 +194,7 @@
     color: #e0e0e0 !important;
     box-shadow: inset 5px 0 15px -5px rgba(0,0,0,0.5);
     clear: both;
+    overflow: hidden; /* PATCH DE SEGURANÇA: Obriga o container a "abraçar" imagens com float, impedindo o vazamento */
 
     em {
       color: var(--accent-color) !important;
@@ -201,45 +202,57 @@
       opacity: 0.9;
     }
   }
-// 🖼️ Alinhamento de Imagens nos Logs
-  .img-side-right {
-    float: right;
-    margin: 0 0 20px 20px !important;
-    max-width: 45%; /* Ajuste a porcentagem conforme o tamanho que desejar */
-// Comportamento Mobile (Telas menores): Ocupa 100% da largura, sem flutuar.
-    width: 45%;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
 
-    // Comportamento Desktop (A partir de 768px): Flutua para a direita com 45% do tamanho.
-    @media (max-width: 768px) {
-      float: right;
-      width: auto;
-      max-width: 100%;
-      margin: 0 0 20px 20px !important;
-    }
-  }
-  .img-side-left {
-    float: left;
-    margin: 0 20px 20px 0 !important;
-    max-width: 45%; /* Ajuste a porcentagem conforme o tamanho que desejar */
+  // 🖼️ ALINHAMENTO DE IMAGENS NOS LOGS (REFATORADO)
+
+  .img-center {
+    display: block !important;
+    width: 100%;
+    max-width: 80%; /* Define a largura limite no desktop. Ajuste para 45% se quiser menor */
+    margin: 30px auto !important; /* Centraliza horizontalmente e dá espaço acima/abaixo */
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-    // Comportamento Mobile (Telas menores): Ocupa 100% da largura, sem flutuar.
-    width: 45%;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+    float: none !important; /* Bloqueio absoluto: nunca flutuar */
 
-    // Comportamento Desktop (A partir de 768px): Flutua para a direita com 45% do tamanho.
+    // Comportamento Mobile: Ocupa a tela quase toda, sem margens exageradas
     @media (max-width: 768px) {
-      float: left;
-      width: auto;
       max-width: 100%;
-      margin: 0 20px 20px 0 !important;
+      margin: 20px 0 !important;
     }
   }
+
+  .img-side-right {
+    float: right !important; /* Força para a direita no Desktop */
+    width: 45%; /* Largura amarrada a 45% do espaço do log */
+    margin: 5px 0 20px 20px !important; /* Empurra o texto para longe da esquerda e de baixo */
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+
+    // Comportamento Mobile: Cancela o float. A imagem quebra a linha, centraliza e ocupa 100%
+    @media (max-width: 768px) {
+      float: none !important;
+      width: 100%;
+      display: block;
+      margin: 20px 0 !important;
+    }
+  }
+
+  .img-side-left {
+    float: left !important; /* Força para a esquerda no Desktop */
+    width: 45%; /* Largura amarrada a 45% do espaço do log */
+    margin: 5px 20px 20px 0 !important; /* Empurra o texto para longe da direita e de baixo */
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+
+    // Comportamento Mobile: Cancela o float. A imagem quebra a linha, centraliza e ocupa 100%
+    @media (max-width: 768px) {
+      float: none !important;
+      width: 100%;
+      display: block;
+      margin: 20px 0 !important;
+    }
+  }
+
   // 🔵 BLUE TEAM (A Auditoria Corporativa com privilégios Root)
   .broklin-audit-note {
     margin-top: 3rem !important;
