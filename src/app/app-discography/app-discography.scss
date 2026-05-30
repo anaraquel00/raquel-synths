@@ -54,6 +54,22 @@
 .broklin-text {
   display: block; /* A nossa transmissão rola solta */
 }
+/* ========================================== */
+/* 🛡️ CSS DO PORTAL VISUAL */
+.portal-visual-link {
+  text-decoration: none;
+  display: block;
+  transition: transform 0.2s ease, filter 0.2s ease;
+
+  &:hover {
+    transform: scale(1.02);
+
+    .mainframe-thumb {
+      filter: brightness(1.2) contrast(1.1);
+    }
+  }
+}
+
 
 
 /* --- QUANDO O MODO INFERNO É ATIVADO --- */
@@ -231,15 +247,6 @@
     }
   }
 
-  .btn-archive {
-  width: 100%;
-  justify-content: center;
-  margin-top: 1rem;
-  padding: 15px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  }
-
 
  /* --- CLASSE MESTRE DE SEÇÃO (A Base) --- */
 .artist-section {
@@ -303,9 +310,7 @@ button {
     background: transparent;
     &:hover { background: rgba(0, 243, 255, 0.1); box-shadow: 0 0 20px #00f3ff; }
   }
-
-}
-
+  }
 
 /* =========================================
    SMART CARD SPOTIFY (Deep Link)
@@ -442,11 +447,6 @@ button {
   }
 }
 
-.terminal-radio-container{
-  border: 1px solid rgba(255, 153, 0, 0.2);
-  background: linear-gradient(135deg, rgba(20, 10, 0, 0.95) 0%, rgba(10, 10, 10, 0.9) 100%);
-}
-
 /* ========================================= */
 
 
@@ -568,7 +568,7 @@ button {
     }
   }
 
-  }
+
 
  .icon-shake { animation: shake 0.5s infinite; }
 
@@ -588,12 +588,19 @@ button {
     border: 1px dashed #ff9900;
     color: #ff9900;
     background: transparent;
+    padding: 10px 20px;
     &:hover { background: rgba(255, 153, 0, 0.1); box-shadow: 0 0 20px #ff9900; }
+  }
+    &:hover {
+      background: rgba(255, 153, 0, 0.1);
+      /* Mudei para INSET. Assim o brilho amarelo reflete pra dentro do botão e não explode as margens */
+      box-shadow: inset 0 0 20px #ff9900;
+    }
   }
 
 
-/* --- LAYOUT DO ÁLBUM (Responsivo) --- */
-.featured-album {
+ /* --- LAYOUT DO ÁLBUM (Responsivo) --- */
+ .featured-album {
   display: flex;
   gap: 2rem;
   padding: 1rem 0;
@@ -602,6 +609,7 @@ button {
     flex-direction: column; /* Empilha no celular */
   }
 }
+
 
   ::ng-deep .cyber-play-btn {
   display: inline-block; /* Mantém no meio do texto, mas permite bordas/padding */
@@ -617,7 +625,7 @@ button {
   transition: all 0.3s ease;
   cursor: pointer; /* O mouse vira mãozinha (fundamental) */
   white-space: nowrap; /* Impede o botão de quebrar no meio de duas linhas */
-}
+ }
 
 /* O Efeito Neon ao passar o mouse */
 ::ng-deep .cyber-play-btn:hover {
@@ -639,7 +647,130 @@ button {
 }
 
 
-:host-context(.mode-jonah) .terminal-radio-container {
-  border-color: rgba(255, 153, 0, 0.2);
-  background: linear-gradient(135deg, rgba(20, 10, 0, 0.95) 0%, rgba(10, 10, 10, 0.9) 100%);
+/* ========================================== */
+/* 🛡️ ARQUITETURA DO PORTAL VISUAL (BLUE TEAM E RED TEAM) */
+/* ========================================== */
+
+.terminal-radio-container {
+  /* Escudo Pai */
+  box-sizing: border-box;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 4px;
+
+  /* Cores padrão do Santuário (Blue Team) */
+  border: 1px solid rgba(0, 243, 255, 0.2);
+  background: linear-gradient(135deg, rgba(10, 10, 15, 0.95) 0%, rgba(5, 5, 10, 0.9) 100%);
+
+  .portal-visual-link {
+    text-decoration: none;
+    display: block;
+    transition: transform 0.2s ease, filter 0.2s ease;
+
+    &:hover {
+      transform: scale(1.02);
+      .mainframe-thumb { filter: brightness(1.2) contrast(1.1); }
+    }
+  }
+
+  .thumbnail-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+
+    .mainframe-thumb {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* 👇 AQUI ESTÁ O SEU NOVO BOTÃO BLINDADO */
+    .btn-youtube {
+      width: 100%;
+      box-sizing: border-box !important;
+      overflow: hidden !important; /* A Guilhotina contra vazamentos */
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      padding: 15px; /* Agora cresce para dentro */
+
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+
+      /* Estilo Base (Broklin/Ordem) */
+      color: #00f3ff;
+      background: transparent;
+
+      &:hover {
+        background-color: rgba(0, 243, 255, 0.2);
+        box-shadow: inset 0 0 20px #00f3ff; /* INSET: o brilho é interno, impossível vazar */
+      }
+      /* 📱 BLINDAGEM MOBILE (Ordem) */
+      @media (max-width: 768px) {
+        font-size: 0.85rem !important;
+        padding: 12px 10px !important;
+        letter-spacing: 0.5px !important;
+      }
+    }
+  }
+
 }
+
+/* ========================================== */
+/* ☢️ SOBRESCRITA DO SUBMUNDO AMPLIFICADA (JONAH MODE) */
+/* ========================================== */
+:host-context(.mode-jonah) .terminal-radio-container {
+  /* Cores do Red Team */
+  border: 1px solid rgba(255, 51, 0, 0.2);
+  background: linear-gradient(135deg, rgba(30, 0, 0, 0.95) 0%, rgba(10, 10, 10, 0.9) 100%);
+
+  .portal-visual-link {
+    text-decoration: none;
+    display: block;
+    transition: transform 0.2s ease, filter 0.2s ease;
+
+    &:hover {
+      transform: scale(1.02);
+      .mainframe-thumb { filter: brightness(1.2) contrast(1.1); }
+    }
+  }
+  .thumbnail-wrapper .btn-youtube {
+    /* 1. Troca o tracejado passivo por uma linha sólida, quente e grossa */
+    border: 2px solid #ff3300 !important;
+
+    /* 2. Corrompe o texto para um Amarelo Radioativo de alto contraste */
+    color: #ffcc00 !important;
+    font-family: 'Courier New', monospace; /* Fonte de Código/Terminal */
+    letter-spacing: 1.5px;
+
+    /* 3. Fundo mais escuro para o texto vibrar */
+    background: rgba(20, 0, 0, 0.8) !important;
+
+    /* 4. Brilho Interno Agressivo (Contenção Absoluta) */
+    box-shadow: inset 0 0 15px rgba(255, 51, 0, 0.5) !important;
+
+    &:hover {
+      /* 5. Efeito de Sobrecarga Elétrica no Hover */
+      background: #ff3300 !important;
+      color: #ffffff !important;
+
+      /* Brilho interno máximo na contenção */
+      box-shadow: inset 0 0 35px #ff9900 !important;
+    }
+    /* 📱 BLINDAGEM MOBILE (Caos Controlado) */
+    @media (max-width: 768px) {
+      font-size: 0.8rem !important; /* Courier precisa ficar um pouco menor no mobile */
+      letter-spacing: 0px !important; /* Desliga o espaçamento extra para caber na tela */
+      padding: 10px 8px !important;
+    }
+  }
+}
+
+

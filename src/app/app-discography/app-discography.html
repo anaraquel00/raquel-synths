@@ -25,13 +25,24 @@
               <div class="icon-pulse">📡</div> <div class="text-data">
                 <h2>{{ translate.isPt() ? 'TRANSMISSÃO DO SANTUÁRIO' : 'SANCTUARY TRANSMISSION' }}</h2>
                 <p>
-                  {{ translate.isPt() ? 'A colisão entre Ordem e Caos. Sintonize na rádio oficial 24/7 para frequências limpas de Synthwave e Dream Pop.' : 'The collision of Order and Chaos. Tune into the official 24/7 radio for clean Synthwave and Dream Pop frequencies.' }}
+                  {{ translate.isPt() ? 'A colisão entre Ordem e Caos. Sintonize os audios com as frequências limpas de Synthwave e Música eletrônica.' : 'The collision of Order and Chaos. Tune into the audios with the clean Synthwave and Electronic Music frequencies.' }}
                 </p>
               </div>
             </div>
-            <div class="terminal-radio-container" style="padding: 15px; background: rgba(0,0,0,0.4); border-top: 1px solid rgba(0, 243, 255, 0.3);">
-              <iframe width="100%" height="200" [src]="radioBroklin" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" loading="lazy" allowfullscreen></iframe>
-            </div>
+            <div class="terminal-radio-container">
+
+     <a href="https://www.youtube.com/@RaquelSynths" target="_blank" rel="noopener noreferrer" class="portal-visual-link">
+      <div class="thumbnail-wrapper">
+      <img src="assets/images/thumbnail-blue-team.webp" alt="RQS Mainframe" class="mainframe-thumb" loading="lazy">
+
+      <div class="btn-youtube neon-border">
+        <i class="fab fa-youtube"></i>
+        {{ translate.isPt() ? '[ ACESSAR MAINFRAME NO YOUTUBE ]' : '[ ACCESS MAINFRAME ON YOUTUBE ]' }}
+         </div>
+         </div>
+          </a>
+
+          </div>
           </div>
         }
 
@@ -41,13 +52,24 @@
               <div class="icon-pulse warning-icon">☢️</div> <div class="text-data">
                 <h2>{{ translate.isPt() ? 'SINAL INTERCEPTADO' : 'INTERCEPTED SIGNAL' }}</h2>
                 <p>
-                  {{ translate.isPt() ? 'Uma injeção letal de frequências pesadas. O caos 24/7 de Jonah Cyperfield. Nu-Metal e ferrugem sem freios.' : 'A lethal injection of heavy frequencies. Jonah\'s 24/7 chaos. Unrestrained Nu-Metal and rust.' }}
+                  {{ translate.isPt() ? 'Uma injeção letal de frequências pesadas. O caos de Jonah Cyperfield. Nu-Metal e ferrugem sem freios.' : 'A lethal injection of heavy frequencies. Jonah\'s chaos. Unrestrained Nu-Metal and rust.' }}
                 </p>
               </div>
             </div>
-            <div class="terminal-radio-container" style="padding: 15px; background: rgba(0,0,0,0.6); border-top: 1px solid rgba(255, 0, 50, 0.3);">
-              <iframe width="100%" height="200" [src]="radioJonah" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" loading="lazy" allowfullscreen></iframe>
-            </div>
+            <div class="terminal-radio-container" >
+
+          <a href="https://www.youtube.com/@RaquelSynths" target="_blank" rel="noopener noreferrer" class="portal-visual-link">
+          <div class="thumbnail-wrapper">
+      <img src="assets/images/thumbnail-red-team.webp" alt="Jonah Mainframe" class="mainframe-thumb glitch-effect" loading="lazy">
+
+      <div class="btn-youtube">
+        <i class="fab fa-youtube"></i>
+        {{ translate.isPt() ? '[ INVADIR CANAL NO YOUTUBE ]' : '[ INFILTRATE YOUTUBE CHANNEL ]' }}
+      </div>
+       </div>
+      </a>
+
+          </div>
           </div>
         }
 

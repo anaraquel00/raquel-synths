@@ -21,7 +21,6 @@ import { SeoService } from '../services/seo.service';
 import { catchError, take, timeout } from 'rxjs/operators';
 import { of } from 'rxjs';
 
-
 @Component({
   selector: 'app-discography',
   standalone: true,
@@ -38,10 +37,6 @@ export class DiscographyComponent implements OnInit {
   private cdr = inject(ChangeDetectorRef);
   private seoService = inject(SeoService);
   private document = inject(DOCUMENT);
-
-// 2. Crie os links confiáveis
- radioBroklin = this.sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/u7JI-dyajuA?autoplay=0&loop=1&playlist=u7JI-dyajuA');
- radioJonah = this.sanitizer.bypassSecurityTrustResourceUrl('https://www.youtube.com/embed/E871XDzFsYc?autoplay=0&loop=1&playlist=E871XDzFsYc&si=e6AhqzWwuh7EzIRR');
 
   private _limitToHome: number = 5; // 🛡️ Valor de fábrica blindado (default)
 
@@ -133,6 +128,8 @@ ngOnInit() {
 
     // 🚀 UPLINK DE DADOS: Isso deve rodar SEMPRE, seja na Home ou na página dedicada
     this.getDiscography();
+
+
   }
 
 getDiscography() {
