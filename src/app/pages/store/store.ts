@@ -118,8 +118,8 @@ private updateSeoAndLang(isPt: boolean) {
   };
 
   const defaultSeo = {
-    pt: { title: 'Suprimentos da Horda | Neon Store | RQS', desc: 'Faça o upgrade do seu hardware humano. Vestuário industrial e suprimentos táticos da RaQuel Synths.' },
-    en: { title: 'Horde Supplies | Neon Store | RQS', desc: 'Upgrade your human hardware. Industrial apparel and tactical supplies from RaQuel Synths.' }
+    pt: { title: 'Suprimentos da Horda | Neon Store', desc: 'Faça o upgrade do seu hardware humano. Vestuário industrial e suprimentos táticos da RaQuel Synths.' },
+    en: { title: 'Horde Supplies | Neon Store', desc: 'Upgrade your human hardware. Industrial apparel and tactical supplies from RaQuel Synths.' }
   };
 
   const currentSeo = (dept && seoMap[dept]) ? seoMap[dept] : defaultSeo;

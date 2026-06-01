@@ -118,7 +118,7 @@ ngOnInit() {
       this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
 
       this.seoService.updateMetaTags({
-        title: isPt ? 'Discografia | RaQuel Synths' : 'Discography | RaQuel Synths',
+        title: isPt ? 'Discografia' : 'Discography',
         description: isPt
           ? 'Acesse o banco de áudio mestre da Raquel Synths.'
           : 'Access the master audio bank of Raquel Synths.',

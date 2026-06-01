@@ -64,7 +64,7 @@ export class SobreComponent implements OnInit, OnDestroy {
       this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
 
       this.seoService.updateMetaTags({
-        title: isPt ? 'Dossiê Operativo | RQS' : 'Operative Dossier | RQS',
+        title: isPt ? 'Dossiê Operativo' : 'Operative Dossier',
         description: isPt
           ? 'Perfis classificados da Blue Team: Broklin, Kelma e a arquitetura da RQS.'
           : 'Blue Team classified profiles: Broklin, Kelma, and RQS architecture.',

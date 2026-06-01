@@ -78,8 +78,8 @@ export class AppVisualNovel implements OnInit, OnDestroy {
     // 🎯 SEO DE ALTO IMPACTO: Palavras-chave táticas (Cyberpunk, Transmedia, Lore)
     this.seoService.updateMetaTags({
       title: isPt
-        ? 'Ecos da RQS: Sagas Cyberpunk & Transmídia | RaQuel Synths'
-        : 'Echoes of RQS: Cyberpunk & Transmedia Sagas | RaQuel Synths',
+        ? 'Ecos da RQS: Sagas Cyberpunk & Transmídia'
+        : 'Echoes of RQS: Cyberpunk & Transmedia Sagas',
       description: isPt
         ? 'Decodifique os arquivos da guerra sonora. Explore as Sagas Literárias que expandem o universo da RaQuel Synths — onde o código de Broklin encontra o caos de Jonah.'
         : 'Decode the sonic war archives. Explore the Literary Sagas expanding the RaQuel Synths universe — where Broklin’s code meets Jonah’s chaos.',

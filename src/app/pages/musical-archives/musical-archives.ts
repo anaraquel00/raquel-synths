@@ -99,7 +99,7 @@ getArchives() {
         this.legacyReleases = sortedData.slice(5);
      // 🛡️ MOTOR DE AUTORIDADE: Meta Tags da Discografia Completa
       this.seoService.updateMetaTags({
-        title: this.translate.isPt() ? 'Arquivos Musicais | RQS' : 'Musical Archives | RQS',
+        title: this.translate.isPt() ? 'Arquivos Musicais' : 'Musical Archives',
         description: this.translate.isPt()
           ? 'O diretório completo de áudio da RaQuel Synths. Explore o legado de Broklin Garpeter e as anomalias de Jonah Cyperfield.'
           : 'The complete audio directory of RaQuel Synths. Explore the legacy of Broklin Garpeter and the anomalies of Jonah Cyperfield.',

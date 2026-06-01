@@ -56,8 +56,8 @@ export class ComplianceComponent implements OnInit, OnDestroy {
     // 2. 🎯 SEO DE AUTORIDADE LEGAL: Transmite confiança para os auditores
     this.seoService.updateMetaTags({
       title: isPt
-        ? 'Protocolos de Sistema | Compliance | RaQuel Synths'
-        : 'System Protocols | Compliance | RaQuel Synths',
+        ? 'Protocolos de Sistema | Compliance'
+        : 'System Protocols | Compliance',
       description: isPt
         ? 'Diretrizes oficiais, transparência de dados e termos de uso da RaQuel Synths. Conheça as regras que regem o nosso ecossistema digital.'
         : 'Official guidelines, data transparency, and terms of use for RaQuel Synths. Learn the rules governing our digital ecosystem.',

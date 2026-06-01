@@ -139,8 +139,8 @@ currentLanguage: any;
     // 🛡️ MOTOR DE AUTORIDADE CENTRALIZADO
     this.seoService.updateMetaTags({
       title: isPt
-        ? 'RaQuel Synths | Sagas Cyberpunk & Banda Virtual'
-        : 'RaQuel Synths | Cyberpunk Sagas & Virtual Band',
+        ? 'Sagas Cyberpunk & Banda Virtual'
+        : 'Cyberpunk Sagas & Virtual Band',
       description: isPt
         ? 'Onde o analógico sangra no digital. Mergulhe na Guerra Sonora entre Synthwave e Industrial Metal. Leia as Sagas de Broklin e Jonah.'
         : 'Where analog bleeds into digital. Dive into the Audio Civil War between Synthwave and Industrial Metal. Read the Broklin and Jonah Sagas.',

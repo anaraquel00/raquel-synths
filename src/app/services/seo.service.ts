@@ -26,15 +26,20 @@ export class SeoService {
               private meta: Meta,
              @Inject(DOCUMENT) private dom: Document) { }
 
-  // 🛡️ MÉTODO ATUALIZADO E BLINDADO
+ // 🛡️ MÉTODO ATUALIZADO E BLINDADO CONTRA ESQUECIMENTO DE SPA
   updateMetaTags(config: { title: string; description?: any; image?: string; url?: string; type?: string }) {
     const pageTitle = config.title ? `${config.title} | RaQuel Synths` : this.defaultTitle;
     const pageDesc = config.description || this.defaultDesc;
     const pageImage = config.image || this.defaultImage;
     const pageType = config.type || 'website';
 
-    // 🛡️ BLINDAGEM DE DOMÍNIO: Garante que a URL seja ABSOLUTA antes de sofrer o parsing
+    // 🛡️ CORREÇÃO DE VAZAMENTO DE SPA: Se a URL não for fornecida, captura do DOM atual de forma segura para SSR
     let absoluteUrl = config.url || '';
+    if (!absoluteUrl) {
+      // Captura a rota e os parâmetros atuais diretamente através do DOM fornecido pelo Angular
+      absoluteUrl = this.dom.location?.pathname + (this.dom.location?.search || '') || '';
+    }
+
     if (absoluteUrl) {
       // 1. CORREÇÃO VITAL: Adiciona o domínio se vier apenas a rota (Ex: /store?dept=...)
       if (!absoluteUrl.startsWith('http')) {
@@ -55,7 +60,7 @@ export class SeoService {
         this.meta.updateTag({ property: 'og:url', content: finalUrl });
 
       } catch (e) {
-        // Fallback apenas se a URL for genuinamente bizarra
+        // Fallback apenas se a URL for genuinamente bizarra (remove query strings)
         this.setCanonicalUrl(absoluteUrl.split('?')[0]);
       }
     }

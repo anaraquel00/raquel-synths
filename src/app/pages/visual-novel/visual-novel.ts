@@ -89,7 +89,7 @@ export class VisualNovelComponent implements OnInit, OnDestroy {
 
     // 3. 🛡️ MOTOR DE AUTORIDADE: Meta Tags da Visual Novel
     this.seoService.updateMetaTags({
-      title: isPt ? 'Sagas Interativas | RaQuel Synths' : 'Interactive Sagas | RaQuel Synths',
+      title: isPt ? 'Sagas Interativas' : 'Interactive Sagas',
       description: isPt
         ? 'Mergulhe nas Sagas Cyberpunk da RaQuel Synths. Escolha entre o código de Broklin ou o caos de Jonah e decida o futuro da rede.'
         : 'Dive into RaQuel Synths’ Cyberpunk Sagas. Choose between Broklin’s code or Jonah’s chaos and decide the future of the network.',
