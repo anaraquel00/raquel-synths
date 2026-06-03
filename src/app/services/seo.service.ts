@@ -1,11 +1,33 @@
-import { Inject, Injectable } from '@angular/core';
+import { inject, Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { DOCUMENT } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SeoService {
+ private platformId = inject(PLATFORM_ID);
+  // 📡 INJETOR DINÂMICO E SEGURO DO AHREFS
+  initAhrefs() {
+    if (isPlatformBrowser(this.platformId)) {
+      const head = this.dom.getElementsByTagName('head')[0];
+
+      // Evita injeções duplicadas se a rota mudar no SPA
+      let script = this.dom.querySelector(`script[src*='analytics.ahrefs.com']`);
+
+      if (!script) {
+        script = this.dom.createElement('script');
+        script.setAttribute('src', 'https://analytics.ahrefs.com/analytics.js');
+        script.setAttribute('data-key', 'EJzOT2pOUYpY+NJZz82s+g');
+        script.setAttribute('async', 'true');
+
+        head.appendChild(script);
+        console.log('📡 [Ahrefs] Telemetria de SEO inicializada dinamicamente com sucesso.');
+      }
+    }
+  }
+
   updateCanonical(currentPath: string) {
   if (!currentPath) return;
 

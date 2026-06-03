@@ -131,6 +131,9 @@ export class App implements OnInit {
   }
 
 ngOnInit() {
+  // Inicializa o Ahrefs apenas no navegador de forma limpa
+    this.seoService.initAhrefs();
+
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
       map(() => this.activatedRoute),
