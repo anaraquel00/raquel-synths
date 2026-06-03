@@ -2,12 +2,14 @@ import { inject, Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { DOCUMENT } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SeoService {
  private platformId = inject(PLATFORM_ID);
+ private router = inject(Router);
   // 📡 INJETOR DINÂMICO E SEGURO DO AHREFS
   initAhrefs() {
     if (isPlatformBrowser(this.platformId)) {
@@ -55,11 +57,10 @@ export class SeoService {
     const pageImage = config.image || this.defaultImage;
     const pageType = config.type || 'website';
 
-    // 🛡️ CORREÇÃO DE VAZAMENTO DE SPA: Se a URL não for fornecida, captura do DOM atual de forma segura para SSR
+    // 🛡️ CORREÇÃO DEFINITIVA DE SSR: Se a URL não for fornecida, captura do Router do Angular (100% seguro em Node/Browser)
     let absoluteUrl = config.url || '';
     if (!absoluteUrl) {
-      // Captura a rota e os parâmetros atuais diretamente através do DOM fornecido pelo Angular
-      absoluteUrl = this.dom.location?.pathname + (this.dom.location?.search || '') || '';
+      absoluteUrl = this.router.url;
     }
 
     if (absoluteUrl) {
