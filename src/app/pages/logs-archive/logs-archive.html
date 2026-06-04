@@ -55,25 +55,32 @@
       }
 
      <nav class="pagination-controls">
-        <a [routerLink]="['/logs-archive']"
-           [queryParams]="{ page: currentPage() - 1 }"
-           class="btn-pager"
-           [class.disabled]="currentPage() === 0"
-           [style.pointer-events]="currentPage() === 0 ? 'none' : 'auto'">
-          [ < VOLTAR ]
-        </a>
+        <!-- 🛡️ VOLTAR BLINDADO: Só cria a tag de link se o índice da página for maior que 0 (Base 0) -->
+        @if (currentPage() > 0) {
+          <a [routerLink]="['/logs-archive']"
+             [queryParams]="{ page: currentPage() - 1 }"
+             class="btn-pager">
+            [ < VOLTAR ]
+          </a>
+        } @else {
+          <!-- Se for a página inicial (índice 0), renderiza apenas texto (span) para o robô não ler -->
+          <span class="btn-pager disabled">[ < VOLTAR ]</span>
+        }
 
         <span class="page-counter">{{ currentPage() + 1 }} / {{ totalPages() }}</span>
 
-        <a [routerLink]="['/logs-archive']"
-           [queryParams]="{ page: currentPage() + 1 }"
-           class="btn-pager"
-           [class.disabled]="currentPage() === totalPages() - 1"
-           [style.pointer-events]="currentPage() === totalPages() - 1 ? 'none' : 'auto'">
-          [ AVANÇAR > ]
-        </a>
+        <!-- 🛡️ AVANÇAR BLINDADO: Só cria a tag de link se a página atual for menor que a última (totalPages() - 1) -->
+        @if (currentPage() < totalPages() - 1) {
+          <a [routerLink]="['/logs-archive']"
+             [queryParams]="{ page: currentPage() + 1 }"
+             class="btn-pager">
+            [ AVANÇAR > ]
+          </a>
+        } @else {
+          <!-- Se for a última página, renderiza apenas texto (span) para o robô não ler -->
+          <span class="btn-pager disabled">[ AVANÇAR > ]</span>
+        }
       </nav>
-
     } @else {
       <div style="padding: 100px; text-align: center; color: #0f0;">
         <p>🔄 DOWNLOADING ARCHIVE...</p>

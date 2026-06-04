@@ -62,30 +62,37 @@
   }
     }
 
-    <div class="terminal-pagination">
-      <a [routerLink]="['/musical-archives']"
-         queryParamsHandling="merge"
-         [queryParams]="{ broPage: currentPageBroklin - 1 }"
-         (click)="scrollToId('broklin-top')"
-         class="cmd-btn"
-         [class.disabled]="currentPageBroklin === 1"
-         [style.pointer-events]="currentPageBroklin === 1 ? 'none' : 'auto'">
-        [ < PREV_LOG ]
-      </a>
+   <div class="terminal-pagination">
+      <!-- 🛡️ ANTERIOR BLINDADO: Só cria a tag de link se a página for maior que 1 -->
+      @if (currentPageBroklin > 1) {
+        <a [routerLink]="['/musical-archives']"
+           queryParamsHandling="merge"
+           [queryParams]="{ broPage: currentPageBroklin - 1 }"
+           (click)="scrollToId('broklin-top')"
+           class="cmd-btn">
+          [ < PREV_LOG ]
+        </a>
+      } @else {
+        <!-- Se for a página 1, renderiza apenas texto (span) sem link para o robô não ler -->
+        <span class="cmd-btn disabled">[ < PREV_LOG ]</span>
+      }
 
       <span class="cmd-display">
         PAGE: 0{{ currentPageBroklin }} / 0{{ totalPagesBroklin }}
       </span>
 
-      <a [routerLink]="['/musical-archives']"
-         queryParamsHandling="merge"
-         [queryParams]="{ broPage: currentPageBroklin + 1 }"
-         (click)="scrollToId('broklin-top')"
-         class="cmd-btn"
-         [class.disabled]="currentPageBroklin === totalPagesBroklin"
-         [style.pointer-events]="currentPageBroklin === totalPagesBroklin ? 'none' : 'auto'">
-        [ NEXT_LOG > ]
-      </a>
+      <!-- 🛡️ PRÓXIMO BLINDADO: Só cria a tag de link se a página for menor que o total de páginas -->
+      @if (currentPageBroklin < totalPagesBroklin) {
+        <a [routerLink]="['/musical-archives']"
+           queryParamsHandling="merge"
+           [queryParams]="{ broPage: currentPageBroklin + 1 }"
+           (click)="scrollToId('broklin-top')"
+           class="cmd-btn">
+          [ NEXT_LOG > ]
+        </a>
+      } @else {
+        <span class="cmd-btn disabled">[ NEXT_LOG > ]</span>
+      }
     </div>
  <a class="btn-exit" routerLink="/">
   {{ translate.isPt() ? '[ SAIR DO ARQUIVO ]' : '[ EXIT ARCHIVE ]' }}
@@ -150,35 +157,43 @@
     <hr class="separator hazard-line">
   }
     }
-
-    <div class="terminal-pagination hazard-mode">
-      <a [routerLink]="['/musical-archives']"
-         queryParamsHandling="merge"
-         [queryParams]="{ joPage: currentPageJonah - 1 }"
-         (click)="scrollToId('jonah-top')"
-         class="cmd-btn"
-         [class.disabled]="currentPageJonah === 1"
-         [style.pointer-events]="currentPageJonah === 1 ? 'none' : 'auto'">
-        [ < REWIND_CRASH ]
-      </a>
+<div class="terminal-pagination hazard-mode">
+      <!-- 🛡️ REWIND_CRASH BLINDADO: Só cria a tag de link se o setor for maior que 1 -->
+      @if (currentPageJonah > 1) {
+        <a [routerLink]="['/musical-archives']"
+           queryParamsHandling="merge"
+           [queryParams]="{ joPage: currentPageJonah - 1 }"
+           (click)="scrollToId('jonah-top')"
+           class="cmd-btn">
+          [ < REWIND_CRASH ]
+        </a>
+      } @else {
+        <!-- Se for o Setor 1, exibe apenas texto estático, sem tag <a> de link para o robô não ler -->
+        <span class="cmd-btn disabled">[ < REWIND_CRASH ]</span>
+      }
 
       <span class="cmd-display">
         SECTOR: 0{{ currentPageJonah }} / 0{{ totalPagesJonah }}
       </span>
 
-      <a [routerLink]="['/musical-archives']"
-         queryParamsHandling="merge"
-         [queryParams]="{ joPage: currentPageJonah + 1 }"
-         (click)="scrollToId('jonah-top')"
-         class="cmd-btn"
-         [class.disabled]="currentPageJonah === totalPagesJonah"
-         [style.pointer-events]="currentPageJonah === totalPagesJonah ? 'none' : 'auto'">
-        [ SKIP_ERROR > ]
-      </a>
+      <!-- 🛡️ SKIP_ERROR BLINDADO: Só cria a tag de link se o setor for menor que o total de setores -->
+      @if (currentPageJonah < totalPagesJonah) {
+        <a [routerLink]="['/musical-archives']"
+           queryParamsHandling="merge"
+           [queryParams]="{ joPage: currentPageJonah + 1 }"
+           (click)="scrollToId('jonah-top')"
+           class="cmd-btn">
+          [ SKIP_ERROR > ]
+        </a>
+      } @else {
+        <span class="cmd-btn disabled">[ SKIP_ERROR > ]</span>
+      }
     </div>
-  <a class="btn-exit hazard-mode-btn" routerLink="/" style="color: #ff0000; border-color: #ff0000;">
-  {{ translate.isPt() ? '[ ABORTAR SISTEMA ]' : '[ ABORT SYSTEM ]' }}
-  </a>
+
+    <!-- Mantém o botão de saída do arquivo estético de Jonah exatamente como está -->
+    <a class="btn-exit hazard-mode-btn" routerLink="/" style="color: #ff0000; border-color: #ff0000;">
+      {{ translate.isPt() ? '[ ABORTAR SISTEMA ]' : '[ ABORT SYSTEM ]' }}
+    </a>
   </div>
   }
 </section>
