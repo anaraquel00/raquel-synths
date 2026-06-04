@@ -31,7 +31,7 @@
     margin-bottom: 2.5rem;
     position: relative;
     z-index: 3;
-    
+
     h2 {
       color: #00ffcc;
       font-family: 'Courier New', Courier, monospace;
@@ -64,7 +64,7 @@
   align-items: center;
   gap: 2rem;
   width: 100%;
-  
+
   .hero-left { flex: 1; }
   .hero-right { flex: 1; max-width: 550px; } /* Limita a largura do terminal para não esmagar o texto */
 }
@@ -86,19 +86,24 @@
 }
 
 .hack-btn {
+  /* 🛡️ RESETS VITAIS PARA ELEMENTO <a> SE COMPORTAR COMO <button> */
+  display: block; /* Garante comportamento de bloco para respeitar o width e padding */
+  text-decoration: none; /* Mata a sublinha nativa do navegador nas tags <a> */
+  box-sizing: border-box; /* Garante que 100% de largura inclua as bordas e padding */
+
   /* MATANDO O FUNDO BRANCO DO NAVEGADOR */
   background: rgba(10, 15, 25, 0.8) !important;
   color: var(--accent-color, #00ffcc) !important;
   border: 1px solid rgba(0, 255, 204, 0.3) !important;
-  
-  text-align: left; 
-  width: 100%; 
+
+  text-align: left;
+  width: 100%;
   padding: 12px 20px;
   position: relative;
   font-family: 'Courier New', Courier, monospace;
   cursor: pointer;
   transition: all 0.3s ease;
-  
+
   .cmd-arrow {
     color: #666;
     margin-right: 5px;
@@ -107,25 +112,25 @@
   }
 
   &::after {
-    content: '█'; 
+    content: '█';
     margin-left: 10px;
-    color: var(--accent-color, #00ffcc); 
+    color: var(--accent-color, #00ffcc);
     display: inline-block;
-    opacity: 0; 
+    opacity: 0;
     transition: opacity 0.2s;
   }
 
   &:hover {
-    transform: translateX(5px); 
+    transform: translateX(5px);
     background: rgba(0, 255, 204, 0.1) !important; /* Brilho suave no hover */
     border-color: var(--accent-color, #00ffcc) !important;
     box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
-    
+
     .cmd-arrow { color: var(--accent-color, #00ffcc); }
 
     &::after {
-      opacity: 1; 
-      animation: rqs-cursor-blink 1s step-end infinite; 
+      opacity: 1;
+      animation: rqs-cursor-blink 1s step-end infinite;
     }
   }
 }
@@ -136,7 +141,7 @@
   border-color: rgba(255, 61, 0, 0.3) !important;
 
   &::after { color: #ff3d00; }
-  
+
   &:hover {
     background: rgba(255, 61, 0, 0.1) !important;
     border-color: #ff3d00 !important;
@@ -146,14 +151,14 @@
 }
 
     /* Cores de destaque para Loja e Criadora */
-    
+
     /* --- O Botão de Comunidade (Uplink) --- */
 .uplink-hack {
   border-color: #0088ff;
   color: #0088ff;
   background: rgba(0, 136, 255, 0.05);
   font-weight: bold;
-  
+
   &:hover {
     background: rgba(0, 136, 255, 0.2);
     box-shadow: 0 0 15px rgba(0, 136, 255, 0.4);
@@ -182,7 +187,7 @@
 
 /* ☢️ O VÍRUS DO JONAH (Injeção de Força Bruta com !important) */
 :host-context(body.mode-jonah) {
-  
+
   .netrunner-terminal {
     /* Corrompe o fundo do radar para vermelho escuro */
     background: linear-gradient(rgba(20, 0, 0, 0.95), rgba(10, 0, 0, 0.95)),
@@ -190,25 +195,25 @@
                 linear-gradient(rgba(255, 51, 51, 0.05) 1px, transparent 1px) !important;
     border-color: rgba(255, 51, 51, 0.5) !important;
     box-shadow: inset 0 0 30px rgba(255, 51, 51, 0.1) !important;
-    
+
     /* Sangra o texto do cabeçalho */
-    .terminal-header h2 { 
-      color: #ff3333 !important; 
-      text-shadow: 0 0 10px rgba(255, 51, 51, 0.5) !important; 
+    .terminal-header h2 {
+      color: #ff3333 !important;
+      text-shadow: 0 0 10px rgba(255, 51, 51, 0.5) !important;
     }
 
     /* O grid de hackeamento corrompido */
     .quickhacks-grid {
-      
+
       /* Todos os botões base viram vermelho/ferrugem */
-      .hack-btn { 
-        color: #ff3333 !important; 
-        border-color: rgba(255, 51, 51, 0.4) !important; 
+      .hack-btn {
+        color: #ff3333 !important;
+        border-color: rgba(255, 51, 51, 0.4) !important;
         background: rgba(255, 51, 51, 0.05) !important;
 
-        &:hover { 
-          background: rgba(255, 51, 51, 0.2) !important; 
-          text-shadow: 0 0 8px #ff3333 !important; 
+        &:hover {
+          background: rgba(255, 51, 51, 0.2) !important;
+          text-shadow: 0 0 8px #ff3333 !important;
           border-color: #ff3333 !important;
         }
       }
@@ -230,7 +235,7 @@
         border-color: #aa00ff !important;
         color: #aa00ff !important;
         background: rgba(170, 0, 255, 0.05) !important;
-        
+
         &:hover {
           background: rgba(170, 0, 255, 0.2) !important;
           box-shadow: 0 0 15px rgba(170, 0, 255, 0.4) !important;
@@ -272,7 +277,7 @@
   @media (max-width: 850px) {
     grid-template-columns: 1fr; // Um embaixo do outro
     gap: 30px;
-    
+
     // Se quiser que o Spotify apareça ANTES do Banner no celular, descomente:
     // .right-col { order: 1; }
     // .left-col { order: 2; }
@@ -291,7 +296,7 @@
 .alert-wrapper {
   width: 100%;
   height: 100%; // Garante que ele estique
-  
+
   // Força o componente angular a preencher a div
   app-system-alert {
     display: block;
@@ -304,18 +309,18 @@
    A FÍSICA DA ANIMAÇÃO (Levitação)
    ========================================= */
 @keyframes floatCard {
-  0% { 
+  0% {
     transform: translateY(0px);
-    box-shadow: 0 10px 20px rgba(0, 255, 255, 0.1); 
+    box-shadow: 0 10px 20px rgba(0, 255, 255, 0.1);
   }
-  50% { 
+  50% {
     transform: translateY(-10px); /* O card sobe 10 pixels */
     box-shadow: 0 25px 40px rgba(0, 255, 255, 0.3); /* A sombra espalha no chão */
     border-color: rgba(0, 255, 255, 0.8) !important;
   }
-  100% { 
+  100% {
     transform: translateY(0px); /* O card desce suavemente */
-    box-shadow: 0 10px 20px rgba(0, 255, 255, 0.1); 
+    box-shadow: 0 10px 20px rgba(0, 255, 255, 0.1);
   }
 }
 
@@ -415,7 +420,7 @@
     }
 
      }
-     
+
 /* ========================================================== */
 /* 🛡️ PROTOCOLO DE BLINDAGEM MOBILE DEFINITIVO (SALVA-LCP)   */
 /* ========================================================== */
@@ -426,19 +431,19 @@
     margin-right: 0 !important; /* Arranca a margem do desktop */
     margin-left: 0 !important;
     text-align: center !important;
-    display: block !important; 
+    display: block !important;
     width: 100% !important;
 
     /* Blindagem do LCP: Desliga o peso visual base */
     animation: none !important;
     background-image: none !important;
-    
+
     /* Glitch visual limpo (Custo zero de CPU) */
-    text-shadow: 
-      -2px 0px 0px rgba(0, 243, 255, 0.8), 
+    text-shadow:
+      -2px 0px 0px rgba(0, 243, 255, 0.8),
        2px 0px 0px rgba(0, 243, 255, 0.4) !important;
   }
-  
+
   /* Esconde pseudo-elementos pesados no modo base */
   .hero-title::before,
   .hero-title::after {
@@ -450,16 +455,16 @@
   /* ======================================== */
   :host-context(body.mode-jonah) .hero-title {
     /* 🟢 RESET DE SINAL: Desligamos o LCP pesado */
-    text-shadow: none !important; 
-    animation: none !important; 
+    text-shadow: none !important;
+    animation: none !important;
 
       /* Glitch visual limpo (Custo zero de CPU) */
-     text-shadow: 
-      -2px 0px 0px #ffcc00, 
+     text-shadow:
+      -2px 0px 0px #ffcc00,
        2px 0px 0px #ff2a00 !important;
-    
+
     /* FIXAÇÃO DO MAGMA: Centralizado e Estático */
-    background-position: center center !important; 
+    background-position: center center !important;
     background-image: linear-gradient(90deg, #ff2a00, #ffcc00, #ff2a00) !important;
     background-size: 200% auto !important;
     -webkit-background-clip: text !important;
@@ -468,14 +473,14 @@
 
     /* 🟢 CORREÇÃO DE TAMANHO (Matching Broklin standard) */
     /* Forçamos a mesma altura e posição do Broklin */
-    font-size: 3.5rem !important; 
-    margin-top: 2.5rem !important; 
-    
+    font-size: 3.5rem !important;
+    margin-top: 2.5rem !important;
+
     /* 🔴 NOVO ESTILO: AGRESSIVO & TORTO (Industrial-Metal) */
-    /* Injetamos o 'itálico' agressivo e apertamos o espaçamento das letras 
+    /* Injetamos o 'itálico' agressivo e apertamos o espaçamento das letras
        para passar a sensação de tensão e densidade industrial. */
-    font-style: italic !important; 
-    letter-spacing: 1px !important; 
+    font-style: italic !important;
+    letter-spacing: 1px !important;
   }
 
   /* A Fumaça Tóxica Congelada (Sem faixa) */
@@ -485,18 +490,18 @@
     position: absolute;
     left: 0; top: 0; width: 100%; height: 100%;
     z-index: -1;
-    
+
     /* Configuração da fumaça */
     background: transparent !important;
     color: #ff3300 !important;
     opacity: 0.6 !important;
     filter: blur(8px) !important;
-    
+
     /* 🟢 CORREÇÃO VISUAL DE ESCALA */
-    /* Eliminamos o scale(1.02) que fazia o texto parecer maior. 
+    /* Eliminamos o scale(1.02) que fazia o texto parecer maior.
        Mantemos apenas a elevação tática (-5px). */
-    transform: translate3d(0, -5px, 0) !important; 
-    
+    transform: translate3d(0, -5px, 0) !important;
+
     animation: none !important;
   }
 
@@ -507,7 +512,7 @@
 }
 
   /* Animação */
-  @keyframes shine { to { background-position: 200% center; } } 
+  @keyframes shine { to { background-position: 200% center; } }
 
   /* Subtítulo */
   .hero-subtitle {
@@ -518,7 +523,7 @@
     opacity: 0.9;
     text-align: center;
     margin-left: 65px;
-    
+
 
     @media (max-width: 768px) { font-size: 0.9rem; margin-left: 5px;         }
   }
@@ -565,14 +570,14 @@
   color: transparent !important;
   background: linear-gradient(90deg, #ff2a00, #ffcc00, #ff2a00);
 
-  @media (max-width: 1280px) { font-size: 3.5rem; }  
+  @media (max-width: 1280px) { font-size: 3.5rem; }
   @media (max-width: 768px) { font-size: 2.5rem; letter-spacing: 2px; margin-top: 2.5rem; }
-  
+
   background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
   filter: drop-shadow(0 0 15px rgba(255, 69, 0, 0.8));
-  
+
   animation: magma-flow 2s linear infinite;
   letter-spacing: 5px !important;
   position: relative;
@@ -631,7 +636,7 @@
       // GARANTIA 1: Remove padding lateral excessivo do pai no mobile
       padding-left: 10px;
       padding-right: 10px;
-      overflow-x: hidden; // Impede que o que vazar crie barra de rolagem 
+      overflow-x: hidden; // Impede que o que vazar crie barra de rolagem
       flex-direction: column; // Empilha os elementos verticalmente
       gap: 0px; // Aumenta o espaço entre eles para evitar que fi
       margin-top: 1px;
@@ -640,9 +645,9 @@
   .hero-split-grid {
     grid-template-columns: 1fr; // Um embaixo do outro
     gap: 35px; // Aumentei o respiro entre eles
-    
+
     // GARANTIA 2: Força a largura a ser 100% do espaço disponível, nem um pixel a mais.
-    width: 100%; 
+    width: 100%;
     max-width: 100vw; // Viewport Width
     margin-left: auto;
     margin-right: auto;
@@ -653,15 +658,15 @@
   .left-col {
     margin-bottom: 10px;
     // GARANTIA 3: Certifica que o card não seja maior que a tela
-    max-width: 100%; 
+    max-width: 100%;
   }
-  
+
   // O Spotify (Card de baixo)
   .right-col {
       max-width: 100%;
       iframe {
           // Garante que o iframe não estoure
-          max-width: 100%; 
+          max-width: 100%;
       }
   }
 }

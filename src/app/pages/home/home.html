@@ -27,30 +27,30 @@
         <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ EXE: SYSTEM_LOGS.sh ]' : '[ EXE: SYSTEM_LOGS.sh ]' }}
       </button>
 
-      <button class="hack-btn" routerLink="/dossier">
-      <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ EXE: DOSSIÊ_OPERATIVO.sh ]' : '[ EXE: OPERATIVE_DOSSIER.sh ]' }}
-      </button>
+        <!-- 🛡️ ALTERADOS PARA TAGS <a> (Links estáticos de SEO legíveis para robôs) -->
+     <a class="hack-btn" routerLink="/dossier" >
+    <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ EXE: DOSSIÊ_OPERATIVO.sh ]' : '[ EXE: OPERATIVE_DOSSIER.sh ]' }}
+      </a>
 
-      <button class="hack-btn" routerLink="/saga">
-        <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ EXE: LOGS_NARRATIVOS.sh ]' : '[ EXE: NARRATIVE_LOGS.sh ]' }}
-      </button>
+     <a class="hack-btn" routerLink="/saga" >
+    <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ EXE: LOGS_NARRATIVOS.sh ]' : '[ EXE: NARRATIVE_LOGS.sh ]' }}
+     </a>
 
-      <button class="hack-btn" routerLink="/discografia">
-        <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ EXE: EXTRAIR_FREQUENCIAS.exe ]' : '[ EXE: EXTRACT_FREQUENCIES.exe ]' }}
-      </button>
+    <a class="hack-btn" routerLink="/discografia" >
+    <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ EXE: EXTRAIR_FREQUENCIAS.exe ]' : '[ EXE: EXTRACT_FREQUENCIES.exe ]' }}
+    </a>
 
-      <button class="hack-btn" routerLink="/contato">
-        <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ NET: UPLINK_BASE_OPERATIVA.exe ]' : '[ NET: OPERATING_BASE_UPLINK.exe ]' }}
-      </button>
+    <a class="hack-btn" routerLink="/contato">
+    <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ NET: UPLINK_BASE_OPERATIVA.exe ]' : '[ NET: OPERATING_BASE_UPLINK.exe ]' }}
+    </a>
 
-      <button class="hack-btn store-hack" routerLink="/store">
-        <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ DIR: SUPRIMENTOS_DA_HORDA.sys ]' : '[ DIR: HORDE_SUPPLIES.sys ]' }}
-      </button>
+    <a class="hack-btn store-hack" routerLink="/store" >
+    <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ DIR: SUPRIMENTOS_DA_HORDA.sys ]' : '[ DIR: HORDE_SUPPLIES.sys ]' }}
+    </a>
 
-      <button class="hack-btn creator-hack" routerLink="/creator">
-        <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ DIR: A_CRIADORA.sys ]' : '[ DIR: THE_CREATOR.sys ]' }}
-      </button>
-
+    <a class="hack-btn creator-hack" routerLink="/creator" >
+     <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ DIR: A_CRIADORA.sys ]' : '[ DIR: THE_CREATOR.sys ]' }}
+    </a>
       <button class="hack-btn jonah-hack" (click)="forcarModoJonah()">
         <span class="cmd-arrow">> </span>{{ isJonahMode()
            ? (translate.isPt() ? '[ OVR: MODO_BROKLIN.bat ]' : '[ OVR: BROKLIN_MODE.bat ]')
