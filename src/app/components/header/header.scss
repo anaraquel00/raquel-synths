@@ -92,7 +92,13 @@ mat-toolbar {
   height: 40px; /* Trava a altura do link */
   line-height: 40px; /* Trava a altura do texto */
   white-space: nowrap; /* Impede a quebra de linha acidental */
-}
+  color: #49fa02 !important;
+  font-weight: 600;
+  font-size: 0.82rem;
+  :hover {
+  color: #00f3ff !important; /* Azul néon para manter a estética cyberpunk */
+  background: rgba(0, 243, 255, 0.05);
+}}
   /* Trava a altura exata do menu para ele não "nascer" colapsado */
   min-height: 80px; /* Ajuste para a altura exata do seu header */
   display: flex;

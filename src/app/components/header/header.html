@@ -23,8 +23,8 @@
      </button>
    }
 
-    <button mat-button [routerLink]="['/dossier']">{{ navText.sobre }}</button>
-    <button mat-button [routerLink]="['/saga']">{{ navText.visualNovel }}</button>
+     <a mat-button [routerLink]="['/dossier']">{{ navText.sobre }}</a>
+     <a mat-button [routerLink]="['/saga']">{{ navText.visualNovel }}</a>
 
     <button mat-button [matMenuTriggerFor]="socialMenu">
    {{navText.social}} <mat-icon>expand_more</mat-icon>
@@ -86,13 +86,13 @@
 
     <mat-divider></mat-divider>
 
-<button mat-menu-item [routerLink]="['/creator']">
-  <mat-icon style="color: var(--accent-color);">terminal</mat-icon>
-  <span style="color: var(--accent-color); font-weight: bold;">{{ navText.creator }}</span>
-</button>
+    <a mat-menu-item [routerLink]="['/creator']">
+      <mat-icon style="color: var(--accent-color);">terminal</mat-icon>
+      <span style="color: var(--accent-color); font-weight: bold;">{{ navText.creator }}</span>
+    </a>
 
-<button mat-menu-item [routerLink]="['/dossier']">{{ navText.sobre }}</button>
-<button mat-menu-item [routerLink]="['/saga']">{{ navText.visualNovel }}</button>
+    <a mat-menu-item [routerLink]="['/dossier']">{{ navText.sobre }}</a>
+    <a mat-menu-item [routerLink]="['/saga']">{{ navText.visualNovel }}</a>
 
 
 <button mat-menu-item [matMenuTriggerFor]="socialMenu" (click)="$event.stopPropagation()">
@@ -117,7 +117,7 @@
   </a>
 
 </mat-menu>
-<button mat-menu-item [routerLink]="['/discografia']">DISCOGRAFIA</button>
-<button mat-menu-item [routerLink]="['/store']">{{ navText.store }}</button>
+  <a mat-menu-item [routerLink]="['/discografia']">DISCOGRAFIA</a>
+  <a mat-menu-item [routerLink]="['/store']">{{ navText.store }}</a>
   </mat-menu>
 </mat-toolbar>
