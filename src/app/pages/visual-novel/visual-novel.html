@@ -119,18 +119,24 @@
      </div>
 
      <div class="season-tabs">
-      <button class="neon-tab"
-              [class.active]="temporadaAtiva === 1"
-              (click)="setTemporada(1)">
+      <!-- 🛡️ ABA 1 BLINDADA: Transforma o botão em link de SEO -->
+      <a class="neon-tab"
+         [routerLink]="['/visual-novel']"
+         [queryParams]="{ season: 1 }"
+         queryParamsHandling="merge"
+         [class.active]="temporadaAtiva === 1">
         {{ translate.isPt() ? 'Temporada 1' : 'Season 1' }}
-      </button>
+      </a>
 
-      <button class="neon-tab"
-              [class.active]="temporadaAtiva === 2"
-              (click)="setTemporada(2)">
+      <!-- 🛡️ ABA 2 BLINDADA: Transforma o botão em link de SEO -->
+      <a class="neon-tab"
+         [routerLink]="['/visual-novel']"
+         [queryParams]="{ season: 2 }"
+         queryParamsHandling="merge"
+         [class.active]="temporadaAtiva === 2">
         {{ translate.isPt() ? 'Temporada 2' : 'Season 2' }}
-      </button>
-     </div>
+      </a>
+    </div>
      <div class="episode-grid">
       @for (ep of filteredEpisodes$ | async; track ep.id) {
           <div class="episode-card">

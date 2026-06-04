@@ -7,6 +7,7 @@ import { TranslationService } from '../../services/translation.service';
 import { Observable, BehaviorSubject, switchMap, combineLatest, map, take, of } from 'rxjs';
 import { NgOptimizedImage } from '@angular/common';
 import { SeoService } from '../../services/seo.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-visual-novel',
@@ -21,6 +22,7 @@ export class VisualNovelComponent implements OnInit, OnDestroy {
   public translate = inject(TranslationService);
   private document = inject(DOCUMENT);
   private seoService = inject(SeoService);
+  private route = inject(ActivatedRoute);
 
   public currentMode = signal<'broklin' | 'jonah'>('broklin');
   private modeSubject = new BehaviorSubject<'broklin' | 'jonah'>('broklin');
@@ -80,6 +82,11 @@ export class VisualNovelComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+     // 🛡️ ESCUTA ATIVA: Captura o parâmetro da URL de forma segura para SSR e Browser
+    this.route.queryParams.subscribe(params => {
+      const seasonParam = Number(params['season']) || 1;
+      this.setTemporada(seasonParam);
+    });
     // 1. Radar de Idioma (Lê a configuração da matriz)
     const isPt = this.translate.isPt();
 

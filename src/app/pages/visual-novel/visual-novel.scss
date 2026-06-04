@@ -329,10 +329,17 @@ button, a.btn-read, a.back-link, a.btn-decrypt, a.btn-watch {
   padding: 12px 35px;
   font-size: 14px;
   font-weight: 700;
+  flex:1; /* Faz os botões ocuparem o mesmo espaço */
+  width: 100%; /* Garante que o botão preencha o espaço disponível */
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   letter-spacing: 3px;
   text-transform: uppercase;
   border-radius: 8px;
   cursor: pointer;
+  text-decoration: none;
   transition: all 0.3s ease-in-out;
   backdrop-filter: blur(4px); /* Efeito de vidro borrado no fundo */
 
