@@ -431,7 +431,23 @@ mat-toolbar {
     display: flex;
     align-items: center;
     gap: 4px; /* Espacinho militar */
+    color: #ff0000 !important; /* Vermelho Sangue */
 
+     a {
+      color: #ff3d00 !important; /* Laranja Rust */
+      font-family: 'Oswald', sans-serif;
+      font-weight: 600;
+      font-size: 0.75rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: rgba(255, 61, 0, 0.15); /* Fundo sutil */
+        text-shadow: 0 0 15px #ff3d00;      /* Glow Laranja */
+        color: #ff3d00 !important;          /* Mantém a cor Laranja */
+      }
+    }
 
     /* 1. OS SOLDADOS COMUNS (Todos, MENOS o Creator) */
     button[mat-button]:not(.btn-creator) {
