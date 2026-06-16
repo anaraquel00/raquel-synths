@@ -250,12 +250,52 @@
   }
 }
 
+/* ======================================================= */
+/* 🛡️ BLINDAGEM DE PRIMEIRA DOBRA MOBILE: ADSENSE + GROWTH  */
+/* ======================================================= */
 @media (max-width: 768px) {
-  .vn-container, .disco-container {
-    padding: 2rem 1rem; /* Reduz o padding vertical e horizontal */
+
+  /* 1. Ativa o Flexbox em Coluna no pai para permitir reordenamento visual */
+  .vn-container {
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
   }
 
+  /* Ordem 1: Mantém o Título no topo */
   .section-title {
-    font-size: 2rem; /* Título menor */
+    font-size: 2rem;
+    order: 1;
+  }
+
+  /* Ordem 2: Mantém o Subtítulo abaixo do título com espaçamento controlado */
+  .section-subtitle {
+    order: 2;
+    margin-bottom: 2rem; /* Reduzido de 3rem para evitar desperdício de tela no mobile */
+  }
+
+  /* Ordem 3: Mantém o container de cabeçalho intermediário */
+  .sagas-container {
+    order: 3;
+  }
+
+  /* 🚀 Ordem 4: PUXA AS DUAS CAPAS (ARCS-GRID) PARA O TOPO */
+  .arcs-grid {
+    order: 4;
+    gap: 2.5rem; /* Reduz o gap monstruoso de 10rem para os cards não ficarem muito longe no mobile */
+    margin-bottom: 3rem; /* Dá um espaçamento antes de começar o texto longo do Adsense */
+  }
+
+  /* 🛡️ Ordem 5: EMPURRA O TEXTO LONGO DO ADSENSE PARA O FIM DO DOCUMENTO */
+  .intro-box {
+    order: 5;
+    margin-bottom: 0;
+    font-size: 1rem; /* Tamanho de fonte otimizado para leitura móvel */
+  }
+
+  /* Garante que os cards individuais ocupem a largura correta no telemóvel */
+  .arc-card {
+    width: 100%;
+    max-width: 340px; /* Mantém o tamanho estético do card centralizado */
   }
 }
