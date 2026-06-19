@@ -299,3 +299,129 @@
     max-width: 340px; /* Mantém o tamanho estético do card centralizado */
   }
 }
+
+.crossover-promo-banner {
+  width: 90%;
+  min-height: 380px;
+  // Fusão exata: Ciano da Blue Team cruzando com o Vermelho da Red Team
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.15) 0%, rgba(255, 0, 0, 0.15) 100%),
+              url('/images/cyberpunk_woman_disintegrating.webp') 15% center/cover no-repeat;
+  background-position: left center;
+  background-size: contain; // 🎯 GARANTE A IMAGEM COMPLETA SEM CORTES
+  background-repeat: no-repeat;
+  background-color: #000000; // 🛡️ PRETO ABSOLUTO preenche o restante do espaço na direita
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 40px 60px;
+  border: 2px solid #9d42c4;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(157, 66, 196, 0.2);
+
+  .crossover-content {
+  position: relative;
+  z-index: 2;
+  font-family: 'Courier New', monospace;
+  text-align: right;
+
+  // 🚀 EXPANSÃO HORIZONTAL: Aumentei para o texto se espalhar mais pelo banner
+  max-width: 650px;
+
+  .matrix-alert {
+    color: #9d42c4;
+    font-size: 0.85rem;
+    font-weight: bold;
+    letter-spacing: 3px; // Espalha o alerta do sistema
+  }
+
+  h3 {
+    font-size: 2.8rem; // Título ligeiramente maior para impor autoridade visual
+    color: #ffffff;
+    margin: 12px 0;
+    letter-spacing: 2px;
+    text-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+  }
+
+  p {
+    color: #dddddd;
+    font-size: 1.05rem;
+
+    // 🚀 RESPIRO VERTICAL: Aumenta a distância entre as linhas do parágrafo
+    line-height: 1.65;
+
+    // 🚀 DISTRIBUIÇÃO CINEMATOGRÁFICA: Afasta levemente as letras
+    letter-spacing: 0.5px;
+    margin-bottom: 20px;
+  }
+
+  .status-badge {
+    display: inline-block;
+    margin-top: 5px;
+    padding: 5px 12px;
+    background: rgba(157, 66, 196, 0.25);
+    color: #ffffff;
+    font-size: 0.75rem;
+    border-radius: 4px;
+    letter-spacing: 1px;
+  }
+}
+}
+
+.btn-watch-crossover {
+  background: #9d42c4;
+  color: #ffffff;
+  border: none;
+  padding: 12px 24px;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  font-size: 0.95rem;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 15px 0;
+  box-shadow: 0 0 10px rgba(157, 66, 196, 0.5);
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: #ffffff;
+    color: #9d42c4;
+    box-shadow: 0 0 20px #ffffff;
+    transform: scale(1.05);
+  }
+}
+:host-context(body.mode-jonah) .crossover-promo-banner {
+  background: linear-gradient(135deg, rgba(255, 61, 0, 0.15) 0%, rgba(255, 0, 0, 0.15) 100%),
+              url('/images/cyberpunk_woman_disintegrating.webp') 15% center/cover no-repeat;
+  border: 2px solid #ff3d00;
+  box-shadow: 0 0 20px rgba(255, 61, 0, 0.2);
+  .crossover-content {
+    .matrix-alert {
+      color: #ff3d00;
+    }
+    h3 {
+      color: #ffffff;
+      text-shadow: 0 0 12px rgba(255, 61, 0, 0.4);
+    }
+    p {
+      color: #ffccbc;
+    }
+    .status-badge {
+      background: rgba(255, 61, 0, 0.25);
+      color: #ffffff;
+    }
+  }
+  .btn-watch-crossover {
+    background: #ff3d00;
+    color: #ffffff;
+    &:hover {
+      background: #ffffff;
+      color: #ff3d00;
+      box-shadow: 0 0 20px #ffffff;
+    }
+  }
+}
