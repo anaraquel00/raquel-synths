@@ -11,4 +11,4 @@ User-agent: Mediapartners-Google
 Allow: /
 
 # Mapeamento de Infraestrutura
-Sitemap: https://raquelsynths.com.br/sitemap.xml
+Sitemap: https://raquelsynths.com/sitemap.xml

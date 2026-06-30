@@ -26,7 +26,7 @@ export default async function handler(req, res) {
 
   for (const route of staticRoutes) {
     const safePath = route.path.replace(/&/g, '&amp;');
-    xml += `  <url>\n    <loc>https://raquelsynths.com.br${safePath}</loc>\n    <lastmod>${route.lastmod}</lastmod>\n    <priority>${route.priority}</priority>\n  </url>\n`;
+    xml += `  <url>\n    <loc>https://raquelsynths.com${safePath}</loc>\n    <lastmod>${route.lastmod}</lastmod>\n    <priority>${route.priority}</priority>\n  </url>\n`;
   }
 
   // 2. BUSCA NO FIREBASE (Logs e Lore com lastmod dinâmico)
@@ -70,7 +70,7 @@ export default async function handler(req, res) {
             }
           }
 
-          xml += `  <url>\n    <loc>https://raquelsynths.com.br/${basePath}/${id}</loc>\n    <lastmod>${lastmodValue}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
+          xml += `  <url>\n    <loc>https://raquelsynths.com/${basePath}/${id}</loc>\n    <lastmod>${lastmodValue}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
         });
       }
     };

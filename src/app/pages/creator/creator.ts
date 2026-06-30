@@ -42,7 +42,7 @@ export class Creator implements OnInit, OnDestroy {
       description: isPt
         ? 'Engenharia de Front-End e Design de Música com IA. Conheça a mente por trás da RaQuel Synths e a fusão entre código, Angular e narrativas transmídia.'
         : 'Front-End Engineering & AI Music Design. Meet the mind behind RaQuel Synths and the fusion of code, Angular, and transmedia narratives.',
-      url: `https://raquelsynths.com.br${currentPath}`
+      url: `https://raquelsynths.com${currentPath}`
     });
   }
 
@@ -97,7 +97,7 @@ ngOnInit() {
         "description": isPt
           ? "Desenvolvedora Front-End especializada em Angular e criação de universos transmídia com inteligência artificial."
           : "Front-End Developer specializing in Angular and building transmedia universes with artificial intelligence.",
-        "url": `https://raquelsynths.com.br${currentPath}`,
+        "url": `https://raquelsynths.com${currentPath}`,
         "image": "images/foto_perfil.webp",
         "sameAs":[
           "https://www.linkedin.com/in/ana-raquel-de-holanda",

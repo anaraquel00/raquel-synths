@@ -53,7 +53,7 @@ export class ContatoComponent implements OnInit { // Implementando OnInit
     this.seoService.updateMetaTags({
       title: isPt ? 'Uplink | Contato' : 'Uplink | Contact',
       description: isPt ? 'Fale com a RQS.' : 'Contact RQS.',
-      url: 'https://raquelsynths.com.br/contato'
+      url: 'https://raquelsynths.com/contato'
     });
 
     // 3. JSON-LD DE CONTATO: O Google ama páginas de contato estruturadas
@@ -62,12 +62,12 @@ export class ContatoComponent implements OnInit { // Implementando OnInit
       "@type": "ContactPage",
       "name": isPt ? "Página de Contato RaQuel Synths" : "RaQuel Synths Contact Page",
       "description": isPt ? "Formulário oficial para contato e parcerias." : "Official form for contact and partnerships.",
-      "url": `https://raquelsynths.com.br/contato`,
+      "url": `https://raquelsynths.com/contato`,
       "mainEntity": {
         "@type": "ContactPoint",
         "contactType": "customer support",
         "email": "contato@raquelsynths.com.br",
-        "url": `https://raquelsynths.com.br/contato`
+        "url": `https://raquelsynths.com/contato`
       }
     });
   }

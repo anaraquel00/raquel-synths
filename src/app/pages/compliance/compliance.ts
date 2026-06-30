@@ -61,7 +61,7 @@ export class ComplianceComponent implements OnInit, OnDestroy {
       description: isPt
         ? 'Diretrizes oficiais, transparência de dados e termos de uso da RaQuel Synths. Conheça as regras que regem o nosso ecossistema digital.'
         : 'Official guidelines, data transparency, and terms of use for RaQuel Synths. Learn the rules governing our digital ecosystem.',
-      url: `https://raquelsynths.com.br${currentPath}`
+      url: `https://raquelsynths.com${currentPath}`
     });
 
     // 3. 🚀 INJEÇÃO DE CONFIANÇA (JSON-LD): Define a página como documento oficial
@@ -78,7 +78,7 @@ export class ComplianceComponent implements OnInit, OnDestroy {
           "@type": "ListItem",
           "position": 1,
           "name": "Home",
-          "item": "https://raquelsynths.com.br"
+          "item": "https://raquelsynths.com"
         },{
           "@type": "ListItem",
           "position": 2,

@@ -36,7 +36,7 @@ export class SeoService {
   // Garante URL absoluta para o Google não se perder no Mainframe
   const absoluteUrl = currentPath.startsWith('http')
     ? currentPath
-    : `https://raquelsynths.com.br${currentPath.startsWith('/') ? '' : '/'}${currentPath}`;
+    : `https://raquelsynths.com${currentPath.startsWith('/') ? '' : '/'}${currentPath}`;
 
   this.setCanonicalUrl(absoluteUrl);
 }
@@ -44,7 +44,7 @@ export class SeoService {
   // O núcleo da nossa narrativa
   private defaultTitle = 'RaQuel Synths | Cyberpunk Sagas & Virtual Band';
   private defaultDesc = 'Broklin\'s Tech vs. Jonah\'s Chaos. A Cyberpunk Literary Saga & Musical Experiment. The story has begun.';
-  private defaultImage = 'https://raquelsynths.com.br/images/banner-seo-global.jpg';
+  private defaultImage = 'https://raquelsynths.com/images/banner-seo-global.jpg';
 
   constructor(private title: Title,
               private meta: Meta,
@@ -66,7 +66,7 @@ export class SeoService {
     if (absoluteUrl) {
       // 1. CORREÇÃO VITAL: Adiciona o domínio se vier apenas a rota (Ex: /store?dept=...)
       if (!absoluteUrl.startsWith('http')) {
-        absoluteUrl = `https://raquelsynths.com.br${absoluteUrl.startsWith('/') ? '' : '/'}${absoluteUrl}`;
+        absoluteUrl = `https://raquelsynths.com${absoluteUrl.startsWith('/') ? '' : '/'}${absoluteUrl}`;
       }
 
       try {

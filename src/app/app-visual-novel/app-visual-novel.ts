@@ -83,7 +83,7 @@ export class AppVisualNovel implements OnInit, OnDestroy {
       description: isPt
         ? 'Decodifique os arquivos da guerra sonora. Explore as Sagas Literárias que expandem o universo da RaQuel Synths — onde o código de Broklin encontra o caos de Jonah.'
         : 'Decode the sonic war archives. Explore the Literary Sagas expanding the RaQuel Synths universe — where Broklin’s code meets Jonah’s chaos.',
-      url: 'https://raquelsynths.com.br/saga'
+      url: 'https://raquelsynths.com/saga'
     });
 
     // 🚀 INJEÇÃO DE SÉRIE CRIATIVA (JSON-LD): Avisa ao Google que isso é uma Série Literária

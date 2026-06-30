@@ -172,7 +172,7 @@ ngOnInit(): void {
       "@type": "Store",
       "name": "Neon Store | RaQuel Synths",
       "description": isPt ? "Loja oficial de merchandising e artefatos da RaQuel Synths." : "Official merchandising and artifacts store for RaQuel Synths.",
-      "url": "https://raquelsynths.com.br/store",
+      "url": "https://raquelsynths.com/store",
       "parentOrganization": {
         "@type": "Organization",
         "name": "RaQuel Synths"
@@ -306,7 +306,7 @@ checkCurrentMode() {
       const seoTitle = deptData.title || deptId.toUpperCase();
       const seoDesc = deptData.loreDescription ? deptData.loreDescription[lang] : (deptData.description ? deptData.description[lang] : 'RQS Protocol');
       const imgPath = deptData.image || 'assets/images/banner-seo-global.jpg';
-      const seoImage = imgPath.startsWith('http') ? imgPath : `https://raquelsynths.com.br/${imgPath}`;
+      const seoImage = imgPath.startsWith('http') ? imgPath : `https://raquelsynths.com/${imgPath}`;
       this.seoService.updateCanonical(this.router.url);
       // O JSON-LD aceita textos mais longos e formatação diferente, não afeta a Meta Tag suja
       this.seoService.setJsonLd({
@@ -314,7 +314,7 @@ checkCurrentMode() {
         "@type": "ItemList",
         "name": seoTitle,
         "description": seoDesc, // Aqui não tem problema ser a Lore inteira
-        "url": `https://raquelsynths.com.br/store?dept=${deptId}`,
+        "url": `https://raquelsynths.com/store?dept=${deptId}`,
         "itemListElement": this.filteredProducts.map((product, index) => ({
           "@type": "ListItem",
           "position": index + 1,
@@ -326,7 +326,7 @@ checkCurrentMode() {
             "brand": { "@type": "Brand", "name": "RaQuel Synths" },
             "offers": {
               "@type": "Offer",
-              "url": product.link || `https://raquelsynths.com.br/store?dept=${deptId}`,
+              "url": product.link || `https://raquelsynths.com/store?dept=${deptId}`,
               "priceCurrency": "BRL",
               "price": product.price || "0.00",
               "availability": "https://schema.org/InStock"
@@ -351,7 +351,7 @@ checkCurrentMode() {
       "@context": "https://schema.org",
       "@type": "WebSite",
       "name": "RQS Neon Store",
-      "url": "https://raquelsynths.com.br/store",
+      "url": "https://raquelsynths.com/store",
       "description": this.translate.isPt() ? "Mercadoria oficial da RaQuel Synths." : "Official Merchandise from RaQuel Synths virtual band."
     });
   }

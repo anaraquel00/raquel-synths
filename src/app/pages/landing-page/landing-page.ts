@@ -33,7 +33,7 @@ ngOnInit() {
   this.seoService.updateMetaTags({
     title: isPt ? 'Sagas Cyberpunk & Banda Virtual' : 'Cyberpunk Sagas & Virtual Band',
     description: isPt ? 'Onde o analógico sangra no digital. Mergulhe na Guerra Sonora.' : 'Where analog bleeds into digital. Dive into the Sonic War.',
-    url: 'https://raquelsynths.com.br/'
+    url: 'https://raquelsynths.com/'
   });
 }
 }

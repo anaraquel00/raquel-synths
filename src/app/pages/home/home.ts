@@ -144,7 +144,7 @@ currentLanguage: any;
       description: isPt
         ? 'Onde o analógico sangra no digital. Mergulhe na Guerra Sonora entre Synthwave e Industrial Metal. Leia as Sagas de Broklin e Jonah.'
         : 'Where analog bleeds into digital. Dive into the Audio Civil War between Synthwave and Industrial Metal. Read the Broklin and Jonah Sagas.',
-      url: 'https://raquelsynths.com.br/', // 🔥 O CARIMBO CANÔNICO FICA AQUI!
+      url: 'https://raquelsynths.com/', // 🔥 O CARIMBO CANÔNICO FICA AQUI!
       type: 'website'
     });
 
@@ -153,13 +153,13 @@ currentLanguage: any;
       "@context": "https://schema.org",
       "@type": "Organization",
       "name": "RaQuel Synths",
-      "url": "https://raquelsynths.com.br",
-      "logo": "https://raquelsynths.com.br/rqs-logo.webp",
+      "url": "https://raquelsynths.com",
+      "logo": "https://raquelsynths.com/rqs-logo.webp",
       "description": isPt
         ? "Banda virtual e universo transmídia de ficção científica cyberpunk."
         : "Virtual band and cyberpunk sci-fi transmedia universe.",
       "sameAs": [
-        "https://raquelsynths.com.br/logs-archive",
+        "https://raquelsynths.com/logs-archive",
         "https://www.youtube.com/@raquelsynths"
       ]
     });

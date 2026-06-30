@@ -66,9 +66,9 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
         // 🛡️ LÊ ESTRITAMENTE O QUE EXISTE NA INTERFACE
         const title = isPt ? ep.title : (ep.title_en || ep.title);
         const desc = isPt ? ep.description : (ep.description_en || ep.description);
-        const imageUrl = ep.image || 'https://raquelsynths.com.br/images/banner-seo-global.jpg';
+        const imageUrl = ep.image || 'https://raquelsynths.com/images/banner-seo-global.jpg';
 
-        this.seoService.updateCanonical(`https://raquelsynths.com.br/lore-reader/${ep.id}`);
+        this.seoService.updateCanonical(`https://raquelsynths.com/lore-reader/${ep.id}`);
 
         // 🚀 TÍTULO EXATO COMO VOCÊ HAVIA PROGRAMADO ORIGINALMENTE
         this.seoService.updateMetaTags({
@@ -76,7 +76,7 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
           description: desc,
           image: imageUrl,
           type: 'article',
-          url: `https://raquelsynths.com.br/lore-reader/${ep.id}`
+          url: `https://raquelsynths.com/lore-reader/${ep.id}`
         });
 
         // 🚀 O SEGUNDO MOTOR: Structured Data JSON-LD
@@ -91,19 +91,19 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
               "@type": "Person",
               "name": "Ana Raquel",
               "jobTitle": "Dev & Creator",
-              "url": "https://raquelsynths.com.br/creator"
+              "url": "https://raquelsynths.com/creator"
             }],
           "publisher": {
             "@type": "Organization",
             "name": "RaQuel Synths",
             "logo": {
               "@type": "ImageObject",
-              "url": "https://raquelsynths.com.br/rqs-logo.webp"
+              "url": "https://raquelsynths.com/rqs-logo.webp"
             }
           },
           "mainEntityOfPage": {
             "@type": "WebPage",
-            "@id": `https://raquelsynths.com.br/lore-reader/${ep.id}`
+            "@id": `https://raquelsynths.com/lore-reader/${ep.id}`
           }
         });
       }
@@ -127,7 +127,7 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
               title_en: `RQS Lore Archive - File ${id}`,
               description: `Acesse o log confidencial ${id} da saga transmedia RaQuel Synths.`,
               description_en: `Access the confidential log ${id} from the RaQuel Synths saga.`,
-              image: 'https://raquelsynths.com.br/images/banner-seo-global.jpg',
+              image: 'https://raquelsynths.com/images/banner-seo-global.jpg',
               releaseDate: new Date().toISOString()
             } as LoreEpisode])
           : this.injector.get(ContentService).getEpisodes(mode).pipe(take(1));

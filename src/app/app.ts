@@ -66,7 +66,7 @@ export class App implements OnInit {
           return;
         }
 
-        const urlCanonica = `https://raquelsynths.com.br${routeState.path}`;
+        const urlCanonica = `https://raquelsynths.com${routeState.path}`;
 
         // 🛡️ O SEU RESET DE SOBERANIA DA HOME
         if (routeState.isHome) {

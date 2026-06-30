@@ -79,7 +79,7 @@ export class LogsArchiveComponent implements OnInit {
       description: isPt
         ? 'Os bastidores da narrativa transmídia e DevNotes da RQS.'
         : 'The behind-the-scenes of the transmedia narrative and RQS DevNotes.',
-      url: `https://raquelsynths.com.br${currentPath}`
+      url: `https://raquelsynths.com${currentPath}`
     });
     this.seoService.setJsonLd({
       "@context": "https://schema.org",
@@ -88,13 +88,13 @@ export class LogsArchiveComponent implements OnInit {
       "description": isPt
         ? 'Acesse os bastidores, diários de desenvolvimento e arquivos interceptados.'
         : 'Access behind-the-scenes, dev diaries, and intercepted archives.',
-      "url": `https://raquelsynths.com.br${currentPath}`,
+      "url": `https://raquelsynths.com${currentPath}`,
       "publisher": {
         "@type": "Organization",
         "name": "RaQuel Synths",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://raquelsynths.com.br/rqs-logo.webp"
+          "url": "https://raquelsynths.com/rqs-logo.webp"
         }
       }
     });

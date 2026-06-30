@@ -116,7 +116,7 @@ export class VisualNovelComponent implements OnInit, OnDestroy {
         "name": "RaQuel Synths",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://raquelsynths.com.br/rqs-logo.webp"
+          "url": "https://raquelsynths.com/rqs-logo.webp"
         }
       }
     });

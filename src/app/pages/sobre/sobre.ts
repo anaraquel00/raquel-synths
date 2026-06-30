@@ -68,18 +68,18 @@ export class SobreComponent implements OnInit, OnDestroy {
         description: isPt
           ? 'Perfis classificados da Blue Team: Broklin, Kelma e a arquitetura da RQS.'
           : 'Blue Team classified profiles: Broklin, Kelma, and RQS architecture.',
-        url: 'https://raquelsynths.com.br/dossier'
+        url: 'https://raquelsynths.com/dossier'
       });
     }
     // 2. DISPARA O PAYLOAD para a função que já existe no seu serviço!
 const dossierSchema = {
   "@context": "https://schema.org",
   "@type": "MusicGroup",
-  "@id": "https://raquelsynths.com.br/#musicgroup",
+  "@id": "https://raquelsynths.com/#musicgroup",
   "name": "RaQuel Synths",
   "alternateName": "RQS",
-  "url": "https://raquelsynths.com.br/",
-  "logo": "https://raquelsynths.com.br/rqs-logo.webp",
+  "url": "https://raquelsynths.com/",
+  "logo": "https://raquelsynths.com/rqs-logo.webp",
   "description": "RaQuel Synths (RQS) is a living experiment in Musical Engineering and Transmedia Storytelling, fusing human curation with generative AI models to chronicle a digital corporate war.",
   "sameAs": [
     "https://suno.com/@raquel_holanda",

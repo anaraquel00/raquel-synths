@@ -101,7 +101,7 @@ export class LogReaderComponent implements OnInit, OnDestroy {
           tap(mappedData => {
             if (mappedData) {
               // 🛡️ MOTOR 1: Meta Tags Básicas e Open Graph
-              const absoluteUrl = `https://raquelsynths.com.br/log-reader/${mappedData.id}`;
+              const absoluteUrl = `https://raquelsynths.com/log-reader/${mappedData.id}`;
               this.seoService.updateCanonical(this.router.url);
               this.seoService.updateMetaTags({
                 title: `${mappedData.title} | RQS Logs`,
@@ -116,25 +116,25 @@ export class LogReaderComponent implements OnInit, OnDestroy {
                  "@type": "TechArticle",
                  "headline": mappedData.title,
                  "description": mappedData.description,
-                 "image": [ "https://raquelsynths.com.br/images/banner-seo-global.jpg" ], // Fallback de blindagem
+                 "image": [ "https://raquelsynths.com/images/banner-seo-global.jpg" ], // Fallback de blindagem
                  "datePublished": mappedData.date,
                  "author": [{
                      "@type": "Person",
                      "name": "Ana Raquel",
                      "jobTitle": "Dev & Creator",
-                     "url": "https://raquelsynths.com.br/creator"
+                     "url": "https://raquelsynths.com/creator"
                    }],
                  "publisher": {
                    "@type": "Organization",
                    "name": "RaQuel Synths",
                    "logo": {
                      "@type": "ImageObject",
-                     "url": "https://raquelsynths.com.br/rqs-logo.webp"
+                     "url": "https://raquelsynths.com/rqs-logo.webp"
                    }
                  },
                  "mainEntityOfPage": {
                    "@type": "WebPage",
-                   "@id": `https://raquelsynths.com.br/log-reader/${mappedData.id}`
+                   "@id": `https://raquelsynths.com/log-reader/${mappedData.id}`
                  }
                });
             }
