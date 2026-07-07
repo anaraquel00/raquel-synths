@@ -55,8 +55,13 @@ export class DeepLinkRedirectComponent implements OnInit {
   error = signal<boolean>(false);
   private fallbackTimeoutId: any = null;
 
-  ngOnInit(): void {
+ ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;
+
+    // ⚡ ACORDA O RADAR DA META: Ativa o script do index.html e dispara o PageView base
+    if ((window as any).acionarRadarMeta) {
+      (window as any).acionarRadarMeta();
+    }
 
     const id = this.route.snapshot.paramMap.get('id');
     if (!id) {
@@ -78,6 +83,18 @@ export class DeepLinkRedirectComponent implements OnInit {
   }
 
   private executeDeepLinkProtocol(data: any): void {
+    // 🛰️ DISPARO IMEDIATO DE TELEMETRIA (Movido para o topo)
+    // Envia os dados do álbum/faixa ANTES de forçar qualquer redirecionamento de tela
+    if (typeof (window as any).fbq !== 'undefined') {
+      (window as any).fbq('track', 'ViewContent', {
+        content_name: data.title || 'Música',
+        content_category: 'DeepLink Redirect',
+        content_ids: [this.route.snapshot.paramMap.get('id')],
+        content_type: 'product',
+        status: this.route.snapshot.queryParamMap.get('service') // 'soundcloud' ou 'spotify'
+      });
+    }
+
     const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
     const isMobile = /Android|iPhone|iPad|iPod/i.test(userAgent);
 
@@ -115,18 +132,6 @@ export class DeepLinkRedirectComponent implements OnInit {
     }, 1500);
 
     if (uriScheme) window.location.href = uriScheme;
-
-  // 🛰️ DISPARO IMEDIATO DE TELEMETRIA
-  // Avisa o Meta Pixel e o GTM que o usuário escolheu uma rota de áudio
-  if (typeof (window as any).fbq !== 'undefined') {
-    (window as any).fbq('track', 'ViewContent', {
-      content_name: data.title || 'Música',
-      content_category: 'DeepLink Redirect',
-      content_ids: [this.route.snapshot.paramMap.get('id')],
-      content_type: 'product',
-      status: this.route.snapshot.queryParamMap.get('service') // 'soundcloud' ou 'spotify'
-    });
-  }
   }
 
   private setupVisibilityListeners(): void {
