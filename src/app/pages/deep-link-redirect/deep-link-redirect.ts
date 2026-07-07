@@ -115,6 +115,18 @@ export class DeepLinkRedirectComponent implements OnInit {
     }, 1500);
 
     if (uriScheme) window.location.href = uriScheme;
+
+  // 🛰️ DISPARO IMEDIATO DE TELEMETRIA
+  // Avisa o Meta Pixel e o GTM que o usuário escolheu uma rota de áudio
+  if (typeof (window as any).fbq !== 'undefined') {
+    (window as any).fbq('track', 'ViewContent', {
+      content_name: data.title || 'Música',
+      content_category: 'DeepLink Redirect',
+      content_ids: [this.route.snapshot.paramMap.get('id')],
+      content_type: 'product',
+      status: this.route.snapshot.queryParamMap.get('service') // 'soundcloud' ou 'spotify'
+    });
+  }
   }
 
   private setupVisibilityListeners(): void {
