@@ -204,6 +204,12 @@ export const routes: Routes = [
       }
     }
   },
+  {
+    path: 'play/:id',
+    loadComponent: () => import('./pages/deep-link-redirect/deep-link-redirect')
+      .then(m => m.DeepLinkRedirectComponent),
+    title: 'RaQuel Synths // Uplink Player'
+  },
 
   { path: '**', redirectTo: '' }
 ];

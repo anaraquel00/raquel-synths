@@ -41,6 +41,7 @@ export class MusicalArchives implements OnInit, OnDestroy {
   introEN: any;
   introPT: any;
   isLast: any;
+  trackSoundcloudClick: any;
 
   constructor() {
     // 🛡️ TRAVA TÁTICA: O Observer e a leitura do DOM nascem apenas pós-hidratação

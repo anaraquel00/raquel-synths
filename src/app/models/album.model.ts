@@ -1,6 +1,7 @@
 // src/app/models/album.model.ts
 
 export interface Album {
+  id: string;
   soundcloud: any;
   spotify: string|undefined;
   embedLink: any;
