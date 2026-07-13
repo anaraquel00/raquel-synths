@@ -104,7 +104,7 @@ export class DeepLinkRedirectComponent implements OnInit {
 
   private executeDeepLinkProtocol(data: any): void {
     // 🛰️ DISPARO DE EMERGÊNCIA NA BANCADA:
-     alert('Handshake bem-sucedido! O Firebase entregou: ' + JSON.stringify(data));
+     alert('UPLINK RQS // REDIRECTING SONIC COORDINATES');
     // 🛰️ DISPARO IMEDIATO DE TELEMETRIA (Movido para o topo)
     // Envia os dados do álbum/faixa ANTES de forçar qualquer redirecionamento de tela
     if (typeof (window as any).fbq !== 'undefined') {
