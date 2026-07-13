@@ -85,13 +85,13 @@ export class DeepLinkRedirectComponent implements OnInit {
     if (data) {
       this.loading.set(false);
 
-      // 🛰️ BYPASS DE EMERGÊNCIA: Força o navegador a sair da página IMEDIATAMENTE
+      /* // 🛰️ BYPASS DE EMERGÊNCIA: Força o navegador a sair da página IMEDIATAMENTE
       const linkFinal = data.spotify || data.spotifyUrl;
       if (linkFinal) {
         console.log('-> FORÇANDO REDIRECIONAMENTO PARA:', linkFinal);
         window.location.replace(linkFinal); // Usa replace para não quebrar o histórico
         return;
-      }
+      } */
 
       this.executeDeepLinkProtocol(data);
     } else {
