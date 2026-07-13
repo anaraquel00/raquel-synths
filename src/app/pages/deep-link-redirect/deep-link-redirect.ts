@@ -58,6 +58,17 @@ export class DeepLinkRedirectComponent implements OnInit {
  ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;
 
+    // 🛰️ TELEMETRIA BRUTA DE ROTA:
+  console.log('--- SCANNER DE ROTA LOCAL ---');
+  console.log('URL Completa detectada:', window.location.href);
+  console.log('ParamMap completo:', this.route.snapshot.paramMap.keys);
+  console.log('ID isolado por paramMap:', this.route.snapshot.paramMap.get('id'));
+  console.log('ID isolado por queryParamMap:', this.route.snapshot.queryParamMap.get('id'));
+
+  if ((window as any).acionarRadarMeta) {
+    (window as any).acionarRadarMeta();
+  }
+
     // ⚡ ACORDA O RADAR DA META: Ativa o script do index.html e dispara o PageView base
     if ((window as any).acionarRadarMeta) {
       (window as any).acionarRadarMeta();
@@ -70,19 +81,30 @@ export class DeepLinkRedirectComponent implements OnInit {
     }
 
     this.linkService.getLinkData(id).pipe(first()).subscribe({
-      next: (data) => {
-        if (data) {
-          this.loading.set(false);
-          this.executeDeepLinkProtocol(data);
-        } else {
-          this.handleError();
-        }
-      },
-      error: () => this.handleError()
-    });
+  next: (data) => {
+    if (data) {
+      this.loading.set(false);
+
+      // 🛰️ BYPASS DE EMERGÊNCIA: Força o navegador a sair da página IMEDIATAMENTE
+      const linkFinal = data.spotify || data.spotifyUrl;
+      if (linkFinal) {
+        console.log('-> FORÇANDO REDIRECIONAMENTO PARA:', linkFinal);
+        window.location.replace(linkFinal); // Usa replace para não quebrar o histórico
+        return;
+      }
+
+      this.executeDeepLinkProtocol(data);
+    } else {
+      this.handleError();
+    }
+  },
+  error: () => this.handleError()
+});
   }
 
   private executeDeepLinkProtocol(data: any): void {
+    // 🛰️ DISPARO DE EMERGÊNCIA NA BANCADA:
+     alert('Handshake bem-sucedido! O Firebase entregou: ' + JSON.stringify(data));
     // 🛰️ DISPARO IMEDIATO DE TELEMETRIA (Movido para o topo)
     // Envia os dados do álbum/faixa ANTES de forçar qualquer redirecionamento de tela
     if (typeof (window as any).fbq !== 'undefined') {
@@ -106,16 +128,20 @@ export class DeepLinkRedirectComponent implements OnInit {
     let webUrl = '';
     let uriScheme = '';
 
-    if (targetService === 'spotify') {
-      const spotifyLink = data.spotifyUrl || data.spotify;
-      webUrl = spotifyLink;
+   if (targetService === 'spotify') {
+  // Captura o campo 'spotify' ou 'spotifyUrl' do Firebase
+  const spotifyLink = data.spotify || data.spotifyUrl;
+  webUrl = spotifyLink;
 
-      if (spotifyLink && spotifyLink.includes('/track/')) {
-        const urlParts = spotifyLink.split('/track/');
-        const trackId = urlParts[1]?.split('?')[0];
-        uriScheme = `spotify:track:${trackId}`;
-      }
-    } else {
+  // Se for um link de faixa padrão, prepara o aplicativo nativo para celular
+  if (spotifyLink && spotifyLink.includes('/track/')) {
+    const urlParts = spotifyLink.split('/track/');
+    const trackId = urlParts[1]?.split('?')[0];
+    uriScheme = `spotify:track:${trackId}`;
+  } else {
+    uriScheme = ''; // Limpa o esquema se não for faixa, mas mantém a webUrl viva!
+  }
+} else {
       webUrl = data.soundcloud;
       uriScheme = data.soundcloudUriScheme;
     }

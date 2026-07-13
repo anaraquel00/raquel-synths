@@ -1,6 +1,6 @@
 import { Injectable, PLATFORM_ID, inject } from '@angular/core';
-import { Firestore, collection, collectionData, query, orderBy, where, doc, docData } from '@angular/fire/firestore';
-import { map, Observable, of, take } from 'rxjs'; // 🔥 Importamos o 'take' AQUI
+import { Firestore, collection, collectionData, query, orderBy, where, doc, docData, getDoc } from '@angular/fire/firestore';
+import { catchError, from, map, Observable, of, switchMap, take } from 'rxjs'; // 🔥 Importamos o 'take' AQUI
 
 // --- IMPORTAÇÃO DAS INTERFACES ---
 import { LoreEpisode } from '../data/lore-data';

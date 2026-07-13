@@ -1,10 +1,13 @@
 import { inject, Injectable } from '@angular/core';
 import { Firestore, doc, getDoc } from '@angular/fire/firestore';
-import { from, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { from, Observable, of } from 'rxjs';
+import { map, switchMap, catchError } from 'rxjs/operators';
 
 export interface MusicalLinkData {
+  spotifyUrl: any;
+  spotify: any;
   id: string;
+  title?: string; // Adicionado para dar suporte ao nome da track
   spotifyWebUrl: string;
   spotifyUriScheme: string;
   soundCloudWebUrl: string;
@@ -16,23 +19,44 @@ export interface MusicalLinkData {
   providedIn: 'root'
 })
 export class MusicalLinksService {
-  // Injeção do SDK do Firestore configurado na aplicação
   private firestore = inject(Firestore);
 
   /**
-   * Busca os metadados do deep-link pelo ID do documento no chassi do Firestore
+   * Busca os metadados do deep-link varrendo a discografia ou os links promocionais
    */
   getLinkData(id: string): Observable<MusicalLinkData | null> {
-    const docRef = doc(this.firestore, `discography/${id}`);
+  console.log('📡 [FIREBASE] Iniciando varredura para o ID:', id);
+  const docDiscographyRef = doc(this.firestore, `discography/${id}`);
 
-    // Convertendo a Promise nativa do Firebase em um Observable RxJS padrão
-    return from(getDoc(docRef)).pipe(
-      map(snapshot => {
-        if (snapshot.exists()) {
-          return { id: snapshot.id, ...snapshot.data() } as MusicalLinkData;
-        }
-        return null;
-      })
-    );
-  }
+  return from(getDoc(docDiscographyRef)).pipe(
+    switchMap(docSnap => {
+      if (docSnap.exists()) {
+        console.log('🟩 [FIREBASE] Documento localizado na Discografia!');
+        return of({ id: docSnap.id, ...docSnap.data() } as MusicalLinkData);
+      }
+
+      console.log('⚠️ [FIREBASE] Não encontrado na Discografia. Pulando para DEEPLINKS...');
+      const docDeepLinkRef = doc(this.firestore, `deeplinks/${id}`);
+
+      return from(getDoc(docDeepLinkRef)).pipe(
+        map(deepSnap => {
+          if (deepSnap.exists()) {
+            console.log('🟩 [FIREBASE] Documento localizado em DEEPLINKS!', deepSnap.data());
+            return { id: deepSnap.id, ...deepSnap.data() } as MusicalLinkData;
+          }
+          console.log('🟥 [FIREBASE] ID não encontrado em NENHUMA coleção.');
+          return null;
+        }),
+        catchError((err) => {
+          console.error('❌ [FIREBASE] Erro na coleção deeplinks:', err);
+          return of(null);
+        })
+      );
+    }),
+    catchError((err) => {
+      console.error('❌ [FIREBASE] Erro na coleção discography:', err);
+      return of(null);
+    })
+  );
+}
 }
