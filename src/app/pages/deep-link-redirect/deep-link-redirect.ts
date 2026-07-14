@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MusicalLinksService, MusicalLinkData } from '../../services/musical-links.service';
 import { TranslationService } from '../../services/translation.service'; // 🛰️ INJEÇÃO DO REDIRECT BILINGUE
 import { first } from 'rxjs/operators';
+import { Meta } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-deep-link-redirect',
@@ -47,7 +48,7 @@ export class DeepLinkRedirectComponent implements OnInit {
   private router = inject(Router);
   private linkService = inject(MusicalLinksService);
   private platformId = inject(PLATFORM_ID);
-
+  private meta = inject(Meta);
   // Mudado para protected para o template HTML herdar o escopo do serviço
   protected translate = inject(TranslationService);
 
@@ -55,8 +56,12 @@ export class DeepLinkRedirectComponent implements OnInit {
   error = signal<boolean>(false);
   private fallbackTimeoutId: any = null;
 
+
  ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;
+
+    // 🛡️ DIZ AO GOOGLE PARA NÃO TENTAR INDEXAR ESTE REDIRECIONADOR:
+    this.meta.addTag({ name: 'robots', content: 'noindex, nofollow' });
 
     // 🛰️ TELEMETRIA BRUTA DE ROTA:
   console.log('--- SCANNER DE ROTA LOCAL ---');
