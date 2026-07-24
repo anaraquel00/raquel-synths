@@ -210,7 +210,21 @@ export const routes: Routes = [
       .then(m => m.DeepLinkRedirectComponent),
     title: 'RaQuel Synths // Uplink Player'
   },
+  // 🛰️ ROTA DE BIO CENTRAL (O "Beacons" Próprio da RaQuel Synths)
+  {
+    path: 'bio',
+    loadComponent: () =>
+      import('./pages/bio-link/bio-link')
+        .then(m => m.BioLinkComponent),
+    title: 'RaQuel Synths // Official Links & Bio'
+  },
 
+  // 🛰️ ROTA ALTERNATIVA DE ATALHO (Caso alguém digite /links no navegador)
+  {
+    path: 'links',
+    redirectTo: 'bio',
+    pathMatch: 'full'
+  },
 
   { path: '**', redirectTo: '' }
 ];

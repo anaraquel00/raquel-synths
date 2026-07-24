@@ -1,0 +1,71 @@
+<div class="bio-container">
+  <div class="bio-card">
+
+    <!-- Header do Artista -->
+    <header class="bio-header">
+      <div class="avatar-wrapper">
+        <img src="icons/icon-128x128.png" alt="RaQuel Synths" class="avatar-img" />
+        <span class="pulse-ring"></span>
+      </div>
+      <h1 class="brand-title">RaQuel Synths // RQS</h1>
+      <p class="brand-subtitle">
+        {{ translate.isPt() ? 'Produção Musical Híbrida (IA + Humana) • Electronic / DnB' : 'Hybrid Music Production (AI + Human) • Electronic / DnB' }}
+      </p>
+    </header>
+
+    <!-- Seção de Inscrição na Newsletter (Brevo API) -->
+    <section class="newsletter-box">
+      <p class="newsletter-title">
+        {{ translate.isPt() ? '📡 CONECTAR AO TRANSMISSOR RQS' : '📡 CONNECT TO RQS TRANSMITTER' }}
+      </p>
+
+      <div *ngIf="!subscribed()" class="input-group">
+        <input
+          type="email"
+          title="Email Subscriber"
+          aria-label="Email"
+          [placeholder]="translate.isPt() ? 'Seu melhor e-mail...' : 'Your best email...'"
+          [(ngModel)]="emailInputValue"
+        />
+        <button (click)="subscribeNewsletter()">
+          {{ translate.isPt() ? 'JOIN' : 'JOIN' }}
+        </button>
+      </div>
+
+      <p *ngIf="subscribed()" class="subscribed-msg">
+        {{ translate.isPt() ? '✔ Sinal registrado no Mainframe com sucesso!' : '✔ Signal successfully registered in the Mainframe!' }}
+      </p>
+    </section>
+
+    <!-- BOTÕES DAS PLATAFORMAS MUSICAIS -->
+    <section class="streaming-platforms">
+
+      <!-- SPOTIFY -->
+      <button class="btn-stream spotify" (click)="openLink('https://open.spotify.com/intl-pt/artist/1yrPZaFyIcsCjj876LaHXL?si=Ozwxlc1lRrqR5onXqR3rjA')">
+        <i class="fab fa-spotify"></i> Spotify
+      </button>
+
+      <!-- SOUNDCLOUD -->
+      <button class="btn-stream soundcloud" (click)="openLink('https://soundcloud.com/rqs_official')">
+        <i class="fab fa-soundcloud"></i> SoundCloud
+      </button>
+
+      <!-- YOUTUBE -->
+      <button class="btn-stream youtube" (click)="openLink('https://www.youtube.com/@RaQuelSynths')">
+        <i class="fab fa-youtube"></i> YouTube Music / Channel
+      </button>
+
+      <!-- BANDCAMP -->
+      <button class="btn-stream bandcamp" (click)="openLink('https://raquelsynths-rqs.bandcamp.com')">
+        <i class="fab fa-bandcamp"></i> Bandcamp
+      </button>
+
+    </section>
+
+    <!-- Rodapé Minimalista -->
+    <footer class="bio-footer">
+      <p>RAQUEL SYNTHS © 2026 // ALL RIGHTS RESERVED</p>
+    </footer>
+
+  </div>
+</div>
