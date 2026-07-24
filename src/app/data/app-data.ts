@@ -184,16 +184,16 @@ export const CREATOR_DATA = {
     },
     profile: {
       name: 'Ana Raquel de Holanda',
-      role: 'AI Music Designer & Front-End Developer 🚀',
+      role: 'Software Engineer • Angular Architect • AI Automation 🚀',
       // 👇 AQUI ESTÁ O MANIFESTO REFATORADO E PROFISSIONAL
-      bio: "Tech Lead e Engenheira de Software no projeto RaQuel Synths. Especialista em unir arquitetura Angular 20+, Automação e IA Generativa para criar produtos digitais escaláveis. Minha missão é transformar requisitos complexos em narrativas interativas.",
+      bio: "Tech Lead e Engenheira de Software especializada em Angular 20+, Arquitetura Front-End, Automação Inteligente e IA Generativa. Desenvolvo aplicações escaláveis, fluxos automatizados e produtos digitais orientados à performance, SEO e experiência do usuário.",
       social: {
         linkedin: 'LinkedIn',
         github: 'GitHub'
       }
     },
 
- manifesto: [
+ /* manifesto: [
       {
         title: '// QUEM SOU EU',
         content: "Eu sou Ana Raquel. Para o mercado, sou uma Desenvolvedora Full-Stack especialista em Angular. Para a arte, sou o Core da RaQuel Synths. Eu cansei de ver a tecnologia fria e a música sem narrativa. Decidi fundir os dois. Este site não é apenas um portfólio; é uma Visual Novel Interativa construída linha a linha, acorde a acorde."
@@ -210,83 +210,144 @@ export const CREATOR_DATA = {
         title: '// ARQUITETURA DE SISTEMA',
         content: "Construir este universo exigiu Arquitetura. Utilizei Angular 19+ com Signals para gerenciar o 'Estado Emocional' do site. A dualidade (Modo Broklin vs. Jonah) não é apenas CSS; é a materialização técnica da batalha narrativa persistida no Firebase."
       }
+    ], */
+
+    manifesto: [
+      {
+        title: '// FILOSOFIA DE ENGENHARIA',
+        content: `Acredito que software não deve apenas funcionar;
+       Ele deve ser escalável, legível, rápido e simples de evoluir.
+       Por isso utilizo arquitetura orientada a componentes, automações inteligentes e
+       IA como aceleradora de engenharia, sempre mantendo o controle das decisões técnicas.`
+      }
     ],
 
     skills: {
-      title: 'ARSENAL TÉCNICO',
+      title: 'CORE EXPERTISE',
       categories: [
         {
-          label: 'FRONTEND & UI',
-          chips: [
-            { name: 'Angular 19+', class: 'angular' },
-            { name: 'React', class: '' },
-            { name: 'TypeScript', class: '' },
-            { name: 'HTML5/SCSS', class: '' }
-          ]
-        },
+  label: 'FRONT-END ENGINEERING',
+  chips: [
+    { name: 'Angular 20+', class: 'angular' },
+    { name: 'TypeScript', class: '' },
+    { name: 'Signals', class: '' },
+    { name: 'RxJS', class: '' },
+    { name: 'HTML5', class: '' },
+    { name: 'SCSS', class: '' },
+    { name: 'Responsive Design', class: '' },
+    { name: 'Technical SEO', class: '' }
+  ]
+},
+         {
+  label: 'BACK-END & CLOUD',
+  chips: [
+    { name: 'Java', class: 'java' },
+    { name: 'Spring Boot', class: 'spring' },
+    { name: 'Firebase', class: '' },
+    { name: 'MySQL', class: '' },
+    { name: 'Hibernate', class: '' },
+    { name: 'AWS Lightsail', class: '' },
+    { name: 'REST APIs', class: '' }
+  ]
+},
         {
-          label: 'BACKEND & DATA',
-          chips: [
-            { name: 'Java', class: 'java' },
-            { name: 'Spring Boot', class: 'spring' },
-            { name: 'Python', class: '' },
-            { name: 'MySQL/Hibernate', class: '' }
-          ]
-        },
-        {
-          label: 'AI & AUTOMATION OPS',
-          chips: [
-            { name: 'n8n Workflows', class: 'n8n' },
-            { name: 'Webhooks & APIs', class: '' },
-            { name: 'GenAI & Prompts', class: 'genai', style: 'border-color: #9c27b0; color: #9c27b0;' },
-            { name: 'GitHub Copilot', class: '' }
-          ]
-        }
+  label: 'AUTOMATION & AI',
+  chips: [
+    { name: 'n8n', class: 'n8n' },
+    { name: 'Webhooks', class: '' },
+    { name: 'OAuth2', class: '' },
+    { name: 'GitHub Actions', class: '' },
+    { name: 'GenAI', class: 'genai' },
+    { name: 'Prompt Engineering', class: 'genai' },
+    { name: 'AI Workflows', class: '' }
+  ]
+},
+{
+  label: 'PRODUCT & GROWTH',
+  chips: [
+    { name: 'Google Analytics 4', class: '' },
+    { name: 'Meta Ads', class: '' },
+    { name: 'SEO', class: '' },
+    { name: 'Deep Links', class: '' },
+    { name: 'Performance', class: '' },
+    { name: 'UX/UI', class: '' }
+  ]
+},
       ]
     },
     projects: {
-      title: 'MISSÕES CUMPRIDAS',
+      title: '🚀 Featured Engineering Projects',
       list: [
         {
-          title: 'RQS Uplink Protocol',
-          badge: 'AUTOMATION',
+          title: '1️⃣ RQS Uplink // Smart Deep Link Infrastructure ⭐',
+          badge: 'GROWTH ENGINEERING',
           badgeClass: 'n8n-badge',
           cardClass: 'featured-ops',
-          desc: 'Ecossistema CI/CD que integra GitHub, Discord e LinkedIn via n8n. Deploy de posts automático via commits.',
-          techs: ['n8n', 'Webhooks', 'JSON', 'OAuth2'],
-          link: 'https://github.com/anaraquel00/raquel-synths',
-          linkText: 'Ver Workflow'
+          desc: 'Desenvolvi uma infraestrutura própria de Smart Deep Links para eliminar a dependência de plataformas SaaS, centralizar campanhas do Meta Ads e controlar o roteamento do tráfego dentro do ecossistema RaQuel Synths.',
+          techs: ['Angular 20+', 'Router', 'Firebase', 'Meta Ads', 'GA4', 'SEO'  ],
+          link: 'https://raquelsynths.com/play/sunrise-protocol?service=spotify',
+          linkText: 'Ver Arquitetura'
         },
         {
-          title: 'Gestão de Imóveis (SPA)',
-          badge: 'ANGULAR 19',
+          title: '2️⃣ RQS BioLink',
+          badge: 'PRODUCT ENGINEERING',
           badgeClass: '',
           cardClass: 'featured',
-          desc: 'Sistema completo para gestão do ciclo de vida de aluguéis. Foco em UX limpa e acessibilidade.',
-          techs: ['Angular 19', 'Freelance', 'UX/UI'],
-          link: 'https://github.com/anaraquel00/GESTAO-DE-ALUGUEIS',
+          desc: 'Criação de um BioLink totalmente customizado inspirado em plataformas como Feature.fm, desenvolvido para distribuição musical, captura de leads e integração com campanhas de marketing.',
+          techs: ['Angular 20+', 'Signals', 'Responsive', 'SEO', 'Analytics'],
+          link: 'https://raquelsynths.com/bio',
+          linkText: 'Ver Arquitetura'
+        },
+        {
+          title: '3️⃣ RQS Automation Protocol',
+          badge: 'AI AUTOMATION',
+          badgeClass: 'secondary',
+          cardClass: '',
+          desc: 'Ecossistema de automação que conecta GitHub, Make, Google Cloud Firestore, Soundcloud, Spotify e Bluesky para publicação automatizada, notificações e sincronização de conteúdo.',
+          techs: ['Make', 'Json', 'OAuth2'],
+          link: 'https://github.com/anaraquel00/piano-emulator',
           linkText: 'Ver Código'
         },
         {
-          title: 'Virtual Piano + Synth',
-          badge: 'AUDIO DEV',
+          title: '4️⃣ RQS Mainframe',
+          badge: 'AI AUTOMATION',
           badgeClass: 'secondary',
           cardClass: '',
-          desc: 'Sintetizador interativo com Arpeggiator e presets (Lead, Pad, Bass). A base da tecnologia musical.',
-          techs: ['JS', 'Tone.js', 'CSS3'],
-          link: 'https://github.com/anaraquel00/piano-emulator',
+          desc: 'Arquitetura SPA responsável por unificar streaming, artigos técnicos, lore, marketing e distribuição musical em uma única aplicação Angular.',
+          techs: ['Angular 20+', 'Signals', 'Firebase', 'Lazyloading', 'Technical SEO'],
+          link: 'https://raquelsynths.com/play/rqs-mainframe?service=spotify',
           linkText: 'Ver Código'
-        }
+        },
+        {
+          title: '5️⃣ AI Music Production Pipeline',
+          badge: 'GEN AI',
+          badgeClass: 'secondary',
+          cardClass: '',
+          desc: 'Pipeline de produção utilizando IA Generativa para criação de músicas, identidade visual, vídeos, campanhas de marketing e distribuição em plataformas digitais.',
+          techs: ['LLMs', 'GenAI', 'Prompt Engineering', 'Suno5.5', 'ChatGPT', 'DALL·E', 'Automation'],
+          link: 'https://suno.com/@raquel_holanda',
+          linkText: 'Acessar o Suno'
+        },
+        {
+          title: '6️⃣ AWS Broadcast Server',
+          badge: 'CLOUD',
+          badgeClass: 'secondary',
+          cardClass: '',
+          desc: 'Arquitetura SPA responsável por unificar streaming, artigos técnicos, lore, marketing e distribuição musical em uma única aplicação Angular.',
+          techs: ['AWS Lightsail', 'Linux', 'Ubuntu 24.04', 'RTMP', 'Nginx', 'FFmpeg'],
+          link: 'https://www.youtube.com/live/U-L74nzg2_A?si=ylnr8nKQyCR6URF5',
+          linkText: 'Acessar Rádio'
+        },
       ]
     },
     business: {
-      title: 'CANAL CORPORATIVO',
+      title: 'Vamos construir algo grandioso.',
       status: 'CANAL CORPORATIVO | STATUS: DISPONÍVEL PARA ESCALAR O SEU PROJETO 🚀',
-      statusJonah: 'SINAL INTERCEPTADO | STATUS: AGUENTA A PRESSÃO? 💀',
-      desc: 'Precisa de liderança técnica sólida em Front-End, arquitetura Angular e automações inteligentes? Eu atuo na linha de frente: transformo regras de negócio complexas e designs sofisticados em ecossistemas limpos, responsivos e de alto desempenho. Código sustentável que aprova auditorias e gera valor real de mercado.',
-      descJonah:'A sua infraestrutura é fraca e os seus processos são lentos? Eu construo arquiteturas brutais em Angular e automações que não quebram sob carga pesada. Requisitos absurdos transformados em código letal e interfaces fotorrealistas. Se você quer o sistema rodando no limite da máquina, me contrate. Se tem medo de Deploy na sexta-feira, procure outra desenvolvedora.',
-      actionEmail: 'Solicitar Consultoria',
-      actionLinkedin: 'Perfil LinkedIn'
+      statusJonah: 'CANAL SUBTERRÂNEO | STATUS: DISPONÍVEL PARA ESCALAR O SEU PROJETO 🚀',
+      desc: 'Estou disponível para colaborar em projetos de Front-End Engineering, Arquitetura Angular, Automação Inteligente e IA aplicada ao desenvolvimento de produtos digitais. Gosto de transformar requisitos complexos em soluções escaláveis, performáticas e fáceis de evoluir, sempre equilibrando qualidade técnica e valor para o negócio.',
+      descJonah:'Estou disponível para colaborar em projetos de Front-End Engineering, Arquitetura Angular, Automação Inteligente e IA aplicada ao desenvolvimento de produtos digitais. Gosto de transformar requisitos complexos em soluções escaláveis, performáticas e fáceis de evoluir, sempre equilibrando qualidade técnica e valor para o negócio.',
+      actionEmail: 'Let\'s Connect',
+      actionLinkedin: 'Linkedin'
     }
   },
 
@@ -295,12 +356,12 @@ export const CREATOR_DATA = {
     nav: { back: 'BACK TO BASE' },
     profile: {
       name: 'Ana Raquel de Holanda',
-      role: 'AI Music Designer & Front-End Developer 🚀',
-      bio: "Tech Lead and Software Engineer at RaQuel Synths. Specialist in merging Angular 20+ architecture, Automation, and Generative AI to build scalable digital products. My mission is to turn complex requirements into interactive narratives.",
+      role: 'Software Engineer • Angular Architect • AI Automation 🚀',
+      bio: "Tech Lead and Software Engineer specializing in Angular 20+, Front-End Architecture, Intelligent Automation, and Generative AI. I develop scalable applications, automated workflows, and digital products driven by performance, SEO, and user experience.",
       social: { linkedin: 'LinkedIn', github: 'GitHub' }
     },
 
- manifesto: [
+ /* manifesto: [
       {
         title: '// WHO AM I',
         content: "I am Ana Raquel. To the market, a Full-Stack Dev. To art, the Core of RaQuel Synths. I decided to merge cold tech with music narrative. This site is an Interactive Visual Novel built line by line."
@@ -317,83 +378,144 @@ export const CREATOR_DATA = {
         title: '// SYSTEM ARCHITECTURE',
         content: "I used Angular 19+ with Signals to manage the site's 'Emotional State'. The duality (Broklin vs. Jonah Mode) is the technical materialization of the narrative battle."
       }
+    ], */
+
+    manifesto: [
+      {
+        title: '// ENGINEERING PHILOSOPHY',
+        content: `I believe software shouldn't just work;
+       it should be scalable, readable, fast, and simple to evolve.
+       That is why I use component-based architecture, intelligent automation, and
+       AI to accelerate engineering, while always retaining control over technical decisions.`
+      }
     ],
 
-    skills: {
-      title: 'TECH STACK',
+      skills: {
+      title: 'CORE EXPERTISE',
       categories: [
         {
-          label: 'FRONTEND & UI',
-          chips: [
-            { name: 'Angular 19+', class: 'angular' },
-            { name: 'React', class: '' },
-            { name: 'TypeScript', class: '' },
-            { name: 'HTML5/SCSS', class: '' }
-          ]
-        },
+  label: 'FRONT-END ENGINEERING',
+  chips: [
+    { name: 'Angular 20+', class: 'angular' },
+    { name: 'TypeScript', class: '' },
+    { name: 'Signals', class: '' },
+    { name: 'RxJS', class: '' },
+    { name: 'HTML5', class: '' },
+    { name: 'SCSS', class: '' },
+    { name: 'Responsive Design', class: '' },
+    { name: 'Technical SEO', class: '' }
+  ]
+},
+         {
+  label: 'BACK-END & CLOUD',
+  chips: [
+    { name: 'Java', class: 'java' },
+    { name: 'Spring Boot', class: 'spring' },
+    { name: 'Firebase', class: '' },
+    { name: 'MySQL', class: '' },
+    { name: 'Hibernate', class: '' },
+    { name: 'AWS Lightsail', class: '' },
+    { name: 'REST APIs', class: '' }
+  ]
+},
         {
-          label: 'BACKEND & DATA',
-          chips: [
-            { name: 'Java', class: 'java' },
-            { name: 'Spring Boot', class: 'spring' },
-            { name: 'Python', class: '' },
-            { name: 'MySQL/Hibernate', class: '' }
-          ]
-        },
-        {
-          label: 'AI & AUTOMATION OPS',
-          chips: [
-            { name: 'n8n Workflows', class: 'n8n' },
-            { name: 'Webhooks & APIs', class: '' },
-            { name: 'GenAI & Prompts', class: 'genai', style: 'border-color: #9c27b0; color: #9c27b0;' },
-            { name: 'GitHub Copilot', class: '' }
-          ]
-        }
+  label: 'AUTOMATION & AI',
+  chips: [
+    { name: 'n8n', class: 'n8n' },
+    { name: 'Webhooks', class: '' },
+    { name: 'OAuth2', class: '' },
+    { name: 'GitHub Actions', class: '' },
+    { name: 'GenAI', class: 'genai' },
+    { name: 'Prompt Engineering', class: 'genai' },
+    { name: 'AI Workflows', class: '' }
+  ]
+},
+{
+  label: 'PRODUCT & GROWTH',
+  chips: [
+    { name: 'Google Analytics 4', class: '' },
+    { name: 'Meta Ads', class: '' },
+    { name: 'SEO', class: '' },
+    { name: 'Deep Links', class: '' },
+    { name: 'Performance', class: '' },
+    { name: 'UX/UI', class: '' }
+  ]
+},
       ]
     },
-    projects: {
-      title: 'DEPLOYED MISSIONS',
+  projects: {
+      title: '🚀 Featured Engineering Projects',
       list: [
         {
-          title: 'RQS Uplink Protocol',
-          badge: 'AUTOMATION',
+          title: '1️⃣ RQS Uplink // Smart Deep Link Infrastructure ⭐',
+          badge: 'GROWTH ENGINEERING',
           badgeClass: 'n8n-badge',
           cardClass: 'featured-ops',
-          desc: 'CI/CD ecosystem integrating GitHub, Discord, and LinkedIn via n8n. Automatic post deployment via commits.',
-          techs: ['n8n', 'Webhooks', 'JSON', 'OAuth2'],
-          link: 'https://github.com/anaraquel00/raquel-synths',
-          linkText: 'View Workflow'
+          desc: 'I developed a custom Smart Deep Link infrastructure to eliminate dependency on SaaS platforms, centralize Meta Ads campaigns, and control traffic routing within the RaQuel Synths ecosystem.',
+          techs: ['Angular 20+', 'Router', 'Firebase', 'Meta Ads', 'GA4', 'SEO'  ],
+          link: 'https://raquelsynths.com/play/sunrise-protocol?service=spotify',
+          linkText: 'Ver Arquitetura'
         },
         {
-          title: 'Property Management (SPA)',
-          badge: 'ANGULAR 19',
+          title: '2️⃣ RQS BioLink',
+          badge: 'PRODUCT ENGINEERING',
           badgeClass: '',
           cardClass: 'featured',
-          desc: 'Complete system for rental lifecycle management. Focus on clean UX and accessibility.',
-          techs: ['Angular 19', 'Freelance', 'UX/UI'],
-          link: 'https://github.com/anaraquel00/GESTAO-DE-ALUGUEIS',
-          linkText: 'View Code'
+          desc: 'Creation of a fully customized BioLink inspired by platforms like Feature.fm, developed for music distribution, lead capture, and integration with marketing campaigns.',
+          techs: ['Angular 20+', 'Signals', 'Responsive', 'SEO', 'Analytics'],
+          link: 'https://raquelsynths.com/bio',
+          linkText: 'Ver Arquitetura'
         },
         {
-          title: 'Virtual Piano + Synth',
-          badge: 'AUDIO DEV',
+          title: '3️⃣ RQS Automation Protocol',
+          badge: 'AI AUTOMATION',
           badgeClass: 'secondary',
           cardClass: '',
-          desc: 'Interactive synthesizer with Arpeggiator and presets. The foundation of music tech.',
-          techs: ['JS', 'Tone.js', 'CSS3'],
+          desc: 'Automation ecosystem connecting GitHub, Make, Google Cloud Firestore, SoundCloud, Spotify, and Bluesky for automated publishing, notifications, and content synchronization.',
+          techs: ['Make', 'Json', 'OAuth2'],
           link: 'https://github.com/anaraquel00/piano-emulator',
-          linkText: 'View Code'
-        }
+          linkText: 'Ver Código'
+        },
+        {
+          title: '4️⃣ RQS Mainframe',
+          badge: 'AI AUTOMATION',
+          badgeClass: 'secondary',
+          cardClass: '',
+          desc: 'SPA architecture responsible for unifying streaming, technical articles, lore, marketing, and music distribution into a single Angular application.',
+          techs: ['Angular 20+', 'Signals', 'Firebase', 'Lazyloading', 'Technical SEO'],
+          link: 'https://raquelsynths.com/play/rqs-mainframe?service=spotify',
+          linkText: 'Ver Código'
+        },
+        {
+          title: '5️⃣ AI Music Production Pipeline',
+          badge: 'GEN AI',
+          badgeClass: 'secondary',
+          cardClass: '',
+          desc: 'Production pipeline using generative AI to create music, visual identity, videos, and marketing campaigns, as well as for distribution on digital platforms.',
+          techs: ['LLMs', 'GenAI', 'Prompt Engineering', 'Suno5.5', 'ChatGPT', 'DALL·E', 'Automation'],
+          link: 'https://suno.com/@raquel_holanda',
+          linkText: 'Access Suno'
+        },
+        {
+          title: '6️⃣ AWS Broadcast Server',
+          badge: 'CLOUD',
+          badgeClass: 'secondary',
+          cardClass: '',
+          desc: 'SPA architecture responsible for unifying streaming, technical articles, lore, marketing, and music distribution into a single Angular application.',
+          techs: ['AWS Lightsail', 'Linux', 'Ubuntu 24.04', 'RTMP', 'Nginx', 'FFmpeg'],
+          link: 'https://www.youtube.com/live/U-L74nzg2_A?si=ylnr8nKQyCR6URF5',
+          linkText: 'Access Radio'
+        },
       ]
     },
     business: {
       title: 'BUSINESS CHANNEL',
       status: 'CORPORATE CHANNEL | STATUS: AVAILABLE TO SCALE YOUR PROJECT 🚀',
-      statusJonah: 'SIGNAL INTERCEPTED | STATUS: CAN YOU HANDLE THE PRESSURE? 💀',
+      statusJonah: 'UNDERGROUND CHANNEL | STATUS: AVAILABLE TO SCALE YOUR PROJECT 🚀' ,
       desc: 'Do you need solid technical leadership in Front-End, Angular architecture, and intelligent automation? I work on the front lines: transforming complex business rules and sophisticated designs into clean, responsive, and high-performance ecosystems. Sustainable code that passes audits and generates real market value.',
-      descJonah:'Is your infrastructure weak and your processes slow? I build brutal architectures in Angular and automations that don\'t break under heavy load. Absurd requirements transformed into lethal code and photorealistic interfaces. If you want the system running at the machine\'s limit, hire me. If you\'re afraid of deploying on Friday, look for another developer.',
-      actionEmail: 'Contact for Hire',
-      actionLinkedin: 'LinkedIn Profile'
+      descJonah: 'Do you need solid technical leadership in Front-End, Angular architecture, and intelligent automation? I work on the front lines: transforming complex business rules and sophisticated designs into clean, responsive, and high-performance ecosystems. Sustainable code that passes audits and generates real market value.',
+      actionEmail: 'Let\'s Connect',
+      actionLinkedin: 'Download Resume'
     }
   }
 };

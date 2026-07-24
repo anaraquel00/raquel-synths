@@ -54,7 +54,7 @@
           <span class="category-label">{{ category.label }}</span>
           <div class="chips">
             @for (tech of category.chips; track tech.name) {
-              <span class="tech-chip" [class]="tech.class" [style]="tech.style || ''">
+              <span class="tech-chip" [class]="tech.class" [title]="tech.name">
                 {{ tech.name }}
               </span>
             }

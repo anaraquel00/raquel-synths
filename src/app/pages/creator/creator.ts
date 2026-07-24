@@ -37,11 +37,11 @@ export class Creator implements OnInit, OnDestroy {
     // Atualiza o SEO Dinamicamente
     this.seoService.updateMetaTags({
       title: isPt
-        ? 'A Arquiteta | Desenvolvimento & Direção Criativa'
-        : 'The Architect | Development & Creative Direction',
+        ? 'Ana Raquel de Holanda | Angular Developer • Software Engineer • AI Automation'
+        : 'Ana Raquel de Holanda | Angular Developer • Software Engineer • AI Automation',
       description: isPt
-        ? 'Engenharia de Front-End e Design de Música com IA. Conheça a mente por trás da RaQuel Synths e a fusão entre código, Angular e narrativas transmídia.'
-        : 'Front-End Engineering & AI Music Design. Meet the mind behind RaQuel Synths and the fusion of code, Angular, and transmedia narratives.',
+        ? 'Software Engineer especializada em Angular 20+, TypeScript, Firebase, IA Generativa e automação inteligente. Criadora da plataforma RaQuel Synths, onde desenvolve aplicações escaláveis, arquitetura Front-End moderna, SEO, Serverless e Growth Engineering.'
+        : 'Software Engineer specializing in Angular 20+, TypeScript, Firebase, Generative AI, and intelligent automation. Creator of the RaQuel Synths platform, where she develops scalable applications and focuses on modern front-end architecture, SEO, serverless technologies, and growth engineering.',
       url: `https://raquelsynths.com${currentPath}`
     });
   }
@@ -90,15 +90,49 @@ ngOnInit() {
     this.seoService.setJsonLd({
       "@context": "https://schema.org",
       "@type": "ProfilePage",
+      "founder": {
+    "@type":"Organization",
+    "name":"RaQuel Synths"
+     },
+     "worksFor": {
+    "@type":"Organization",
+    "name":"RaQuel Synths"
+     },
       "mainEntity": {
         "@type": "Person",
         "name": "Ana Raquel de Holanda",
-        "jobTitle": "Arquiteta de Software & AI Music Producer",
+        "jobTitle": "Software Engineer | Front-End Architect | AI Product Builder",
         "description": isPt
-          ? "Desenvolvedora Front-End especializada em Angular e criação de universos transmídia com inteligência artificial."
-          : "Front-End Developer specializing in Angular and building transmedia universes with artificial intelligence.",
+          ? "Desenvolvedora de Software especializada em Angular 20+, TypeScript, Signals, RxJS, Firebase, SEO técnico, Performance Web, Arquitetura Front-End e aplicações Serverless."
+          : "Software Developer specializing in Angular 20+, TypeScript, Signals, RxJS, Firebase, technical SEO, web performance, front-end architecture, and serverless applications.",
         "url": `https://raquelsynths.com${currentPath}`,
         "image": "images/foto_perfil.webp",
+        "knowsAbout": [
+  "Angular 20",
+  "TypeScript",
+  "RxJS",
+  "Signals",
+  "Firebase",
+  "Front-End Architecture",
+  "Software Engineering",
+  "Technical SEO",
+  "Serverless Architecture",
+  "Artificial Intelligence",
+  "Web Performance",
+  "Google Analytics",
+  "n8n",
+  "GitHub Actions"
+ ],
+  "hasOccupation":{
+   "@type":"Occupation",
+   "name":"Software Engineer"
+ },
+ "knowsLanguage":[
+    "Portuguese",
+    "English",
+    "French",
+    "Polish (basic)"
+],
         "sameAs":[
           "https://www.linkedin.com/in/ana-raquel-de-holanda",
           "https://github.com/anaraquel00"
