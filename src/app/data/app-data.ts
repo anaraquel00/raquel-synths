@@ -244,8 +244,8 @@ export const CREATOR_DATA = {
     { name: 'Java', class: 'java' },
     { name: 'Spring Boot', class: 'spring' },
     { name: 'Firebase', class: '' },
-    { name: 'MySQL', class: '' },
-    { name: 'Hibernate', class: '' },
+    { name: 'Serverless', class: '' },
+    { name: 'CI/CD', class: '' },
     { name: 'AWS Lightsail', class: '' },
     { name: 'REST APIs', class: '' }
   ]
@@ -428,8 +428,8 @@ desc: 'Plataforma de engenharia de áudio baseada em navegador, desenvolvida par
     { name: 'Java', class: 'java' },
     { name: 'Spring Boot', class: 'spring' },
     { name: 'Firebase', class: '' },
-    { name: 'MySQL', class: '' },
-    { name: 'Hibernate', class: '' },
+    { name: 'Serverless', class: '' },
+    { name: 'CI/CD', class: '' },
     { name: 'AWS Lightsail', class: '' },
     { name: 'REST APIs', class: '' }
   ]
@@ -437,7 +437,7 @@ desc: 'Plataforma de engenharia de áudio baseada em navegador, desenvolvida par
         {
   label: 'AUTOMATION & AI',
   chips: [
-    { name: 'n8n', class: 'n8n' },
+    { name: 'Make', class: 'make' },
     { name: 'Webhooks', class: '' },
     { name: 'OAuth2', class: '' },
     { name: 'GitHub Actions', class: '' },
@@ -465,7 +465,7 @@ desc: 'Plataforma de engenharia de áudio baseada em navegador, desenvolvida par
         {
           title: '1️⃣ RQS Uplink // Smart Deep Link Infrastructure ⭐',
           badge: 'GROWTH ENGINEERING',
-          badgeClass: 'n8n-badge',
+          badgeClass: 'make-badge',
           cardClass: 'featured-ops',
           desc: 'I developed a custom Smart Deep Link infrastructure to eliminate dependency on SaaS platforms, centralize Meta Ads campaigns, and control traffic routing within the RaQuel Synths ecosystem.',
           techs: ['Angular 20+', 'Router', 'Firebase', 'Meta Ads', 'GA4', 'SEO'  ],
