@@ -305,8 +305,8 @@ export const CREATOR_DATA = {
           cardClass: '',
           desc: 'Ecossistema de automação que conecta GitHub, Make, Google Cloud Firestore, Soundcloud, Spotify e Bluesky para publicação automatizada, notificações e sincronização de conteúdo.',
           techs: ['Make', 'Json', 'OAuth2'],
-          link: 'https://github.com/anaraquel00/piano-emulator',
-          linkText: 'Ver Código'
+          link: 'https://www.make.com/en/register?pc=anaraquel',
+          linkText: 'Conhecer o Make'
         },
         {
           title: '4️⃣ RQS Mainframe',
@@ -338,6 +338,22 @@ export const CREATOR_DATA = {
           link: 'https://www.youtube.com/live/U-L74nzg2_A?si=ylnr8nKQyCR6URF5',
           linkText: 'Acessar Rádio'
         },
+        {
+  title: '7️⃣ RQS DSP Studio',
+  badge: 'AUDIO ENGINEERING',
+  badgeClass: 'secondary',
+  cardClass: 'featured',
+desc: 'Plataforma de engenharia de áudio baseada em navegador, desenvolvida para o fluxo de produção da RaQuel Synths. Realiza preparação para masterização, controle de qualidade, organização de playlists e gerenciamento de fluxo de trabalho de DSP para músicas geradas por IA.',
+ techs: [
+    'Angular 20+',
+    'Web Audio API',
+    'DSP',
+    'Audio Workflow',
+    'PWA'
+  ],
+  link: 'https://studio.raquelsynths.com',
+  linkText: 'Open Studio'
+}
       ]
     },
     business: {
@@ -506,6 +522,22 @@ export const CREATOR_DATA = {
           link: 'https://www.youtube.com/live/U-L74nzg2_A?si=ylnr8nKQyCR6URF5',
           linkText: 'Access Radio'
         },
+                {
+  title: '7️⃣ RQS DSP Studio',
+  badge: 'AUDIO ENGINEERING',
+  badgeClass: 'secondary',
+  cardClass: 'featured',
+  desc: 'Browser-based audio engineering platform developed for the RaQuel Synths production pipeline. Performs mastering preparation, quality control, playlist organization and DSP workflow management for AI-generated music.',
+  techs: [
+    'Angular 20',
+    'Web Audio API',
+    'DSP',
+    'Audio Workflow',
+    'PWA'
+  ],
+  link: 'https://studio.raquelsynths.com',
+  linkText: 'Open Studio'
+}
       ]
     },
     business: {
