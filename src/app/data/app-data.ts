@@ -470,7 +470,7 @@ desc: 'Plataforma de engenharia de áudio baseada em navegador, desenvolvida par
           desc: 'I developed a custom Smart Deep Link infrastructure to eliminate dependency on SaaS platforms, centralize Meta Ads campaigns, and control traffic routing within the RaQuel Synths ecosystem.',
           techs: ['Angular 20+', 'Router', 'Firebase', 'Meta Ads', 'GA4', 'SEO'  ],
           link: 'https://raquelsynths.com/play/sunrise-protocol?service=spotify',
-          linkText: 'Ver Arquitetura'
+          linkText: 'See Architecture'
         },
         {
           title: '2️⃣ RQS BioLink',
@@ -480,7 +480,7 @@ desc: 'Plataforma de engenharia de áudio baseada em navegador, desenvolvida par
           desc: 'Creation of a fully customized BioLink inspired by platforms like Feature.fm, developed for music distribution, lead capture, and integration with marketing campaigns.',
           techs: ['Angular 20+', 'Signals', 'Responsive', 'SEO', 'Analytics'],
           link: 'https://raquelsynths.com/bio',
-          linkText: 'Ver Arquitetura'
+          linkText: 'See Architecture'
         },
         {
           title: '3️⃣ RQS Automation Protocol',
@@ -489,8 +489,8 @@ desc: 'Plataforma de engenharia de áudio baseada em navegador, desenvolvida par
           cardClass: '',
           desc: 'Automation ecosystem connecting GitHub, Make, Google Cloud Firestore, SoundCloud, Spotify, and Bluesky for automated publishing, notifications, and content synchronization.',
           techs: ['Make', 'Json', 'OAuth2'],
-          link: 'https://github.com/anaraquel00/piano-emulator',
-          linkText: 'Ver Código'
+          link: 'https://www.make.com/en/register?pc=anaraquel',
+          linkText: 'See Code'
         },
         {
           title: '4️⃣ RQS Mainframe',
@@ -500,7 +500,7 @@ desc: 'Plataforma de engenharia de áudio baseada em navegador, desenvolvida par
           desc: 'SPA architecture responsible for unifying streaming, technical articles, lore, marketing, and music distribution into a single Angular application.',
           techs: ['Angular 20+', 'Signals', 'Firebase', 'Lazyloading', 'Technical SEO'],
           link: 'https://raquelsynths.com/play/rqs-mainframe?service=spotify',
-          linkText: 'Ver Código'
+          linkText: 'See Code'
         },
         {
           title: '5️⃣ AI Music Production Pipeline',
