@@ -23,7 +23,7 @@ export const serverRoutes: ServerRoute[] = [
   },
   {
     path: 'log-reader/:id',
-    renderMode: RenderMode.Server //  Renderiza no servidor para o Google ler os textões.
+    renderMode: RenderMode.Prerender //  Renderiza no servidor para o Google ler os textões.
   },
   {
     path: 'visual-novel',
@@ -31,19 +31,19 @@ export const serverRoutes: ServerRoute[] = [
   },
   {
     path: 'lore-reader/:id',
-    renderMode: RenderMode.Server // Garante que o texto da saga já chegue mastigado para o AdSense ler
+    renderMode: RenderMode.Prerender // Garante que o texto da saga já chegue mastigado para o AdSense ler
   },
   {
     path: 'discografia',
-    renderMode: RenderMode.Server // A vitrine blindada e super rápida
+    renderMode: RenderMode.Prerender // A vitrine blindada e super rápida
   },
    {
     path:'logs-archive',
-    renderMode: RenderMode.Server
+    renderMode: RenderMode.Prerender
    },
   {
     path: 'musical-archives',
-    renderMode: RenderMode.Server // Protege a paginação dinâmica contra pre-render vazio
+    renderMode: RenderMode.Prerender // Protege a paginação dinâmica contra pre-render vazio
   },
   {
     path: 'play/:id',
