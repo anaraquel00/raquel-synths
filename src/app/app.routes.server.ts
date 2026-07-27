@@ -39,11 +39,11 @@ export const serverRoutes: ServerRoute[] = [
   },
    {
     path:'logs-archive',
-    renderMode: RenderMode.Prerender
+    renderMode: RenderMode.Server // Renderização dinâmica do arquivo de logs
    },
   {
     path: 'musical-archives',
-    renderMode: RenderMode.Prerender // Protege a paginação dinâmica contra pre-render vazio
+    renderMode: RenderMode.Server // Protege a paginação dinâmica contra pre-render vazio
   },
   {
     path: 'play/:id',
