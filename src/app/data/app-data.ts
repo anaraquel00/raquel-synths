@@ -519,7 +519,7 @@ desc: 'Plataforma de engenharia de áudio baseada em navegador, desenvolvida par
           cardClass: '',
           desc: 'SPA architecture responsible for unifying streaming, technical articles, lore, marketing, and music distribution into a single Angular application.',
           techs: ['AWS Lightsail', 'Linux', 'Ubuntu 24.04', 'RTMP', 'Nginx', 'FFmpeg'],
-          link: 'https://www.youtube.com/live/U-L74nzg2_A?si=ylnr8nKQyCR6URF5',
+          link: 'https://youtube.com/live/P4INjOJfnn8?feature=share',
           linkText: 'Access Radio'
         },
                 {
