@@ -242,6 +242,7 @@ export const CREATOR_DATA = {
   label: 'BACK-END & CLOUD',
   chips: [
     { name: 'Java', class: 'java' },
+    { name: 'Python', class: 'python' },
     { name: 'Spring Boot', class: 'spring' },
     { name: 'Firebase', class: '' },
     { name: 'Serverless', class: '' },
@@ -426,6 +427,7 @@ desc: 'Plataforma de engenharia de áudio baseada em navegador, desenvolvida par
   label: 'BACK-END & CLOUD',
   chips: [
     { name: 'Java', class: 'java' },
+    { name: 'Python', class: 'python' },
     { name: 'Spring Boot', class: 'spring' },
     { name: 'Firebase', class: '' },
     { name: 'Serverless', class: '' },
