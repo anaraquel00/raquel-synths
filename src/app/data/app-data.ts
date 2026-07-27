@@ -335,7 +335,7 @@ export const CREATOR_DATA = {
           cardClass: '',
           desc: 'Arquitetura SPA responsável por unificar streaming, artigos técnicos, lore, marketing e distribuição musical em uma única aplicação Angular.',
           techs: ['AWS Lightsail', 'Linux', 'Ubuntu 24.04', 'RTMP', 'Nginx', 'FFmpeg'],
-          link: 'https://www.youtube.com/live/U-L74nzg2_A?si=ylnr8nKQyCR6URF5',
+          link: 'https://youtube.com/live/P4INjOJfnn8?feature=share',
           linkText: 'Acessar Rádio'
         },
         {
