@@ -1,64 +1,24 @@
 import { RenderMode, ServerRoute } from '@angular/ssr';
 
+// No seu app.routes.server.ts:
 export const serverRoutes: ServerRoute[] = [
-  {
-    path: '',
-    renderMode: RenderMode.Prerender // A vitrine blindada e super rápida
-  },
-  {
-    path: 'compliance',
-    renderMode: RenderMode.Prerender // O túnel VIP pro compliance legal
-  },
-  {
-    path: 'dossier',
-    renderMode: RenderMode.Prerender // Página estática, ideal para pré-render
-  },
-  {
-    path: 'creator',
-    renderMode: RenderMode.Prerender // Página estática, ideal para pré-render
-  },
-  {
-    path: 'contato',
-    renderMode: RenderMode.Prerender // Formulário estático, ideal para pré-render
-  },
-  {
-    path: 'log-reader/:id',
-    renderMode: RenderMode.Prerender //  Renderiza no servidor para o Google ler os textões.
-  },
-  {
-    path: 'visual-novel',
-    renderMode: RenderMode.Prerender // Mastiga a saga no build, 0ms de carregamento!
-  },
-  {
-    path: 'lore-reader/:id',
-    renderMode: RenderMode.Prerender // Garante que o texto da saga já chegue mastigado para o AdSense ler
-  },
-  {
-    path: 'discografia',
-    renderMode: RenderMode.Prerender // A vitrine blindada e super rápida
-  },
-   {
-    path:'logs-archive',
-    renderMode: RenderMode.Server // Renderização dinâmica do arquivo de logs
-   },
-  {
-    path: 'musical-archives',
-    renderMode: RenderMode.Server // Protege a paginação dinâmica contra pre-render vazio
-  },
-  {
-    path: 'play/:id',
-    renderMode: RenderMode.Server // Protege a paginação dinâmica contra pre-render vazio
-  },
-  {
-    path: 'store',
-    renderMode: RenderMode.Server // Renderização dinâmica do e-commerce
-  },
-  {
-    path: 'store/:dept',
-    renderMode: RenderMode.Server // Rastreio de catálogo específico via SSR
-  },
-  {
-    path: '**',
-    renderMode: RenderMode.Prerender
-  }
+  { path: '', renderMode: RenderMode.Prerender },
+  { path: 'compliance', renderMode: RenderMode.Prerender },
+  { path: 'dossier', renderMode: RenderMode.Prerender },
+  { path: 'creator', renderMode: RenderMode.Prerender },
+  { path: 'contato', renderMode: RenderMode.Prerender },
+  { path: 'visual-novel', renderMode: RenderMode.Prerender },
+  { path: 'discografia', renderMode: RenderMode.Prerender },
+
+  // 🛡️ ROTAS DINÂMICAS VOLTAM A SER SERVER (SSR) PARA SUPORTAR ESCALA E AGENDAMENTO AUTOMÁTICO
+  { path: 'lore-reader/:id', renderMode: RenderMode.Server },
+  { path: 'log-reader/:id', renderMode: RenderMode.Server },
+
+  { path: 'logs-archive', renderMode: RenderMode.Server },
+  { path: 'musical-archives', renderMode: RenderMode.Server },
+  { path: 'play/:id', renderMode: RenderMode.Server },
+  { path: 'store', renderMode: RenderMode.Server },
+  { path: 'store/:dept', renderMode: RenderMode.Server },
+
+  { path: '**', renderMode: RenderMode.Prerender }
 ];

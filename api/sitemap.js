@@ -7,21 +7,21 @@ export default async function handler(req, res) {
   xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
 
   const today = new Date();
-  const todayStr = today.toISOString().split('T')[0];
+  const todayStr = today.toISOString().split('T')[0]; // "2026-07-27"
 
-  // 1. AS ROTAS BASE DO FRONT-END (Atualizadas hoje com o novo SeoService)
+  // 1. AS ROTAS BASE DO FRONT-END (Atualizadas hoje, 27 de julho de 2026, com o novo domínio .com)
   const staticRoutes = [
-    { path: '', priority: '1.0', lastmod: '2026-06-01' },
-    { path: '/compliance', priority: '0.9', lastmod: '2026-06-01' },
-    { path: '/dossier', priority: '0.9', lastmod: '2026-06-01' },
-    { path: '/store', priority: '0.8', lastmod: '2026-06-01' },
-    { path: '/saga', priority: '0.8', lastmod: '2026-06-01' },
-    { path: '/visual-novel', priority: '0.8', lastmod: '2026-06-01' },
-    { path: '/logs-archive', priority: '0.9', lastmod: '2026-06-01' },
-    { path: '/discografia', priority: '0.9', lastmod: '2026-06-01' },
-    { path: '/musical-archives', priority: '0.9', lastmod: '2026-06-01' },
-    { path: '/creator', priority: '0.5', lastmod: '2026-05-18' },
-    { path: '/contato', priority: '0.5', lastmod: '2026-05-18' }
+    { path: '', priority: '1.0', lastmod: '2026-07-27' },
+    { path: '/compliance', priority: '0.9', lastmod: '2026-07-27' },
+    { path: '/dossier', priority: '0.9', lastmod: '2026-07-27' },
+    { path: '/store', priority: '0.8', lastmod: '2026-07-27' },
+    { path: '/saga', priority: '0.8', lastmod: '2026-07-27' },
+    { path: '/visual-novel', priority: '0.8', lastmod: '2026-07-27' },
+    { path: '/logs-archive', priority: '0.9', lastmod: '2026-07-27' },
+    { path: '/discografia', priority: '0.9', lastmod: '2026-07-27' },
+    { path: '/musical-archives', priority: '0.9', lastmod: '2026-07-27' },
+    { path: '/creator', priority: '0.5', lastmod: '2026-07-27' },
+    { path: '/contato', priority: '0.5', lastmod: '2026-07-27' }
   ];
 
   for (const route of staticRoutes) {
@@ -29,7 +29,7 @@ export default async function handler(req, res) {
     xml += `  <url>\n    <loc>https://raquelsynths.com${safePath}</loc>\n    <lastmod>${route.lastmod}</lastmod>\n    <priority>${route.priority}</priority>\n  </url>\n`;
   }
 
-  // 2. BUSCA NO FIREBASE (Logs e Lore com lastmod dinâmico)
+  // 2. BUSCA NO FIREBASE (Logs e Lore com lastmod dinâmico do banco)
   try {
     const projectId = 'raquel-synths-platform';
     const baseUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents`;
@@ -46,15 +46,18 @@ export default async function handler(req, res) {
       if (data.documents) {
         data.documents.forEach((doc) => {
           const id = doc.name.split('/').pop();
-          let lastmodValue = '2026-06-01'; // Fallback estratégico para forçar reindexação pós-correção de canónicas
+
+          // 🛡️ CAPTURA DINÂMICA: Extrai a data de atualização real do Firestore REST API (updateTime)
+          // Se não houver, usa a data de hoje como fallback estratégico
+          let lastmodValue = doc.updateTime ? doc.updateTime.substring(0, 10) : todayStr;
+
+          // Força as canónicas e o sitemap a exibirem a data de hoje (2026-07-27) temporariamente para resetar o cache do Googlebot
+          lastmodValue = '2026-07-27';
 
           // 🛡️ FIREWALL 1: Proteção dos Logs (Pela Data no ID)
           if (basePath === 'log-reader') {
             const logDate = id.substring(0, 10);
             if (logDate > todayStr) return;
-            // Para forçar o Googlebot a reler canónicas corrigidas hoje, usamos 2026-06-01.
-            // No futuro, mude para: lastmodValue = logDate;
-            lastmodValue = '2026-06-01';
           }
 
           // 🛡️ FIREWALL 2: Proteção da Lore (Pelo releaseDate no banco)
@@ -64,9 +67,6 @@ export default async function handler(req, res) {
             if (releaseDateStr) {
               const releaseDate = new Date(releaseDateStr);
               if (releaseDate > today) return;
-              // Para forçar o Googlebot a reler canónicas corrigidas hoje, usamos 2026-06-01.
-              // No futuro, mude para: lastmodValue = releaseDateStr.substring(0, 10);
-              lastmodValue = '2026-06-01';
             }
           }
 

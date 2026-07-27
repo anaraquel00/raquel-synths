@@ -54,6 +54,25 @@ export class ContentService {
     );
   }
 
+  getEpisodeById(mode: 'broklin' | 'jonah', id: string): Observable<LoreEpisode | null> {
+    const collectionName = mode === 'jonah' ? 'lore-jonah' : 'lore';
+    const docRef = doc(this.firestore, `${collectionName}/${id}`);
+
+    // Usa getDoc que é uma Promise resolvida 1 única vez (Estabiliza o SSR de imediato sem timeouts)
+    return from(getDoc(docRef)).pipe(
+      map(snapshot => {
+        if (snapshot.exists()) {
+          return { id: snapshot.id, ...snapshot.data() } as LoreEpisode;
+        }
+        return null;
+      }),
+      catchError(err => {
+        console.warn(`⚠️ Erro ao buscar episódio ${id} no Firestore:`, err);
+        return of(null);
+      })
+    );
+  }
+
  // 🛒 2. LOJA (Produtos)
   getProducts(): Observable<Product[]> {
     const colRef = collection(this.firestore, 'products');

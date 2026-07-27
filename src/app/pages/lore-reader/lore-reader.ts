@@ -42,7 +42,7 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     this.isBrowser = isPlatformBrowser(this.platformId);
-    this.document = document;
+    // this.document = document;
 
     // 🛡️ TRAVA TÁTICA
     afterNextRender(() => {
@@ -50,7 +50,7 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
       this.themeObserver = new MutationObserver(() => {
         this.checkTheme();
       });
-      this.themeObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+      this.themeObserver.observe(this.document.body, { attributes: true, attributeFilter: ['class'] });
     });
 
   // 📡 O RADAR DE SEO REATIVO (CORRIGIDO SEM DADOS FANTASMAS)
@@ -110,34 +110,20 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
     }, { allowSignalWrites: true });
   }
 
-  ngOnInit() {
-    // A inicialização estática do HTML foi apagada daqui e foi pro effect()
+// No seu lore-reader.component.ts:
 
+  ngOnInit() {
     const id$ = this.route.paramMap.pipe(map(params => params.get('id')));
 
     this.episode$ = combineLatest([id$, this.mode$]).pipe(
       switchMap(([id, mode]) => {
         if (!id) return of(null);
 
-        // 🛡️ O BYPASS DO SERVIDOR (Agora com Dados Únicos!)
-        const source$ = !this.isBrowser
-          ? of([{
-              id: id,
-              title: `RQS Lore Archive - Arquivo ${id}`,
-              title_en: `RQS Lore Archive - File ${id}`,
-              description: `Acesse o log confidencial ${id} da saga transmedia RaQuel Synths.`,
-              description_en: `Access the confidential log ${id} from the RaQuel Synths saga.`,
-              image: 'https://raquelsynths.com/images/banner-seo-global.jpg',
-              releaseDate: new Date().toISOString()
-            } as LoreEpisode])
-          : this.injector.get(ContentService).getEpisodes(mode).pipe(take(1));
-
-        return source$.pipe(
-          map(episodes => episodes ? episodes.find(ep => ep.id === id) || null : null),
+        // 🚀 CONEXÃO DE LORE ATIVA (SSR + CLIENTE):
+        // Removido o mock/bypass anterior. O getEpisodeById busca o documento específico de forma instantânea e segura para o SSR e Navegador.
+        return this.injector.get(ContentService).getEpisodeById(mode, id).pipe(
           tap(ep => {
-            // 🔌 O CABO ESTÁ CONECTADO!
-            // Agora o RxJS não atualiza o SEO, ele apenas joga o episódio pro Signal.
-            // Quem atualiza o SEO automaticamente na hora é o effect() lá em cima!
+            // Seta o episódio lido no Signal ativo para o effect() reativo injetar as tags de SEO e JSON-LD no HTML
             this.activeEpisode.set(ep);
           })
         );
