@@ -725,7 +725,7 @@ export const COMPLIANCE_DATA = {
       lgpdTitle: '6. Conformidade com a LGPD (Lei Geral de Proteção de Dados)',
       lgpdText: 'Nossa infraestrutura opera em conformidade com a legislação brasileira. Processamos apenas telemetria básica (como endereços IP anonimizados para segurança do firewall e Analytics). Você tem o direito de solicitar informações ou a exclusão de qualquer log residual associado à sua navegação.',
       contactTitle: '7. Canal de Suporte',
-      contactText: 'Para requisições legais, exclusão de dados ou reporte de bugs: <a href="mailto:contact@raquelsynths.com.br">contact@raquelsynths.com.br</a>'
+      contactText: 'Para requisições legais, exclusão de dados ou reporte de bugs: <a href="mailto:contact@raquelsynths.com">contact@raquelsynths.com</a>'
     },
     jonah: {
       title: '💀 PROTOCOLO DE SEGURANÇA (CAOS)',
@@ -742,7 +742,7 @@ export const COMPLIANCE_DATA = {
       lgpdTitle: '6. LEI DE PROTEÇÃO DE DADOS (LGPD)',
       lgpdText: 'Nós jogamos pelas regras pra não derrubarem o site. Só processamos IPs anonimizados pra evitar que hackers piores que eu quebrem o firewall. Se quiser deletar algo seu que ficou preso na matriz, avise.',
       contactTitle: '7. FREQUÊNCIA DE RÁDIO',
-      contactText: 'Problemas? Mande um sinal: <a href="mailto:contact@raquelsynths.com.br">contact@raquelsynths.com.br</a>'
+      contactText: 'Problemas? Mande um sinal: <a href="mailto:contact@raquelsynths.com">contact@raquelsynths.com</a>'
     }
   },
   en: {
