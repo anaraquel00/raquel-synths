@@ -353,7 +353,7 @@ desc: 'Plataforma de engenharia de áudio baseada em navegador, desenvolvida par
     'PWA'
   ],
   link: 'https://studio.raquelsynths.com',
-  linkText: 'Open Studio'
+  linkText: 'Open Studio (Modo Beta)'
 }
       ]
     },
@@ -538,7 +538,7 @@ desc: 'Plataforma de engenharia de áudio baseada em navegador, desenvolvida par
     'PWA'
   ],
   link: 'https://studio.raquelsynths.com',
-  linkText: 'Open Studio'
+  linkText: 'Open Studio (Beta mode)'
 }
       ]
     },
