@@ -1,0 +1,72 @@
+<div class="lore-container">
+  <a class="back-btn" routerLink="/hybrid-saga">
+    &larr; {{ translate.isPt() ? 'VOLTAR AO SUMÁRIO' : 'BACK TO LIST' }}
+  </a>
+
+  <header class="saga-header">
+    <h1>{{ translate.isPt() ? 'ECOS DA RQS' : 'RQS ECHOES' }}</h1>
+    <p class="subtitle">
+      {{ translate.isPt() ? 'ARCO HÍBRIDO' : 'HYBRID ARC' }}
+    </p>
+  </header>
+
+  <div class="episode-view">
+
+    @if (episode$ | async; as ep) {
+
+      <article class="episode-card" [id]="ep.id" [class.season-two]="ep.id && ep.id.startsWith('s2-')">
+
+        <div class="ep-header">
+          <span class="season-badge" [class.badge-s2]="ep.id && ep.id.startsWith('s2-')">
+            {{ translate.isPt() ? ep.category : (ep.category_en || ep.category) }}
+          </span>
+          @if (ep.releaseDate) {
+            <span class="date">{{ ep.releaseDate | date:'dd/MM/yyyy' }}</span>
+          }
+        </div>
+
+        <h2>{{ translate.isPt() ? ep.title : (ep.title_en || ep.title) }}</h2>
+
+        <div class="story-content">
+          @if (ep.image) {
+            <div class="episode-cover">
+              <img [ngSrc]="ep.image" width="1200" height="600" priority [alt]="translate.isPt() ? ep.title : (ep.title_en || ep.title)">
+            </div>
+          }
+
+          @for (block of (translate.isPt() ? ep.content : (ep.content_en || ep.content)) | splitContent; track $index; let count = $count) {
+            <div [innerHTML]="block"></div>
+
+            @if ((count <= 6 && $index === 2) || (count > 6 && ($index === 2 || $index === 6 || $index === 11))) {
+              <div class="inner-ad" style="margin: 30px 0;">
+                @defer (on viewport) {
+  <app-ad-article ngSkipHydration></app-ad-article>
+   } @placeholder {
+  <div style="min-height: 250px; width: 100%;"></div>
+   }
+              </div>
+            }
+          }
+        </div>
+
+      <div class="divider"><span>● ● ●</span></div>
+      <app-author-signature></app-author-signature>
+      </article>
+
+   } @else {
+      <div style="padding: 100px; text-align: center; font-family: 'Courier New', monospace;"
+           [style.color]="currentMode() === 'jonah' ? '#ff0000' : '#00e5ff'">
+        <p class="glitch-text" style="animation: pulse 1.5s infinite;">
+          {{ translate.isPt() ? '[ 🔄 AGUARDANDO SINAL DA MATRIX... ]' : '[ 🔄 WAITING FOR MATRIX SIGNAL... ]' }}
+        </p>
+      </div>
+    }
+
+  </div>
+
+  <div class="bottom-back-action">
+    <a class="back-btn bottom-btn" routerLink="/hybrid-saga">
+      &larr; {{ translate.isPt() ? 'VOLTAR AO SUMÁRIO' : 'BACK TO LIST' }}
+    </a>
+  </div>
+</div>

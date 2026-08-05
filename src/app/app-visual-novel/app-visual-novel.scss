@@ -509,3 +509,40 @@
     }
 }
 }
+
+.saga-header.neutral-core {
+  border-color: #9d42c4; // Verde terminal ou tom gótico polonês
+  background: rgba(157, 66, 196, 0.05);
+
+  .matrix-alert {
+    color: #9d42c4;
+    font-family: 'Courier New', Courier, monospace;
+    letter-spacing: 2px;
+  }
+
+  .btn-watch-crossover {
+    background: #9d42c4;
+    color: #000;
+    font-weight: bold;
+    &:hover {
+      background: #d585f7;
+      box-shadow: 0 0 15px #9d42c4;
+    }
+  }
+}
+
+:host-context(body.mode-jonah) .saga-header.neutral-core {
+  border-color: #ff3d00;
+  background: rgba(255, 61, 0, 0.05);
+  .matrix-alert {
+    color: #ff3d00;
+  }
+  .btn-watch-crossover {
+    background: #ff3d00;
+    color: #fff;
+    &:hover {
+      background: #fff;
+      box-shadow: 0 0 15px #ff3d00;
+    }
+  }
+}

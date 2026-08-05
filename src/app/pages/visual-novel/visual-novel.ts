@@ -32,6 +32,9 @@ export class VisualNovelComponent implements OnInit, OnDestroy {
 
   // 📻 NOVO: O sinal de rádio para avisar a matriz que a temporada mudou!
   private temporadaAtivaSubject = new BehaviorSubject<number>(1);
+  public prefetchEpisode(id: string): void {
+    this.contentService.getEpisodeById(this.currentMode(), id).pipe(take(1)).subscribe();
+  }
 
   // ⚡ FUNÇÃO PARA TROCAR DE TEMPORADA (MANTIDA INTACTA)
   public setTemporada(numeroDaTemporada: number): void {

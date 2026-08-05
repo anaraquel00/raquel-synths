@@ -1,0 +1,589 @@
+// Variáveis de Cores (Se tiver globais, melhor, mas garanto aqui)
+$neon-blue: #00f3ff;
+$neon-pink: #ff00ff;
+$dark-bg: rgba(10, 10, 18, 0.85);
+$glass-bg: rgba(255, 255, 255, 0.05);
+$glass-border: rgba(255, 255, 255, 0.1);
+
+// No topo do arquivo
+.nav-actions {
+  margin-bottom: 2rem;
+
+  a.back-link {
+  background: transparent;
+  color: #00f3ff;
+  border: 2px solid #00f3ff;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  padding: 10px 20px;
+
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: fit-content; // Sobrescreve o width: 100% dos botões gerais
+
+    &:hover {
+      transform: translateX(-5px);
+      text-shadow: 0 0 8px rgba(0, 243, 255, 0.6);
+    }
+  }
+}
+.synopsis-container {
+  /* [BROKLIN FIX]: Vidro localizado (Leve para a GPU) */
+  background: rgba(10, 15, 25, 0.801) !important; /* Opacidade do Modo Broklin */
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 4px solid #d600ff; /* Mantém sua borda neon */
+
+  padding: 20px;
+  margin-top: 5px;
+  margin-bottom: 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.605);
+
+  h3 {
+    color: #00ffcc; /* Ciano Cyberpunk */
+    margin-top: 0;
+  }
+
+  p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #e0e0e0;
+  }
+
+  .neon-divider {
+    border: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #d600ff, transparent);
+    margin-top: 20px;
+  }
+}
+
+// ... o resto do código continua igual
+.visual-novel-catalog {
+  padding: 3rem 1rem;
+  min-height: 100vh;
+  max-width: 1200px;
+  margin: 0 auto;
+  // Um degradê sutil no fundo para dar profundidade sobre o wallpaper global
+  background: hsla(240, 28%, 5%, 0.851);
+  border-radius: 15px;
+  color: #fff;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+// --- CABEÇALHO DA PÁGINA ---
+.catalog-header {
+  text-align: center;
+  margin-bottom: 1rem;
+
+  h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+
+    // Efeito de Texto Neon
+    color: #fff;
+    text-shadow: 0 0 10px $neon-blue, 0 0 20px $neon-blue;
+  }
+
+  p {
+    font-size: 1.2rem;
+    color: #ccc;
+    font-weight: 300;
+  }
+}
+
+// --- GRID DOS EPISÓDIOS (PLANO B: FLEXBOX HOLOGRÁFICO) ---
+.episode-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* 🔥 A mágica: centraliza os órfãos da última linha */
+  gap: 2.5rem;
+}
+
+/* 🔵 ESTADO BASE (BROKLIN / TEMP 3 / CIANO) */
+.matrix-waiting-box {
+  width: 100%;
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px;
+}
+
+.loading-text {
+  font-family: 'Courier New', monospace;
+  font-size: 1.2rem;
+  color: #00e5ff;
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.8);
+  animation: pulse 1s infinite;
+}
+
+.sub-loading-text {
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 10px;
+  font-family: 'Courier New', monospace;
+}
+
+/* Animações (Caso você já não tenha no seu CSS global) */
+@keyframes pulse {
+  0%, 100% { opacity: 1; filter: blur(0px); }
+  50% { opacity: 0.5; filter: blur(2px); }
+}
+
+// --- CARD DO EPISÓDIO ---
+.episode-card {
+  background: $glass-bg;
+  backdrop-filter: blur(10px); // O efeito de vidro embaçado
+  border: 1px solid $glass-border;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 300px; /* Cresce, encolhe, mas a base mínima é 300px (igual seu minmax) */
+  max-width: 380px; /* Trava de segurança: impede que o card do Ep 10 fique largo como uma TV quando estiver sozinho no centro */
+
+  // Efeito Hover (Quando passa o mouse)
+  &:hover {
+    transform: translateY(-10px); // Sobe um pouquinho
+    border-color: $neon-blue;
+    box-shadow: 0 0 25px rgba(0, 243, 255, 0.2); // Brilho azul
+
+    .card-image img {
+      transform: scale(1.05); // Zoom na imagem
+    }
+  }
+
+  // Card Bloqueado (Cinza e sem interação)
+  &.locked {
+    opacity: 0.7;
+    filter: grayscale(100%);
+    cursor: not-allowed;
+
+    &:hover {
+      transform: none;
+      box-shadow: none;
+      border-color: $glass-border;
+    }
+  }
+}
+
+// --- IMAGEM DO CARD ---
+.card-image {
+  height: 200px;
+  position: relative;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; // Garante que a imagem preenche sem distorcer
+    object-position: top center;
+
+    transition: transform 0.5s ease;
+  }
+
+  // A máscara do cadeado
+  .lock-overlay {
+    position: absolute;
+    inset: 0; // Top, left, right, bottom = 0
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.2rem;
+    backdrop-filter: blur(4px);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+
+    &::before {
+      content: '🔒';
+      margin-right: 8px;
+    }
+  }
+}
+
+// --- CONTEÚDO DO CARD ---
+.card-content {
+  padding: 1.5rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+
+  .date {
+    font-size: 0.8rem;
+    color: $neon-blue;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  h3 {
+    font-size: 1.4rem;
+    margin: 0 0 1rem 0;
+    line-height: 1.3;
+    color: #fff;
+  }
+
+  p {
+    font-size: 0.95rem;
+    color: #aaa;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+    flex-grow: 1; // Empurra o botão para baixo
+  }
+}
+
+// --- BOTÕES GLOBAIS ---
+// Adicionamos os links que agora funcionam como botões (separados por vírgula)
+button, a.btn-read, a.back-link, a.btn-decrypt, a.btn-watch {
+  /* 🚀 INJEÇÕES DE SEGURANÇA PARA A TAG <a> */
+  display: inline-block;  // Garante que o <a> respeite o width e padding
+  box-sizing: border-box; // Impede que o padding estoure a largura de 100%
+  text-align: center;     // Centraliza o texto do link
+  text-decoration: none;  // Remove o sublinhado padrão de links
+  /* ----------------------------------------- */
+
+  width: 100%;
+  padding: 1rem;
+  border: none;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit; // Herda a fonte do site
+
+  &.btn-read {
+    background: transparent;
+    border: 1px solid $neon-blue;
+    color: $neon-blue;
+
+    &:hover {
+      background: $neon-blue;
+      color: #000; // Contraste preto no fundo azul
+      box-shadow: 0 0 15px $neon-blue;
+    }
+  }
+
+  &.btn-disabled {
+    background: rgba(255, 255, 255, 0.1);
+    color: #666;
+    cursor: not-allowed;
+    border: 1px solid transparent;
+  }
+  }
+
+// --- MOBILE (Ajuste fino) ---
+@media (max-width: 768px) {
+  .visual-novel-catalog {
+    padding: 2rem 1rem;
+  }
+
+  .catalog-header h1 {
+    font-size: 2rem;
+  }
+
+  .episode-grid {
+    grid-template-columns: 1fr; // Uma coluna no celular
+  }
+}
+
+/* =========================================
+   💊 PÍLULAS NEON (TABS DE TEMPORADA)
+   ========================================= */
+
+.season-tabs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 2rem;
+  margin-bottom: 3.5rem;
+  width: 100%;
+}
+
+.neon-tab {
+  background-color: rgba(10, 10, 15, 0.6); /* Fundo escuro levemente transparente */
+  color: #6c6c7d; /* Texto apagado quando inativo */
+  border: 2px solid #2a2a35; /* Borda escura */
+  padding: 12px 35px;
+  font-size: 14px;
+  font-weight: 700;
+  flex:1; /* Faz os botões ocuparem o mesmo espaço */
+  width: 100%; /* Garante que o botão preencha o espaço disponível */
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease-in-out;
+  backdrop-filter: blur(4px); /* Efeito de vidro borrado no fundo */
+
+  /* Efeito de Hover (Passar o mouse) - Azul Ciano do Tech Lead */
+  &:hover {
+    color: #fff;
+    border-color: #00e5ff;
+    text-shadow: 0 0 8px rgba(0, 229, 255, 0.8);
+    box-shadow: 0 0 15px rgba(0, 229, 255, 0.3), inset 0 0 10px rgba(0, 229, 255, 0.1);
+  }
+
+  /* Estado ATIVO - Roxo/Rosa Neon da General */
+  &.active {
+    color: #fff;
+    border-color: #bd00ff;
+    background: rgba(189, 0, 255, 0.1); /* Fundo levemente roxo */
+    text-shadow: 0 0 10px rgba(189, 0, 255, 0.9);
+    box-shadow: 0 0 20px rgba(189, 0, 255, 0.5), inset 0 0 15px rgba(189, 0, 255, 0.2);
+    transform: translateY(-2px); /* Dá uma leve levantadinha no botão ativo */
+  }
+}
+
+/* Ajuste para telas de celular */
+@media (max-width: 600px) {
+  .season-tabs {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .neon-tab {
+    width: 80%;
+  }
+}
+
+.cyber-text-link {
+  color: #00e5ff;
+  text-decoration: none;
+  font-weight: 700;
+  text-shadow: 0px 0px 8px rgba(0, 229, 255, 0.6);
+  transition: all 0.3s ease;
+  position: relative; /* Mantém dentro do fluxo normal do parágrafo */
+
+  &:hover {
+    color: #fff;
+    text-shadow: 0px 0px 15px #00e5ff, 0px 0px 30px #00e5ff;
+  }
+}
+// ... (Todo o seu CSS atual do Broklin fica aqui em cima)
+
+/* ================================================= */
+  /* 🩸 MODO JONAH: CARDS & GRID (Arestas Afiadas) 🩸 */
+  /* ================================================= */
+
+  // 1. O Fundo da Página (Ambiente Hostil)
+// O :host-context verifica se algum pai (o body) tem essa classe
+:host-context(.mode-jonah) {
+
+  .visual-novel-catalog {
+    // Sai o degradê azul, entra o abismo vermelho escuro
+    background: linear-gradient(180deg, #0a0000 0%, #1a0505 100%) !important;
+    border: 1px solid #4a0000;
+  }
+/* 🔴 ESTADO CORROMPIDO (JONAH) */
+  .matrix-waiting-box {
+    background: rgba(20, 0, 0, 0.8);
+    border: 1px dashed #ff3d00;
+  }
+
+  .loading-text {
+    color: #ff3d00;
+    /* 🛡️ A sombra do Jonah esmaga a do Broklin diretamente no texto! */
+    text-shadow: 0 0 10px #ff4500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    /* MANTÉM O PULSE, SÓ TROCA A COR */
+    animation: pulse 1s infinite!important;
+  }
+
+  .sub-loading-text {
+    color: #ff3d00;
+    opacity: 0.7;
+  }
+  /* Animação Pulse (Geral) */
+ @keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+  // 2. Os Cards dos Episódios (Chapas de Metal)
+  .episode-card {
+    background-color: rgba(20, 5, 5, 0.95) !important; /* Quase opaco */
+    backdrop-filter: none !important; /* Jonah odeia vidro embaçado */
+    border: 1px solid #5a0000; /* Borda de sangue seco */
+    border-radius: 0 !important; /* ZERO CURVAS. Design Industrial. */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+
+    // Efeito Hover Agressivo
+    &:hover {
+      transform: translateY(-5px);
+      border-color: #ff3d00; /* Laranja Ferrugem acende */
+      box-shadow: 0 0 20px rgba(255, 61, 0, 0.3); /* Glow tóxico */
+
+      .card-image img {
+        transform: scale(1.1) grayscale(0%); // Zoom mais agressivo
+        filter: contrast(1.2);
+      }
+    }
+  }
+
+  // 3. A Imagem do Card
+  .card-image {
+    border-bottom: 2px solid #8a0000; // Separação visual bruta
+
+    img {
+      filter: sepia(20%) contrast(1.1); // Um leve tom de filme velho/sujo
+    }
+
+    // O Cadeado (Lock Overlay)
+    .lock-overlay {
+        background: rgba(20, 0, 0, 0.8);
+        color: #ff3d00;
+        border: 1px solid #ff3d00;
+        text-shadow: 0 0 5px #ff3d00;
+    }
+  }
+
+  // 4. Tipografia Interna do Card
+  .card-content {
+    .date {
+      color: #ff3d00 !important; // Data em Laranja
+      font-weight: 800;
+    }
+
+    h3 {
+      color: #e0e0e0;
+      font-family: 'Oswald', sans-serif; // Se tiver essa fonte, fica top
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    p {
+      color: #a08080; // Texto cinza avermelhado
+    }
+  }
+
+  // 5. O Botão de Ler (Botão de Detonação)
+  a.btn-read {
+    border: 2px solid #ff3d00 !important; // Borda mais grossa
+    color: #ff3d00 !important;
+    border-radius: 0 !important; // Quadrado
+    background: linear-gradient(45deg, transparent 5%, #ff3d00 5%, #ff3d00 10%, transparent 10%); // Detalhe técnico visual (opcional)
+    background-size: 10px 10px; // Apenas textura
+
+    &:hover {
+      background: #ff3d00 !important; // Preenchimento sólido
+      color: #000 !important; // Texto preto
+      box-shadow: 0 0 15px #ff3d00, inset 0 0 10px #000;
+      font-weight: 900;
+      letter-spacing: 2px; // O texto "abre" no hover
+    }
+  }
+  // 1. Botão de Voltar (Vira Laranja)
+  .nav-actions .back-link {
+    color: #ff4500; // Laranja Industrial
+    border-color: #ff4500;
+
+    &:hover {
+      text-shadow: 0 0 10px #ff4500;
+      transform: translateX(-5px);
+    }
+  }
+
+  // 2. Títulos e Textos
+  .catalog-header {
+    h1 {
+      text-shadow: 0 0 15px #ff0000, 0 0 30px #8b0000; // Brilho Vermelho Sangue
+      color: #fff;
+    }
+    p {
+      color: #fea; // Um tom de pergaminho queimado/amarelado
+    }
+  }
+
+  // 3. A Mensagem de "Vazio/Carregando"
+  .loading-text {
+    color: #ff4500;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: glitch 1s infinite; // Se você tiver animação de glitch, fica top!
+
+    &::before {
+      content: ''; // Texto extra via CSS
+    }
+  }
+  .synopsis-container{
+    background: rgba(40, 5, 5, 0.75) !important; /* Vermelho Sangue Industrial */
+    border-color: rgba(255, 50, 50, 0.3);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #ff3d00;
+  }
+  .neon-divider {
+    border: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent,#8b0000, transparent);
+    margin-top: 20px;
+  }
+
+  /* 🔥 OVERRIDE: MODO JONAH (Vermelho Caos) 🔥 */
+ .neon-tab {
+
+  &:hover {
+    border-color: #ff3300; /* Laranja Fogo */
+    text-shadow: 0 0 8px rgba(255, 51, 0, 0.8);
+    box-shadow: 0 0 15px rgba(255, 51, 0, 0.3), inset 0 0 10px rgba(255, 51, 0, 0.1);
+  }
+
+  &.active {
+    border-color: #ff0000; /* Vermelho Sangue */
+    background: rgba(255, 0, 0, 0.1);
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.9);
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.5), inset 0 0 15px rgba(255, 0, 0, 0.2);
+  }
+ }
+
+ /* Ajuste para telas de celular */
+ @media (max-width: 600px) {
+  .season-tabs {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .neon-tab {
+    width: 80%;
+  }
+ }
+ .cyber-text-link {
+    color: #ff3d00;
+    text-shadow: 0px 0px 8px rgba(255, 61, 0, 0.6);
+
+    &:hover {
+      color: #fff;
+      text-shadow: 0px 0px 15px #ff3d00, 0px 0px 30px #ff3d00;
+    }
+  }
+}

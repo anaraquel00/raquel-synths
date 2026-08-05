@@ -112,6 +112,28 @@ export const routes: Routes = [
     }
   },
 
+   {
+    path: 'hybrid-saga',
+    loadComponent: () => import('./pages/hybrid-saga/hybrid-saga').then(m => m.HybridSagaComponent),
+    data: {
+      seo: {
+        title: {
+          pt: 'Ecos da RQS | Episódios',
+          en: 'RQS Echoes | Episodes'
+        },
+        description: {
+          pt: 'Mergulhe na saga. Broklin\'s Tech vs. Jonah\'s Chaos. O registro histórico da nossa jornada.',
+          en: 'Dive into the saga. Broklin\'s Tech vs. Jonah\'s Chaos. The historical record of our journey.'
+        }
+      }
+    }
+  },
+
+  {
+  path: 'hybrid-reader/:id',
+  loadComponent: () => import('./pages/hybrid-reader/hybrid-reader').then(m => m.HybridReaderComponent)
+},
+
   // 📖 ROTA 8: O Leitor (Texto Puro)
   {
     path: 'lore/broklin',

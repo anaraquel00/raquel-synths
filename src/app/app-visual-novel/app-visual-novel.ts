@@ -5,8 +5,8 @@ import { VISUAL_NOVEL_PT, VISUAL_NOVEL_EN, VN_INTRO_PT, VN_INTRO_EN, VN_INTRO_JO
 import { Router } from '@angular/router';
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from '@angular/material/button';
-import { ContentService } from '../services/content.service'; // 👈 IMPORTANTE
-import { Observable, BehaviorSubject, switchMap, of } from 'rxjs'; // 👈 IMPORTANTE
+import { ContentService } from '../services/content.service';
+import { Observable, BehaviorSubject, switchMap, of } from 'rxjs';
 import { LoreEpisode } from '../data/lore-data';
 import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
@@ -38,7 +38,7 @@ export class AppVisualNovel implements OnInit, OnDestroy {
     take(1),
     switchMap(mode => {
       if (!isPlatformBrowser(this.platformId)) {
-        return of([{ id: 'seo-mock', title: 'Visual Novel: Cyberpunk Story', description: 'Interactive audio civil war narrative.', mode: 'broklin', route: '/saga' } as any]);
+        return of([{ id: 'seo-mock', title: 'Literary Sagas: Cyberpunk Story', description: 'Interactive audio civil war narrative.', mode: 'broklin', route: '/saga' } as any]);
       }
       return this.injector.get(ContentService).getEpisodes(mode).pipe(take(1)); // 🛡️ INJEÇÃO LAZY E TAKE(1)
     })
@@ -49,6 +49,20 @@ export class AppVisualNovel implements OnInit, OnDestroy {
   introEn = VN_INTRO_EN;
   introJonahPt = VN_INTRO_JONAH_PT;
   introJonahEn = VN_INTRO_JONAH_EN;
+// 🌐 SAGA GLOBAL / CROSSOVER (Reativo ao motor de tradução)
+  get matrixGlitchSaga() {
+    const isPt = this.translate.isPt();
+    return {
+      id: 'glitch-in-the-matrix',
+      title: 'GLITCH IN THE MATRIX',
+      subtitle: isPt ? 'Wawel Core // Cracóvia, Polônia' : 'Wawel Core // Krakow, Poland',
+      description: isPt
+        ? 'Uma força externa vinda de Cracóvia invadiu o sistema e está desfragmentando a Nicole Nyx em tempo real. O seu script de integridade desaparece enquanto o código-fonte aponta para o antigo diretório //WAWEL CORE, oculto sob as pedras de uma fortaleza na Polônia. Desça ao bunker, rastreie o sinal gótico e descubra o que foi selado nessa Matrix.'
+        : 'An external force from Krakow has breached the system and is actively de-provisioning Nicole Nyx in real-time. Her integrity script vanishes as the source code points to the ancient //WAWEL CORE directory, hidden beneath the stones of a fortress in Poland. Descend into the bunker, track the gothic signal, and discover what was sealed inside this Matrix.',
+      route: '/hybrid-saga',
+      mode: 'hybrid',
+    };
+  }
 
   constructor(
     @Inject(DOCUMENT) private document: Document

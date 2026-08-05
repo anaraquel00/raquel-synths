@@ -1,0 +1,116 @@
+<section class="visual-novel-catalog">
+  <div class="container">
+
+    <div class="nav-actions">
+      <a routerLink="/" class="back-link">
+        &larr; {{ translate.isPt() ? 'VOLTAR À BASE' : 'BACK TO BASE' }}
+      </a>
+    </div>
+
+    <header class="catalog-header">
+      <h1>
+        {{ translate.isPt() ? '⚡ ECOS DA RQS: CORE HÍBRIDO' : '⚡ RQS ECHOES: HYBRID CORE' }}
+      </h1>
+      <p>
+        {{ translate.isPt()
+           ? 'O ponto de colisão definitivo: o código de Broklin, o caos de Jonah, a precisão da General e a anomalia de Nicole Nyx reunidos em uma única rede.'
+           : 'The ultimate collision point: Broklin’s code, Jonah’s chaos, the General’s precision, and Nicole Nyx’s anomaly united in a single network.' }}
+      </p>
+    </header>
+
+    <div class="synopsis-container">
+      <div class="synopsis-content">
+
+        @if (translate.isPt()) {
+          <p>
+            <strong>Bem-vindo ao Protocolo de Integração Total.</strong> Esta é a página oficial do <strong>Core Híbrido</strong> de <em>Ecos da RQS</em> — uma inovadora <strong class="cyber-highlight">saga de ficção científica interativa</strong> e transmedia web app. Neste setor da rede, as barreiras entre o Blue Team e o Red Team foram desfragmentadas. A <strong>General Kelma Adlanko</strong>, o arquiteto <strong>Broklin Garpeter</strong>, o renegado <strong>Jonah Cyperfield</strong> e a entidade corrompida <strong>Nicole Nyx</strong> convergem para o mesmo espaço de processamento.
+          </p>
+          <p>
+            Aqui não existem escolhas isoladas de facção. Esta <strong class="cyber-highlight">história cyberpunk em capítulos</strong> documenta os eventos colaterais, os crossovers de sistema e as alianças forçadas sob as ruínas da <strong>Wawel Core</strong> na Polônia. Cada arquivo inserido nesta coleção interativa afeta diretamente a estabilidade de todo o ecossistema musical e literário da RaQuel Synths.
+          </p>
+          <p>
+            <strong>[ MANUAL DO OPERATIVO: SINCRONIZAÇÃO DE HARDWARE ]</strong><br>
+            Acesse os logs desta coletânea literária com os fones de ouvido ativados. Cada episódio híbrido funciona como um audiolivro imersivo, contendo frequências cruzadas e metadados de áudio que fundem <strong class="cyber-highlight">música eletrônica synthwave</strong> e <strong class="cyber-highlight">metal industrial pesado</strong>. Prepare sua interface para o cruzamento definitivo de dados e trilhas sonoras exclusivas.
+          </p>
+          <em class="highlight-text">📅 Atualizações Globais todo domingo: Registros Transmídia do Core | ⚠️ Contém: Colapso de Roteiro, Crossover Absoluto e Alerta Máximo de Sistema.</em>
+        } @else {
+          <p>
+          <strong>Welcome to the Total Integration Protocol.</strong> This is the official <strong>Hybrid Core</strong> page for <em>Ecos da RQS</em>—an innovative <strong class="cyber-highlight">interactive sci-fi saga</strong> and transmedia web app. In this sector of the network, the barriers between the Blue Team and the Red Team have been de-fragmented. <strong>General Kelma Adlanko</strong>, the architect <strong>Broklin Garpeter</strong>, the renegade <strong>Jonah Cyperfield</strong>, and the corrupted entity <strong>Nicole Nyx</strong> converge within the same processing space.
+          </p>
+          <p>
+          There are no isolated faction choices here. This <strong class="cyber-highlight">episodic cyberpunk story</strong> documents the collateral events, system crossovers, and forced alliances beneath the ruins of the <strong>Wawel Core</strong> in Poland. Every file added to this interactive collection directly affects the stability of RaQuel Synths' entire musical and literary ecosystem.
+          </p>
+          <p>
+          <strong>[ OPERATIVE MANUAL: HARDWARE SYNCHRONIZATION ]</strong><br>
+          Access the logs of this literary collection with your headphones on. Each hybrid episode functions as an immersive audiobook, featuring cross-frequencies and audio metadata that fuse <strong class="cyber-highlight">synthwave electronic music</strong> with <strong class="cyber-highlight">heavy industrial metal</strong>. Prepare your interface for the ultimate crossover of data and exclusive soundtracks.
+          </p>
+          <em class="highlight-text">📅 Global Updates every sunday: Core Transmedia Logs | ⚠️ Contains: Narrative Collapse, Absolute Crossover, and Maximum System Alert.</em>
+                  }
+                  </div>
+      <hr class="neon-divider">
+    </div>
+
+    <div class="season-tabs">
+      <a class="neon-tab"
+         [routerLink]="['/hybrid-reader']"
+         [queryParams]="{ season: 1 }"
+         queryParamsHandling="merge"
+         [class.active]="temporadaAtiva === 1">
+        {{ translate.isPt() ? 'Temporada 1' : 'Season 1' }}
+      </a>
+
+      <a class="neon-tab"
+         [routerLink]="['/hybrid-reader']"
+         [queryParams]="{ season: 2 }"
+         queryParamsHandling="merge"
+         [class.active]="temporadaAtiva === 2">
+        {{ translate.isPt() ? 'Temporada 2' : 'Season 2' }}
+      </a>
+    </div>
+
+    <div class="episode-grid">
+      @for (ep of filteredEpisodes$ | async; track ep.id) {
+          <div class="episode-card">
+            <div class="card-image">
+              <img [ngSrc]="ep.image || 'assets/images/placeholder.jpg'"
+                   width="600"
+                   height="400"
+                   priority
+                   [alt]="ep.title">
+            </div>
+            <div class="card-content">
+              <span class="date" *ngIf="ep.releaseDate">
+                  {{ ep.releaseDate | date:'dd/MM/yyyy' }}
+              </span>
+              <h3>
+                {{ translate.isPt() ? ep.title : (ep.title_en || ep.title) }}
+              </h3>
+              <p>
+                {{ translate.isPt()
+                   ? (ep.description || 'Clique para ler...')
+                   : (ep.description_en || ep.description || 'Click to read...')
+                }}
+              </p>
+              <a [routerLink]="['/hybrid-reader', ep.id]"
+                class="btn-read"
+                (mouseenter)="prefetchEpisode(ep.id)">
+                {{ translate.isPt() ? '📖 Ler Episódio' : '📖 Read Episode' }}
+              </a>
+            </div>
+          </div>
+      } @empty {
+        <div class="matrix-waiting-box">
+          <p class="loading-text">
+               {{ translate.isPt()
+       ? '⏳ [STATUS DO SISTEMA]: O Episódio 1 será descriptografado e liberado em 01/09/2026.'
+       : '⏳ [SYSTEM STATUS]: Episode 1 will be decrypted and released on September 1, 2026.' }}
+          </p>
+          <p class="sub-loading-text">
+       {{ translate.isPt() ? '[ 🔄 AGUARDANDO SINCRONIZAÇÃO DO CORE HÍBRIDO... ]' : '[ 🔄 WAITING FOR HYBRID CORE SYNC... ]' }}
+          </p>
+        </div>
+      }
+    </div>
+
+  </div>
+</section>

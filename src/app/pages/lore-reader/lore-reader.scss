@@ -11,7 +11,7 @@
   display: flow-root !important;
   margin-bottom: 50px;
 
- 
+
   }
 
   /* --- O CONTAINER DO BOTÃO --- */
@@ -68,12 +68,12 @@
   align-items: center;
   width: 100%;
   padding-bottom: 4rem; /* Respiro pesado antes de encostar no rodapé do site */
-  
+
   .bottom-btn {
     font-size: 1.1rem;
     padding: 12px 24px;
     letter-spacing: 1.5px;
-    /* A classe .back-btn que você colocou nele já vai garantir o efeito neon 
+    /* A classe .back-btn que você colocou nele já vai garantir o efeito neon
        e as cores, nós só centralizamos e ajustamos a dimensão de clique! */
   }
 }
@@ -93,21 +93,21 @@
 /* 3. VARIAÇÃO PARA O MODO JONAH (Atacando o ::before) */
 :host-context(body.mode-jonah) {
   .lore-container {
-  
+
   /* 1. O CORPO DO TEXTO (Estancando o vazamento) */
   .story-content {
-    display: block !important; /* Quebra o flex lateral */
-    width: 100% !important;
-    max-width: 900px; /* Largura confortável para leitura */
-    margin: 0 auto;   /* Centraliza o bloco no meio da tela */
-    padding: 20px;
-    
+      display: block !important;
+      width: 100% !important;
+      max-width: 1100px !important; /* 🚀 Alargado de 950px para 1100px */
+      margin: 0 auto;
+      padding: 30px !important;     /* Respiro interno ideal */
+
     /* Tipografia Industrial */
     font-family: 'Courier New', monospace; /* Fonte de máquina de escrever/hacker */
     color: #d0d0d0; /* Cinza claro sujo */
     line-height: 1.8;
     text-align: left; /* Jonah não centraliza texto, ele cospe fatos */
-    
+
     /* Removemos qualquer margem maluca que esteja empurrando pro lado */
     .block {
        margin-bottom: 25px;
@@ -115,7 +115,7 @@
   }
 
   /* 2. DIÁLOGOS (Destaque para as falas) */
-  strong { 
+  strong {
     color: #ff3d00; /* Nomes dos personagens em Laranja */
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -142,19 +142,19 @@
 /* 📸 MODO JONAH: IMAGENS "SYSTEM LOG" STYLE         */
 /* ================================================= */
 
-:host-context(.mode-jonah) .episode-cover img, 
+:host-context(.mode-jonah) .episode-cover img,
 :host-context(.mode-jonah) .story-content img {
-  
+
   /* 1. A FORMA (Quadrada e Bruta) */
   border-radius: 0 !important;
   border: 2px solid #8a0000; /* Borda Vermelho Sangue Escuro */
   padding: 5px; /* Um respiro entre a imagem e a borda */
   background-color: #000; /* Fundo preto no respiro */
-  
+
   /* 2. O FILTRO (A mágica do "Óleo e Ferrugem") */
   /* Isso aumenta o contraste e dá um tom levemente avermelhado/envelhecido */
   filter: contrast(120%) sepia(30%) hue-rotate(-10deg);
-  
+
   /* 3. POSICIONAMENTO */
   width: 100%;
   max-width: 100%; /* Garante que não estoure a tela */
@@ -172,38 +172,35 @@
 }
 /* --- AJUSTES MOBILE PARA O MODO JONAH --- */
 @media (max-width: 768px) {
-  
-  :host-context(.mode-jonah) .lore-container {
-    
+.lore-container {
+    padding: 1rem !important; // Garante que o container não cole nas bordas da tela do celular
+  }
+:host-context(.mode-jonah) .lore-container {
+
     /* 1. O CONTAINER PRINCIPAL (Dando Respiro) */
     .story-content {
-      padding: 15px 20px !important; /* Margem nas laterais pra não colar na tela */
-      text-align: left; /* Alinhamento à esquerda facilita leitura no mobile */
+      padding: 10px 5px !important; /* 🚀 Remove o excesso de margem lateral no mobile */
       width: 100% !important;
-      box-sizing: border-box; /* Garante que o padding não estoure a tela */
+      box-sizing: border-box;
+      text-align: left;
     }
 
-    /* 2. A IMAGEM NO MOBILE */
-    .story-content img, 
+    .story-content img,
     .episode-cover img {
       width: 100% !important;
       max-width: 100% !important;
-      margin: 0 0 25px 0 !important; /* Empurra o texto pra baixo */
-      float: none !important; /* Remove qualquer flutuação que esteja quebrando o layout */
-      
-      /* Ajuste da Borda Sangrenta no Mobile */
-      border-width: 1px !important; 
+      margin: 0 0 25px 0 !important;
+      float: none !important;
+      border-width: 1px !important;
     }
 
-    /* 3. TÍTULOS E DESTAQUES */
     h3, h2 {
-      font-size: 1.4rem !important; /* Diminui um pouco pra não quebrar linha feio */
+      font-size: 1.3rem !important;
       line-height: 1.3;
       margin-top: 10px;
     }
-
     /* Aquele ícone de pasta 📂 */
-    .visual-novel-entry h3 { 
+    .visual-novel-entry h3 {
         display: flex;
         flex-direction: column; /* Ícone em cima, texto embaixo se for longo */
         align-items: flex-start;
@@ -334,11 +331,11 @@
       float: left;          /* Força a imagem a ir para a esquerda */
       width: 500px;         /* Tamanho fixo e grande como você pediu */
       max-width: 45%;       /* Segurança para telas médias não quebrarem */
-      
+
       margin-right: 30px;   /* Empurra o texto para a direita (respiro) */
       margin-bottom: 20px;  /* Empurra o texto de baixo caso ele "envolva" a imagem */
       margin-top: 8px;      /* Pequeno ajuste para alinhar com o topo da letra */
-      
+
       display: block;       /* Garante comportamento de bloco */
     }
   }
@@ -420,7 +417,7 @@
     margin-right: 2%;
     margin-bottom: 2rem;
    }
-   
+
    .div-side-right {
     float: right;
     width: 48%;
@@ -442,13 +439,13 @@
   .inner-ad {
   /* O COMANDO DE SEGURANÇA MÁXIMA: */
   clear: both; /* Diz ao banner: "Desça se houver imagens flutuando na esquerda ou direita" */
-  
+
   display: block;
   width: 100%;
   margin: 40px 0; /* Um bom respiro para não grudar no texto */
   position: relative;
   z-index: 5; /* Garante que, se houver briga, o banner ganha a prioridade visual */
-  
+
   /* Opcional: Animação suave para quando ele aparecer */
   animation: fadeInAd 0.5s ease-in;
  }
@@ -464,7 +461,7 @@
     opacity: 0.3;
     letter-spacing: 10px;
   }
-  
+
 }
 
 .cliffhanger {
@@ -501,7 +498,7 @@
   background: rgba(20, 0, 0, 0.6);
   color: #ffccbc;
 
-  em { color: #ff3d00; } 
+  em { color: #ff3d00; }
 }
 
 :host-context(body.mode-jonah) {
@@ -614,8 +611,8 @@
       80% { content: '⠇'; }
       90% { content: '⠏'; }
       100% { content: '⠋'; }
-    }   
-   
+    }
+
 }
 
   :host ::ng-deep {
@@ -624,10 +621,10 @@
     padding-top: 1rem;
     border-top: 1px dashed #333;
     font-family: 'Courier New', Courier, monospace;
-    
+
     font-size: 0.75rem; /* 👈 O TRUQUE DE UI: Tamanho clássico de rodapé! */
     opacity: 0.85; /* 👈 Deixa o texto sutil, não briga com os créditos neon */
-    
+
     color: #888;
     text-align: right;
     animation: fadeIn 1s ease-in-out;
@@ -755,7 +752,7 @@
 }
  @media (max-width: 850px) {
   ::ng-deep .neon-store-btn {
-    font-size: 0.9rem; 
+    font-size: 0.9rem;
     margin-left: 0;
     margin-right: 0;
     display: block;
@@ -768,21 +765,21 @@
 /* ☢️ CORRUPÇÃO DE SISTEMA (Modo Jonah)              */
 /* ================================================= */
 :host-context(body.mode-jonah) {
-  
+
   /* 1. Corrompendo a Loja */
   ::ng-deep .neon-store-image {
     border-color: #ff3d00 !important;
     box-shadow: 0 0 15px rgba(255, 61, 0, 0.3) !important;
     &:hover { box-shadow: 0 0 25px rgba(255, 61, 0, 0.6) !important; }
   }
-  
+
   ::ng-deep .neon-store-btn {
     background: rgba(255, 61, 0, 0.1) !important;
     border-color: #ff3d00 !important;
     color: #ff3d00 !important;
     box-shadow: 0 0 15px rgba(255, 61, 0, 0.4) !important;
     text-shadow: 0 0 8px #ff3d00 !important;
-    
+
     &:hover {
       background: rgba(255, 61, 0, 0.2) !important;
       box-shadow: 0 0 25px rgba(255, 61, 0, 0.6), inset 0 0 10px rgba(255, 61, 0, 0.2) !important;
