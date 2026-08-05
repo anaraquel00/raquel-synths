@@ -107,63 +107,78 @@ export class DeepLinkRedirectComponent implements OnInit {
 });
   }
 
-  private executeDeepLinkProtocol(data: any): void {
-    // 🛰️ DISPARO DE EMERGÊNCIA NA BANCADA:
-     alert('UPLINK RQS // REDIRECTING SONIC COORDINATES');
-    // 🛰️ DISPARO IMEDIATO DE TELEMETRIA (Movido para o topo)
-    // Envia os dados do álbum/faixa ANTES de forçar qualquer redirecionamento de tela
-    if (typeof (window as any).fbq !== 'undefined') {
-      (window as any).fbq('track', 'ViewContent', {
-        content_name: data.title || 'Música',
-        content_category: 'DeepLink Redirect',
-        content_ids: [this.route.snapshot.paramMap.get('id')],
-        content_type: 'product',
-        status: this.route.snapshot.queryParamMap.get('service') // 'soundcloud' ou 'spotify'
-      });
-    }
+private executeDeepLinkProtocol(data: any): void {
+  // 🛰️ DISPARO DE EMERGÊNCIA NA BANCADA:
+  alert('UPLINK RQS // REDIRECTING SONIC COORDINATES');
 
-    const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(userAgent);
-
-    const clickedService = this.route.snapshot.queryParamMap.get('service');
-    const targetService = (clickedService === 'spotify' || clickedService === 'soundcloud')
-      ? clickedService
-      : 'soundcloud';
-
-    let webUrl = '';
-    let uriScheme = '';
-
-   if (targetService === 'spotify') {
-  // Captura o campo 'spotify' ou 'spotifyUrl' do Firebase
-  const spotifyLink = data.spotify || data.spotifyUrl;
-  webUrl = spotifyLink;
-
-  // Se for um link de faixa padrão, prepara o aplicativo nativo para celular
-  if (spotifyLink && spotifyLink.includes('/track/')) {
-    const urlParts = spotifyLink.split('/track/');
-    const trackId = urlParts[1]?.split('?')[0];
-    uriScheme = `spotify:track:${trackId}`;
-  } else {
-    uriScheme = ''; // Limpa o esquema se não for faixa, mas mantém a webUrl viva!
+  // 🛰️ DISPARO IMEDIATO DE TELEMETRIA
+  if (typeof (window as any).fbq !== 'undefined') {
+    (window as any).fbq('track', 'ViewContent', {
+      content_name: data.title || 'Música',
+      content_category: 'DeepLink Redirect',
+      content_ids: [this.route.snapshot.paramMap.get('id')],
+      content_type: 'product',
+      status: this.route.snapshot.queryParamMap.get('service')
+    });
   }
-} else {
-      webUrl = data.soundcloud;
-      uriScheme = data.soundcloudUriScheme;
+
+  const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(userAgent);
+
+  // 🟢 CORREÇÃO 1: Adicionar o 'youtube' como serviço de destino válido
+  const clickedService = this.route.snapshot.queryParamMap.get('service');
+  const targetService = (clickedService === 'spotify' || clickedService === 'soundcloud' || clickedService === 'youtube')
+    ? clickedService
+    : 'soundcloud';
+
+  let webUrl = '';
+  let uriScheme = '';
+
+  if (targetService === 'spotify') {
+    const spotifyLink = data.spotify || data.spotifyUrl;
+    webUrl = spotifyLink;
+
+    if (spotifyLink && spotifyLink.includes('/track/')) {
+      const urlParts = spotifyLink.split('/track/');
+      const trackId = urlParts[1]?.split('?')[0];
+      uriScheme = `spotify:track:${trackId}`;
+    } else {
+      uriScheme = '';
     }
-
-    if (!isMobile) {
-      if (webUrl) window.location.href = webUrl;
-      return;
-    }
-
-    this.setupVisibilityListeners();
-
-    this.fallbackTimeoutId = setTimeout(() => {
-      if (webUrl) window.location.href = webUrl;
-    }, 1500);
-
-    if (uriScheme) window.location.href = uriScheme;
   }
+  // 🟢 CORREÇÃO 2: Bloco dedicado para o YouTube com extração de ID para Deep-Linking
+  else if (targetService === 'youtube') {
+    const ytLink = data.youtubeUrl || data.youtube;
+    webUrl = ytLink;
+
+    if (ytLink && ytLink.includes('v=')) {
+      const videoId = ytLink.split('v=')[1]?.split('&')[0];
+      uriScheme = `vnd.youtube:${videoId}`; // 📱 Força a abertura do app nativo do YouTube no celular!
+    } else if (ytLink && ytLink.includes('youtu.be/')) {
+      const videoId = ytLink.split('youtu.be/')[1]?.split('?')[0];
+      uriScheme = `vnd.youtube:${videoId}`;
+    } else {
+      uriScheme = '';
+    }
+  }
+  else {
+    webUrl = data.soundcloud;
+    uriScheme = data.soundcloudUriScheme;
+  }
+
+  if (!isMobile) {
+    if (webUrl) window.location.href = webUrl;
+    return;
+  }
+
+  this.setupVisibilityListeners();
+
+  this.fallbackTimeoutId = setTimeout(() => {
+    if (webUrl) window.location.href = webUrl;
+  }, 1500);
+
+  if (uriScheme) window.location.href = uriScheme;
+}
 
   private setupVisibilityListeners(): void {
     const clearFallback = () => {
