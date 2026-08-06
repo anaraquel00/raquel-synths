@@ -19,6 +19,7 @@ export interface MusicalLinkData {
   youtubeUrl?: string;
   appleMusicUrl?: string;
   primaryService?: 'spotify' | 'soundcloud' | 'youtube';
+  siteUrl?: string;
   isFeatured?: boolean;
   order?: number;
   releaseDate?: string;
