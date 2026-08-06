@@ -1,0 +1,31 @@
+<div class="spotify-deep-link-card" [ngClass]="{'mode-jonah-card': mode === 'jonah'}">
+  <div class="card-header-cyber">
+    <span class="cyber-tag">
+      {{ mode === 'jonah' ? '[ RED TEAM // CORRUPTED STREAM ]' : '[ BLUE TEAM // SECURE UPLINK ]' }}
+    </span>
+    <span class="status-indicator">ONLINE</span>
+  </div>
+
+  <div class="card-body-content">
+    <h3>{{ translate.isPt() ? playlistTitlePt : playlistTitleEn }}</h3>
+    <p>
+      {{ translate.isPt()
+         ? (mode === 'jonah'
+            ? 'Frequências interceptadas e distorções industriais do Red Team. Sintonize diretamente no aplicativo do Spotify sem restrições de sessão.'
+            : 'O ecossistema sonoro oficial. Sintonize suas frequências de Progressive House, Trance e Synthwave diretamente no seu reprodutor nativo.')
+         : (mode === 'jonah'
+            ? 'Intercepted frequencies and industrial distortions from the Red Team. Tune in directly on the Spotify app without session limits.'
+            : 'The official sound ecosystem. Tune into your Progressive House, Trance, and Synthwave frequencies directly in your native player.') }}
+    </p>
+  </div>
+
+  <div class="card-action-footer">
+    <a [href]="playlistUrl"
+       target="_blank"
+       rel="noopener noreferrer"
+       class="btn-cyber-spotify"
+       (click)="trackSpotifyClick()">
+      {{ translate.isPt() ? '[ SINTONIZAR NO SPOTIFY ]' : '[ TUNE IN ON SPOTIFY ]' }}
+    </a>
+  </div>
+</div>

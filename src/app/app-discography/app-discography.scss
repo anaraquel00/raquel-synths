@@ -773,4 +773,23 @@ button {
   }
 }
 
+/* --- AJUSTES RESPONSIVOS PARA A DISCOGRAFIA E STREAMS --- */
+@media (max-width: 768px) {
+  .discography-grid-container {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1.5rem !important;
+    padding: 1rem !important;
+    margin-top: -4rem !important;
+    box-sizing: border-box;
+    width: 100% !important;
+    max-width: 100% !important;
 
+    /* Garante que tanto o componente do Spotify quanto o da Rádio ocupem 100% da largura útil */
+    app-spotify-playlist,
+    .radio-stream-card-wrapper {
+      width: 100% !important;
+      max-width: 100% !important;
+    }
+  }
+}

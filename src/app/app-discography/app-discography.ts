@@ -20,11 +20,12 @@ import { TrackingService } from '../services/tracking.service';
 import { SeoService } from '../services/seo.service';
 import { catchError, take, timeout } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { SpotifyPlaylistComponent } from "../components/spotify-playlist/spotify-playlist";
 
 @Component({
   selector: 'app-discography',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule, RouterModule, AdBannerComponent, LastReleasesComponent, NgOptimizedImage],
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule, RouterModule, AdBannerComponent, LastReleasesComponent, NgOptimizedImage, SpotifyPlaylistComponent],
   templateUrl:'./app-discography.html',
   styleUrl: './app-discography.scss'
 })
@@ -39,6 +40,7 @@ export class DiscographyComponent implements OnInit {
   private document = inject(DOCUMENT);
 
   private _limitToHome: number = 5; // 🛡️ Valor de fábrica blindado (default)
+  currentMode: any;
 
 @Input() set limitToHome(value: any) {
   // Se o roteador injetar 'undefined' ou 'null', a trava mantém o 5.

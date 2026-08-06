@@ -11,75 +11,100 @@
       <div class="intro-text jonah-text" [innerHTML]="translate.isPt() ? introJonahPT : introJonahEN"></div>
     }
 
-    <app-last-releases
-    [lang]="translate.isPt() ? 'pt' : 'en'"
-    ngSkipHydration>
-    </app-last-releases>
+<div class="discography-grid-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto; padding: 2rem 1rem;">
 
+  <!-- 🛡️ CARD BLUE TEAM: EXCLUSIVO DO MODO BROKLIN -->
+  @if (!isJonahMode()) {
+    <app-spotify-playlist
+      mode="broklin"
+      playlistUrl="https://raquelsynths.com/play/spotify-blueteam-playlist?service=spotify"
+      playlistTitlePt="Playlist Oficial — Blue Team"
+      playlistTitleEn="Official Playlist — Blue Team"
+      ngSkipHydration>
+    </app-spotify-playlist>
+  }
+
+  <!-- ☢️ CARD RED TEAM: EXCLUSIVO DO MODO JONAH -->
+  @if (isJonahMode()) {
+    <app-spotify-playlist
+      mode="jonah"
+      playlistUrl="https://raquelsynths.com/play/spotify-redteam-playlist?service=spotify"
+      playlistTitlePt="Playlist Oficial — Red Team"
+      playlistTitleEn="Official Playlist — Red Team"
+      ngSkipHydration>
+    </app-spotify-playlist>
+  }
+
+  <!-- 📻 CARD DA RÁDIO (Alinhado perfeitamente ao lado da playlist ativa) -->
+  <div class="radio-stream-card-wrapper" style="width: 100%;">
     <div class="grid-col right-col">
       @defer (on viewport; prefetch on idle) {
 
         @if (!isJonahMode()) {
           <div class="rqs-spotify-card card-broklin fade-in-up">
             <div class="card-content">
-              <div class="icon-pulse">📡</div> <div class="text-data">
-                <h2>{{ translate.isPt() ? 'TRANSMISSÃO DO SANTUÁRIO' : 'SANCTUARY TRANSMISSION' }}</h2>
+              <div class="icon-pulse">📡</div>
+              <div class="text-data">
+                <h2>{{ translate.isPt() ? 'AUDIO CIVIL WAR // 24/7 STREAM' : 'AUDIO CIVIL WAR // 24/7 STREAM' }}</h2>
                 <p>
-                  {{ translate.isPt() ? 'A colisão entre Ordem e Caos. Sintonize os audios com as frequências limpas de Synthwave e Música eletrônica.' : 'The collision of Order and Chaos. Tune into the audios with the clean Synthwave and Electronic Music frequencies.' }}
+                  {{ translate.isPt()
+                     ? 'Melodic Techno, Prog House vs EBM & Industrial Beats. A colisão definitiva entre Ordem e Caos direto no nosso canal do YouTube.'
+                     : 'Melodic Techno, Prog House vs EBM & Industrial Beats. The ultimate collision between Order and Chaos live on our YouTube channel.' }}
                 </p>
               </div>
             </div>
             <div class="terminal-radio-container">
-
-     <a href="https://raquelsynths.com/play/rqs-cyberpunk-radio?service=youtube" target="_blank" rel="noopener noreferrer" class="portal-visual-link">
-      <div class="thumbnail-wrapper">
-      <img src="assets/images/thumbnailYTsuperthanks.webp" alt="RQS Mainframe" class="mainframe-thumb" loading="lazy">
-
-      <div class="btn-youtube neon-border">
-        <i class="fab fa-youtube"></i>
-        {{ translate.isPt() ? '[ ACESSAR MAINFRAME NO YOUTUBE ]' : '[ ACCESS MAINFRAME ON YOUTUBE ]' }}
-         </div>
-         </div>
-          </a>
-
-          </div>
+              <a href="https://raquelsynths.com/play/rqs-cyberpunk-radio?service=youtube" target="_blank" rel="noopener noreferrer" class="portal-visual-link">
+                <div class="thumbnail-wrapper">
+                  <img src="assets/images/thumbnailYTsuperthanks.webp" alt="RQS Mainframe" class="mainframe-thumb" loading="lazy">
+                  <div class="btn-youtube neon-border">
+                    <i class="fab fa-youtube"></i>
+                    {{ translate.isPt() ? '[ ⚡ CONECTAR AO AUDIO CIVIL WAR ]' : '[ ⚡ CONNECT TO AUDIO CIVIL WAR ]' }}
+                  </div>
+                </div>
+              </a>
+            </div>
           </div>
         }
 
         @if (isJonahMode()) {
           <div class="rqs-spotify-card card-jonah fade-in-up">
             <div class="card-content">
-              <div class="icon-pulse warning-icon">☢️</div> <div class="text-data">
-                <h2>{{ translate.isPt() ? 'SINAL INTERCEPTADO' : 'INTERCEPTED SIGNAL' }}</h2>
+              <div class="icon-pulse warning-icon">☢️</div>
+              <div class="text-data">
+                <h2>{{ translate.isPt() ? 'AUDIO CIVIL WAR // SINAL CORROMPIDO' : 'AUDIO CIVIL WAR // CORRUPTED SIGNAL' }}</h2>
                 <p>
-                  {{ translate.isPt() ? 'Uma injeção letal de frequências pesadas. O caos de Jonah Cyperfield. Nu-Metal e ferrugem sem freios.' : 'A lethal injection of heavy frequencies. Jonah\'s chaos. Unrestrained Nu-Metal and rust.' }}
+                  {{ translate.isPt()
+                     ? 'Melodic Techno, Prog House vs EBM & Industrial Beats. Frequências pesadas e ferrugem transmitidas sem filtros em 24/7.'
+                     : 'Melodic Techno, Prog House vs EBM & Industrial Beats. Heavy frequencies and raw industrial rust streaming live 24/7.' }}
                 </p>
               </div>
             </div>
-            <div class="terminal-radio-container" >
-
-          <a href="https://raquelsynths.com/play/rqs-cyberpunk-radio?service=youtube" target="_blank" rel="noopener noreferrer" class="portal-visual-link">
-          <div class="thumbnail-wrapper">
-      <img src="assets/images/thumbnailYTsuperthanks.webp" alt="Jonah Mainframe" class="mainframe-thumb glitch-effect" loading="lazy">
-
-      <div class="btn-youtube">
-        <i class="fab fa-youtube"></i>
-        {{ translate.isPt() ? '[ INVADIR CANAL NO YOUTUBE ]' : '[ INFILTRATE YOUTUBE CHANNEL ]' }}
-      </div>
-       </div>
-      </a>
-
-          </div>
+            <div class="terminal-radio-container">
+              <a href="https://raquelsynths.com/play/rqs-cyberpunk-radio?service=youtube" target="_blank" rel="noopener noreferrer" class="portal-visual-link">
+                <div class="thumbnail-wrapper">
+                  <img src="assets/images/thumbnailYTsuperthanks.webp" alt="Jonah Mainframe" class="mainframe-thumb glitch-effect" loading="lazy">
+                  <div class="btn-youtube">
+                    <i class="fab fa-youtube"></i>
+                    {{ translate.isPt() ? '[ 🔥 CAPTURAR AUDIO CIVIL WAR ]' : '[ 🔥 HIJACK AUDIO CIVIL WAR ]' }}
+                  </div>
+                </div>
+              </a>
+            </div>
           </div>
         }
 
       } @placeholder {
         <div style="min-height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.2); border: 1px dashed #444; border-radius: 12px;">
-          <div class="icon-pulse" style="font-size: 2rem; margin-bottom: 10px;">🔌</div>
+          <div class="icon-pulse" style="font-size: 20px; margin-bottom: 10px;">🔌</div>
           <span style="font-family: 'Roboto Mono', monospace; color: #666; font-size: 0.8rem;">[ AGUARDANDO UPLINK... ]</span>
         </div>
       }
     </div>
+  </div>
+
+</div>
+
   </div>
 
   @if (!isJonahMode()) {
