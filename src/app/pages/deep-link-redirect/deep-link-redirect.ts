@@ -108,10 +108,6 @@ export class DeepLinkRedirectComponent implements OnInit {
   }
 
 private executeDeepLinkProtocol(data: any): void {
-  // 🛰️ DISPARO DE EMERGÊNCIA NA BANCADA:
-  alert('UPLINK RQS // REDIRECTING SONIC COORDINATES');
-
-  // 🛰️ DISPARO IMEDIATO DE TELEMETRIA
   if (typeof (window as any).fbq !== 'undefined') {
     (window as any).fbq('track', 'ViewContent', {
       content_name: data.title || 'Música',
