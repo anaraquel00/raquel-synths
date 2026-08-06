@@ -286,7 +286,7 @@ export const CREATOR_DATA = {
           cardClass: 'featured-ops',
           desc: 'Desenvolvi uma infraestrutura própria de Smart Deep Links para eliminar a dependência de plataformas SaaS, centralizar campanhas do Meta Ads e controlar o roteamento do tráfego dentro do ecossistema RaQuel Synths.',
           techs: ['Angular 20+', 'Router', 'Firebase', 'Meta Ads', 'GA4', 'SEO'  ],
-          link: 'https://raquelsynths.com/play/sunrise-protocol?service=spotify',
+          link: 'https://raquelsynths.com/play/rqs-mainframe?service=spotify',
           linkText: 'Ver Arquitetura'
         },
         {
@@ -334,7 +334,7 @@ export const CREATOR_DATA = {
           badge: 'CLOUD',
           badgeClass: 'secondary',
           cardClass: '',
-          desc: 'Arquitetura SPA responsável por unificar streaming, artigos técnicos, lore, marketing e distribuição musical em uma única aplicação Angular.',
+          desc: 'Servidor de transmissão contínua configurado em VPS Linux, automatizando o processamento de áudio via FFmpeg e broadcasting via protocolo RTMP, garantindo estabilidade de streaming para o ecossistema RQS',
           techs: ['AWS Lightsail', 'Linux', 'Ubuntu 24.04', 'RTMP', 'Nginx', 'FFmpeg'],
           link: 'https://youtube.com/live/P4INjOJfnn8?feature=share',
           linkText: 'Acessar Rádio'
@@ -363,7 +363,7 @@ desc: 'Plataforma de engenharia de áudio baseada em navegador, desenvolvida par
       statusJonah: 'CANAL SUBTERRÂNEO | STATUS: DISPONÍVEL PARA ESCALAR O SEU PROJETO 🚀',
       desc: 'Estou disponível para colaborar em projetos de Front-End Engineering, Arquitetura Angular, Automação Inteligente e IA aplicada ao desenvolvimento de produtos digitais. Gosto de transformar requisitos complexos em soluções escaláveis, performáticas e fáceis de evoluir, sempre equilibrando qualidade técnica e valor para o negócio.',
       descJonah:'Estou disponível para colaborar em projetos de Front-End Engineering, Arquitetura Angular, Automação Inteligente e IA aplicada ao desenvolvimento de produtos digitais. Gosto de transformar requisitos complexos em soluções escaláveis, performáticas e fáceis de evoluir, sempre equilibrando qualidade técnica e valor para o negócio.',
-      actionEmail: 'Let\'s Connect',
+      actionEmail: 'Agende um Diagnóstico',
       actionLinkedin: 'Linkedin'
     }
   },
@@ -471,7 +471,7 @@ desc: 'Plataforma de engenharia de áudio baseada em navegador, desenvolvida par
           cardClass: 'featured-ops',
           desc: 'I developed a custom Smart Deep Link infrastructure to eliminate dependency on SaaS platforms, centralize Meta Ads campaigns, and control traffic routing within the RaQuel Synths ecosystem.',
           techs: ['Angular 20+', 'Router', 'Firebase', 'Meta Ads', 'GA4', 'SEO'  ],
-          link: 'https://raquelsynths.com/play/sunrise-protocol?service=spotify',
+          link: 'https://raquelsynths.com/play/rqs-mainframe?service=spotify',
           linkText: 'See Architecture'
         },
         {
@@ -519,7 +519,7 @@ desc: 'Plataforma de engenharia de áudio baseada em navegador, desenvolvida par
           badge: 'CLOUD',
           badgeClass: 'secondary',
           cardClass: '',
-          desc: 'SPA architecture responsible for unifying streaming, technical articles, lore, marketing, and music distribution into a single Angular application.',
+          desc: 'Streaming server configured on a Linux VPS, automating audio processing via FFmpeg and broadcasting via the RTMP protocol, ensuring streaming stability for the RQS ecosystem.',
           techs: ['AWS Lightsail', 'Linux', 'Ubuntu 24.04', 'RTMP', 'Nginx', 'FFmpeg'],
           link: 'https://youtube.com/live/P4INjOJfnn8?feature=share',
           linkText: 'Access Radio'
@@ -548,7 +548,7 @@ desc: 'Plataforma de engenharia de áudio baseada em navegador, desenvolvida par
       statusJonah: 'UNDERGROUND CHANNEL | STATUS: AVAILABLE TO SCALE YOUR PROJECT 🚀' ,
       desc: 'Do you need solid technical leadership in Front-End, Angular architecture, and intelligent automation? I work on the front lines: transforming complex business rules and sophisticated designs into clean, responsive, and high-performance ecosystems. Sustainable code that passes audits and generates real market value.',
       descJonah: 'Do you need solid technical leadership in Front-End, Angular architecture, and intelligent automation? I work on the front lines: transforming complex business rules and sophisticated designs into clean, responsive, and high-performance ecosystems. Sustainable code that passes audits and generates real market value.',
-      actionEmail: 'Let\'s Connect',
+      actionEmail: 'Schedule a Diagnosis',
       actionLinkedin: 'Download Resume'
     }
   }
