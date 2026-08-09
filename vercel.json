@@ -1,5 +1,4 @@
 {
-  "version": 2,
   "regions": ["gru1"],
   "headers": [
     {
@@ -13,14 +12,6 @@
     }
   ],
   "rewrites": [
-    { "source": "/sitemap.xml", "destination": "/api/sitemap" },
-    { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/hybrid-reader/:id", "destination": "/api/index" },
-    { "source": "/log-reader/:id", "destination": "/api/index" }
-  ],
-  "functions": {
-    "api/index.js": {
-      "includeFiles": "dist/raquel-synths/**"
-    }
-  }
+    { "source": "/sitemap.xml", "destination": "/api/sitemap" }
+  ]
 }
