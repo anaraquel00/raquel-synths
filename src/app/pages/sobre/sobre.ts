@@ -52,7 +52,7 @@ export class SobreComponent implements OnInit, OnDestroy {
   } else {
     this.members = isPt ? RED_TEAM_PT : RED_TEAM_EN;
   }
-}, { allowSignalWrites: true });
+});
 }
 
   ngOnInit() {

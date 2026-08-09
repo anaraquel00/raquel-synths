@@ -85,7 +85,7 @@ export class App implements OnInit {
           });
         }
       }
-    }, { allowSignalWrites: true });
+    });
 
     // 🛡️ A CAIXA FORTE ABSOLUTA: TUDO QUE TOCA O DOM (SCRIPTS E ATRIBUTOS) VAI AQUI!
     afterNextRender(() => {

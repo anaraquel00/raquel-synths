@@ -4,7 +4,6 @@ import { DOCUMENT } from '@angular/common';
 import { ActivatedRoute, RouterModule, Router} from '@angular/router';
 import { TranslationService } from '../../services/translation.service';
 import { ContentService } from '../../services/content.service';
-import { SafeHtmlPipe } from "../../components/pipes/safe-html.pipe";
 import { AdArticleComponent } from "../../components/ad-article/ad-article";
 import { NgOptimizedImage } from '@angular/common';
 import { ScrollingModule } from '@angular/cdk/scrolling';
@@ -14,7 +13,7 @@ import { SeoService } from '../../services/seo.service';
 @Component({
   selector: 'app-logs-archive',
   standalone: true,
-  imports: [CommonModule, RouterModule, AdArticleComponent, NgOptimizedImage, ScrollingModule, SafeHtmlPipe],
+  imports: [CommonModule, RouterModule, AdArticleComponent, NgOptimizedImage, ScrollingModule],
   templateUrl: './logs-archive.html',
   styleUrls: ['./logs-archive.scss']
 })

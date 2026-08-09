@@ -74,7 +74,7 @@ export class Creator implements OnInit, OnDestroy {
       this.currentLang.set(isPt ? 'pt' : 'en');
       // 2. Atualiza o SEO invisível em tempo real no Header do navegador
       this.updateSeoAndLang(isPt);
-    }, { allowSignalWrites: true });
+    });
   }
 
 ngOnInit() {

@@ -1,5 +1,4 @@
 export default async function handler(req, res) {
-  // 🛡️ BLINDAGEM DE PERFORMANCE: Cache na Vercel Edge Network
   res.setHeader('Content-Type', 'application/xml');
   res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=86400');
 
@@ -7,10 +6,10 @@ export default async function handler(req, res) {
   xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
 
   const today = new Date();
-  const todayStr = today.toISOString().split('T')[0]; // "2026-08-05"
-  const currentLastMod = '2026-08-05'; // Data atualizada do deploy
+  const todayStr = today.toISOString().split('T')[0]; // "2026-08-09"
+  const currentLastMod = todayStr;
 
-  // 1. AS ROTAS BASE DO FRONT-END (Incluindo a nova /hybrid-saga)
+  // 1. ROTAS ESTÁTICAS
   const staticRoutes = [
     { path: '', priority: '1.0', lastmod: currentLastMod },
     { path: '/compliance', priority: '0.9', lastmod: currentLastMod },
@@ -31,55 +30,68 @@ export default async function handler(req, res) {
     xml += `  <url>\n    <loc>https://raquelsynths.com${safePath}</loc>\n    <lastmod>${route.lastmod}</lastmod>\n    <priority>${route.priority}</priority>\n  </url>\n`;
   }
 
-  // 2. BUSCA NO FIREBASE (Logs, Lore e Global-Sagas com lastmod dinâmico)
-  try {
-    const projectId = 'raquel-synths-platform';
-    const baseUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents`;
+  // 2. BUSCA NO FIREBASE COM RESILIÊNCIA INDIVIDUAL
+  const projectId = 'raquel-synths-platform';
+  const baseUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents`;
 
-    const [logsRes, loreRes, globalSagasRes] = await Promise.all([
-      fetch(`${baseUrl}/logs?pageSize=300`),
-      fetch(`${baseUrl}/lore?pageSize=300`),
-      fetch(`${baseUrl}/global-sagas?pageSize=300`) // 🚀 Busca também a coleção do Core Híbrido
-    ]);
+  const collections = [
+    { name: 'logs', path: 'log-reader' },
+    { name: 'lore', path: 'lore-reader' },
+    { name: 'global-sagas', path: 'hybrid-reader' }
+  ];
 
-    const logsData = await logsRes.json();
-    const loreData = await loreRes.json();
-    const globalSagasData = await globalSagasRes.json();
-
-    const extractUrls = (data, basePath) => {
-      if (data.documents) {
-        data.documents.forEach((doc) => {
-          const id = doc.name.split('/').pop();
-          let lastmodValue = currentLastMod;
-
-          // 🛡️ FIREWALL 1: Proteção dos Logs (Pela Data no ID)
-          if (basePath === 'log-reader') {
-            const logDate = id.substring(0, 10);
-            if (logDate > todayStr) return;
-          }
-
-          // 🛡️ FIREWALL 2: Proteção da Lore e Sagas Híbridas (Pelo releaseDate no banco)
-          if (basePath === 'lore-reader' || basePath === 'hybrid-reader') {
-            const releaseDateStr = doc.fields?.releaseDate?.stringValue;
-
-            if (releaseDateStr) {
-              const releaseDate = new Date(releaseDateStr);
-              if (releaseDate > today) return; // Se a data for futura (ex: 1 de setembro), o sitemap oculta até o dia certo!
-            }
-          }
-
-          xml += `  <url>\n    <loc>https://raquelsynths.com/${basePath}/${id}</loc>\n    <lastmod>${lastmodValue}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
-        });
+  const fetchCollection = async (coll) => {
+    try {
+      const response = await fetch(`${baseUrl}/${coll.name}?pageSize=300`);
+      if (!response.ok) {
+        console.error(`🛡️ [RQS MAINFRAME] Erro HTTP ${response.status} ao carregar ${coll.name}`);
+        return [];
       }
-    };
+      const data = await response.ok ? await response.json() : {};
+      return data.documents || [];
+    } catch (err) {
+      console.error(`🛡️ [RQS MAINFRAME] Falha de conexão na coleção ${coll.name}:`, err);
+      return [];
+    }
+  };
 
-    extractUrls(logsData, 'log-reader');
-    extractUrls(loreData, 'lore-reader');
-    extractUrls(globalSagasData, 'hybrid-reader'); // 🚀 Mapeia os leitores híbridos para /hybrid-reader/:id
+  // Carrega todas de forma assíncrona, mas não permite que uma quebre as outras
+  const [logsDocs, loreDocs, globalSagasDocs] = await Promise.all(
+    collections.map(coll => fetchCollection(coll))
+  );
 
-  } catch (error) {
-    console.error('🛡️ [ERRO MAINFRAME] Falha ao acessar o Firebase:', error);
-  }
+  const processDocuments = (documents, basePath) => {
+    if (!documents || documents.length === 0) return;
+
+    documents.forEach((doc) => {
+      const id = doc.name.split('/').pop();
+      let lastmodValue = currentLastMod;
+
+      // Proteção de Logs por Data no ID (YYYY-MM-DD-...)
+      if (basePath === 'log-reader') {
+        const logDate = id.substring(0, 10);
+        // Regex de validação de data básica para evitar que IDs fora do padrão causem exclusão incorreta
+        const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+        if (dateRegex.test(logDate) && logDate > todayStr) return;
+      }
+
+      // Proteção da Lore e Sagas por releaseDate (Suporta stringValue e timestampValue)
+      if (basePath === 'lore-reader' || basePath === 'hybrid-reader') {
+        const releaseDateStr = doc.fields?.releaseDate?.stringValue || doc.fields?.releaseDate?.timestampValue;
+
+        if (releaseDateStr) {
+          const releaseDate = new Date(releaseDateStr);
+          if (releaseDate > today) return;
+        }
+      }
+
+      xml += `  <url>\n    <loc>https://raquelsynths.com/${basePath}/${id}</loc>\n    <lastmod>${lastmodValue}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
+    });
+  };
+
+  processDocuments(logsDocs, 'log-reader');
+  processDocuments(loreDocs, 'lore-reader');
+  processDocuments(globalSagasDocs, 'hybrid-reader');
 
   xml += `</urlset>`;
   res.status(200).send(xml);

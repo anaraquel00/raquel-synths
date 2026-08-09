@@ -1,12 +1,27 @@
-import { Component, OnInit, OnDestroy, inject, signal, PLATFORM_ID, afterNextRender, Injector } from '@angular/core';
-import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  inject,
+  signal,
+  PLATFORM_ID,
+  afterNextRender,
+  Injector,
+  RESPONSE_INIT // 👈 Token nativo do Angular 19+ para manipulação de cabeçalhos de resposta
+} from '@angular/core';
+import {
+  CommonModule,
+  isPlatformBrowser,
+  isPlatformServer, // 👈 Necessário para isolar execuções de backend de forma segura
+  DOCUMENT
+} from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { toObservable } from '@angular/core/rxjs-interop'; // 👈 Essencial
+import { toObservable } from '@angular/core/rxjs-interop';
 import { SafeHtmlPipe } from "../../components/pipes/safe-html.pipe";
 import { ContentService } from '../../services/content.service';
 import { TranslationService } from '../../services/translation.service';
 import { SeoService } from '../../services/seo.service';
-import { Observable, combineLatest, map, switchMap, of, tap } from 'rxjs';
+import { Observable, combineLatest, map, switchMap, of, tap, catchError, from } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { AdArticleComponent } from '../../components/ad-article/ad-article';
 import { SplitContentPipe } from '../../components/pipes/content-splitter.pipe';
@@ -28,21 +43,18 @@ export class LogReaderComponent implements OnInit, OnDestroy {
   private injector = inject(Injector);
   private router = inject(Router);
 
-  // 🛡️ A CORREÇÃO: toObservable deve ser inicializado aqui, no topo da classe!
+  // 🛡️ Injeção opcional para evitar quebras em ambientes Client-Side (CSR) e compilação de rotas (SSG)
+  private responseInit = inject(RESPONSE_INIT, { optional: true });
+
   private isPt$ = toObservable(this.translate.isPt);
 
   logData$!: Observable<any>;
-  isJonahMode = signal<boolean>(false); // Default para SSR
+  isJonahMode = signal<boolean>(false);
   private themeObserver: MutationObserver | null = null;
 
-
-  constructor() { // Construtor único
-    // 🛡️ INICIALIZAÇÃO CONSISTENTE: Define o estado inicial para SSR e Browser
-
-    // ⚠️ Evita Hydration Mismatch fatal que trava o Router
+  constructor() {
     this.isJonahMode.set(false);
 
-    // 🛡️ TRAVA TÁTICA: O Observer e a leitura do DOM nascem apenas pós-hidratação
     afterNextRender(() => {
       this.isJonahMode.set(this.document.body.classList.contains('mode-jonah'));
       this.themeObserver = new MutationObserver(() => {
@@ -50,57 +62,48 @@ export class LogReaderComponent implements OnInit, OnDestroy {
       });
       this.themeObserver.observe(this.document.body, { attributes: true, attributeFilter: ['class'] });
     });
-  };
+  }
 
   ngOnInit() {
-     const isPt = this.translate.isPt();
-
-    // 🛡️ SINCRONIA DE BIOS: Hardware em dia
+    const isPt = this.translate.isPt();
     this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
-    // �️ Captura o ID da URL de forma reativa
     const id$ = this.route.paramMap.pipe(map(params => params.get('id')));
 
-    // 🛰️ COMBINAÇÃO TÁTICA
     this.logData$ = combineLatest([id$, this.isPt$]).pipe(
       switchMap(([id, isPt]) => {
-        if (!id) return of(null);
+        if (!id) {
+          this.setSsrStatus(404);
+          return of(null);
+        }
 
-        // 🛡️ O BYPASS DO SERVIDOR (Agora Dinâmico e Blindado!)
-        const source$ = !isPlatformBrowser(this.platformId)
-          ? of({
-              date: new Date().toISOString(),
-              pt: {
-                title: `RQS System Log - Arquivo ${id}`,
-                description: `Acesso ao log criptografado ${id} da RaQuel Synths.`,
-                techContent: 'Dados de sistema criptografados. Acesse pelo terminal.'
-              },
-              en: {
-                title: `RQS System Log - File ${id}`,
-                description: `Access to RaQuel Synths encrypted log ${id}.`,
-                techContent: 'Encrypted system data. Access via terminal.'
-              }
-            })
+        // 🛡️ ARQUITETURA DE REDE DE BLINDAGEM CONTRA HANG DO ZONE.JS:
+        // Evitamos instanciar o SDK pesado em tempo real do Firebase no servidor do Angular.
+        // Em ambiente SSR, realizamos uma requisição REST limpa de ciclo curto de vida.
+        // No navegador, mantemos a reatividade fluida do ContentService.
+        const source$ = isPlatformServer(this.platformId)
+          ? this.fetchSsrLogRest(id)
           : this.injector.get(ContentService).getLogById(id).pipe(take(1));
 
         return source$.pipe(
           map((data: any) => {
-            if (!data) return null;
+            if (!data) {
+              this.setSsrStatus(404); // Retorna erro 404 real no SSR se o documento for nulo
+              return null;
+            }
 
-            // 🗺️ Desempacota a árvore correta (EN ou PT)
             const localized = isPt ? data.pt : data.en;
 
             return {
               id: id,
               date: data.date,
-              title: localized?.title,
-              description: localized?.description,
-              techContent: localized?.techContent,
-              jonahComment: localized?.jonahComment
+              title: localized?.title || `RQS Log - ${id}`,
+              description: localized?.description || '',
+              techContent: localized?.techContent || '',
+              jonahComment: localized?.jonahComment || ''
             };
           }),
           tap(mappedData => {
             if (mappedData) {
-              // 🛡️ MOTOR 1: Meta Tags Básicas e Open Graph
               const absoluteUrl = `https://raquelsynths.com/log-reader/${mappedData.id}`;
               this.seoService.updateCanonical(this.router.url);
               this.seoService.updateMetaTags({
@@ -110,13 +113,12 @@ export class LogReaderComponent implements OnInit, OnDestroy {
                 url: absoluteUrl
               });
 
-              // 🚀 MOTOR 2: O Injetor Neural JSON-LD (Structured Data)
               this.seoService.setJsonLd({
                  "@context": "https://schema.org",
                  "@type": "TechArticle",
                  "headline": mappedData.title,
                  "description": mappedData.description,
-                 "image": [ "https://raquelsynths.com/images/banner-seo-global.jpg" ], // Fallback de blindagem
+                 "image": [ "https://raquelsynths.com/images/banner-seo-global.jpg" ],
                  "datePublished": mappedData.date,
                  "author": [{
                      "@type": "Person",
@@ -134,14 +136,75 @@ export class LogReaderComponent implements OnInit, OnDestroy {
                  },
                  "mainEntityOfPage": {
                    "@type": "WebPage",
-                   "@id": `https://raquelsynths.com/log-reader/${mappedData.id}`
+                   "@id": absoluteUrl
                  }
                });
             }
+          }),
+          catchError(err => {
+            console.error(`🛡️ [RQS MAIN ENGINE] Erro no fluxo de dados do leitor:`, err);
+            this.setSsrStatus(404);
+            return of(null);
           })
         );
       })
     );
+  }
+
+  /**
+   * Realiza a consulta ao Firestore utilizando REST API puro para impedir o travamento de ciclo do Node.js
+   */
+  private fetchSsrLogRest(id: string): Observable<any> {
+    const projectId = 'raquel-synths-platform';
+    const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/logs/${id}`;
+
+    return from(
+      fetch(url)
+        .then(res => {
+          if (!res.ok) {
+            if (res.status === 404) {
+              this.setSsrStatus(404);
+            }
+            return null;
+          }
+          return res.json();
+        })
+    ).pipe(
+      map((doc: any) => {
+        if (!doc || !doc.fields) return null;
+
+        // Mapeamento compatível do payload bruto JSON retornado pela REST API do Google Cloud
+        return {
+          date: doc.fields.date?.stringValue || doc.fields.date?.timestampValue || new Date().toISOString(),
+          pt: {
+            title: doc.fields.pt?.mapValue?.fields?.title?.stringValue || '',
+            description: doc.fields.pt?.mapValue?.fields?.description?.stringValue || '',
+            techContent: doc.fields.pt?.mapValue?.fields?.techContent?.stringValue || '',
+            jonahComment: doc.fields.pt?.mapValue?.fields?.jonahComment?.stringValue || ''
+          },
+          en: {
+            title: doc.fields.en?.mapValue?.fields?.title?.stringValue || '',
+            description: doc.fields.en?.mapValue?.fields?.description?.stringValue || '',
+            techContent: doc.fields.en?.mapValue?.fields?.techContent?.stringValue || '',
+            jonahComment: doc.fields.en?.mapValue?.fields?.jonahComment?.stringValue || ''
+          }
+        };
+      }),
+      catchError(err => {
+        console.error(`🛡️ [RQS SSR REST] Erro crítico ao buscar dados do log no backend:`, err);
+        this.setSsrStatus(404);
+        return of(null);
+      })
+    );
+  }
+
+  /**
+   * Modifica com segurança o status de resposta HTTP de acordo com o contexto
+   */
+  private setSsrStatus(statusCode: number): void {
+    if (isPlatformServer(this.platformId) && this.responseInit) {
+      this.responseInit.status = statusCode;
+    }
   }
 
   ngOnDestroy() {

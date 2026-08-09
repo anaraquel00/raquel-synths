@@ -55,116 +55,116 @@
     position: relative;
     z-index: 3;
 
-   /* Animação do Cursor Piscante */
-/* A Base que segura as colunas (Caso precise confirmar o lado a lado) */
-.hero-layout-split {
-  display: flex;
-  flex-direction: row; /* Força Lado a Lado */
-  justify-content: space-between;
-  align-items: center;
-  gap: 2rem;
-  width: 100%;
+    /* Animação do Cursor Piscante */
+    /* A Base que segura as colunas (Caso precise confirmar o lado a lado) */
+    .hero-layout-split {
+      display: flex;
+      flex-direction: row; /* Força Lado a Lado */
+      justify-content: space-between;
+      align-items: center;
+      gap: 2rem;
+      width: 100%;
 
-  .hero-left { flex: 1; }
-  .hero-right { flex: 1; max-width: 550px; } /* Limita a largura do terminal para não esmagar o texto */
-}
-
-@media (max-width: 900px) {
-  .hero-layout-split {
-    flex-direction: column; /* No celular ele empilha */
-    .hero-right { max-width: 100%; }
-  }
-}
-
-/* ================================================= */
-/* 🖥️ A BLINDAGEM DOS BOTÕES DO TERMINAL             */
-/* ================================================= */
-
-@keyframes rqs-cursor-blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
-
-.hack-btn {
-  /* 🛡️ RESETS VITAIS PARA ELEMENTO <a> SE COMPORTAR COMO <button> */
-  display: block; /* Garante comportamento de bloco para respeitar o width e padding */
-  text-decoration: none; /* Mata a sublinha nativa do navegador nas tags <a> */
-  box-sizing: border-box; /* Garante que 100% de largura inclua as bordas e padding */
-
-  /* MATANDO O FUNDO BRANCO DO NAVEGADOR */
-  background: rgba(10, 15, 25, 0.8) !important;
-  color: var(--accent-color, #00ffcc) !important;
-  border: 1px solid rgba(0, 255, 204, 0.3) !important;
-
-  text-align: left;
-  width: 100%;
-  padding: 12px 20px;
-  position: relative;
-  font-family: 'Courier New', Courier, monospace;
-  cursor: pointer;
-  transition: all 0.3s ease;
-
-  .cmd-arrow {
-    color: #666;
-    margin-right: 5px;
-    font-weight: bold;
-    transition: color 0.3s;
-  }
-
-  &::after {
-    content: '█';
-    margin-left: 10px;
-    color: var(--accent-color, #00ffcc);
-    display: inline-block;
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-
-  &:hover {
-    transform: translateX(5px);
-    background: rgba(0, 255, 204, 0.1) !important; /* Brilho suave no hover */
-    border-color: var(--accent-color, #00ffcc) !important;
-    box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
-
-    .cmd-arrow { color: var(--accent-color, #00ffcc); }
-
-    &::after {
-      opacity: 1;
-      animation: rqs-cursor-blink 1s step-end infinite;
+      .hero-left { flex: 1; }
+      .hero-right { flex: 1; max-width: 550px; } /* Limita a largura do terminal para não esmagar o texto */
     }
-  }
-}
 
-/* Modo Jonah Blindado */
-:host-context(body.mode-jonah) .hack-btn {
-  color: #ff3d00 !important;
-  border-color: rgba(255, 61, 0, 0.3) !important;
+    @media (max-width: 900px) {
+      .hero-layout-split {
+        flex-direction: column; /* No celular ele empilha */
+        .hero-right { max-width: 100%; }
+      }
+    }
 
-  &::after { color: #ff3d00; }
+    /* ================================================= */
+    /* 🖥️ A BLINDAGEM DOS BOTÕES DO TERMINAL             */
+    /* ================================================= */
 
-  &:hover {
-    background: rgba(255, 61, 0, 0.1) !important;
-    border-color: #ff3d00 !important;
-    box-shadow: 0 0 15px rgba(255, 61, 0, 0.2);
-    .cmd-arrow { color: #ff3d00; }
-  }
-}
+    @keyframes rqs-cursor-blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .hack-btn {
+      /* 🛡️ RESETS VITAIS PARA ELEMENTO <a> SE COMPORTAR COMO <button> */
+      display: block; /* Garante comportamento de bloco para respeitar o width e padding */
+      text-decoration: none; /* Mata a sublinha nativa do navegador nas tags <a> */
+      box-sizing: border-box; /* Garante que 100% de largura inclua as bordas e padding */
+
+      /* MATANDO O FUNDO BRANCO DO NAVEGADOR */
+      background: rgba(10, 15, 25, 0.8) !important;
+      color: var(--accent-color, #00ffcc) !important;
+      border: 1px solid rgba(0, 255, 204, 0.3) !important;
+
+      text-align: left;
+      width: 100%;
+      padding: 12px 20px;
+      position: relative;
+      font-family: 'Courier New', Courier, monospace;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      .cmd-arrow {
+        color: #666;
+        margin-right: 5px;
+        font-weight: bold;
+        transition: color 0.3s;
+      }
+
+      &::after {
+        content: '█';
+        margin-left: 10px;
+        color: var(--accent-color, #00ffcc);
+        display: inline-block;
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+
+      &:hover {
+        transform: translateX(5px);
+        background: rgba(0, 255, 204, 0.1) !important; /* Brilho suave no hover */
+        border-color: var(--accent-color, #00ffcc) !important;
+        box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
+
+        .cmd-arrow { color: var(--accent-color, #00ffcc); }
+
+        &::after {
+          opacity: 1;
+          animation: rqs-cursor-blink 1s step-end infinite;
+        }
+      }
+    }
+
+    /* Modo Jonah Blindado */
+    :host-context(body.mode-jonah) .hack-btn {
+      color: #ff3d00 !important;
+      border-color: rgba(255, 61, 0, 0.3) !important;
+
+      &::after { color: #ff3d00; }
+
+      &:hover {
+        background: rgba(255, 61, 0, 0.1) !important;
+        border-color: #ff3d00 !important;
+        box-shadow: 0 0 15px rgba(255, 61, 0, 0.2);
+        .cmd-arrow { color: #ff3d00; }
+      }
+    }
 
     /* Cores de destaque para Loja e Criadora */
 
     /* --- O Botão de Comunidade (Uplink) --- */
-.uplink-hack {
-  border-color: #0088ff;
-  color: #0088ff;
-  background: rgba(0, 136, 255, 0.05);
-  font-weight: bold;
+    .uplink-hack {
+      border-color: #0088ff;
+      color: #0088ff;
+      background: rgba(0, 136, 255, 0.05);
+      font-weight: bold;
 
-  &:hover {
-    background: rgba(0, 136, 255, 0.2);
-    box-shadow: 0 0 15px rgba(0, 136, 255, 0.4);
-    text-shadow: 0 0 10px #0088ff;
-  }
-}
+      &:hover {
+        background: rgba(0, 136, 255, 0.2);
+        box-shadow: 0 0 15px rgba(0, 136, 255, 0.4);
+        text-shadow: 0 0 10px #0088ff;
+      }
+    }
 
     /* A quarentena do Malware */
     .jonah-hack {
@@ -246,8 +246,6 @@
   }
 }
 
-
-
 .home-container {
   min-height: 100vh;
   display: flex;
@@ -261,7 +259,6 @@
   justify-content: center;
 }
 
-// Container do Grid
 // Container que divide a tela
 .hero-split-grid {
   display: grid;
@@ -277,10 +274,6 @@
   @media (max-width: 850px) {
     grid-template-columns: 1fr; // Um embaixo do outro
     gap: 30px;
-
-    // Se quiser que o Spotify apareça ANTES do Banner no celular, descomente:
-    // .right-col { order: 1; }
-    // .left-col { order: 2; }
   }
 }
 
@@ -288,7 +281,7 @@
 .grid-col {
   width: 100%;
   display: flex;
-  flex-direction:row;
+  flex-direction: row;
   justify-content: center;
 }
 
@@ -303,7 +296,6 @@
     height: 100%;
   }
 }
-
 
 /* =========================================
    A FÍSICA DA ANIMAÇÃO (Levitação)
@@ -351,20 +343,21 @@
     transform: translateY(0);
   }
 }
+
 @media (max-width: 768px) {
-    .btn-uplink {
-      padding: 12px 30px;
-      font-size: 1rem;
-      letter-spacing: 1.5px;
-      margin-top: -1rem;
-    }
+  .btn-uplink {
+    padding: 12px 30px;
+    font-size: 1rem;
+    letter-spacing: 1.5px;
+    margin-top: -1rem;
+  }
 }
 
 /* --- HERO SECTION --- */
 .hero-section {
   flex: 1;
   display: flex;
-  flex-direction:row;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
   text-align: center;
@@ -381,7 +374,7 @@
     flex-wrap: wrap;
     margin-bottom: 1rem;
 
-    /* 👇 A CORREÇÃO: Sincronizado com o Header (1280px) */
+    /* 👇 Sincronizado com o Header (1280px) */
     @media (max-width: 1280px) {
       flex-direction: column; /* Um em cima do outro */
       align-items: center;
@@ -389,13 +382,9 @@
     }
   }
 
+  /* 🛡️ CORREÇÃO DE MIXED DECLARATIONS DO SASS NO MODO PADRÃO */
   .hero-title {
     position: relative;
-    &::before {
-      content: '';
-      will-change: transform; /* Aviso prévio para a placa de vídeo */
-      transition: transform 0.3s ease;
-    }
     font-size: 5rem;
     font-weight: 900;
     margin-bottom: 0;
@@ -414,102 +403,105 @@
     animation: shine 6s linear infinite;
     filter: drop-shadow(0 0 15px rgba(var(--primary-rgb), 0.4));
 
+    /* Seletor aninhado movido com segurança para baixo das propriedades */
+    &::before {
+      content: '';
+      will-change: transform; /* Aviso prévio para a placa de vídeo */
+      transition: transform 0.3s ease;
+    }
+
     /* Ajustes Responsivos */
     @media (max-width: 1280px) {
       font-size: 3.5rem; /* Menor em Laptops/Tablets */
     }
-
-     }
-
-/* ========================================================== */
-/* 🛡️ PROTOCOLO DE BLINDAGEM MOBILE DEFINITIVO (SALVA-LCP)   */
-/* ========================================================== */
-@media (max-width: 768px) {
-
-  /* 1. CORREÇÃO UNIVERSAL & MODO DEFAULT (TECH LEAD) */
-  .hero-title {
-    margin-right: 0 !important; /* Arranca a margem do desktop */
-    margin-left: 0 !important;
-    text-align: center !important;
-    display: block !important;
-    width: 100% !important;
-
-    /* Blindagem do LCP: Desliga o peso visual base */
-    animation: none !important;
-    background-image: none !important;
-
-    /* Glitch visual limpo (Custo zero de CPU) */
-    text-shadow:
-      -2px 0px 0px rgba(0, 243, 255, 0.8),
-       2px 0px 0px rgba(0, 243, 255, 0.4) !important;
   }
 
-  /* Esconde pseudo-elementos pesados no modo base */
-  .hero-title::before,
-  .hero-title::after {
-    display: none !important;
-  }
+  /* ========================================================== */
+  /* 🛡️ PROTOCOLO DE BLINDAGEM MOBILE DEFINITIVO (SALVA-LCP)   */
+  /* ========================================================== */
+  @media (max-width: 768px) {
 
-  /* ======================================== */
-  /* 🔥 BLINDAGEM MODO JONAH (O SALVA-LCP 90+) */
-  /* ======================================== */
-  :host-context(body.mode-jonah) .hero-title {
-    /* 🟢 RESET DE SINAL: Desligamos o LCP pesado */
-    text-shadow: none !important;
-    animation: none !important;
+    /* 1. CORREÇÃO UNIVERSAL & MODO DEFAULT (TECH LEAD) */
+    .hero-title {
+      margin-right: 0 !important; /* Arranca a margem do desktop */
+      margin-left: 0 !important;
+      text-align: center !important;
+      display: block !important;
+      width: 100% !important;
+
+      /* Blindagem do LCP: Desliga o peso visual base */
+      animation: none !important;
+      background-image: none !important;
 
       /* Glitch visual limpo (Custo zero de CPU) */
-     text-shadow:
-      -2px 0px 0px #ffcc00,
-       2px 0px 0px #ff2a00 !important;
+      text-shadow:
+        -2px 0px 0px rgba(0, 243, 255, 0.8),
+         2px 0px 0px rgba(0, 243, 255, 0.4) !important;
+    }
 
-    /* FIXAÇÃO DO MAGMA: Centralizado e Estático */
-    background-position: center center !important;
-    background-image: linear-gradient(90deg, #ff2a00, #ffcc00, #ff2a00) !important;
-    background-size: 200% auto !important;
-    -webkit-background-clip: text !important;
-    background-clip: text !important;
-    color: transparent !important;
+    /* Esconde pseudo-elementos pesados no modo base */
+    .hero-title::before,
+    .hero-title::after {
+      display: none !important;
+    }
 
-    /* 🟢 CORREÇÃO DE TAMANHO (Matching Broklin standard) */
-    /* Forçamos a mesma altura e posição do Broklin */
-    font-size: 3.5rem !important;
-    margin-top: 2.5rem !important;
+    /* ======================================== */
+    /* 🔥 BLINDAGEM MODO JONAH (O SALVA-LCP 90+) */
+    /* ======================================== */
+    :host-context(body.mode-jonah) .hero-title {
+      /* 🟢 RESET DE SINAL: Desligamos o LCP pesado */
+      text-shadow: none !important;
+      animation: none !important;
 
-    /* 🔴 NOVO ESTILO: AGRESSIVO & TORTO (Industrial-Metal) */
-    /* Injetamos o 'itálico' agressivo e apertamos o espaçamento das letras
-       para passar a sensação de tensão e densidade industrial. */
-    font-style: italic !important;
-    letter-spacing: 1px !important;
+      /* Glitch visual limpo (Custo zero de CPU) */
+      text-shadow:
+        -2px 0px 0px #ffcc00,
+         2px 0px 0px #ff2a00 !important;
+
+      /* FIXAÇÃO DO MAGMA: Centralizado e Estático */
+      background-position: center center !important;
+      background-image: linear-gradient(90deg, #ff2a00, #ffcc00, #ff2a00) !important;
+      background-size: 200% auto !important;
+      -webkit-background-clip: text !important;
+      background-clip: text !important;
+      color: transparent !important;
+
+      /* 🟢 CORREÇÃO DE TAMANHO (Matching Broklin standard) */
+      /* Forçamos a mesma altura e posição do Broklin */
+      font-size: 3.5rem !important;
+      margin-top: 2.5rem !important;
+
+      /* 🔴 NOVO ESTILO: AGRESSIVO & TORTO (Industrial-Metal) */
+      /* Injetamos o 'itálico' agressivo e apertamos o espaçamento das letras
+         para passar a sensação de tensão e densidade industrial. */
+      font-style: italic !important;
+      letter-spacing: 1px !important;
+    }
+
+    /* A Fumaça Tóxica Congelada (Sem faixa) */
+    :host-context(body.mode-jonah) .hero-title::before {
+      display: block !important;
+      content: attr(data-text);
+      position: absolute;
+      left: 0; top: 0; width: 100%; height: 100%;
+      z-index: -1;
+
+      /* Configuração da fumaça */
+      background: transparent !important;
+      color: #ff3300 !important;
+      opacity: 0.6 !important;
+      filter: blur(8px) !important;
+
+      /* 🟢 CORREÇÃO VISUAL DE ESCALA */
+      transform: translate3d(0, -5px, 0) !important;
+      animation: none !important;
+    }
+
+    /* Extermina a camada ::after sob qualquer circunstância */
+    :host-context(body.mode-jonah) .hero-title::after {
+      display: none !important;
+    }
   }
-
-  /* A Fumaça Tóxica Congelada (Sem faixa) */
-  :host-context(body.mode-jonah) .hero-title::before {
-    display: block !important;
-    content: attr(data-text);
-    position: absolute;
-    left: 0; top: 0; width: 100%; height: 100%;
-    z-index: -1;
-
-    /* Configuração da fumaça */
-    background: transparent !important;
-    color: #ff3300 !important;
-    opacity: 0.6 !important;
-    filter: blur(8px) !important;
-
-    /* 🟢 CORREÇÃO VISUAL DE ESCALA */
-    /* Eliminamos o scale(1.02) que fazia o texto parecer maior.
-       Mantemos apenas a elevação tática (-5px). */
-    transform: translate3d(0, -5px, 0) !important;
-
-    animation: none !important;
-  }
-
-  /* Extermina a camada ::after sob qualquer circunstância */
-  :host-context(body.mode-jonah) .hero-title::after {
-    display: none !important;
-  }
-}
 
   /* Animação */
   @keyframes shine { to { background-position: 200% center; } }
@@ -524,8 +516,10 @@
     text-align: center;
     margin-left: 65px;
 
-
-    @media (max-width: 768px) { font-size: 0.9rem; margin-left: 5px;         }
+    @media (max-width: 768px) {
+      font-size: 0.9rem;
+      margin-left: 5px;
+    }
   }
 
   /* Botão CTA */
@@ -564,28 +558,34 @@
 }
 
 /* ========================================================== */
-/* 2. O TÍTULO PRINCIPAL (DESKTOP A 100%)    */
+/* 2. O TÍTULO PRINCIPAL (DESKTOP A 100%)                     */
+/* 🛡️ CORREÇÃO DE MIXED DECLARATIONS DO SASS NO MODO JONAH    */
 /* ========================================================== */
 :host-context(body.mode-jonah) .hero-title {
   color: transparent !important;
   background: linear-gradient(90deg, #ff2a00, #ffcc00, #ff2a00);
-
-  @media (max-width: 1280px) { font-size: 3.5rem; }
-  @media (max-width: 768px) { font-size: 2.5rem; letter-spacing: 2px; margin-top: 2.5rem; }
-
   background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
   filter: drop-shadow(0 0 15px rgba(255, 69, 0, 0.8));
-
   animation: magma-flow 2s linear infinite;
   letter-spacing: 5px !important;
   position: relative;
   z-index: 1;
+
+  /* Declarações de largura móvel movidas com segurança para baixo de todas as propriedades */
+  @media (max-width: 1280px) {
+    font-size: 3.5rem;
+  }
+  @media (max-width: 768px) {
+    font-size: 2.5rem;
+    letter-spacing: 2px;
+    margin-top: 2.5rem;
+  }
 }
 
 /* ========================================================== */
-/* 3. A FUMAÇA TÓXICA (PSEUDO-ELEMENTO) */
+/* 3. A FUMAÇA TÓXICA (PSEUDO-ELEMENTO)                       */
 /* ========================================================== */
 :host-context(body.mode-jonah) .hero-title::before {
   content: attr(data-text);
@@ -599,7 +599,7 @@
   filter: blur(2px);
   animation: toxic-smoke 1s infinite linear;
   pointer-events: none;
-} /* ⚠️ A CHAVE QUE FALTAVA ESTÁ AQUI! O escopo foi fechado com sucesso! */
+}
 
 
 /* 👇 COLE NO FINAL DO home.component.scss */
@@ -638,7 +638,7 @@
       padding-right: 10px;
       overflow-x: hidden; // Impede que o que vazar crie barra de rolagem
       flex-direction: column; // Empilha os elementos verticalmente
-      gap: 0px; // Aumenta o espaço entre eles para evitar que fi
+      gap: 0px;
       margin-top: 1px;
   }
 

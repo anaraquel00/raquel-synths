@@ -12,7 +12,6 @@ import { TranslationService } from '../services/translation.service';
 import { ContentService } from '../services/content.service';
 import { Album } from '../models/album.model';
 import { AdBannerComponent } from "../components/ad-banner/ad-banner";
-import { LastReleasesComponent } from "../components/last-releases/last-releases";
 import { NgOptimizedImage } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
@@ -25,7 +24,7 @@ import { SpotifyPlaylistComponent } from "../components/spotify-playlist/spotify
 @Component({
   selector: 'app-discography',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule, RouterModule, AdBannerComponent, LastReleasesComponent, NgOptimizedImage, SpotifyPlaylistComponent],
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule, RouterModule, AdBannerComponent,NgOptimizedImage, SpotifyPlaylistComponent],
   templateUrl:'./app-discography.html',
   styleUrl: './app-discography.scss'
 })

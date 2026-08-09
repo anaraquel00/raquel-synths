@@ -1,17 +1,32 @@
-import { Component, OnInit, OnDestroy, inject, Inject, PLATFORM_ID, signal, afterNextRender, Injector, effect } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  inject,
+  PLATFORM_ID,
+  signal,
+  afterNextRender,
+  Injector,
+  effect,
+  RESPONSE_INIT // 👈 Token oficial para gerenciar o status HTTP no servidor SSR
+} from '@angular/core';
+import {
+  CommonModule,
+  isPlatformBrowser,
+  isPlatformServer,
+  DOCUMENT
+} from '@angular/common';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslationService } from '../../services/translation.service';
 import { ContentService } from '../../services/content.service';
 import { SeoService } from '../../services/seo.service';
-import { Observable, combineLatest, of, BehaviorSubject } from 'rxjs';
-import { map, switchMap, tap, take } from 'rxjs/operators';
+import { Observable, of, BehaviorSubject } from 'rxjs';
+import { map, switchMap, tap, take, catchError } from 'rxjs/operators';
 import { SplitContentPipe } from "../../components/pipes/content-splitter.pipe";
 import { LoreEpisode } from '../../data/lore-data';
 import { AdArticleComponent } from "../../components/ad-article/ad-article";
 import { NgOptimizedImage } from '@angular/common';
 import { AuthorSignatureComponent } from '../../components/author-signature/author-signature';
-import { DOCUMENT } from '@angular/core';
 
 @Component({
   selector: 'app-hybrid-reader',
@@ -27,26 +42,31 @@ export class HybridReaderComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private injector = inject(Injector);
   private document = inject(DOCUMENT);
-  currentMode = signal<'broklin' | 'jonah'>('broklin');
+  private platformId = inject(PLATFORM_ID);
 
-  private mode$ = new BehaviorSubject<'broklin' | 'jonah'>('broklin');
+  // 🛡️ Injeção segura e condicional para não travar builds estáticos
+  private responseInit = inject(RESPONSE_INIT, { optional: true });
+
+  currentMode = signal<'broklin' | 'jonah'>('broklin');
+  isBrowser = isPlatformBrowser(this.platformId);
 
   episode$!: Observable<LoreEpisode | null>;
   activeEpisode = signal<LoreEpisode | null>(null);
 
+  private mode$ = new BehaviorSubject<'broklin' | 'jonah'>('broklin');
   private themeObserver: MutationObserver | null = null;
-  isBrowser: boolean;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
-    this.isBrowser = isPlatformBrowser(this.platformId);
-
+  constructor() {
+    // 🛡️ EXECUÇÃO SEGURA EM BROWSER
     afterNextRender(() => {
       if (this.isBrowser) {
+        this.checkTheme(); // Ajuste tático: lê e sincroniza o tema no primeiro ciclo de hidratação
         this.themeObserver = new MutationObserver(() => this.checkTheme());
         this.themeObserver.observe(this.document.body, { attributes: true, attributeFilter: ['class'] });
       }
     });
 
+    // 📡 MOTOR DE SEO DO CORE HÍBRIDO
     effect(() => {
       const lang = this.translate.currentLang();
       const isPt = lang === 'pt';
@@ -96,26 +116,46 @@ export class HybridReaderComponent implements OnInit, OnDestroy {
           }
         });
       }
-    }, { allowSignalWrites: true });
+    });
   }
 
   ngOnInit() {
-    // 🚀 OUVINDO APENAS O ID DA ROTA DIRETAMENTE (Adeus travamento por dependência de tema!)
     this.episode$ = this.route.paramMap.pipe(
       map(params => params.get('id')),
       switchMap(id => {
-        if (!id) return of(null);
+        if (!id) {
+          this.setSsrStatus(404);
+          return of(null);
+        }
 
-        // 🚀 CONEXÃO COM O MÉTODO GLOBAL DO SERVIÇO
+        // 🚀 CONEXÃO DINÂMICA AO BANCO (Pelo ID global)
         return this.injector.get(ContentService).getGlobalSagaById(id).pipe(
+          take(1),
           tap(ep => {
-            if (ep) {
-              this.activeEpisode.set(ep);
+            if (!ep) {
+              this.setSsrStatus(404); // Responde com 404 real se a saga híbrida for inválida ou inexistente
             }
+            this.activeEpisode.set(ep); // Garante reset para null em caso de não haver episódio correspondente
+          }),
+          catchError(err => {
+            console.error(`🛡️ [RQS Hybrid Reader] Erro crítico ao buscar saga híbrida ${id}:`, err);
+            this.setSsrStatus(404);
+            this.activeEpisode.set(null);
+            return of(null);
           })
         );
       })
     );
+  }
+
+  /**
+   * Atribui status de resposta no cabeçalho HTTP nativo no Servidor (SSR)
+   */
+  private setSsrStatus(statusCode: number): void {
+    if (isPlatformServer(this.platformId) && this.responseInit) {
+      this.responseInit.status = statusCode;
+      console.log(`🛡️ [RQS SSR] Status de resposta do Leitor Híbrido definido para: ${statusCode}`);
+    }
   }
 
   ngOnDestroy() {

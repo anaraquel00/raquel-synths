@@ -1,17 +1,32 @@
-import { Component, OnInit, OnDestroy, inject, Inject, PLATFORM_ID, signal, afterNextRender, Injector, effect } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  inject,
+  PLATFORM_ID,
+  signal,
+  afterNextRender,
+  Injector,
+  effect,
+  RESPONSE_INIT // 👈 Token oficial para manipulação de status HTTP no SSR (v19/v20)
+} from '@angular/core';
+import {
+  CommonModule,
+  isPlatformBrowser,
+  isPlatformServer,
+  DOCUMENT
+} from '@angular/common';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslationService } from '../../services/translation.service';
 import { ContentService } from '../../services/content.service';
-import { SeoService } from '../../services/seo.service'; // 🛡️ Importante para SEO
+import { SeoService } from '../../services/seo.service';
 import { Observable, combineLatest, of, BehaviorSubject } from 'rxjs';
-import { map, switchMap, tap, take } from 'rxjs/operators';
+import { map, switchMap, tap, take, catchError } from 'rxjs/operators';
 import { SplitContentPipe } from "../../components/pipes/content-splitter.pipe";
 import { LoreEpisode } from '../../data/lore-data';
 import { AdArticleComponent } from "../../components/ad-article/ad-article";
 import { NgOptimizedImage } from '@angular/common';
 import { AuthorSignatureComponent } from '../../components/author-signature/author-signature';
-import { DOCUMENT } from '@angular/core';
 
 @Component({
   selector: 'app-lore-reader',
@@ -20,7 +35,6 @@ import { DOCUMENT } from '@angular/core';
   templateUrl: './lore-reader.html',
   styleUrls: ['./lore-reader.scss']
 })
-
 export class LoreReaderComponent implements OnInit, OnDestroy {
   public translate = inject(TranslationService);
   private seoService = inject(SeoService);
@@ -28,23 +42,24 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private injector = inject(Injector);
   private document = inject(DOCUMENT);
+  private platformId = inject(PLATFORM_ID);
+
+  // 🛡️ Injeção opcional para evitar quebra em ambiente navegador (CSR) ou compilação estática (SSG)
+  private responseInit = inject(RESPONSE_INIT, { optional: true });
+
   currentMode = signal<'broklin' | 'jonah'>('broklin');
+  isBrowser = isPlatformBrowser(this.platformId);
 
   // 🛡️ O CANAL DE RÁDIO DO TEMA
   private mode$ = new BehaviorSubject<'broklin' | 'jonah'>('broklin');
 
-  // 🛡️ O CANO QUE ALIMENTA A TELA E O SIGNAL DO SEO
   episode$!: Observable<LoreEpisode | null>;
   activeEpisode = signal<LoreEpisode | null>(null);
 
   private themeObserver: MutationObserver | null = null;
-  isBrowser: boolean;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
-    this.isBrowser = isPlatformBrowser(this.platformId);
-    // this.document = document;
-
-    // 🛡️ TRAVA TÁTICA
+  constructor() {
+    // 🛡️ TRAVA TÁTICA (Executa estritamente pós-hidratação no Navegador)
     afterNextRender(() => {
       this.checkTheme();
       this.themeObserver = new MutationObserver(() => {
@@ -53,24 +68,21 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
       this.themeObserver.observe(this.document.body, { attributes: true, attributeFilter: ['class'] });
     });
 
-  // 📡 O RADAR DE SEO REATIVO (CORRIGIDO SEM DADOS FANTASMAS)
+    // 📡 O RADAR DE SEO REATIVO
     effect(() => {
-      const lang = this.translate.currentLang(); // 1. Escuta o botão de idioma
+      const lang = this.translate.currentLang();
       const isPt = lang === 'pt';
-      const ep = this.activeEpisode();           // 2. Escuta a chegada do episódio
+      const ep = this.activeEpisode();
 
       if (ep) {
-        // 🛡️ Sincronia instantânea do <html lang="x">
         this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
 
-        // 🛡️ LÊ ESTRITAMENTE O QUE EXISTE NA INTERFACE
         const title = isPt ? ep.title : (ep.title_en || ep.title);
         const desc = isPt ? ep.description : (ep.description_en || ep.description);
         const imageUrl = ep.image || 'https://raquelsynths.com/images/banner-seo-global.jpg';
 
         this.seoService.updateCanonical(`https://raquelsynths.com/lore-reader/${ep.id}`);
 
-        // 🚀 TÍTULO EXATO COMO VOCÊ HAVIA PROGRAMADO ORIGINALMENTE
         this.seoService.updateMetaTags({
           title: `${title} | RQS Saga`,
           description: desc,
@@ -79,7 +91,6 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
           url: `https://raquelsynths.com/lore-reader/${ep.id}`
         });
 
-        // 🚀 O SEGUNDO MOTOR: Structured Data JSON-LD
         this.seoService.setJsonLd({
           "@context": "https://schema.org",
           "@type": "BlogPosting",
@@ -107,28 +118,71 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
           }
         });
       }
-    }, { allowSignalWrites: true });
+    });
   }
-
-// No seu lore-reader.component.ts:
 
   ngOnInit() {
     const id$ = this.route.paramMap.pipe(map(params => params.get('id')));
 
     this.episode$ = combineLatest([id$, this.mode$]).pipe(
       switchMap(([id, mode]) => {
-        if (!id) return of(null);
+        if (!id) {
+          this.setSsrStatus(404);
+          return of(null);
+        }
 
-        // 🚀 CONEXÃO DE LORE ATIVA (SSR + CLIENTE):
-        // Removido o mock/bypass anterior. O getEpisodeById busca o documento específico de forma instantânea e segura para o SSR e Navegador.
-        return this.injector.get(ContentService).getEpisodeById(mode, id).pipe(
+        const contentService = this.injector.get(ContentService);
+
+        // 🚀 RESOLUÇÃO DO DUAL MODE NO SSR:
+        // No servidor, o modo padrão inicial sempre será 'broklin' por limitação do DOM.
+        // Se a busca retornar nula no SSR, tentamos buscar no modo alternativo ('jonah') antes de dar 404!
+        return contentService.getEpisodeById(mode, id).pipe(
+          take(1),
+          switchMap(ep => {
+            if (ep) {
+              return of(ep);
+            }
+
+            // Fallback exclusivo de busca cruzada para o Servidor (Googlebot)
+            if (isPlatformServer(this.platformId)) {
+              const alternativeMode = mode === 'broklin' ? 'jonah' : 'broklin';
+              console.log(`🛡️ [RQS Lore SSR] Não encontrado no modo '${mode}'. Tentando busca cruzada no modo: '${alternativeMode}'`);
+
+              return contentService.getEpisodeById(alternativeMode, id).pipe(
+                take(1),
+                tap(altEp => {
+                  if (altEp) {
+                    // Sincroniza o sinal se o episódio de fato for da outra facção
+                    this.currentMode.set(alternativeMode);
+                  }
+                })
+              );
+            }
+
+            return of(null);
+          }),
           tap(ep => {
-            // Seta o episódio lido no Signal ativo para o effect() reativo injetar as tags de SEO e JSON-LD no HTML
+            if (!ep) {
+              this.setSsrStatus(404); // Retorna HTTP 404 real se não existir em nenhuma facção
+            }
             this.activeEpisode.set(ep);
+          }),
+          catchError(err => {
+            console.error(`🛡️ [RQS Lore Reader] Falha ao ler banco para o episódio ${id}:`, err);
+            this.setSsrStatus(404);
+            this.activeEpisode.set(null);
+            return of(null);
           })
         );
       })
     );
+  }
+
+  private setSsrStatus(statusCode: number): void {
+    if (isPlatformServer(this.platformId) && this.responseInit) {
+      this.responseInit.status = statusCode;
+      console.log(`🛡️ [RQS SSR] Lore status definido para: ${statusCode}`);
+    }
   }
 
   ngOnDestroy() {

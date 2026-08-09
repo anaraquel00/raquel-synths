@@ -86,7 +86,7 @@ selectedDepartmentData: any;
 
     this.currentLang.set(isPt ? 'pt' : 'en');
     this.updateSeoAndLang(isPt);
-  }, { allowSignalWrites: true });
+  });
   }
 
 private updateSeoAndLang(isPt: boolean) {
