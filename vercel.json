@@ -1,4 +1,5 @@
 {
+  "version": 2,
   "regions": ["gru1"],
   "headers": [
     {
@@ -12,9 +13,15 @@
     }
   ],
   "rewrites": [
-
     { "source": "/sitemap.xml", "destination": "/api/sitemap" },
-    { "source": "/hybrid-reader/:id", "destination": "/_angular-ssr" },
-    { "source": "/log-reader/:id", "destination": "/_angular-ssr" }
-  ]
+    { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/hybrid-reader/:id", "destination": "/api/index" },
+    { "source": "/log-reader/:id", "destination": "/api/index" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "functions": {
+    "api/index.js": {
+      "includeFiles": "dist/raquel-synths/**"
+    }
+  }
 }
