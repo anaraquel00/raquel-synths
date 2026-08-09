@@ -8,7 +8,7 @@ import {
   afterNextRender,
   Injector,
   effect,
-  RESPONSE_INIT // 👈 Token oficial para manipulação de status HTTP no SSR (v19/v20)
+  RESPONSE_INIT
 } from '@angular/core';
 import {
   CommonModule,
@@ -163,7 +163,7 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
           }),
           tap(ep => {
             if (!ep) {
-              this.setSsrStatus(404); // Retorna HTTP 404 real se não existir em nenhuma facção
+              this.setSsrStatus(404);
             }
             this.activeEpisode.set(ep);
           }),
@@ -177,13 +177,11 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
       })
     );
   }
-
-  private setSsrStatus(statusCode: number): void {
-    if (isPlatformServer(this.platformId) && this.responseInit) {
-      this.responseInit.status = statusCode;
-      console.log(`🛡️ [RQS SSR] Lore status definido para: ${statusCode}`);
-    }
+private setSsrStatus(statusCode: number): void {
+  if (isPlatformServer(this.platformId) && this.responseInit) {
+    this.responseInit.status = statusCode;
   }
+}
 
   ngOnDestroy() {
     if (this.themeObserver) this.themeObserver.disconnect();
