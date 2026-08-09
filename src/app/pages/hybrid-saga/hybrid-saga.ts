@@ -44,7 +44,7 @@ export class HybridSagaComponent implements OnInit, OnDestroy {
       return of([]);
     }
     // 🚀 Chama corretamente a coleção global híbrida!
-    return this.contentService.getGlobalSagas('hybrid', ''); // O segundo argumento (id) é necessário pela assinatura do método, mas não é usado na implementação para esta listagem.
+    return this.contentService.getGlobalSagas('hybrid'); // O segundo argumento (id) é necessário pela assinatura do método, mas não é usado na implementação para esta listagem.
   }),
   switchMap(obs => obs),
   take(1)

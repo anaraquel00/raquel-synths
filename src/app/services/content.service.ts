@@ -1,5 +1,16 @@
-import { Injectable, PLATFORM_ID, inject } from '@angular/core';
-import { Firestore, collection, collectionData, query, orderBy, where, doc, docData, getDoc } from '@angular/fire/firestore';
+import { Injectable, inject } from '@angular/core';
+import { PLATFORM_ID } from '@angular/core';
+import { collectionData, docData } from '@angular/fire/firestore';
+import {
+  Firestore,
+  collection,
+  doc,
+  query,
+  where,
+  orderBy,
+  getDoc,
+  getDocs
+} from '@angular/fire/firestore';
 import { catchError, from, map, Observable, of, switchMap, take } from 'rxjs'; // 🔥 Importamos o 'take' AQUI
 
 // --- IMPORTAÇÃO DAS INTERFACES ---
@@ -17,7 +28,6 @@ export class ContentService {
   private firestore = inject(Firestore);
   private platformId = inject(PLATFORM_ID);
   currentMode!: string;
-  globalSagasCache: LoreEpisode[] | null = null;
 
   // 🎵 1. DISCOGRAFIA
   getDiscography(): Observable<any[]> {
@@ -26,11 +36,10 @@ export class ContentService {
     return (collectionData(colRef, { idField: 'id' }) as Observable<any[]>).pipe(take(1));
   }
 
-// 🗄️ CACHE EM MEMÓRIA PARA AS SAGAS JÁ PUBLICADAS
-  private episodesCache: { [mode: string]: LoreEpisode[] } = {};
+private episodesCache: { [mode: string]: LoreEpisode[] } = {};
+  private globalSagasCache: LoreEpisode[] | null = null;
 
   getEpisodes(mode: 'broklin' | 'jonah'): Observable<LoreEpisode[]> {
-    // 🚀 Se já temos os episódios deste modo salvos em RAM, entrega instantaneamente!
     if (this.episodesCache[mode]) {
       return of(this.episodesCache[mode]);
     }
@@ -46,16 +55,24 @@ export class ContentService {
       where('published', '==', true)
     );
 
-    return collectionData(q, { idField: 'id' }).pipe(
-      take(1),
-      map(episodes => {
-        const sorted = (episodes as LoreEpisode[]).sort((a, b) =>
+    // 🚀 CONSULTA ONE-SHOT COM getDocs PARA LIBERAR O ZONE.JS NO SSR/SSG
+    return from(getDocs(q)).pipe(
+      map(snapshot => {
+        const episodes = snapshot.docs.map(docSnap => ({
+          id: docSnap.id,
+          ...docSnap.data()
+        })) as LoreEpisode[];
+
+        const sorted = episodes.sort((a, b) =>
           (a.id || '').localeCompare(b.id || '', undefined, { numeric: true, sensitivity: 'base' })
         );
 
-        // 💾 Salva no cache em memória antes de retornar
         this.episodesCache[mode] = sorted;
         return sorted;
+      }),
+      catchError(err => {
+        console.error(`⚠️ [ContentService] Erro ao buscar episódios (${mode}):`, err);
+        return of([]);
       })
     );
   }
@@ -63,15 +80,11 @@ export class ContentService {
   getEpisodeById(mode: 'broklin' | 'jonah', id: string): Observable<LoreEpisode | null> {
     if (!id) return of(null);
 
-    // 🚀 Se já temos o array carregado no cache, busca direto nele sem tocar na rede do Firebase!
     if (this.episodesCache[mode]) {
       const found = this.episodesCache[mode].find(ep => ep.id === id);
-      if (found) {
-        return of(found);
-      }
+      if (found) return of(found);
     }
 
-    // Fallback: Se o usuário entrou direto via link compartilhado (Deep Link)
     const collectionName = mode === 'jonah' ? 'lore-jonah' : 'lore';
     const docRef = doc(this.firestore, `${collectionName}/${id}`);
 
@@ -89,21 +102,14 @@ export class ContentService {
     );
   }
 
-  getGlobalSagas(mode: string, id: string): Observable<LoreEpisode[]> {
+getGlobalSagas(mode: string = 'hybrid', id?: string): Observable<LoreEpisode[]> {
     if (this.globalSagasCache) {
-    return of(this.globalSagasCache); // 🚀 Retorna instantaneamente da memória RAM se já foi buscado!
-  }
-    // --- 🕰️ MÁQUINA DO TEMPO (QA & TESTES DE UI) ---
-    //const dataFutura = new Date('2030-01-01'); // Viajamos para 2030
-    //where("releasedDate", "<=", dataFutura)
-    // 1. Define o nome da coleção
-    const collectionName = mode === 'hybrid' ? 'global-sagas' : 'lore';
+      return of(this.globalSagasCache);
+    }
 
-    // 2. Conecta na coleção certa
+    const collectionName = mode === 'hybrid' ? 'global-sagas' : 'lore';
     const colRef = collection(this.firestore, collectionName);
 
-    // 🛡️ CORREÇÃO TÁTICA: Se for 'global-sagas', buscamos ordenado por data e publicados,
-    // sem exigir obrigatoriamente um campo 'mode' que pode não existir no documento.
     const q = query(
       colRef,
       orderBy('releaseDate', 'desc'),
@@ -111,41 +117,50 @@ export class ContentService {
       where('published', '==', true)
     );
 
-    return collectionData(q, { idField: 'id' }).pipe(
-    take(1),
-    map(episodes => {
-      const sorted = (episodes as LoreEpisode[]).sort((a, b) =>
-        (a.id || '').localeCompare(b.id || '', undefined, { numeric: true, sensitivity: 'base' })
-      );
-      this.globalSagasCache = sorted; // Salva no cache
-      return sorted;
-    })
-  );
+    return from(getDocs(q)).pipe(
+      map(snapshot => {
+        const episodes = snapshot.docs.map(docSnap => ({
+          id: docSnap.id,
+          ...docSnap.data()
+        })) as LoreEpisode[];
+
+        const sorted = episodes.sort((a, b) =>
+          (a.id || '').localeCompare(b.id || '', undefined, { numeric: true, sensitivity: 'base' })
+        );
+
+        this.globalSagasCache = sorted;
+        return sorted;
+      }),
+      catchError(err => {
+        console.error(`⚠️ [ContentService] Erro ao buscar sagas globais:`, err);
+        return of([]);
+      })
+    );
   }
 
-  // 🌐 BUSCA UM EPISÓDIO ESPECÍFICO NA COLEÇÃO GLOBAL-SAGAS PELO ID
   getGlobalSagaById(id: string): Observable<LoreEpisode | null> {
-  if (!id) return of(null);
+    if (!id) return of(null);
 
-  // Se já temos a saga no cache em memória, procura direto nele sem ir à rede!
-  if (this.globalSagasCache) {
-    const found = this.globalSagasCache.find((ep: { id: string; }) => ep.id === id);
-    if (found) return of(found);
+    if (this.globalSagasCache) {
+      const found = this.globalSagasCache.find((ep: { id: string }) => ep.id === id);
+      if (found) return of(found);
+    }
+
+    const docRef = doc(this.firestore, 'global-sagas', id);
+
+    return from(getDoc(docRef)).pipe(
+      map(docSnap => {
+        if (docSnap.exists()) {
+          return { id: docSnap.id, ...docSnap.data() } as LoreEpisode;
+        }
+        return null;
+      }),
+      catchError(err => {
+        console.warn(`⚠️ Erro ao buscar saga global ${id}:`, err);
+        return of(null);
+      })
+    );
   }
-
-  // Fallback se o usuário entrou direto pela URL compartilhada (Deep link)
-  const docRef = doc(this.firestore, 'global-sagas', id);
-  return from(getDoc(docRef)).pipe(
-    map(docSnap => {
-      if (docSnap.exists()) {
-        return { id: docSnap.id, ...docSnap.data() } as LoreEpisode;
-      }
-      return null;
-    }),
-    take(1)
-  );
-}
-
  // 🛒 2. LOJA (Produtos)
   getProducts(): Observable<Product[]> {
     const colRef = collection(this.firestore, 'products');
