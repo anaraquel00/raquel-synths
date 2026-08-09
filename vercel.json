@@ -12,6 +12,9 @@
     }
   ],
   "rewrites": [
-    { "source": "/sitemap.xml", "destination": "/api/sitemap" }
+
+    { "source": "/sitemap.xml", "destination": "/api/sitemap" },
+    { "source": "/hybrid-reader/:id", "destination": "/_angular-ssr" },
+    { "source": "/log-reader/:id", "destination": "/_angular-ssr" }
   ]
 }
