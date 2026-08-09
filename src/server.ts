@@ -17,73 +17,17 @@ const app = express();
 const angularApp = new AngularNodeAppEngine();
 
 
-/* ========================================================================== */
-/* 📡 ENGINE DE SITEMAP DINÂMICO UNIFICADO NO EXPRESS (SEO ENGINE)           */
-/* ========================================================================== */
-app.get('/sitemap.xml', async (req, res, next) => {
-  try {
-    res.setHeader('Content-Type', 'application/xml');
-    res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=86400');
-
-    let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
-    xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
-
-    const todayStr = new Date().toISOString().split('T')[0];
-    const currentLastMod = todayStr;
-
-    // 1. AS ROTAS BASE DO FRONT-END (Prerendered e estáticas reais)
-    const staticRoutes = [
-      { path: '', priority: '1.0', lastmod: currentLastMod },
-      { path: '/compliance', priority: '0.9', lastmod: currentLastMod },
-      { path: '/dossier', priority: '0.9', lastmod: currentLastMod },
-      { path: '/store', priority: '0.8', lastmod: currentLastMod },
-      { path: '/saga', priority: '0.8', lastmod: currentLastMod },
-      { path: '/visual-novel', priority: '0.8', lastmod: currentLastMod },
-      { path: '/hybrid-saga', priority: '0.9', lastmod: currentLastMod },
-      { path: '/logs-archive', priority: '0.9', lastmod: currentLastMod },
-      { path: '/discografia', priority: '0.9', lastmod: currentLastMod },
-      { path: '/musical-archives', priority: '0.9', lastmod: currentLastMod },
-      { path: '/creator', priority: '0.5', lastmod: currentLastMod },
-      { path: '/contato', priority: '0.5', lastmod: currentLastMod },
-      { path: '/bio', priority: '0.8', lastmod: currentLastMod }
-    ];
-
-    for (const route of staticRoutes) {
-      xml += `  <url>\n    <loc>https://raquelsynths.com${route.path}</loc>\n    <lastmod>${route.lastmod}</lastmod>\n    <priority>${route.priority}</priority>\n  </url>\n`;
-    }
-
-    // 2. BUSCA DINÂMICA NO FIREBASE REST (Logs, Lore e Global-Sagas)
-    const projectId = 'raquel-synths-platform';
-    const baseUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents`;
-
-    const [logsRes, loreRes, globalSagasRes] = await Promise.all([
-      fetch(`${baseUrl}/logs?pageSize=300`).then(r => r.ok ? r.json() : {}),
-      fetch(`${baseUrl}/lore?pageSize=300`).then(r => r.ok ? r.json() : {}),
-      fetch(`${baseUrl}/global-sagas?pageSize=300`).then(r => r.ok ? r.json() : {})
-    ]);
-
-    const processDocsSitemap = (data: any, basePath: string) => {
-      if (data && data.documents) {
-        data.documents.forEach((doc: any) => {
-          const id = doc.name.split('/').pop();
-          xml += `  <url>\n    <loc>https://raquelsynths.com/${basePath}/${id}</loc>\n    <lastmod>${currentLastMod}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
-        });
-      }
-    };
-
-    processDocsSitemap(logsRes, 'log-reader');
-    processDocsSitemap(loreRes, 'lore-reader');
-    processDocsSitemap(globalSagasRes, 'hybrid-reader');
-
-    xml += `</urlset>`;
-    res.status(200).send(xml);
-  } catch (error) {
-    console.error('🛡️ [EXPRESS SITEMAP ERROR]: Falha de conexão no sitemap:', error);
-    next(); // Transfere o controle para o Angular se o sitemap estourar
-  }
-});
-/* ========================================================================== */
-
+/**
+ * Example Express Rest API endpoints can be defined here.
+ * Uncomment and define endpoints as necessary.
+ *
+ * Example:
+ * ```ts
+ * app.get('/api/{*splat}', (req, res) => {
+ *   // Handle API request
+ * });
+ * ```
+ */
 
 /**
  * Serve static files from /browser
