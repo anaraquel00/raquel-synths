@@ -1,13 +1,31 @@
 const path = require('path');
 const { pathToFileURL } = require('url');
+const fs = require('fs');
 
 module.exports = async (req, res) => {
   try {
-    // 🛡️ Garante que o Angular App Engine localize o manifesto na raiz do dist
+    // 🛡️ Define o diretório raiz para resolução de caminhos na Vercel
     const rootDir = path.resolve(__dirname, '..');
     process.chdir(rootDir);
 
-    const serverPath = path.join(rootDir, 'dist/raquel-synths/server/server.mjs');
+    const serverDir = path.join(rootDir, 'dist/raquel-synths/server');
+
+    // 1. Carrega o manifesto do Angular App Engine ANTES de importar o servidor
+    const manifestFiles = [
+      'angular-app-engine-manifest.mjs',
+      'angular-app-manifest.mjs'
+    ];
+
+    for (const file of manifestFiles) {
+      const manifestPath = path.join(serverDir, file);
+      if (fs.existsSync(manifestPath)) {
+        await import(pathToFileURL(manifestPath).href);
+        break;
+      }
+    }
+
+    // 2. Importa o bundle do servidor Angular SSR
+    const serverPath = path.join(serverDir, 'server.mjs');
     const serverUrl = pathToFileURL(serverPath).href;
 
     const serverModule = await import(serverUrl);
@@ -19,6 +37,7 @@ module.exports = async (req, res) => {
       );
     }
 
+    // 3. Executa a requisição no manipulador do Angular
     return handler(req, res);
   } catch (error) {
     console.error('🔥 [RQS Vercel Function Error]:', error);
