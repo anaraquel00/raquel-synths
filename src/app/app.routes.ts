@@ -136,10 +136,6 @@ export const routes: Routes = [
 
   // 📖 ROTA 8: O Leitor (Texto Puro)
   {
-    path: 'lore/broklin',
-    loadComponent: () => import('./pages/lore-reader/lore-reader').then(m => m.LoreReaderComponent)
-  },
-  {
     path: 'lore-reader/:id',
     loadComponent: () => import('./pages/lore-reader/lore-reader').then(m => m.LoreReaderComponent)
   },
