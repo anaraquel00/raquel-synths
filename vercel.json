@@ -1,30 +1,25 @@
 {
   "version": 2,
-  "regions": ["gru1"],
-  "headers": [
-    {
-      "source": "/(lore-reader|log-reader)/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, s-maxage=86400, stale-while-revalidate=3600"
-        }
-      ]
-    }
-  ],
   "rewrites": [
-
-    { "source": "/sitemap.xml", "destination": "/api/sitemap" },
-    { "source": "/api/(.*)", "destination": "/api/$1" },
-
-    { "source": "/hybrid-reader/:id", "destination": "/api/index" },
-    { "source": "/log-reader/:id", "destination": "/api/index" },
-
-    { "source": "/(.*)", "destination": "/index.html" }
-  ],
-  "functions": {
-    "api/index.js": {
-      "includeFiles": "dist/raquel-synths/**"
+    {
+      "source": "/sitemap.xml",
+      "destination": "/api/sitemap.js"
+    },
+    {
+      "source": "/lore-reader/:id*",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/hybrid-reader/:id*",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/log-reader/:id*",
+      "destination": "/api/index.js"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
-  }
+  ]
 }

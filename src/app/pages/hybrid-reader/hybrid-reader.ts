@@ -6,9 +6,8 @@ import {
   PLATFORM_ID,
   signal,
   afterNextRender,
-  Injector,
   effect,
-  RESPONSE_INIT // 👈 Token oficial para gerenciar o status HTTP no servidor SSR
+  RESPONSE_INIT
 } from '@angular/core';
 import {
   CommonModule,
@@ -31,20 +30,27 @@ import { AuthorSignatureComponent } from '../../components/author-signature/auth
 @Component({
   selector: 'app-hybrid-reader',
   standalone: true,
-  imports: [CommonModule, SplitContentPipe, AdArticleComponent, RouterLink, NgOptimizedImage, AuthorSignatureComponent],
+  imports: [
+    CommonModule,
+    SplitContentPipe,
+    AdArticleComponent,
+    RouterLink,
+    NgOptimizedImage,
+    AuthorSignatureComponent
+  ],
   templateUrl: './hybrid-reader.html',
   styleUrls: ['./hybrid-reader.scss']
 })
 export class HybridReaderComponent implements OnInit, OnDestroy {
   public translate = inject(TranslationService);
   private seoService = inject(SeoService);
+  private contentService = inject(ContentService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-  private injector = inject(Injector);
   private document = inject(DOCUMENT);
   private platformId = inject(PLATFORM_ID);
 
-  // 🛡️ Injeção segura e condicional para não travar builds estáticos
+  // 🛡️ Injeção do token SSR oficial para definir status HTTP
   private responseInit = inject(RESPONSE_INIT, { optional: true });
 
   currentMode = signal<'broklin' | 'jonah'>('broklin');
@@ -60,7 +66,7 @@ export class HybridReaderComponent implements OnInit, OnDestroy {
     // 🛡️ EXECUÇÃO SEGURA EM BROWSER
     afterNextRender(() => {
       if (this.isBrowser) {
-        this.checkTheme(); // Ajuste tático: lê e sincroniza o tema no primeiro ciclo de hidratação
+        this.checkTheme();
         this.themeObserver = new MutationObserver(() => this.checkTheme());
         this.themeObserver.observe(this.document.body, { attributes: true, attributeFilter: ['class'] });
       }
@@ -125,17 +131,17 @@ export class HybridReaderComponent implements OnInit, OnDestroy {
       switchMap(id => {
         if (!id) {
           this.setSsrStatus(404);
+          this.activeEpisode.set(null);
           return of(null);
         }
 
-        // 🚀 CONEXÃO DINÂMICA AO BANCO (Pelo ID global)
-        return this.injector.get(ContentService).getGlobalSagaById(id).pipe(
+        return this.contentService.getGlobalSagaById(id).pipe(
           take(1),
           tap(ep => {
             if (!ep) {
-              this.setSsrStatus(404); // Responde com 404 real se a saga híbrida for inválida ou inexistente
+              this.setSsrStatus(404); // Emit HTTP 404 real no SSR quando não encontrar o ID no banco
             }
-            this.activeEpisode.set(ep); // Garante reset para null em caso de não haver episódio correspondente
+            this.activeEpisode.set(ep);
           }),
           catchError(err => {
             console.error(`🛡️ [RQS Hybrid Reader] Erro crítico ao buscar saga híbrida ${id}:`, err);
