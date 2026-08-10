@@ -119,6 +119,10 @@ export default async function handler(req, res) {
     {
       path: '/logs-archive',
       priority: '0.8'
+    },
+    {
+      path: '/store',
+      priority: '0.8'
     }
   ];
 
