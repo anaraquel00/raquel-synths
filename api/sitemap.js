@@ -215,7 +215,8 @@ export default async function handler(req, res) {
     jonahDocs
   ] = await Promise.all([
     fetchCollection('lore'),
-    fetchCollection('lore-jonah')
+    fetchCollection('lore-jonah'),
+    fetchCollection('logs')
   ]);
 
   // =====================================================
@@ -309,6 +310,60 @@ export default async function handler(req, res) {
     jonahDocs,
     'jonah'
   );
+
+  // =====================================================
+// 7. LOGS PUBLICADOS
+// =====================================================
+
+const appendPublishedLogs = (documents) => {
+  documents.forEach((doc) => {
+
+    const id =
+      doc.name?.split('/').pop();
+
+    if (!id) {
+      return;
+    }
+
+    const dateValue =
+      doc.fields?.date?.stringValue ??
+      doc.fields?.date?.timestampValue;
+
+    if (!dateValue) {
+      return;
+    }
+
+    // Aceita tanto:
+    // 2026-07-13
+    // quanto:
+    // 2026-07-13T12:00:00.000Z
+
+    const logDate =
+      String(dateValue).slice(0, 10);
+
+    // Não anuncia logs futuros ao Google.
+    if (logDate > todayStr) {
+      return;
+    }
+
+    const lastmod =
+      normalizeDate(
+        doc.updateTime ??
+        dateValue
+      );
+
+    appendUrl({
+      path:
+        `/log-reader/${encodeURIComponent(id)}`,
+
+      lastmod,
+      changefreq: 'monthly',
+      priority: '0.7'
+    });
+  });
+};
+
+appendPublishedLogs(logsDocs);
 
   // =====================================================
   // FINAL
