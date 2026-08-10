@@ -298,29 +298,95 @@ private parseFirestoreValue(value: FirestoreRestValue): unknown {
     );
   }
 
-  getGlobalSagaById(id: string): Observable<LoreEpisode | null> {
-    if (!id) return of(null);
+getGlobalSagaById(
+  id: string
+): Observable<LoreEpisode | null> {
 
-    if (this.globalSagasCache) {
-      const found = this.globalSagasCache.find((ep: { id: string }) => ep.id === id);
-      if (found) return of(found);
+  if (!id) {
+    return of(null);
+  }
+
+  if (this.globalSagasCache) {
+    const found =
+      this.globalSagasCache.find(ep => ep.id === id);
+
+    if (found && this.isEpisodePublic(found)) {
+      return of(found);
     }
 
-    const docRef = doc(this.firestore, 'global-sagas', id);
+    return of(null);
+  }
 
-    return from(getDoc(docRef)).pipe(
-      map(docSnap => {
-        if (docSnap.exists()) {
-          return { id: docSnap.id, ...docSnap.data() } as LoreEpisode;
+  // SSR / VERCEL
+  if (isPlatformServer(this.platformId)) {
+    return this.getEpisodeByIdServer(
+      'global-sagas',
+      id
+    ).pipe(
+      map(ep => {
+        if (!ep) {
+          return null;
         }
-        return null;
-      }),
-      catchError(err => {
-        console.warn(`⚠️ Erro ao buscar saga global ${id}:`, err);
-        return of(null);
+
+        return this.isEpisodePublic(ep)
+          ? ep
+          : null;
       })
     );
   }
+
+  // BROWSER
+  const docRef =
+    doc(this.firestore, 'global-sagas', id);
+
+  return from(getDoc(docRef)).pipe(
+    map(docSnap => {
+      if (!docSnap.exists()) {
+        return null;
+      }
+
+      const episode = {
+        id: docSnap.id,
+        ...docSnap.data()
+      } as LoreEpisode;
+
+      return this.isEpisodePublic(episode)
+        ? episode
+        : null;
+    }),
+
+    catchError(err => {
+      console.warn(
+        `⚠️ Erro ao buscar saga global ${id}:`,
+        err
+      );
+
+      return of(null);
+    })
+  );
+}
+
+private isEpisodePublic(
+  episode: LoreEpisode
+): boolean {
+
+  if (episode.published !== true) {
+    return false;
+  }
+
+  if (!episode.releaseDate) {
+    return false;
+  }
+
+  const releaseDate =
+    new Date(episode.releaseDate);
+
+  if (Number.isNaN(releaseDate.getTime())) {
+    return false;
+  }
+
+  return releaseDate.getTime() <= Date.now();
+}
 
   // 🛒 4. LOJA (Produtos)
   getProducts(): Observable<Product[]> {
