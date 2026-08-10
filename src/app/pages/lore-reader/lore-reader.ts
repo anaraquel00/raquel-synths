@@ -207,6 +207,14 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
 
         const rawMode = params.get('mode');
 
+        console.log(
+    '🧪 [LORE SSR ROUTE]',
+    {
+      id,
+      rawMode,
+      url: this.router.url
+    }
+  );
         /**
          * Só aceitamos os dois modos válidos.
          *
@@ -300,14 +308,27 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
    * URL inexistente → HTTP 404
    */
   private setSsrStatus(statusCode: number): void {
+  const isServer = isPlatformServer(this.platformId);
 
-    if (
-      isPlatformServer(this.platformId) &&
-      this.responseInit
-    ) {
-      this.responseInit.status = statusCode;
+  console.log(
+    '🧪 [SSR STATUS DEBUG]',
+    {
+      statusCode,
+      isServer,
+      responseInitExists: !!this.responseInit,
+      currentUrl: this.router.url
     }
+  );
+
+  if (isServer && this.responseInit) {
+    this.responseInit.status = statusCode;
+
+    console.log(
+      '🧪 [SSR STATUS APPLIED]',
+      this.responseInit.status
+    );
   }
+}
 
   /**
    * O modo visual agora acompanha a URL.
@@ -354,7 +375,7 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
     );
   }
 
-  ngOnDestroy(): void {
+    ngOnDestroy(): void {
     /**
      * Não existe mais MutationObserver neste componente.
      *

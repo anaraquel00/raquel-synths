@@ -1,4 +1,4 @@
-import { RenderMode, ServerRoute } from '@angular/ssr';
+import { RenderMode, ServerRoute, PrerenderFallback } from '@angular/ssr';
 
 export const serverRoutes: ServerRoute[] = [
   // --- ROTAS ESTÁTICAS E SUMÁRIOS ---
@@ -28,6 +28,7 @@ export const serverRoutes: ServerRoute[] = [
   {
   path: 'lore/:mode/:id',
   renderMode: RenderMode.Prerender,
+  fallback: PrerenderFallback.Server,
 
   async getPrerenderParams() {
     const broklinIds = [
