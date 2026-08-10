@@ -107,13 +107,18 @@ export default async function handler(req, res) {
     },
 
     {
-      path: '/hybrid-saga',
+      path: '/musical-archives',
       priority: '0.8'
     },
 
     {
-      path: '/bio',
-      priority: '0.7'
+      path: '/saga',
+      priority: '0.8'
+    },
+
+    {
+      path: '/logs-archive',
+      priority: '0.8'
     }
   ];
 
@@ -326,6 +331,11 @@ const appendPublishedLogs = (documents) => {
       return;
     }
 
+    // Página de navegação/ponte, não é artigo
+    if (id === 'system-archive') {
+      return;
+    }
+
     const dateValue =
       doc.fields?.date?.stringValue ??
       doc.fields?.date?.timestampValue;
@@ -334,15 +344,9 @@ const appendPublishedLogs = (documents) => {
       return;
     }
 
-    // Aceita tanto:
-    // 2026-07-13
-    // quanto:
-    // 2026-07-13T12:00:00.000Z
-
     const logDate =
       String(dateValue).slice(0, 10);
 
-    // Não anuncia logs futuros ao Google.
     if (logDate > todayStr) {
       return;
     }

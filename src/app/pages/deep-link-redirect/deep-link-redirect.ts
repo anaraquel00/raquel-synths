@@ -58,6 +58,10 @@ export class DeepLinkRedirectComponent implements OnInit {
 
 
  ngOnInit(): void {
+      this.meta.updateTag({
+        name: 'robots',
+        content: 'noindex, nofollow'
+      });
     if (!isPlatformBrowser(this.platformId)) return;
 
     // 🛡️ DIZ AO GOOGLE PARA NÃO TENTAR INDEXAR ESTE REDIRECIONADOR:
@@ -158,21 +162,52 @@ private executeDeepLinkProtocol(data: any): void {
     }
   }
   else if (targetService === 'site') {
-  // Pega o link do episódio do Firestore ou monta o padrão com base no ID da rota
-  const siteLink = data.siteUrl || data.url || `https://raquelsynths.com/lore-reader/${this.route.snapshot.paramMap.get('id')}`;
+  const id = this.route.snapshot.paramMap.get('id');
+
+  let siteLink = data.siteUrl || data.url || '';
+
+  if (!siteLink && id) {
+    const contentType =
+      data.contentType || 'lore';
+
+    if (contentType === 'hybrid') {
+      siteLink =
+        `https://raquelsynths.com/hybrid-reader/${id}`;
+    }
+
+    else if (contentType === 'log') {
+      siteLink =
+        `https://raquelsynths.com/log-reader/${id}`;
+    }
+
+    else {
+      const mode =
+        data.mode === 'jonah'
+          ? 'jonah'
+          : 'broklin';
+
+      siteLink =
+        `https://raquelsynths.com/lore/${mode}/${id}`;
+    }
+  }
+
   webUrl = siteLink;
 
-  if (isMobile) {
-    // 🤖 Se o leitor estiver no Android: Força a abertura direta no Google Chrome
+  if (isMobile && siteLink) {
     if (userAgent.includes('Android')) {
-      const cleanUrl = siteLink.replace('https://', '').replace('http://', '');
-      uriScheme = `intent://${cleanUrl}#Intent;scheme=https;package=com.android.chrome;end`;
+      const cleanUrl = siteLink
+        .replace('https://', '')
+        .replace('http://', '');
+
+      uriScheme =
+        `intent://${cleanUrl}` +
+        `#Intent;scheme=https;` +
+        `package=com.android.chrome;end`;
     } else {
-      // No iOS/iPhone, o Safari padrão já é rápido com o seu pre-render ativo do Firebase
       uriScheme = '';
     }
   }
- }
+}
   else {
     webUrl = data.soundcloud;
     uriScheme = data.soundcloudUriScheme;

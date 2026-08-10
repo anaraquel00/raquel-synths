@@ -20,9 +20,21 @@ export class BioLinkComponent implements OnInit {
   subscribed = signal<boolean>(false);
 
   ngOnInit(): void {
-    this.titleService.setTitle('RaQuel Synths // Official Links & Bio');
-    this.metaService.updateTag({ name: 'description', content: 'Official portal for RaQuel Synths releases, lore, store, and community.' });
-  }
+  this.titleService.setTitle(
+    'RaQuel Synths // Official Links & Bio'
+  );
+
+  this.metaService.updateTag({
+    name: 'description',
+    content:
+      'Official portal for RaQuel Synths releases, lore, store, and community.'
+  });
+
+  this.metaService.updateTag({
+    name: 'robots',
+    content: 'noindex, follow'
+  });
+}
 
   openLink(url: string): void {
     if (url) {
