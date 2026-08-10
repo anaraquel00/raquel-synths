@@ -96,7 +96,52 @@ export const serverRoutes: ServerRoute[] = [
 
   // Leitores dinâmicos e áreas administrativas rodando direto no servidor SSR
   { path: 'hybrid-reader/:id', renderMode: RenderMode.Server },
-  { path: 'log-reader/:id', renderMode: RenderMode.Server },
+  {
+    path: 'log-reader/:id',
+    renderMode: RenderMode.Prerender,
+    fallback: PrerenderFallback.Server,
+
+  async getPrerenderParams() {
+    const logIds = [
+      '2025-12-08-log',
+      '2025-12-14-log',
+      '2025-12-15-log',
+      '2025-12-20-log',
+      '2025-12-24-log',
+      '2026-01-16-log',
+      '2026-01-17-log',
+      '2026-01-29-log',
+      '2026-02-02-log',
+      '2026-02-09-log',
+      '2026-02-16-log',
+      '2026-02-23-log',
+      '2026-03-02-log',
+      '2026-03-09-log',
+      '2026-03-16-log',
+      '2026-03-24-log',
+      '2026-03-30-log',
+      '2026-04-03-log',
+      '2026-04-06-log',
+      '2026-04-14-log',
+      '2026-04-20-log',
+      '2026-04-27-log',
+      '2026-05-04-log',
+      '2026-05-11-log',
+      '2026-05-18-log',
+      '2026-05-25-log',
+      '2026-06-01-log',
+      '2026-06-03-log',
+      '2026-06-08-log',
+      '2026-06-10-log',
+      '2026-06-15-log',
+      '2026-06-22-log',
+      '2026-06-29-log',
+      '2026-07-13-log'
+    ];
+
+    return logIds.map(id => ({ id }));
+  }
+},
 
   { path: 'logs-archive', renderMode: RenderMode.Server },
   { path: 'musical-archives', renderMode: RenderMode.Server },

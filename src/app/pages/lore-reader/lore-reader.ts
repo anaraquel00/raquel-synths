@@ -207,15 +207,7 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
 
         const rawMode = params.get('mode');
 
-        console.log(
-    '🧪 [LORE SSR ROUTE]',
-    {
-      id,
-      rawMode,
-      url: this.router.url
-    }
-  );
-        /**
+           /**
          * Só aceitamos os dois modos válidos.
          *
          * Qualquer outro valor gera 404.
@@ -310,23 +302,8 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
   private setSsrStatus(statusCode: number): void {
   const isServer = isPlatformServer(this.platformId);
 
-  console.log(
-    '🧪 [SSR STATUS DEBUG]',
-    {
-      statusCode,
-      isServer,
-      responseInitExists: !!this.responseInit,
-      currentUrl: this.router.url
-    }
-  );
-
   if (isServer && this.responseInit) {
     this.responseInit.status = statusCode;
-
-    console.log(
-      '🧪 [SSR STATUS APPLIED]',
-      this.responseInit.status
-    );
   }
 }
 

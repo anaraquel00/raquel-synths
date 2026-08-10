@@ -160,8 +160,7 @@ export class HybridReaderComponent implements OnInit, OnDestroy {
   private setSsrStatus(statusCode: number): void {
     if (isPlatformServer(this.platformId) && this.responseInit) {
       this.responseInit.status = statusCode;
-      console.log(`🛡️ [RQS SSR] Status de resposta do Leitor Híbrido definido para: ${statusCode}`);
-    }
+        }
   }
 
   ngOnDestroy() {

@@ -22,21 +22,9 @@ const angularApp = new AngularNodeAppEngine({
 });
 
 app.use(async (req, res, next) => {
-  console.log('🧪 [ANGULAR ENGINE REQUEST]', {
-    url: req.url,
-    originalUrl: req.originalUrl,
-    method: req.method
-  });
-
   try {
-    const response = await angularApp.handle(req);
-
-    console.log('🧪 [ANGULAR ENGINE RESPONSE]', {
-      hasResponse: !!response,
-      status: response?.status,
-      statusText: response?.statusText,
-      contentType: response?.headers.get('content-type')
-    });
+    const response =
+      await angularApp.handle(req);
 
     if (response) {
       await writeResponseToNodeResponse(
@@ -51,7 +39,7 @@ app.use(async (req, res, next) => {
 
   } catch (error) {
     console.error(
-      '🔥 [ANGULAR ENGINE ERROR]',
+      '🔥 [RQS Angular SSR Error]:',
       error
     );
 

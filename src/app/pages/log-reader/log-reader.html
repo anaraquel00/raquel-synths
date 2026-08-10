@@ -35,14 +35,6 @@
       }
 
       @if (data.jonahComment && isJonahMode()) {
-        <div class="ad-module" style="margin: 25px 0;">
-          @defer (on viewport) {
-            <!-- <app-ad-article ngSkipHydration></app-ad-article> -->
-          } @placeholder {
-            <div style="min-height: 250px; width: 100%;"></div>
-          }
-        </div>
-
         <div class="jonah-note">
           <strong>[JONAH_OVERRIDE]:</strong>
           <div [innerHTML]="data.jonahComment | safeHtml"></div>
