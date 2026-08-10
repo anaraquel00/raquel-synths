@@ -9,6 +9,11 @@ import express from 'express';
 const app = express();
 
 const angularApp = new AngularNodeAppEngine({
+  allowedHosts: [
+    'raquelsynths.com',
+    'www.raquelsynths.com'
+  ],
+
   trustProxyHeaders: [
     'x-forwarded-host',
     'x-forwarded-proto',
@@ -41,10 +46,6 @@ app.use(async (req, res, next) => {
 
       return;
     }
-
-    console.log(
-      '🧪 [ANGULAR ENGINE NO RESPONSE]'
-    );
 
     next();
 
