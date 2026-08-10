@@ -30,9 +30,6 @@ app.use(
   }),
 );
 
-/**
- * Renderiza a aplicação Angular via SSR capturando erros detalhados
- */
 app.use((req, res, next) => {
   getAngularApp()
     .handle(req)
@@ -41,20 +38,8 @@ app.use((req, res, next) => {
     )
     .catch((err) => {
       console.error('🔥 [RQS SSR Render Error]:', err);
-      res.status(500);
-      res.setHeader('content-type', 'text/plain; charset=utf-8');
-      res.send(`SSR Render Error: ${err?.stack || err?.message || err}`);
+      next(err);
     });
-});
-
-/**
- * Manipulador global de erros do Express
- */
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error('🔥 [Express Global Error]:', err);
-  res.status(500);
-  res.setHeader('content-type', 'text/plain; charset=utf-8');
-  res.send(`Express Global Error: ${err?.stack || err?.message || err}`);
 });
 
 if (isMainModule(import.meta.url) || process.env['pm_id'] || process.argv[1]?.match(/server\.mjs$/)) {
