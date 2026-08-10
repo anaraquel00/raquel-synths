@@ -28,11 +28,11 @@ export default async function handler(req, res) {
 
   const escapeXml = (value = '') =>
     String(value)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&apos;');
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
 
   const normalizeDate = (value) => {
     if (!value) {
@@ -212,7 +212,8 @@ export default async function handler(req, res) {
 
   const [
     broklinDocs,
-    jonahDocs
+    jonahDocs,
+    logsDocs
   ] = await Promise.all([
     fetchCollection('lore'),
     fetchCollection('lore-jonah'),
