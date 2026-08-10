@@ -34,15 +34,26 @@ export class AppVisualNovel implements OnInit, OnDestroy {
   currentMode = signal<'broklin' | 'jonah'>('broklin');
 
   // Esse Observable vai buscar os episódios do Firebase toda vez que o modo mudar
-  episodes$: Observable<LoreEpisode[]> = this.modeSubject.asObservable().pipe(
-    take(1),
-    switchMap(mode => {
-      if (!isPlatformBrowser(this.platformId)) {
-        return of([{ id: 'seo-mock', title: 'Literary Sagas: Cyberpunk Story', description: 'Interactive audio civil war narrative.', mode: 'broklin', route: '/saga' } as any]);
-      }
-      return this.injector.get(ContentService).getEpisodes(mode).pipe(take(1)); // 🛡️ INJEÇÃO LAZY E TAKE(1)
-    })
-  );
+  episodes$ = this.modeSubject.asObservable().pipe(
+  switchMap(mode => {
+    if (!isPlatformBrowser(this.platformId)) {
+      return of([
+        {
+          id: 'seo-mock',
+          title: 'Literary Sagas: Cyberpunk Story',
+          description: 'Interactive audio civil war narrative.',
+          mode: 'broklin',
+          route: '/saga'
+        } as any
+      ]);
+    }
+
+    return this.injector
+      .get(ContentService)
+      .getEpisodes(mode)
+      .pipe(take(1));
+  })
+);
 
   private themeObserver: MutationObserver | null = null;
   introPt = VN_INTRO_PT;
@@ -159,13 +170,29 @@ export class AppVisualNovel implements OnInit, OnDestroy {
   }
 
   navigate(link: string) {
-    if (link.startsWith('/')) {
-      window.scrollTo(0, 0);
-      this.router.navigate([link]);
-    } else {
-      window.open(link, '_blank');
-    }
+  if (!isPlatformBrowser(this.platformId)) {
+    return;
   }
+
+  window.scrollTo(0, 0);
+
+  if (link === '/visual-novel') {
+    this.router.navigate([
+      '/visual-novel',
+      this.currentMode(),
+      's1'
+    ]);
+
+    return;
+  }
+
+  if (link.startsWith('/')) {
+    this.router.navigateByUrl(link);
+    return;
+  }
+
+  window.open(link, '_blank');
+}
 
   scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });

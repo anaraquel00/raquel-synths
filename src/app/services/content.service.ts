@@ -12,22 +12,47 @@ import {
 } from '@angular/fire/firestore';
 import { Observable, of, from } from 'rxjs';
 import { map, catchError, take } from 'rxjs/operators';
-
+import { HttpClient } from '@angular/common/http';
+import { isPlatformServer } from '@angular/common';
 import { LoreEpisode } from '../data/lore-data';
 import { Product, Department } from '../data/store-data';
 
+interface FirestoreRestValue {
+  stringValue?: string;
+  booleanValue?: boolean;
+  integerValue?: string;
+  doubleValue?: number;
+  timestampValue?: string;
+  nullValue?: null;
+  arrayValue?: {
+    values?: FirestoreRestValue[];
+  };
+  mapValue?: {
+    fields?: Record<string, FirestoreRestValue>;
+  };
+}
+
+interface FirestoreRestDocument {
+  name: string;
+  fields?: Record<string, FirestoreRestValue>;
+  createTime?: string;
+  updateTime?: string;
+}
 @Injectable({
   providedIn: 'root'
 })
+
 export class ContentService {
   private firestore = inject(Firestore);
   private platformId = inject(PLATFORM_ID);
+  private http = inject(HttpClient);
 
   // 🎭 DUAL MODE ENGINE (Restaurado para o Uplink Terminal e componentes visuais)
   public currentMode: 'broklin' | 'jonah' = 'broklin';
 
   private episodesCache: { [mode: string]: LoreEpisode[] } = {};
   private globalSagasCache: LoreEpisode[] | null = null;
+
 
   // 🎵 1. DISCOGRAFIA (One-Shot SSR)
   getDiscography(): Observable<any[]> {
@@ -79,30 +104,162 @@ export class ContentService {
     );
   }
 
-  getEpisodeById(mode: 'broklin' | 'jonah', id: string): Observable<LoreEpisode | null> {
-    if (!id) return of(null);
+ getEpisodeById(
+  mode: 'broklin' | 'jonah',
+  id: string
+): Observable<LoreEpisode | null> {
 
-    if (this.episodesCache[mode]) {
-      const found = this.episodesCache[mode].find(ep => ep.id === id);
-      if (found) return of(found);
+  if (!id) {
+    return of(null);
+  }
+
+  if (this.episodesCache[mode]) {
+    const found = this.episodesCache[mode].find(ep => ep.id === id);
+
+    if (found) {
+      return of(found);
     }
+  }
 
-    const collectionName = mode === 'jonah' ? 'lore-jonah' : 'lore';
-    const docRef = doc(this.firestore, `${collectionName}/${id}`);
+  const collectionName =
+    mode === 'jonah' ? 'lore-jonah' : 'lore';
 
-    return from(getDoc(docRef)).pipe(
-      map(snapshot => {
-        if (snapshot.exists()) {
-          return { id: snapshot.id, ...snapshot.data() } as LoreEpisode;
-        }
+  // SSR / PRERENDER
+  if (isPlatformServer(this.platformId)) {
+    return this.getEpisodeByIdServer(collectionName, id);
+  }
+
+  // BROWSER
+  const docRef = doc(
+    this.firestore,
+    `${collectionName}/${id}`
+  );
+
+  return from(getDoc(docRef)).pipe(
+    map(snapshot => {
+      if (!snapshot.exists()) {
         return null;
-      }),
-      catchError(err => {
-        console.warn(`⚠️ Erro ao buscar episódio ${id} no Firestore:`, err);
+      }
+
+      return {
+        id: snapshot.id,
+        ...snapshot.data()
+      } as LoreEpisode;
+    }),
+    catchError(err => {
+      console.warn(
+        `⚠️ Erro ao buscar episódio ${id} no Firestore:`,
+        err
+      );
+
+      return of(null);
+    })
+  );
+}
+
+private getEpisodeByIdServer(
+  collectionName: string,
+  id: string
+): Observable<LoreEpisode | null> {
+
+  const projectId = 'raquel-synths-platform';
+
+  const safeCollection = encodeURIComponent(collectionName);
+  const safeId = encodeURIComponent(id);
+
+  const url =
+    `https://firestore.googleapis.com/v1/projects/` +
+    `${projectId}/databases/(default)/documents/` +
+    `${safeCollection}/${safeId}`;
+
+  return this.http.get<FirestoreRestDocument>(url).pipe(
+    map(restDoc => {
+      if (!restDoc?.fields) {
+        return null;
+      }
+
+      return this.mapFirestoreRestDocument(restDoc, id);
+    }),
+
+    catchError(err => {
+      if (err.status === 404) {
         return of(null);
-      })
+      }
+
+      console.error(
+        `🔥 [SSR Firestore REST] ${collectionName}/${id}:`,
+        err
+      );
+
+      return of(null);
+    })
+  );
+}
+private mapFirestoreRestDocument(
+  doc: FirestoreRestDocument,
+  id: string
+): LoreEpisode {
+
+  const fields = doc.fields ?? {};
+
+  const result: Record<string, unknown> = {};
+
+  for (const [key, value] of Object.entries(fields)) {
+    result[key] = this.parseFirestoreValue(value);
+  }
+
+  return {
+    id,
+    ...result
+  } as LoreEpisode;
+}
+
+private parseFirestoreValue(value: FirestoreRestValue): unknown {
+
+  if ('stringValue' in value) {
+    return value.stringValue;
+  }
+
+  if ('booleanValue' in value) {
+    return value.booleanValue;
+  }
+
+  if ('integerValue' in value) {
+    return Number(value.integerValue);
+  }
+
+  if ('doubleValue' in value) {
+    return value.doubleValue;
+  }
+
+  if ('timestampValue' in value) {
+    return value.timestampValue;
+  }
+
+  if ('nullValue' in value) {
+    return null;
+  }
+
+  if ('arrayValue' in value) {
+    return (value.arrayValue?.values ?? [])
+      .map(item => this.parseFirestoreValue(item));
+  }
+
+  if ('mapValue' in value) {
+    const nestedFields = value.mapValue?.fields ?? {};
+
+    return Object.fromEntries(
+      Object.entries(nestedFields)
+        .map(([key, nestedValue]) => [
+          key,
+          this.parseFirestoreValue(nestedValue)
+        ])
     );
   }
+
+  return null;
+}
+
 
   // 🌐 3. SAGAS GLOBAIS
   getGlobalSagas(mode: string = 'hybrid', id?: string): Observable<LoreEpisode[]> {

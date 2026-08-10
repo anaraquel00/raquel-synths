@@ -63,82 +63,129 @@ export class VisualNovelComponent implements OnInit, OnDestroy {
     })
   );
 
-  private themeObserver: MutationObserver | null = null;
+
   isBrowser: boolean;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
-    this.isBrowser = isPlatformBrowser(this.platformId);
-
-    // 🛡️ TRAVA TÁTICA: O Observer e a leitura do DOM nascem apenas pós-hidratação
-    afterNextRender(() => {
-      this.checkTheme();
-
-      this.themeObserver = new MutationObserver(() => {
-        this.checkTheme();
-      });
-
-      this.themeObserver.observe(this.document.body, {
-        attributes: true,
-        attributeFilter: ['class']
-      });
-    });
-  }
-
-  ngOnInit() {
-     // 🛡️ ESCUTA ATIVA: Captura o parâmetro da URL de forma segura para SSR e Browser
-    this.route.queryParams.subscribe(params => {
-      const seasonParam = Number(params['season']) || 1;
-      this.setTemporada(seasonParam);
-    });
-    // 1. Radar de Idioma (Lê a configuração da matriz)
-    const isPt = this.translate.isPt();
-
-    // 2. 🛡️ PATCH DO CRAWLER: Sincroniza o hardware (Tag HTML)
-    // Isso mata a "Síndrome do Idioma Misto" no GSC
-    this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
-
-    // 3. 🛡️ MOTOR DE AUTORIDADE: Meta Tags da Visual Novel
-    this.seoService.updateMetaTags({
-      title: isPt ? 'Sagas Interativas' : 'Interactive Sagas',
-      description: isPt
-        ? 'Mergulhe nas Sagas Cyberpunk da RaQuel Synths. Escolha entre o código de Broklin ou o caos de Jonah e decida o futuro da rede.'
-        : 'Dive into RaQuel Synths’ Cyberpunk Sagas. Choose between Broklin’s code or Jonah’s chaos and decide the future of the network.',
-      type: 'website'
-    });
-
-    // 4. 🚀 INJEÇÃO DE LORE (JSON-LD): Avisa ao Google que isso é uma Série Criativa
-    this.seoService.setJsonLd({
-      "@context": "https://schema.org",
-      "@type": "CollectionPage",
-      "name": isPt ? "Sagas Interativas RaQuel Synths" : "RaQuel Synths Interactive Sagas",
-      "description": isPt
-        ? "Arquivos de episódios da narrativa transmídia Ecos da RQS."
-        : "Episode archives of the Echoes of RQS transmedia narrative.",
-      "publisher": {
-        "@type": "Organization",
-        "name": "RaQuel Synths",
-        "logo": {
-          "@type": "ImageObject",
-          "url": "https://raquelsynths.com/rqs-logo.webp"
-        }
-      }
-    });
-  }
-
-  ngOnDestroy() {
-    if (this.themeObserver) this.themeObserver.disconnect();
-  }
-
-  private checkTheme() {
-    if (!isPlatformBrowser(this.platformId)) return;
-    const isJonah = this.document.body.classList.contains('mode-jonah');
-    const newMode: 'broklin' | 'jonah' = isJonah ? 'jonah' : 'broklin';
-
-    this.currentMode.set(newMode);
-
-    if (this.modeSubject.value !== newMode) {
-      this.modeSubject.next(newMode);
-      this.setTemporada(1); // 🛡️ Bônus de UX: Volta pra Temp 1 ao trocar de personagem
-    }
-  }
+ constructor(
+  @Inject(PLATFORM_ID) private platformId: Object
+) {
+  this.isBrowser = isPlatformBrowser(this.platformId);
 }
+
+ngOnInit(): void {
+
+this.route.paramMap.subscribe(params => {
+      const modeParam =
+        params.get('mode');
+
+      const seasonParam =
+        params.get('season');
+
+      if (
+        modeParam !== 'broklin' &&
+        modeParam !== 'jonah'
+      ) {
+        return;
+      }
+
+      if (
+        seasonParam !== 's1' &&
+        seasonParam !== 's2'
+      ) {
+        return;
+      }
+
+      const mode:
+        'broklin' | 'jonah' =
+        modeParam;
+
+      const season =
+        seasonParam === 's2'
+          ? 2
+          : 1;
+
+      this.currentMode.set(mode);
+
+      if (
+        this.modeSubject.value !== mode
+      ) {
+        this.modeSubject.next(mode);
+      }
+
+      this.setTemporada(season);
+
+      this.applyModeTheme(mode);
+    });
+
+  const isPt = this.translate.isPt();
+
+  this.document.documentElement.lang =
+    isPt ? 'pt-BR' : 'en-US';
+
+  this.seoService.updateMetaTags({
+    title: isPt
+      ? 'Sagas Interativas'
+      : 'Interactive Sagas',
+
+    description: isPt
+      ? 'Mergulhe nas Sagas Cyberpunk da RaQuel Synths. Escolha entre o código de Broklin ou o caos de Jonah e decida o futuro da rede.'
+      : 'Dive into RaQuel Synths’ Cyberpunk Sagas. Choose between Broklin’s code or Jonah’s chaos and decide the future of the network.',
+
+    type: 'website'
+  });
+
+  this.seoService.setJsonLd({
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+
+    name: isPt
+      ? 'Sagas Interativas RaQuel Synths'
+      : 'RaQuel Synths Interactive Sagas',
+
+    description: isPt
+      ? 'Arquivos de episódios da narrativa transmídia Ecos da RQS.'
+      : 'Episode archives of the Echoes of RQS transmedia narrative.',
+
+    publisher: {
+      '@type': 'Organization',
+      name: 'RaQuel Synths',
+
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://raquelsynths.com/rqs-logo.webp'
+      }
+    }
+  });
+}
+
+private applyModeTheme(
+  mode: 'broklin' | 'jonah'
+): void {
+
+  if (!this.isBrowser) {
+    return;
+  }
+
+  this.document.body.classList.remove(
+    'mode-broklin',
+    'mode-jonah'
+  );
+
+  this.document.body.classList.add(
+    `mode-${mode}`
+  );
+
+  const win =
+    this.document.defaultView;
+
+  win?.localStorage.setItem(
+    'rqs-theme',
+    mode
+  );
+}
+
+ ngOnDestroy(): void {
+}
+}
+
+

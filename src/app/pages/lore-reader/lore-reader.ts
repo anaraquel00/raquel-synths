@@ -10,33 +10,54 @@ import {
   effect,
   RESPONSE_INIT
 } from '@angular/core';
+
 import {
   CommonModule,
   isPlatformBrowser,
   isPlatformServer,
   DOCUMENT
 } from '@angular/common';
-import { Router, ActivatedRoute, RouterLink } from '@angular/router';
+
+import {
+  Router,
+  ActivatedRoute,
+  } from '@angular/router';
+
 import { TranslationService } from '../../services/translation.service';
 import { ContentService } from '../../services/content.service';
 import { SeoService } from '../../services/seo.service';
-import { Observable, combineLatest, of, BehaviorSubject } from 'rxjs';
-import { map, switchMap, tap, take, catchError } from 'rxjs/operators';
-import { SplitContentPipe } from "../../components/pipes/content-splitter.pipe";
+
+import { Observable, of } from 'rxjs';
+import {
+  switchMap,
+  tap,
+  take,
+  catchError
+} from 'rxjs/operators';
+
+import { SplitContentPipe } from '../../components/pipes/content-splitter.pipe';
 import { LoreEpisode } from '../../data/lore-data';
-import { AdArticleComponent } from "../../components/ad-article/ad-article";
+import { AdArticleComponent } from '../../components/ad-article/ad-article';
 import { NgOptimizedImage } from '@angular/common';
 import { AuthorSignatureComponent } from '../../components/author-signature/author-signature';
 
 @Component({
   selector: 'app-lore-reader',
   standalone: true,
-  imports: [CommonModule, SplitContentPipe, AdArticleComponent, RouterLink, NgOptimizedImage, AuthorSignatureComponent],
+  imports: [
+    CommonModule,
+    SplitContentPipe,
+    AdArticleComponent,
+    NgOptimizedImage,
+    AuthorSignatureComponent
+  ],
   templateUrl: './lore-reader.html',
   styleUrls: ['./lore-reader.scss']
 })
 export class LoreReaderComponent implements OnInit, OnDestroy {
+
   public translate = inject(TranslationService);
+
   private seoService = inject(SeoService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
@@ -44,162 +65,319 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
   private document = inject(DOCUMENT);
   private platformId = inject(PLATFORM_ID);
 
-  // 🛡️ Injeção opcional para evitar quebra em ambiente navegador (CSR) ou compilação estática (SSG)
-  private responseInit = inject(RESPONSE_INIT, { optional: true });
+  /**
+   * Permite definir HTTP status no SSR.
+   * No browser pode não existir, por isso optional.
+   */
+  private responseInit = inject(RESPONSE_INIT, {
+    optional: true
+  });
 
+  /**
+   * Agora a URL é a fonte de verdade do modo.
+   *
+   * /lore/broklin/s1-e1
+   * /lore/jonah/s1-e1
+   */
   currentMode = signal<'broklin' | 'jonah'>('broklin');
+
   isBrowser = isPlatformBrowser(this.platformId);
 
-  // 🛡️ O CANAL DE RÁDIO DO TEMA
-  private mode$ = new BehaviorSubject<'broklin' | 'jonah'>('broklin');
-
   episode$!: Observable<LoreEpisode | null>;
+
   activeEpisode = signal<LoreEpisode | null>(null);
 
-  private themeObserver: MutationObserver | null = null;
-
   constructor() {
-    // 🛡️ TRAVA TÁTICA (Executa estritamente pós-hidratação no Navegador)
+
+    /**
+     * Código exclusivamente de browser.
+     *
+     * O tema visual agora é derivado da rota.
+     * Ele NÃO decide mais qual coleção Firestore será usada.
+     */
     afterNextRender(() => {
-      this.checkTheme();
-      this.themeObserver = new MutationObserver(() => {
-        this.checkTheme();
-      });
-      this.themeObserver.observe(this.document.body, { attributes: true, attributeFilter: ['class'] });
+      this.applyRouteTheme();
     });
 
-    // 📡 O RADAR DE SEO REATIVO
+    /**
+     * SEO reativo.
+     */
     effect(() => {
       const lang = this.translate.currentLang();
       const isPt = lang === 'pt';
+
       const ep = this.activeEpisode();
+      const mode = this.currentMode();
 
-      if (ep) {
-        this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
-
-        const title = isPt ? ep.title : (ep.title_en || ep.title);
-        const desc = isPt ? ep.description : (ep.description_en || ep.description);
-        const imageUrl = ep.image || 'https://raquelsynths.com/images/banner-seo-global.jpg';
-
-        this.seoService.updateCanonical(`https://raquelsynths.com/lore-reader/${ep.id}`);
-
-        this.seoService.updateMetaTags({
-          title: `${title} | RQS Saga`,
-          description: desc,
-          image: imageUrl,
-          type: 'article',
-          url: `https://raquelsynths.com/lore-reader/${ep.id}`
-        });
-
-        this.seoService.setJsonLd({
-          "@context": "https://schema.org",
-          "@type": "BlogPosting",
-          "headline": title,
-          "description": desc,
-          "image": [ imageUrl ],
-          "datePublished": ep.releaseDate,
-          "author": [{
-              "@type": "Person",
-              "name": "Ana Raquel",
-              "jobTitle": "Dev & Creator",
-              "url": "https://raquelsynths.com/creator"
-            }],
-          "publisher": {
-            "@type": "Organization",
-            "name": "RaQuel Synths",
-            "logo": {
-              "@type": "ImageObject",
-              "url": "https://raquelsynths.com/rqs-logo.webp"
-            }
-          },
-          "mainEntityOfPage": {
-            "@type": "WebPage",
-            "@id": `https://raquelsynths.com/lore-reader/${ep.id}`
-          }
-        });
+      if (!ep) {
+        return;
       }
+
+      this.document.documentElement.lang =
+        isPt ? 'pt-BR' : 'en-US';
+
+      const title =
+        isPt
+          ? ep.title
+          : (ep.title_en || ep.title);
+
+      const desc =
+        isPt
+          ? ep.description
+          : (ep.description_en || ep.description);
+
+      const imageUrl =
+        ep.image ||
+        'https://raquelsynths.com/images/banner-seo-global.jpg';
+
+      /**
+       * Cada história passa a ter URL canônica própria.
+       */
+      const canonicalUrl =
+        `https://raquelsynths.com/lore/${mode}/${ep.id}`;
+
+      this.seoService.updateCanonical(canonicalUrl);
+
+      this.seoService.updateMetaTags({
+        title: `${title} | RQS Saga`,
+        description: desc,
+        image: imageUrl,
+        type: 'article',
+        url: canonicalUrl
+      });
+
+      this.seoService.setJsonLd({
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+
+        headline: title,
+        description: desc,
+
+        image: [
+          imageUrl
+        ],
+
+        datePublished: ep.releaseDate,
+
+        author: [
+          {
+            '@type': 'Person',
+            name: 'Ana Raquel',
+            jobTitle: 'Dev & Creator',
+            url: 'https://raquelsynths.com/creator'
+          }
+        ],
+
+        publisher: {
+          '@type': 'Organization',
+          name: 'RaQuel Synths',
+
+          logo: {
+            '@type': 'ImageObject',
+            url: 'https://raquelsynths.com/rqs-logo.webp'
+          }
+        },
+
+        mainEntityOfPage: {
+          '@type': 'WebPage',
+          '@id': canonicalUrl
+        }
+      });
     });
   }
 
-  ngOnInit() {
-    const id$ = this.route.paramMap.pipe(map(params => params.get('id')));
+  ngOnInit(): void {
 
-    this.episode$ = combineLatest([id$, this.mode$]).pipe(
-      switchMap(([id, mode]) => {
-        if (!id) {
+    /**
+     * A URL é a única autoridade para:
+     *
+     * mode
+     * id
+     *
+     * Exemplos:
+     *
+     * /lore/broklin/s1-e1
+     * /lore/jonah/s1-e1
+     */
+    this.episode$ = this.route.paramMap.pipe(
+
+      switchMap(params => {
+
+        const id = params.get('id');
+
+        const rawMode = params.get('mode');
+
+        /**
+         * Só aceitamos os dois modos válidos.
+         *
+         * Qualquer outro valor gera 404.
+         */
+        if (
+          rawMode !== 'broklin' &&
+          rawMode !== 'jonah'
+        ) {
+          this.activeEpisode.set(null);
           this.setSsrStatus(404);
+
           return of(null);
         }
 
-        const contentService = this.injector.get(ContentService);
+        const mode: 'broklin' | 'jonah' = rawMode;
 
-        // 🚀 RESOLUÇÃO DO DUAL MODE NO SSR:
-        // No servidor, o modo padrão inicial sempre será 'broklin' por limitação do DOM.
-        // Se a busca retornar nula no SSR, tentamos buscar no modo alternativo ('jonah') antes de dar 404!
-        return contentService.getEpisodeById(mode, id).pipe(
-          take(1),
-          switchMap(ep => {
-            if (ep) {
-              return of(ep);
-            }
+        this.currentMode.set(mode);
 
-            // Fallback exclusivo de busca cruzada para o Servidor (Googlebot)
-            if (isPlatformServer(this.platformId)) {
-              const alternativeMode = mode === 'broklin' ? 'jonah' : 'broklin';
-              console.log(`🛡️ [RQS Lore SSR] Não encontrado no modo '${mode}'. Tentando busca cruzada no modo: '${alternativeMode}'`);
+        /**
+         * No browser, sincroniza visualmente
+         * Broklin / Jonah com a URL.
+         */
+        if (this.isBrowser) {
+          this.applyRouteTheme();
+        }
 
-              return contentService.getEpisodeById(alternativeMode, id).pipe(
-                take(1),
-                tap(altEp => {
-                  if (altEp) {
-                    // Sincroniza o sinal se o episódio de fato for da outra facção
-                    this.currentMode.set(alternativeMode);
-                  }
-                })
+        if (!id) {
+          this.activeEpisode.set(null);
+          this.setSsrStatus(404);
+
+          return of(null);
+        }
+
+        const contentService =
+          this.injector.get(ContentService);
+
+        /**
+         * Importante:
+         *
+         * NÃO existe mais fallback cruzado.
+         *
+         * /lore/broklin/s1-e1
+         * consulta SOMENTE collection "lore".
+         *
+         * /lore/jonah/s1-e1
+         * consulta SOMENTE collection "lore-jonah".
+         */
+        return contentService
+          .getEpisodeById(mode, id)
+          .pipe(
+
+            take(1),
+
+            tap(ep => {
+
+              if (!ep) {
+                this.setSsrStatus(404);
+              }
+
+              this.activeEpisode.set(ep);
+            }),
+
+            catchError(err => {
+
+              console.error(
+                `🛡️ [RQS Lore Reader] Falha ao ler ${mode}/${id}:`,
+                err
               );
-            }
 
-            return of(null);
-          }),
-          tap(ep => {
-            if (!ep) {
+              this.activeEpisode.set(null);
+
               this.setSsrStatus(404);
-            }
-            this.activeEpisode.set(ep);
-          }),
-          catchError(err => {
-            console.error(`🛡️ [RQS Lore Reader] Falha ao ler banco para o episódio ${id}:`, err);
-            this.setSsrStatus(404);
-            this.activeEpisode.set(null);
-            return of(null);
-          })
-        );
+
+              return of(null);
+            })
+          );
       })
     );
   }
-private setSsrStatus(statusCode: number): void {
-  if (isPlatformServer(this.platformId) && this.responseInit) {
-    this.responseInit.status = statusCode;
-  }
-}
 
-  ngOnDestroy() {
-    if (this.themeObserver) this.themeObserver.disconnect();
-  }
+  /**
+   * Define o HTTP status real no SSR.
+   *
+   * Isso é essencial para impedir:
+   *
+   * URL inexistente → HTTP 200
+   *
+   * e transformar corretamente em:
+   *
+   * URL inexistente → HTTP 404
+   */
+  private setSsrStatus(statusCode: number): void {
 
-  private checkTheme() {
-    if (!this.isBrowser) return;
-
-    const isJonah = document.body.classList.contains('mode-jonah');
-    const newMode: 'broklin' | 'jonah' = isJonah ? 'jonah' : 'broklin';
-
-    if (this.currentMode() !== newMode) {
-      this.currentMode.set(newMode);
-      this.mode$.next(newMode);
+    if (
+      isPlatformServer(this.platformId) &&
+      this.responseInit
+    ) {
+      this.responseInit.status = statusCode;
     }
   }
 
-  goBack() {
-    this.router.navigate(['/visual-novel']);
+  /**
+   * O modo visual agora acompanha a URL.
+   *
+   * A classe do body NÃO determina mais
+   * qual história será carregada.
+   */
+  private applyRouteTheme(): void {
+
+    if (!this.isBrowser) {
+      return;
+    }
+
+    const mode = this.currentMode();
+
+    this.document.body.classList.remove(
+      'mode-broklin',
+      'mode-jonah'
+    );
+
+    this.document.body.classList.add(
+      `mode-${mode}`
+    );
+
+    /**
+     * Mantém compatibilidade com o restante
+     * do sistema de tema da aplicação.
+     */
+    const win = this.document.defaultView;
+
+    if (win?.localStorage) {
+      win.localStorage.setItem(
+        'rqs-theme',
+        mode
+      );
+    }
+
+    /**
+     * Se outras partes do site escutam
+     * o evento theme-changed, continuam funcionando.
+     */
+    win?.dispatchEvent(
+      new CustomEvent('theme-changed')
+    );
   }
+
+  ngOnDestroy(): void {
+    /**
+     * Não existe mais MutationObserver neste componente.
+     *
+     * O modo vem da URL, portanto não precisamos
+     * observar mudanças de classe no body.
+     */
+  }
+
+  goBack(): void {
+  const mode = this.currentMode();
+
+  const id =
+    this.route.snapshot.paramMap.get('id') ?? '';
+
+  const season =
+    id.startsWith('s2-')
+      ? 's2'
+      : 's1';
+
+  this.router.navigate([
+    '/visual-novel',
+    mode,
+    season
+  ]);
+}
 }

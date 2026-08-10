@@ -80,27 +80,104 @@ export class Header implements OnInit, OnDestroy {
     window.open(url, '_blank');
   }
 
-  activateBroklinMode() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.document.body.classList.remove('mode-jonah');
-      this.document.body.classList.add('mode-broklin');
-      this.isJonahMode.set(false);
-
-      // 🛡️ Mantém a consistência global e avisa o resto da matriz
-      localStorage.setItem('rqs-theme', 'broklin');
-      this.document.defaultView?.dispatchEvent(new CustomEvent('theme-changed'));
-    }
+  activateBroklinMode(): void {
+  if (!isPlatformBrowser(this.platformId)) {
+    return;
   }
 
-  activateJonahMode() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.document.body.classList.remove('mode-broklin');
-      this.document.body.classList.add('mode-jonah');
-      this.isJonahMode.set(true);
+  this.document.body.classList.remove('mode-jonah');
+  this.document.body.classList.add('mode-broklin');
 
-      // 🛡️ Mantém a consistência global e avisa o resto da matriz
-      localStorage.setItem('rqs-theme', 'jonah');
-      this.document.defaultView?.dispatchEvent(new CustomEvent('theme-changed'));
-    }
+  this.isJonahMode.set(false);
+
+  localStorage.setItem('rqs-theme', 'broklin');
+
+  this.document.defaultView?.dispatchEvent(
+    new CustomEvent('theme-changed')
+  );
+
+  this.navigateForMode('broklin');
+}
+
+activateJonahMode(): void {
+  if (!isPlatformBrowser(this.platformId)) {
+    return;
   }
+
+  this.document.body.classList.remove('mode-broklin');
+  this.document.body.classList.add('mode-jonah');
+
+  this.isJonahMode.set(true);
+
+  localStorage.setItem('rqs-theme', 'jonah');
+
+  this.document.defaultView?.dispatchEvent(
+    new CustomEvent('theme-changed')
+  );
+
+  this.navigateForMode('jonah');
+}
+
+private navigateForMode(
+  mode: 'broklin' | 'jonah'
+): void {
+
+  const url = this.router.url.split('?')[0];
+
+  // =====================================================
+  // 1. USUÁRIO ESTÁ LENDO UM EPISÓDIO
+  //
+  // /lore/broklin/s1-e2
+  //          ↓
+  // /lore/jonah/s1-e2
+  // =====================================================
+
+  const loreMatch = url.match(
+    /^\/lore\/(broklin|jonah)\/([^/?]+)$/
+  );
+
+  if (loreMatch) {
+    const episodeId = loreMatch[2];
+
+    this.router.navigate([
+      '/lore',
+      mode,
+      episodeId
+    ]);
+
+    return;
+  }
+
+  // =====================================================
+  // 2. USUÁRIO ESTÁ NO SUMÁRIO
+  //
+  // /visual-novel/broklin/s1
+  //              ↓
+  // /visual-novel/jonah/s1
+  // =====================================================
+
+  const summaryMatch = url.match(
+    /^\/visual-novel\/(broklin|jonah)\/(s1|s2)$/
+  );
+
+  if (summaryMatch) {
+    const season = summaryMatch[2];
+
+    this.router.navigate([
+      '/visual-novel',
+      mode,
+      season
+    ]);
+
+    return;
+  }
+
+  // =====================================================
+  // 3. RESTANTE DO SITE
+  //
+  // Não altera a URL.
+  // Apenas mantém o comportamento tradicional do tema.
+  // =====================================================
+
+}
 }

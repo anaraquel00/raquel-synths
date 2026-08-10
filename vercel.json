@@ -1,27 +1,33 @@
 {
   "version": 2,
+
   "functions": {
     "api/index.js": {
       "includeFiles": "dist/raquel-synths/**"
     }
   },
+
   "rewrites": [
     {
       "source": "/sitemap.xml",
       "destination": "/api/sitemap.js"
     },
+
     {
-      "source": "/lore-reader/:id*",
+      "source": "/lore/:mode/:id*",
       "destination": "/api/index.js"
     },
+
     {
       "source": "/hybrid-reader/:id*",
       "destination": "/api/index.js"
     },
+
     {
       "source": "/log-reader/:id*",
       "destination": "/api/index.js"
     },
+
     {
       "source": "/(.*)",
       "destination": "/index.html"

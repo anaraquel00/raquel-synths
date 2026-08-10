@@ -96,7 +96,7 @@ export const routes: Routes = [
 
   // ✨ NOVA ROTA 7: O Catálogo (Episódios da Saga)
   {
-    path: 'visual-novel',
+    path: 'visual-novel/:mode/:season',
     loadComponent: () => import('./pages/visual-novel/visual-novel').then(m => m.VisualNovelComponent),
     data: {
       seo: {
@@ -111,6 +111,11 @@ export const routes: Routes = [
       }
     }
   },
+  {
+  path: 'visual-novel',
+  redirectTo: 'visual-novel/broklin/s1',
+  pathMatch: 'full'
+},
 
    {
     path: 'hybrid-saga',
@@ -136,9 +141,11 @@ export const routes: Routes = [
 
   // 📖 ROTA 8: O Leitor (Texto Puro)
   {
-    path: 'lore-reader/:id',
-    loadComponent: () => import('./pages/lore-reader/lore-reader').then(m => m.LoreReaderComponent)
-  },
+  path: 'lore/:mode/:id',
+  loadComponent: () =>
+    import('./pages/lore-reader/lore-reader')
+      .then(m => m.LoreReaderComponent)
+},
 
   // 👩‍💻 ROTA 9: O Hub da Criadora (Blog Técnico/Portfólio)
   {

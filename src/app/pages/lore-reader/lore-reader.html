@@ -1,8 +1,14 @@
 <div class="lore-container">
-  <a class="back-btn" routerLink="/visual-novel">
-    &larr; {{ translate.isPt() ? 'VOLTAR AO SUMÁRIO' : 'BACK TO LIST' }}
-  </a>
+  <a
+  class="back-btn"
+  (click)="goBack(); $event.preventDefault()">
 
+  &larr;
+  {{ translate.isPt()
+      ? 'VOLTAR AO SUMÁRIO'
+      : 'BACK TO LIST'
+  }}
+</a>
   <header class="saga-header">
     <h1>{{ translate.isPt() ? 'ECOS DA RQS' : 'RQS ECHOES' }}</h1>
     <p class="subtitle">
@@ -68,8 +74,15 @@
   </div>
 
   <div class="bottom-back-action">
-    <a class="back-btn bottom-btn" routerLink="/visual-novel">
-      &larr; {{ translate.isPt() ? 'VOLTAR AO SUMÁRIO' : 'BACK TO LIST' }}
-    </a>
+    <a
+  class="back-btn bottom-btn"
+  (click)="goBack(); $event.preventDefault()">
+
+  &larr;
+  {{ translate.isPt()
+      ? 'VOLTAR AO SUMÁRIO'
+      : 'BACK TO LIST'
+  }}
+</a>
   </div>
 </div>

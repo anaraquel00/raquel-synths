@@ -1,100 +1,322 @@
 /* api/sitemap.js */
+
 export default async function handler(req, res) {
-  // 🛡️ BLINDAGEM DE PERFORMANCE: Cache na Vercel Edge Network
-  res.setHeader('Content-Type', 'application/xml');
-  res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=86400');
+  // =====================================================
+  // HEADERS
+  // =====================================================
+
+  res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+
+  res.setHeader(
+    'Cache-Control',
+    'public, max-age=3600, s-maxage=86400, stale-while-revalidate=3600'
+  );
+
+  const siteUrl = 'https://raquelsynths.com';
+
+  const now = new Date();
+  const todayStr = now.toISOString().split('T')[0];
 
   let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
-  xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
 
-  const today = new Date();
-  const todayStr = today.toISOString().split('T')[0]; // "2026-08-09"
-  const currentLastMod = todayStr;
+  xml +=
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
 
-  // 1. ROTAS BASE DO FRONT-END
+  // =====================================================
+  // UTILITÁRIOS
+  // =====================================================
+
+  const escapeXml = (value = '') =>
+    String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&apos;');
+
+  const normalizeDate = (value) => {
+    if (!value) {
+      return todayStr;
+    }
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+      return todayStr;
+    }
+
+    return date.toISOString().split('T')[0];
+  };
+
+  const appendUrl = ({
+    path,
+    lastmod = todayStr,
+    changefreq,
+    priority
+  }) => {
+    xml += `  <url>\n`;
+    xml += `    <loc>${escapeXml(`${siteUrl}${path}`)}</loc>\n`;
+    xml += `    <lastmod>${escapeXml(lastmod)}</lastmod>\n`;
+
+    if (changefreq) {
+      xml += `    <changefreq>${changefreq}</changefreq>\n`;
+    }
+
+    if (priority) {
+      xml += `    <priority>${priority}</priority>\n`;
+    }
+
+    xml += `  </url>\n`;
+  };
+
+  // =====================================================
+  // 1. ROTAS ESTÁTICAS REALMENTE PRERENDERIZADAS
+  //
+  // 8 páginas
+  // =====================================================
+
   const staticRoutes = [
-    { path: '', priority: '1.0', lastmod: currentLastMod },
-    { path: '/compliance', priority: '0.9', lastmod: currentLastMod },
-    { path: '/dossier', priority: '0.9', lastmod: currentLastMod },
-    { path: '/store', priority: '0.8', lastmod: currentLastMod },
-    { path: '/saga', priority: '0.8', lastmod: currentLastMod },
-    { path: '/visual-novel', priority: '0.8', lastmod: currentLastMod },
-    { path: '/hybrid-saga', priority: '0.9', lastmod: currentLastMod },
-    { path: '/logs-archive', priority: '0.9', lastmod: currentLastMod },
-    { path: '/discografia', priority: '0.9', lastmod: currentLastMod },
-    { path: '/musical-archives', priority: '0.9', lastmod: currentLastMod },
-    { path: '/creator', priority: '0.5', lastmod: currentLastMod },
-    { path: '/contato', priority: '0.5', lastmod: currentLastMod },
-    { path: '/bio', priority: '0.8', lastmod: currentLastMod }
+    {
+      path: '',
+      priority: '1.0'
+    },
+
+    {
+      path: '/compliance',
+      priority: '0.7'
+    },
+
+    {
+      path: '/dossier',
+      priority: '0.7'
+    },
+
+    {
+      path: '/creator',
+      priority: '0.6'
+    },
+
+    {
+      path: '/contato',
+      priority: '0.5'
+    },
+
+    {
+      path: '/discografia',
+      priority: '0.9'
+    },
+
+    {
+      path: '/hybrid-saga',
+      priority: '0.8'
+    },
+
+    {
+      path: '/bio',
+      priority: '0.7'
+    }
   ];
 
   for (const route of staticRoutes) {
-    const safePath = route.path.replace(/&/g, '&amp;');
-    xml += `  <url>\n    <loc>https://raquelsynths.com${safePath}</loc>\n    <lastmod>${route.lastmod}</lastmod>\n    <priority>${route.priority}</priority>\n  </url>\n`;
+    appendUrl({
+      path: route.path,
+      lastmod: todayStr,
+      changefreq: 'weekly',
+      priority: route.priority
+    });
   }
 
-  // 2. BUSCA NO FIREBASE COM RESILIÊNCIA INDIVIDUAL EM TEMPO REAL (DINÂMICO)
-  const projectId = 'raquel-synths-platform';
-  const baseUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents`;
+  // =====================================================
+  // 2. SUMÁRIOS DAS SAGAS
+  //
+  // 4 páginas prerenderizadas:
+  //
+  // /visual-novel/broklin/s1
+  // /visual-novel/broklin/s2
+  // /visual-novel/jonah/s1
+  // /visual-novel/jonah/s2
+  // =====================================================
 
-  const collections = [
-    { name: 'logs', path: 'log-reader' },
-    { name: 'lore', path: 'lore-reader' },
-    { name: 'global-sagas', path: 'hybrid-reader' }
+  const visualNovelRoutes = [
+    '/visual-novel/broklin/s1',
+    '/visual-novel/broklin/s2',
+
+    '/visual-novel/jonah/s1',
+    '/visual-novel/jonah/s2'
   ];
 
-  const fetchCollection = async (coll) => {
+  for (const path of visualNovelRoutes) {
+    appendUrl({
+      path,
+      lastmod: todayStr,
+      changefreq: 'weekly',
+      priority: '0.9'
+    });
+  }
+
+  // =====================================================
+  // 3. FIRESTORE
+  // =====================================================
+
+  const projectId = 'raquel-synths-platform';
+
+  const firestoreBaseUrl =
+    `https://firestore.googleapis.com/v1/projects/` +
+    `${projectId}/databases/(default)/documents`;
+
+  /**
+   * Busca uma collection inteira.
+   *
+   * pageSize 300 é suficiente para as duas sagas atuais.
+   */
+  const fetchCollection = async (collectionName) => {
     try {
-      const response = await fetch(`${baseUrl}/${coll.name}?pageSize=300`);
+      const response = await fetch(
+        `${firestoreBaseUrl}/${collectionName}?pageSize=300`
+      );
+
       if (!response.ok) {
-        console.error(`🛡️ [RQS SITEMAP] Erro HTTP ${response.status} ao carregar ${coll.name}`);
+        console.error(
+          `[RQS SITEMAP] Firestore HTTP ${response.status}: ${collectionName}`
+        );
+
         return [];
       }
+
       const data = await response.json();
-      return data.documents || [];
-    } catch (err) {
-      console.error(`🛡️ [RQS SITEMAP] Falha de conexão na coleção ${coll.name}:`, err);
+
+      return Array.isArray(data.documents)
+        ? data.documents
+        : [];
+
+    } catch (error) {
+      console.error(
+        `[RQS SITEMAP] Falha ao buscar ${collectionName}:`,
+        error instanceof Error
+          ? error.message
+          : String(error)
+      );
+
       return [];
     }
   };
 
-  // Carrega todas as coleções de forma concorrente em tempo de requisição
-  const [logsDocs, loreDocs, globalSagasDocs] = await Promise.all(
-    collections.map(coll => fetchCollection(coll))
-  );
+  // =====================================================
+  // 4. CARREGA BROKLIN + JONAH
+  //
+  // Importante:
+  //
+  // lore       -> /lore/broklin/:id
+  // lore-jonah -> /lore/jonah/:id
+  // =====================================================
 
-  const processDocuments = (documents, basePath) => {
-    if (!documents || documents.length === 0) return;
+  const [
+    broklinDocs,
+    jonahDocs
+  ] = await Promise.all([
+    fetchCollection('lore'),
+    fetchCollection('lore-jonah')
+  ]);
 
-    documents.forEach((doc) => {
-      const id = doc.name.split('/').pop();
-      let lastmodValue = currentLastMod;
+  // =====================================================
+  // 5. FILTRO DE PUBLICAÇÃO
+  // =====================================================
 
-      // Proteção de Logs por Data no ID (YYYY-MM-DD-...)
-      if (basePath === 'log-reader') {
-        const logDate = id.substring(0, 10);
-        const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-        if (dateRegex.test(logDate) && logDate > todayStr) return;
+  const isPublicEpisode = (doc) => {
+    const fields = doc?.fields ?? {};
+
+    /**
+     * Documento precisa estar explicitamente publicado.
+     */
+    const published =
+      fields?.published?.booleanValue === true;
+
+    if (!published) {
+      return false;
+    }
+
+    /**
+     * Não indexar episódios do futuro.
+     */
+    const releaseDateValue =
+      fields?.releaseDate?.stringValue ??
+      fields?.releaseDate?.timestampValue;
+
+    if (releaseDateValue) {
+      const releaseDate = new Date(releaseDateValue);
+
+      if (
+        !Number.isNaN(releaseDate.getTime()) &&
+        releaseDate > now
+      ) {
+        return false;
       }
+    }
 
-      // Proteção da Lore e Sagas por data futura (Suporta stringValue e timestampValue do Firebase)
-      if (basePath === 'lore-reader' || basePath === 'hybrid-reader') {
-        const releaseDateStr = doc.fields?.releaseDate?.stringValue || doc.fields?.releaseDate?.timestampValue;
-
-        if (releaseDateStr) {
-          const releaseDate = new Date(releaseDateStr);
-          if (releaseDate > today) return;
-        }
-      }
-
-      xml += `  <url>\n    <loc>https://raquelsynths.com/${basePath}/${id}</loc>\n    <lastmod>${lastmodValue}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
-    });
+    return true;
   };
 
-  processDocuments(logsDocs, 'log-reader');
-  processDocuments(loreDocs, 'lore-reader');
-  processDocuments(globalSagasDocs, 'hybrid-reader');
+  // =====================================================
+  // 6. ADICIONA EPISÓDIOS
+  // =====================================================
+
+  const appendEpisodes = (
+    documents,
+    mode
+  ) => {
+    documents
+      .filter(isPublicEpisode)
+      .forEach((doc) => {
+        const id =
+          doc.name?.split('/').pop();
+
+        if (!id) {
+          return;
+        }
+
+        const releaseDate =
+          doc.fields?.releaseDate?.stringValue ??
+          doc.fields?.releaseDate?.timestampValue;
+
+        /**
+         * updateTime é ainda melhor que "hoje" para lastmod.
+         *
+         * Caso não exista, usa releaseDate.
+         */
+        const lastmod =
+          normalizeDate(
+            doc.updateTime ??
+            releaseDate
+          );
+
+        appendUrl({
+          path:
+            `/lore/${mode}/${encodeURIComponent(id)}`,
+
+          lastmod,
+          changefreq: 'monthly',
+          priority: '0.8'
+        });
+      });
+  };
+
+  appendEpisodes(
+    broklinDocs,
+    'broklin'
+  );
+
+  appendEpisodes(
+    jonahDocs,
+    'jonah'
+  );
+
+  // =====================================================
+  // FINAL
+  // =====================================================
 
   xml += `</urlset>`;
-  res.status(200).send(xml);
+
+  return res
+    .status(200)
+    .send(xml);
 }

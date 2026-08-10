@@ -190,22 +190,20 @@
 
      <div class="season-tabs">
       <!-- 🛡️ ABA 1 BLINDADA: Transforma o botão em link de SEO -->
-      <a class="neon-tab"
-         [routerLink]="['/visual-novel']"
-         [queryParams]="{ season: 1 }"
-         queryParamsHandling="merge"
-         [class.active]="temporadaAtiva === 1">
-        {{ translate.isPt() ? 'Temporada 1' : 'Season 1' }}
-      </a>
+      <a
+      class="neon-tab"
+      [routerLink]="['/visual-novel', currentMode(), 's1']"
+      [class.active]="temporadaAtiva === 1">
 
-      <!-- 🛡️ ABA 2 BLINDADA: Transforma o botão em link de SEO -->
-      <a class="neon-tab"
-         [routerLink]="['/visual-novel']"
-         [queryParams]="{ season: 2 }"
-         queryParamsHandling="merge"
-         [class.active]="temporadaAtiva === 2">
-        {{ translate.isPt() ? 'Temporada 2' : 'Season 2' }}
-      </a>
+      {{ translate.isPt() ? 'Temporada 1' : 'Season 1' }}
+    </a>
+    <a
+      class="neon-tab"
+      [routerLink]="['/visual-novel', currentMode(), 's2']"
+      [class.active]="temporadaAtiva === 2">
+
+      {{ translate.isPt() ? 'Temporada 2' : 'Season 2' }}
+    </a>
     </div>
      <div class="episode-grid">
       @for (ep of filteredEpisodes$ | async; track ep.id) {
@@ -230,8 +228,11 @@
                    : (ep.description_en || ep.description || 'Click to read...')
                 }}
               </p>
-              <a [routerLink]="['/lore-reader', ep.id]" class="btn-read" (mouseenter)="prefetchEpisode(ep.id)">
-                {{ translate.isPt() ? '📖 Ler Episódio' : '📖 Read Episode' }}
+              <a
+                [routerLink]="['/lore', currentMode(), ep.id]"
+                class="btn-read"
+                (mouseenter)="prefetchEpisode(ep.id)">
+                Ler episódio
               </a>
             </div>
           </div>
