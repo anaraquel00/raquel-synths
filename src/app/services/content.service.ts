@@ -7,10 +7,11 @@ import {
   where,
   orderBy,
   getDoc,
-  getDocs
+  getDocs,
+  collectionData
 } from '@angular/fire/firestore';
 import { Observable, of, from } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, take } from 'rxjs/operators';
 
 import { LoreEpisode } from '../data/lore-data';
 import { Product, Department } from '../data/store-data';
@@ -22,10 +23,13 @@ export class ContentService {
   private firestore = inject(Firestore);
   private platformId = inject(PLATFORM_ID);
 
+  // 🎭 DUAL MODE ENGINE (Restaurado para o Uplink Terminal e componentes visuais)
+  public currentMode: 'broklin' | 'jonah' = 'broklin';
+
   private episodesCache: { [mode: string]: LoreEpisode[] } = {};
   private globalSagasCache: LoreEpisode[] | null = null;
 
-  // 🎵 1. DISCOGRAFIA (One-Shot)
+  // 🎵 1. DISCOGRAFIA (One-Shot SSR)
   getDiscography(): Observable<any[]> {
     const colRef = collection(this.firestore, 'discography');
     return from(getDocs(colRef)).pipe(
@@ -161,7 +165,7 @@ export class ContentService {
     );
   }
 
-  // 🛒 4. LOJA (Produtos) (One-Shot)
+  // 🛒 4. LOJA (Produtos)
   getProducts(): Observable<Product[]> {
     const colRef = collection(this.firestore, 'products');
     return from(getDocs(colRef)).pipe(
@@ -170,7 +174,7 @@ export class ContentService {
     );
   }
 
-  // 🏪 5. DEPARTAMENTOS (One-Shot)
+  // 🏪 5. DEPARTAMENTOS
   getDepartments(): Observable<Department[]> {
     const colRef = collection(this.firestore, 'departments');
     return from(getDocs(colRef)).pipe(
@@ -179,7 +183,6 @@ export class ContentService {
     );
   }
 
-  // 📜 6. LOGS (One-Shot)
   // 📜 6. LOGS (Fofocas e Bastidores)
   getLogs(): Observable<any[]> {
     const colRef = collection(this.firestore, 'logs');
@@ -187,7 +190,6 @@ export class ContentService {
     // ==========================================
     // --- 🛑 INTERRUPTOR 1: DATA DOS LOGS ---
     // ==========================================
-
     const q = query(
       colRef,
 
@@ -203,9 +205,7 @@ export class ContentService {
     // ==========================================
     // --- 🛑 INTERRUPTOR 2: MODO DE BUSCA ---
     // ==========================================
-
     // 👇 [MODO PRODUÇÃO / VERCEL - SSR SEGURO]:
-    // Usa getDocs() em uma busca One-Shot que encerra a conexão e libera a Vercel.
     return from(getDocs(q)).pipe(
       map(snapshot => snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }))),
       catchError(err => {
@@ -215,8 +215,6 @@ export class ContentService {
     );
 
     // 👇 [MODO TESTE QA / LOCALHOST REALTIME]:
-    // Se estiver testando no localhost e quiser que o Firebase atualize o log na hora sem recarregar a tela,
-    // comente o return de cima e descomente o bloco abaixo:
     /*
     return (collectionData(q, { idField: 'id' }) as Observable<any[]>).pipe(
       take(1),
