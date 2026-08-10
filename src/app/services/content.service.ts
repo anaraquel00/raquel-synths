@@ -1,6 +1,4 @@
-import { Injectable, inject } from '@angular/core';
-import { PLATFORM_ID } from '@angular/core';
-import { collectionData, docData } from '@angular/fire/firestore';
+import { Injectable, inject, PLATFORM_ID } from '@angular/core';
 import {
   Firestore,
   collection,
@@ -11,34 +9,35 @@ import {
   getDoc,
   getDocs
 } from '@angular/fire/firestore';
-import { catchError, from, map, Observable, of, switchMap, take } from 'rxjs'; // 🔥 Importamos o 'take' AQUI
+import { Observable, of, from } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
-// --- IMPORTAÇÃO DAS INTERFACES ---
 import { LoreEpisode } from '../data/lore-data';
 import { Product, Department } from '../data/store-data';
-import { isPlatformBrowser } from '@angular/common';
-import { isPlatformServer } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ContentService {
-
-  // ⚡ A PEÇA QUE FALTA: Sem isso, nada do Firebase funciona!
   private firestore = inject(Firestore);
   private platformId = inject(PLATFORM_ID);
-  currentMode!: string;
 
-  // 🎵 1. DISCOGRAFIA
-  getDiscography(): Observable<any[]> {
-    const colRef = collection(this.firestore, 'discography');
-    // Envolvemos a busca original em parênteses, e conectamos o pipe POR FORA
-    return (collectionData(colRef, { idField: 'id' }) as Observable<any[]>).pipe(take(1));
-  }
-
-private episodesCache: { [mode: string]: LoreEpisode[] } = {};
+  private episodesCache: { [mode: string]: LoreEpisode[] } = {};
   private globalSagasCache: LoreEpisode[] | null = null;
 
+  // 🎵 1. DISCOGRAFIA (One-Shot)
+  getDiscography(): Observable<any[]> {
+    const colRef = collection(this.firestore, 'discography');
+    return from(getDocs(colRef)).pipe(
+      map(snapshot => snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }))),
+      catchError(err => {
+        console.error('⚠️ [ContentService] Erro ao buscar discografia:', err);
+        return of([]);
+      })
+    );
+  }
+
+  // 📜 2. LEITOR DE EPISÓDIOS (Broklin / Jonah)
   getEpisodes(mode: 'broklin' | 'jonah'): Observable<LoreEpisode[]> {
     if (this.episodesCache[mode]) {
       return of(this.episodesCache[mode]);
@@ -55,7 +54,6 @@ private episodesCache: { [mode: string]: LoreEpisode[] } = {};
       where('published', '==', true)
     );
 
-    // 🚀 CONSULTA ONE-SHOT COM getDocs PARA LIBERAR O ZONE.JS NO SSR/SSG
     return from(getDocs(q)).pipe(
       map(snapshot => {
         const episodes = snapshot.docs.map(docSnap => ({
@@ -102,7 +100,8 @@ private episodesCache: { [mode: string]: LoreEpisode[] } = {};
     );
   }
 
-getGlobalSagas(mode: string = 'hybrid', id?: string): Observable<LoreEpisode[]> {
+  // 🌐 3. SAGAS GLOBAIS
+  getGlobalSagas(mode: string = 'hybrid', id?: string): Observable<LoreEpisode[]> {
     if (this.globalSagasCache) {
       return of(this.globalSagasCache);
     }
@@ -161,57 +160,83 @@ getGlobalSagas(mode: string = 'hybrid', id?: string): Observable<LoreEpisode[]> 
       })
     );
   }
- // 🛒 2. LOJA (Produtos)
+
+  // 🛒 4. LOJA (Produtos) (One-Shot)
   getProducts(): Observable<Product[]> {
     const colRef = collection(this.firestore, 'products');
-    return (collectionData(colRef, { idField: 'id' }) as Observable<Product[]>).pipe(take(1));
-    }
-
-  // 🏪 3. DEPARTAMENTOS
-  getDepartments(): Observable<Department[]> {
-    const colRef = collection(this.firestore, 'departments');
-    return (collectionData(colRef, { idField: 'id' }) as Observable<Department[]>).pipe(take(1));
+    return from(getDocs(colRef)).pipe(
+      map(snapshot => snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() })) as Product[]),
+      catchError(() => of([]))
+    );
   }
 
-// 📜 4. LOGS (Fofocas e Bastidores)
+  // 🏪 5. DEPARTAMENTOS (One-Shot)
+  getDepartments(): Observable<Department[]> {
+    const colRef = collection(this.firestore, 'departments');
+    return from(getDocs(colRef)).pipe(
+      map(snapshot => snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() })) as Department[]),
+      catchError(() => of([]))
+    );
+  }
+
+  // 📜 6. LOGS (One-Shot)
+  // 📜 6. LOGS (Fofocas e Bastidores)
   getLogs(): Observable<any[]> {
     const colRef = collection(this.firestore, 'logs');
+
+    // ==========================================
+    // --- 🛑 INTERRUPTOR 1: DATA DOS LOGS ---
+    // ==========================================
 
     const q = query(
       colRef,
 
-      // --- 🛑 INTERRUPTOR 1: DATA DOS LOGS ---
-      // [PRODUÇÃO]: Deixe DESCOMENTADO para o site real (filtra o futuro)
-      // [TESTE QA]: Deixe COMENTADO para ver os logs do futuro no localhost
-       where('date', '<=', new Date().toISOString()),
+      // 👇 [MODO PRODUÇÃO / VERCEL]: Deixe DESCOMENTADO para o site real (filtra logs do futuro)
+      where('date', '<=', new Date().toISOString()),
+
+      // 👇 [MODO TESTE QA]: Para testar e agendar logs do futuro no localhost, comente a linha de cima e descomente a de baixo
+      // where('date', '<=', '2030-01-01T00:00:00.000Z'),
 
       orderBy('date', 'desc')
     );
 
-    const firebaseData$ = collectionData(q, { idField: 'id' }) as Observable<any[]>;
-
     // ==========================================
-    // --- 🛑 INTERRUPTOR 2: TRAVA DO SERVIDOR ---
+    // --- 🛑 INTERRUPTOR 2: MODO DE BUSCA ---
     // ==========================================
 
-    // 👇 [MODO TESTE QA / LOCALHOST]
-    // Descomente a linha abaixo e comente a de Produção.
-    // O Firebase vai ficar "aberto" e ignorar o cache, mostrando o log novo na hora!
-     //return firebaseData$;
+    // 👇 [MODO PRODUÇÃO / VERCEL - SSR SEGURO]:
+    // Usa getDocs() em uma busca One-Shot que encerra a conexão e libera a Vercel.
+    return from(getDocs(q)).pipe(
+      map(snapshot => snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }))),
+      catchError(err => {
+        console.error('⚠️ [ContentService] Erro ao buscar logs:', err);
+        return of([]);
+      })
+    );
 
-    // 👇 [MODO PRODUÇÃO / VERCEL]
-    // Descomente a linha abaixo antes de fazer o Deploy (push).
-    // O take(1) fecha a conexão e salva o servidor do erro de Timeout.
-    return firebaseData$.pipe(take(1));
+    // 👇 [MODO TESTE QA / LOCALHOST REALTIME]:
+    // Se estiver testando no localhost e quiser que o Firebase atualize o log na hora sem recarregar a tela,
+    // comente o return de cima e descomente o bloco abaixo:
+    /*
+    return (collectionData(q, { idField: 'id' }) as Observable<any[]>).pipe(
+      take(1),
+      catchError(() => of([]))
+    );
+    */
   }
 
-  // 📜 4.1 LOG ESPECÍFICO (O Sniper)
   getLogById(id: string): Observable<any> {
-
-    // Conecta direto no documento específico usando o ID da URL
+    if (!id) return of(null);
     const docRef = doc(this.firestore, `logs/${id}`);
 
-    // Puxa os dados e anexa o ID junto no objeto
-   return (docData(docRef) as Observable<any>).pipe(take(1));
+    return from(getDoc(docRef)).pipe(
+      map(snapshot => {
+        if (snapshot.exists()) {
+          return { id: snapshot.id, ...snapshot.data() };
+        }
+        return null;
+      }),
+      catchError(() => of(null))
+    );
   }
 }
