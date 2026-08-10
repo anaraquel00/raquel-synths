@@ -2,46 +2,48 @@ const path = require('path');
 const { pathToFileURL } = require('url');
 const fs = require('fs');
 
+let handlerCache = null;
+
 module.exports = async (req, res) => {
   try {
-    const rootDir = path.resolve(__dirname, '..');
-    process.chdir(rootDir);
+    if (!handlerCache) {
+      const rootDir = path.resolve(__dirname, '..');
+      process.chdir(rootDir);
 
-    const serverDir = path.join(rootDir, 'dist/raquel-synths/server');
+      const serverDir = path.join(rootDir, 'dist/raquel-synths/server');
 
-    // 1. Importa o manifesto e o bootstrap do Angular SSR ANTES do server.mjs
-    const bootstrapFiles = [
-      'main.server.mjs',
-      'angular-app-engine-manifest.mjs',
-      'angular-app-manifest.mjs'
-    ];
+      // 1. Carrega os manifestos e o bundle principal do SSR na ordem correta
+      const filesToLoad = [
+        'angular-app-engine-manifest.mjs',
+        'angular-app-manifest.mjs',
+        'main.server.mjs'
+      ];
 
-    for (const file of bootstrapFiles) {
-      const filePath = path.join(serverDir, file);
-      if (fs.existsSync(filePath)) {
-        try {
-          await import(pathToFileURL(filePath).href);
-        } catch (e) {
-          console.warn(`⚠️ [RQS Vercel] Aviso ao carregar ${file}:`, e.message);
+      for (const file of filesToLoad) {
+        const filePath = path.join(serverDir, file);
+        if (fs.existsSync(filePath)) {
+          try {
+            await import(pathToFileURL(filePath).href);
+          } catch (e) {
+            console.warn(`[RQS Vercel] Aviso ao carregar ${file}:`, e.message);
+          }
         }
+      }
+
+      // 2. Importa o ponto de entrada do servidor Express/Angular
+      const serverPath = path.join(serverDir, 'server.mjs');
+      const serverModule = await import(pathToFileURL(serverPath).href);
+
+      handlerCache = serverModule.reqHandler || serverModule.default || serverModule.app;
+
+      if (typeof handlerCache !== 'function') {
+        throw new Error(
+          `Nenhum handler válido em server.mjs. Exportações: ${Object.keys(serverModule).join(', ')}`
+        );
       }
     }
 
-    // 2. Importa o ponto de entrada do servidor (server.mjs)
-    const serverPath = path.join(serverDir, 'server.mjs');
-    const serverUrl = pathToFileURL(serverPath).href;
-
-    const serverModule = await import(serverUrl);
-    const handler = serverModule.reqHandler || serverModule.default || serverModule.app;
-
-    if (typeof handler !== 'function') {
-      throw new Error(
-        `Nenhum handler válido encontrado em server.mjs. Exportações: ${Object.keys(serverModule).join(', ')}`
-      );
-    }
-
-    // 3. Executa o manipulador da requisição
-    return handler(req, res);
+    return handlerCache(req, res);
   } catch (error) {
     console.error('🔥 [RQS Vercel Function Error]:', error);
     res.statusCode = 500;

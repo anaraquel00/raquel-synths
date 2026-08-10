@@ -5,29 +5,23 @@ import {
   writeResponseToNodeResponse,
 } from '@angular/ssr/node';
 import express from 'express';
-import fs from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-// 🛡️ BLINDAGEM DE ROTA: Funciona em qualquer versão do Node.js (Evita o Crash)
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
 const browserDistFolder = join(serverDistFolder, '../browser');
 
 const app = express();
-const angularApp = new AngularNodeAppEngine();
 
+// 🛡️ INSTANCIAÇÃO LAZY (ON-DEMAND): Evita o crash "manifest is not set" no import()
+let angularApp: AngularNodeAppEngine | undefined;
 
-/**
- * Example Express Rest API endpoints can be defined here.
- * Uncomment and define endpoints as necessary.
- *
- * Example:
- * ```ts
- * app.get('/api/{*splat}', (req, res) => {
- *   // Handle API request
- * });
- * ```
- */
+function getAngularApp(): AngularNodeAppEngine {
+  if (!angularApp) {
+    angularApp = new AngularNodeAppEngine();
+  }
+  return angularApp;
+}
 
 /**
  * Serve static files from /browser
@@ -44,7 +38,7 @@ app.use(
  * Handle all other requests by rendering the Angular application.
  */
 app.use((req, res, next) => {
-  angularApp
+  getAngularApp()
     .handle(req)
     .then((response) =>
       response ? writeResponseToNodeResponse(response, res) : next(),
@@ -53,10 +47,8 @@ app.use((req, res, next) => {
 });
 
 /**
- * Start the server if this module is the main entry point, or it is ran via PM2.
- * The server listens on the port defined by the `PORT` environment variable, or defaults to 4000.
+ * Start the server if this module is the main entry point
  */
-// 🛡️ BLINDAGEM DE EXECUÇÃO: Garante que o servidor ligue localmente sem saída silenciosa
 if (isMainModule(import.meta.url) || process.env['pm_id'] || process.argv[1]?.match(/server\.mjs$/)) {
   const port = process.env['PORT'] || 4000;
   app.listen(port, () => {
@@ -64,7 +56,4 @@ if (isMainModule(import.meta.url) || process.env['pm_id'] || process.argv[1]?.ma
   });
 }
 
-/**
- * Request handler used by the Angular CLI (for dev-server and during build) or Firebase Cloud Functions.
- */
 export const reqHandler = createNodeRequestHandler(app);
