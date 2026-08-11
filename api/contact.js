@@ -295,7 +295,7 @@ export default async function handler(req, res) {
                   font-weight:700;
                 "
               >
-                TRANSMISSÃO RECEBIDA
+                TRANSMISSÃO RECEBIDA // TRANSMISSION RECEIVED
               </h1>
 
               <div
@@ -307,7 +307,7 @@ export default async function handler(req, res) {
                 "
               >
                 // PACKET ACCEPTED
-                // FIRESTORE ARCHIVED
+                // TRANSMISSION ARCHIVED
               </div>
 
             </td>
@@ -407,7 +407,7 @@ export default async function handler(req, res) {
                         margin-bottom:4px;
                       "
                     >
-                      [ CODINOME / OPERADOR ]
+                     [ CODINOME / OPERATOR ID ]
                     </div>
 
                     <div
@@ -431,7 +431,7 @@ export default async function handler(req, res) {
                         margin-bottom:4px;
                       "
                     >
-                      [ FREQUÊNCIA DE RETORNO ]
+                      [ FREQUÊNCIA DE RETORNO / RETURN FREQUENCY ]
                     </div>
 
                     <div
@@ -464,7 +464,7 @@ export default async function handler(req, res) {
                         margin-bottom:4px;
                       "
                     >
-                      [ ROTA / ASSUNTO ]
+                      [ ROTA / ASSUNTO // ROUTE / SUBJECT ]
                     </div>
 
                     <div
@@ -529,7 +529,7 @@ export default async function handler(req, res) {
                   margin-bottom:9px;
                 "
               >
-                [ CARGA DE TEXTO RECEBIDA ]
+                [ CARGA DE TEXTO RECEBIDA / TEXT PAYLOAD RECEIVED ]
               </div>
 
               <div
@@ -591,7 +591,7 @@ export default async function handler(req, res) {
                     1px;
                 "
               >
-                [ RESPONDER TRANSMISSÃO ]
+                [ RESPONDER TRANSMISSÃO / REPLY TO TRANSMISSION ]
               </a>
 
             </td>
@@ -624,11 +624,11 @@ export default async function handler(req, res) {
                   color:#00e5ff;
                 "
               >
-                FIRESTORE STATUS:
+                RQS UPLINK:
               </strong>
 
-              mensagem arquivada //
-              lida=false
+               transmissão recebida e arquivada com sucesso.
+              // transmission received and archived successfully.
 
               <br>
 
@@ -637,11 +637,11 @@ export default async function handler(req, res) {
                   color:#00e5ff;
                 "
               >
-                SECURITY:
+                REPLY CHANNEL:
               </strong>
 
-              payload armazenado
-              para retorno de contato.
+               responda diretamente a este e-mail para retornar ao remetente.
+              // reply directly to this email to return to the sender.
 
             </td>
           </tr>
