@@ -62,5 +62,14 @@
 
     </form>
   }
+  @if (errorMessage) {
+  <div class="error-box">
+    {{
+      translate.isPt()
+        ? 'Falha ao transmitir. Tente novamente.'
+        : 'Transmission failed. Please try again.'
+    }}
+  </div>
+}
 
 </section>

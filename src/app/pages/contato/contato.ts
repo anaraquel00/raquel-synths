@@ -1,12 +1,26 @@
-import { Component, inject, signal, afterNextRender, OnInit } from '@angular/core'; // Adicionado OnInit
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule, DOCUMENT } from '@angular/common'; // Adicionado DOCUMENT
+import {
+  Component,
+  inject,
+  OnInit
+} from '@angular/core';
+
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule
+} from '@angular/forms';
+
+import {
+  CommonModule,
+  DOCUMENT
+} from '@angular/common';
+
 import { TranslationService } from '../../services/translation.service';
 import { CONTACT_DATA } from '../../data/app-data';
-import { Firestore, collection, addDoc } from '@angular/fire/firestore';
 import { SafeHtmlPipe } from '../../components/pipes/safe-html.pipe';
-import { SeoService } from '../../services/seo.service'; // Importado
-import { Router } from '@angular/router'; // Importado
+import { SeoService } from '../../services/seo.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-contato',
@@ -15,16 +29,17 @@ import { Router } from '@angular/router'; // Importado
   templateUrl: './contato.html',
   styleUrls: ['./contato.scss']
 })
-export class ContatoComponent implements OnInit { // Implementando OnInit
+export class ContatoComponent implements OnInit {
+
   public translate = inject(TranslationService);
+
   private fb = inject(FormBuilder);
-  private firestore = inject(Firestore);
   private seoService = inject(SeoService);
   private router = inject(Router);
   private document = inject(DOCUMENT);
 
-  public currentLang = signal<'pt' | 'en'>('pt');
   uplinkForm: FormGroup;
+
   isSending = false;
   successMessage = false;
   errorMessage = false;
@@ -32,15 +47,23 @@ export class ContatoComponent implements OnInit { // Implementando OnInit
   constructor() {
     this.uplinkForm = this.fb.group({
       name: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
+      email: [
+        '',
+        [
+          Validators.required,
+          Validators.email
+        ]
+      ],
       subject: ['', Validators.required],
       message: ['', Validators.required],
       website: ['']
     });
+  }
 
-    afterNextRender(() => {
-      this.currentLang.set(this.translate.isPt() ? 'pt' : 'en');
-    });
+  get text() {
+    return this.translate.isPt()
+      ? CONTACT_DATA.pt
+      : CONTACT_DATA.en;
   }
 
   // 🛡️ MOTOR DE AUTORIDADE: Identificação e SEO para Google Partners
@@ -73,51 +96,74 @@ export class ContatoComponent implements OnInit { // Implementando OnInit
   }
 }
 
-  get text() {
-    return this.currentLang() === 'pt' ? CONTACT_DATA.pt : CONTACT_DATA.en;
+async onSubmit(): Promise<void> {
+
+  if (this.uplinkForm.value.website) {
+    this.successMessage = true;
+    return;
   }
 
-  // AQUI É ONDE A MÁGICA ACONTECE
-  async onSubmit() {
-    // 1. Defesa Anti-Robô 🤖
-    if (this.uplinkForm.value.website) {
-      console.log('🍯 Honeypot ativado! Robô bloqueado.');
-      this.isSending = true;
-      setTimeout(() => { this.successMessage = true; }, 1000);
-      return;
-    }
-
-    if (this.uplinkForm.valid) {
-      this.isSending = true;
-      this.errorMessage = false;
-
-      try {
-        // 2. Preparar o Pacote de Dados
-        const mensagemParaSalvar = {
-          name: this.uplinkForm.value.name,
-          email: this.uplinkForm.value.email,
-          subject: this.uplinkForm.value.subject,
-          message: this.uplinkForm.value.message,
-          dataEnvio: new Date().toISOString(), // Carimbo de Data/Hora
-          lida: false // Status pra você controlar depois
-        };
-
-        // 3. Enviar para a coleção 'mensagens' no Firebase
-        const collectionRef = collection(this.firestore, 'mensagens');
-        await addDoc(collectionRef, mensagemParaSalvar);
-
-        // 4. Sucesso!
-        console.log('✅ Mensagem salva no Firebase!');
-        this.isSending = false;
-        this.successMessage = true;
-        this.uplinkForm.reset();
-
-      } catch (error) {
-        // 5. Erro (Sem internet, permissão negada, etc)
-        console.error('❌ Erro ao enviar:', error);
-        this.isSending = false;
-        this.errorMessage = true;
-      }
-    }
+  if (!this.uplinkForm.valid) {
+    return;
   }
+
+  this.isSending = true;
+  this.errorMessage = false;
+
+  try {
+    const response =
+      await fetch('/api/contact', {
+        method: 'POST',
+
+        headers: {
+          'Content-Type':
+            'application/json'
+        },
+
+        body: JSON.stringify({
+          name:
+            this.uplinkForm.value.name,
+
+          email:
+            this.uplinkForm.value.email,
+
+          subject:
+            this.uplinkForm.value.subject,
+
+          message:
+            this.uplinkForm.value.message,
+
+          website:
+            this.uplinkForm.value.website
+        })
+      });
+
+    const result =
+      await response.json();
+
+    if (
+      !response.ok ||
+      !result.success
+    ) {
+      throw new Error(
+        result.error ||
+        'Transmission failed'
+      );
+    }
+
+    this.successMessage = true;
+    this.uplinkForm.reset();
+
+  } catch (error) {
+    console.error(
+      '[RQS CONTACT] Submit error:',
+      error
+    );
+
+    this.errorMessage = true;
+
+  } finally {
+    this.isSending = false;
+  }
+}
 }

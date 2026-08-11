@@ -4,11 +4,12 @@ import { Album } from '../models/album.model';
 const SVG_X = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" style="transform: scale(0.8);"><path d="M389.2 48h70.6L305.6 224.2 487 464H345L233.6 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z"/></svg>`;
 const SVG_INSTA = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor" style="transform: scale(0.9);"><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/></svg>`;
 const SVG_FB = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" style="transform: scale(0.9);"><path d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.8 90.7 226.4 209.3 245V327.7h-63V256h63v-54.6c0-62.2 37-96.5 93.7-96.5 27.1 0 55.5 4.8 55.5 4.8v61h-31.3c-30.8 0-40.4 19.1-40.4 38.7V256h68.8l-11 71.7h-57.8V501C413.3 482.4 504 379.8 504 256z"/></svg>`;
+const SVG_YOUTUBE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="currentColor" style="transform: scale(0.9);"><path d="M431 167.2c-.7-27.2-22.2-49.2-49.6-49.9C348.6 112 256 112 256 112s-92.6 0-125.4.3c-27.4.7-48.9 22.7-49.6 49.9C80 200.2 80 256 80 256s0 55.8.3 88.8c.7 27.2 22.2 49.2 49.6 49.9C163.4 400 256 400 256 400s92.6 0 125.4-.3c27.4-.7 48.9-22.7 49.6-49.9C432 311.8 432 256 432 256s0-55.8-.3-88.8zM206 332V180l120 76-120 76z"/></svg>`;
 
 // DADOS DO HEADER/NAV
 export const NAV_DATA = {
-  pt: { lightmode:'MODO BROKLIN', darkmode:'MODO JONAH', inicio: 'INÍCIO', sobre: 'DOSSIÊ OPERATIVO', visualNovel: 'SAGAS', discografia: 'DISCOGRAFIA', store: 'LOJA', social: 'COMUNIDADE', creator: 'A CRIADORA', backToBase: 'VOLTAR À BASE' },
-  en: { lightmode:'BROKLIN MODE', darkmode:'JONAH MODE', inicio: 'HOME', sobre: 'OPERATIVE DOSSIER', visualNovel: 'SAGAS', discografia: 'DISCOGRAPHY', store: 'STORE', social: 'COMMUNITY', creator: 'THE CREATOR', backToBase: 'BACK TO BASE' }
+  pt: { lightmode:'MODO BROKLIN', darkmode:'MODO JONAH', inicio: 'INÍCIO', sobre: 'DOSSIÊ OPERATIVO', visualNovel: 'SAGAS', discografia: 'DISCOGRAFIA', store: 'LOJA', bio: 'RQS HUB', creator: 'A CRIADORA', backToBase: 'VOLTAR À BASE' },
+  en: { lightmode:'BROKLIN MODE', darkmode:'JONAH MODE', inicio: 'HOME', sobre: 'OPERATIVE DOSSIER', visualNovel: 'SAGAS', discografia: 'DISCOGRAPHY', store: 'STORE', bio: 'RQS HUB', creator: 'THE CREATOR', backToBase: 'BACK TO BASE' }
 };
 
 // DADOS DA HOME
@@ -653,10 +654,28 @@ export const CONTACT_DATA = {
     subtitle: "A rede corporativa monitora as frequências abertas, mas este terminal está blindado por criptografia de ponta a ponta. Se você é um produtor buscando colaboração em faixas de Synthwave ou Metal, imprensa solicitando interceptação de rádio para entrevistas, ou um membro da Horda reportando anomalias no sistema (bugs) e discutindo a nossa Lore, este é o seu canal seguro. Preencha os logs de transmissão abaixo com extrema precisão. A General Kelma e eu analisamos cada pacote de dados em ambiente isolado antes de autorizar qualquer conexão direta.",
 
     socialCards: [
-      { name: 'X', icon: SVG_X, link: 'https://x.com/anaraquel00', color: '#000000', desc: 'Terminal Pirata & Lore' },
-      { name: 'Instagram', icon: SVG_INSTA, link: 'https://www.instagram.com/rqs_synths', color: '#d946ef', desc: 'Arquivos Visuais' },
-      { name: 'Facebook', icon: SVG_FB, link: 'https://www.facebook.com/profile.php?id=61585926695560', color: '#0115ef', desc: 'Matriz Global' }
-    ],
+  {
+    name: 'X',
+    icon: SVG_X,
+    link: 'https://x.com/anaraquel00',
+    color: '#000000',
+    desc: 'Terminal Pirata & Lore'
+  },
+  {
+    name: 'Instagram',
+    icon: SVG_INSTA,
+    link: 'https://www.instagram.com/rqs_synths',
+    color: '#d946ef',
+    desc: 'Arquivos Visuais'
+  },
+  {
+    name: 'YouTube',
+    icon: SVG_YOUTUBE,
+    link: 'https://youtube.com/@RaquelSynths',
+    color: '#ff0000',
+    desc: 'Transmissões Audiovisuais'
+  }
+],
 
     formTitle: "[ PROTOCOLO DE TRANSMISSÃO ]",
     form: {
@@ -674,7 +693,7 @@ export const CONTACT_DATA = {
       ]
     },
     success: "✅ TRANSMISSÃO CONCLUÍDA. A MATRIZ RECEBEU O PACOTE E RESPONDERÁ EM BREVE.",
-    privacy: "🔒 AVISO DE SEGURANÇA E COMPLIANCE: Esta transmissão é um túnel ponto-a-ponto estritamente isolado da rede pública. Nós não rastreamos seus dados de entrada neste terminal de comunicação, e o algoritmo corporativo não possui jurisdição para interceptar a sua mensagem. Seus dados de contato serão utilizados unicamente para o retorno desta transmissão."
+    privacy: "🔒 AVISO DE SEGURANÇA E COMPLIANCE: Os dados enviados neste formulário são armazenados apenas para processar e responder à sua solicitação. Não utilizamos o conteúdo desta transmissão para rastreamento publicitário. Seus dados de contato serão utilizados exclusivamente para o retorno desta transmissão."
   },
 
   en: {
@@ -682,10 +701,28 @@ export const CONTACT_DATA = {
     subtitle: "The corporate network monitors open frequencies, but this terminal is shielded by end-to-end encryption. Whether you are a producer seeking collaboration on Synthwave or Metal tracks, press requesting a radio interception for interviews, or a Horde member reporting system anomalies (bugs) and discussing our Lore, this is your secure channel. Fill out the transmission logs below with extreme precision. General Kelma and I analyze each data packet in an isolated environment before authorizing any direct connection.",
 
     socialCards: [
-      { name: 'X', icon: SVG_X, link: 'https://x.com/anaraquel00',color: '#000000', desc: 'Pirate Terminal & Lore' },
-      { name: 'Instagram', icon: SVG_INSTA, link: 'https://www.instagram.com/rqs_synths', color: '#d946ef', desc: 'Visual Archives' },
-      { name: 'Facebook', icon: SVG_FB, link: 'https://www.facebook.com/profile.php?id=61585926695560', color: '#0115ef', desc: 'Global Matrix' }
-    ],
+  {
+    name: 'X',
+    icon: SVG_X,
+    link: 'https://x.com/anaraquel00',
+    color: '#000000',
+    desc: 'Pirate Terminal & Lore'
+  },
+  {
+    name: 'Instagram',
+    icon: SVG_INSTA,
+    link: 'https://www.instagram.com/rqs_synths',
+    color: '#d946ef',
+    desc: 'Visual Archives'
+  },
+  {
+    name: 'YouTube',
+    icon: SVG_YOUTUBE,
+    link: 'https://youtube.com/@RaquelSynths',
+    color: '#ff0000',
+    desc: 'Audiovisual Transmissions'
+  }
+],
 
     formTitle: "[ TRANSMISSION PROTOCOL ]",
     form: {
@@ -703,7 +740,7 @@ export const CONTACT_DATA = {
       ]
     },
     success: "✅ TRANSMISSION COMPLETE. MATRIX HAS RECEIVED THE PACKET AND WILL RESPOND SHORTLY.",
-    privacy: "🔒 SECURITY AND COMPLIANCE NOTICE: This transmission is a peer-to-peer tunnel strictly isolated from the public network. We do not track your input data in this comms terminal, and the corporate algorithm has no jurisdiction to intercept your message. Your contact data will be used solely to reply to this transmission."
+    privacy: "🔒 SECURITY AND COMPLIANCE NOTICE: The data submitted through this form is stored only to process and respond to your request. We do not use the contents of this transmission for advertising tracking. Your contact information will be used solely to reply to this transmission."
   }
 };
 
