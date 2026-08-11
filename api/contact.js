@@ -180,15 +180,16 @@ export default async function handler(req, res) {
       escapeHtml(normalizedMessage)
         .replace(/\n/g, '<br>');
 
-    const formattedDate =
-      new Intl.DateTimeFormat(
-        'pt-BR',
-        {
-          dateStyle: 'full',
-          timeStyle: 'medium',
-          timeZone: 'America/Recife'
-        }
-      ).format(new Date(now));
+    const formattedDate = new Intl.DateTimeFormat('sv-SE', {
+      timeZone: 'America/Recife',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    }).format(new Date(now)) + ' BRT (UTC-03:00)';
 
     // =================================================
     // 3. HTML — RQS TERMINAL
@@ -488,7 +489,7 @@ export default async function handler(req, res) {
                         margin-bottom:4px;
                       "
                     >
-                      [ TIMESTAMP ]
+                      [ TIMESTAMP // RQS BASE ]
                     </div>
 
                     <div
