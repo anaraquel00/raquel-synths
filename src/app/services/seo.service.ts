@@ -119,18 +119,30 @@ export class SeoService {
 
   // 🚀 O NOVO INJETOR NEURAL (Structured Data JSON-LD)
   // Esse cara vai processar o payload do webcode.tools!
-  setJsonLd(schema: any) {
-    const head = this.dom.getElementsByTagName('head')[0];
-    let script: HTMLScriptElement | null = this.dom.querySelector(`script[type='application/ld+json']`);
+setJsonLd(schema: any) {
+  const head = this.dom.getElementsByTagName('head')[0];
 
-    if (!script) {
-      // Cria a tag invisível para o robô ler
-      script = this.dom.createElement('script');
-      script.setAttribute('type', 'application/ld+json');
-      head.appendChild(script);
-    }
+  let script: HTMLScriptElement | null =
+    this.dom.querySelector(
+      `script[data-rqs-seo="structured-data"]`
+    );
 
-    // Transforma o objeto em String e joga na cabeça do HTML
-    script.textContent = JSON.stringify(schema);
+  if (!script) {
+    script = this.dom.createElement('script');
+
+    script.setAttribute(
+      'type',
+      'application/ld+json'
+    );
+
+    script.setAttribute(
+      'data-rqs-seo',
+      'structured-data'
+    );
+
+    head.appendChild(script);
   }
+
+  script.textContent = JSON.stringify(schema);
+}
 }

@@ -25,7 +25,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-contato',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, SafeHtmlPipe],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './contato.html',
   styleUrls: ['./contato.scss']
 })

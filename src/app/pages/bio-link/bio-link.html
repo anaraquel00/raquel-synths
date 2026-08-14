@@ -1,71 +1,501 @@
 <div class="bio-container">
-  <div class="bio-card">
+  <main class="bio-card">
 
-    <!-- Header do Artista -->
+    <!-- HERO -->
     <header class="bio-header">
       <div class="avatar-wrapper">
-        <img src="icons/icon-128x128.png" alt="RaQuel Synths" class="avatar-img" />
+        <img
+          src="icons/icon-128x128.png"
+          alt="RaQuel Synths"
+          class="avatar-img"
+        />
         <span class="pulse-ring"></span>
       </div>
-      <h1 class="brand-title">RaQuel Synths // RQS</h1>
+
+      <h1 class="brand-title">
+        RaQuel Synths // RQS
+      </h1>
+
       <p class="brand-subtitle">
-        {{ translate.isPt() ? 'Produção Musical Híbrida (IA + Humana) • Electronic / DnB' : 'Hybrid Music Production (AI + Human) • Electronic / DnB' }}
+        {{
+          translate.isPt()
+            ? 'Produção Musical Híbrida (IA + Humana) • Electronic / DnB'
+            : 'Hybrid Music Production (AI + Human) • Electronic / DnB'
+        }}
       </p>
+
+      <span class="mainframe-status">
+        ● MAINFRAME ONLINE
+      </span>
+
+      <section class="bio-section collabs-section">
+
+  <div class="section-heading">
+    <span>⚡</span>
+    <h2>COLLABS // CONNECTED ARTISTS</h2>
+  </div>
+
+  <div class="collab-card">
+
+    <div class="collab-info">
+      <strong>Kris Mig</strong>
+      <small>Producer / Collaborator • Kraków, Poland</small>
+    </div>
+
+    <div class="collab-links">
+
+  <button
+    type="button"
+    class="collab-btn soundcloud"
+    (click)="openLink(
+      'https://raquelsynths.com/play/kris-mig-profile?service=soundcloud'
+    )"
+  >
+    <i class="fab fa-soundcloud"></i>
+    <span>SoundCloud</span>
+    <span class="collab-arrow">↗</span>
+  </button>
+
+  <button
+    type="button"
+    class="collab-btn spotify"
+    (click)="openLink(
+      'https://raquelsynths.com/play/kris-mig-profile?service=spotify'
+    )"
+  >
+    <i class="fab fa-spotify"></i>
+    <span>Spotify</span>
+    <span class="collab-arrow">↗</span>
+  </button>
+
+</div>
+
+  </div>
+
+</section>
+
+<section class="bio-section communities-section">
+
+  <div class="section-heading">
+    <span>◉</span>
+    <h2>{{
+          translate.isPt()
+            ? 'GRUPOS // COMUNIDADES'
+            : 'GROUPS // COMMUNITIES'
+        }}</h2>
+  </div>
+
+  <button
+    class="community-card"
+    (click)="openLink('https://discord.gg/ePRGquZstm')"
+  >
+    <span class="community-content">
+      <strong>Coletivo SomBR</strong>
+      <small>{{
+          translate.isPt()
+            ? 'Canal oficial do coletivo de música eletrônica SomBR'
+            : 'Official SomBR music channel'
+             }}</small>
+    </span>
+
+    <span class="community-action">
+      {{
+          translate.isPt()
+            ? 'Discord // ENTRAR ↗'
+            : 'Discord // JOIN ↗'
+        }}
+    </span>
+  </button>
+
+</section>
     </header>
 
-    <!-- Seção de Inscrição na Newsletter (Brevo API) -->
+
+<!-- PRIMARY MUSIC -->
+<section class="bio-section">
+
+  <div class="section-heading">
+    <span>🎧</span>
+
+    <h2>
+      {{
+        translate.isPt()
+          ? 'OUÇA / SIGA'
+          : 'LISTEN / FOLLOW'
+      }}
+    </h2>
+  </div>
+
+  <div class="primary-links">
+
+    <!-- SPOTIFY -->
+    <button
+      class="platform-card spotify"
+      type="button"
+      (click)="openLink(
+        'https://raquelsynths.com/play/rqs-mainframe?service=spotify'
+      )"
+    >
+      <i class="fab fa-spotify"></i>
+
+      <span class="platform-content">
+        <strong>Spotify</strong>
+
+        <small>
+          {{
+            translate.isPt()
+              ? 'Perfil oficial'
+              : 'Official profile'
+          }}
+        </small>
+      </span>
+
+      <span class="platform-arrow">→</span>
+    </button>
+
+
+    <!-- SOUNDCLOUD -->
+    <button
+      class="platform-card soundcloud"
+      type="button"
+      (click)="openLink(
+        'https://raquelsynths.com/play/rqs-mainframe?service=soundcloud'
+      )"
+    >
+      <i class="fab fa-soundcloud"></i>
+
+      <span class="platform-content">
+        <strong>SoundCloud</strong>
+
+        <small>
+          RQS Official
+        </small>
+      </span>
+
+      <span class="platform-arrow">→</span>
+    </button>
+
+
+    <!-- YOUTUBE -->
+    <button
+      class="platform-card youtube"
+      type="button"
+      (click)="openLink(
+        'https://raquelsynths.com/play/rqs-mainframe?service=youtube'
+      )"
+    >
+      <i class="fab fa-youtube"></i>
+
+      <span class="platform-content">
+        <strong>YouTube</strong>
+
+        <small>
+          {{
+            translate.isPt()
+              ? 'Canal oficial'
+              : 'Official channel'
+          }}
+        </small>
+      </span>
+
+      <span class="platform-arrow">→</span>
+    </button>
+
+
+    <!-- APPLE MUSIC -->
+    <button
+      class="platform-card apple"
+      type="button"
+      (click)="openLink(
+        'https://raquelsynths.com/play/rqs-mainframe?service=applemusic'
+      )"
+    >
+      <i class="fab fa-apple"></i>
+
+      <span class="platform-content">
+        <strong>Apple Music</strong>
+
+        <small>
+          {{
+            translate.isPt()
+              ? 'Perfil do artista'
+              : 'Artist profile'
+          }}
+        </small>
+      </span>
+
+      <span class="platform-arrow">→</span>
+    </button>
+
+  </div>
+</section>
+
+
+<!-- MORE MUSIC -->
+<section class="bio-section compact-section">
+
+  <div class="section-heading">
+    <span>◈</span>
+
+    <h2>
+      {{
+        translate.isPt()
+          ? 'MAIS PLATAFORMAS'
+          : 'MORE PLATFORMS'
+      }}
+    </h2>
+  </div>
+
+  <div class="platform-grid">
+
+    <!-- DEEZER -->
+    <button
+      type="button"
+      class="platform-grid-btn deezer"
+      (click)="openLink(
+        'https://raquelsynths.com/play/rqs-mainframe?service=deezer'
+      )"
+    >
+      <span class="platform-grid-label">
+        Deezer
+      </span>
+    </button>
+
+
+    <!-- TIDAL -->
+    <button
+      type="button"
+      class="platform-grid-btn tidal"
+      (click)="openLink(
+        'https://raquelsynths.com/play/rqs-mainframe?service=tidal'
+      )"
+    >
+      <span class="platform-grid-label">
+        TIDAL
+      </span>
+    </button>
+
+
+    <!-- AMAZON MUSIC -->
+    <button
+      type="button"
+      class="platform-grid-btn amazon-music"
+      (click)="openLink(
+        'https://raquelsynths.com/play/rqs-mainframe?service=amazonmusic'
+      )"
+    >
+      <span class="platform-grid-label">
+        Amazon Music
+      </span>
+    </button>
+
+
+    <!-- BANDCAMP -->
+    <button
+      type="button"
+      class="platform-grid-btn bandcamp"
+      (click)="openLink(
+        'https://raquelsynths.com/play/rqs-mainframe?service=bandcamp'
+      )"
+    >
+      <span class="platform-grid-label">
+        Bandcamp
+      </span>
+    </button>
+
+
+    <!-- BEATPORT -->
+    <button
+      type="button"
+      class="platform-grid-btn beatport"
+      (click)="openLink(
+        'https://raquelsynths.com/play/rqs-mainframe?service=beatport'
+      )"
+    >
+      <span class="platform-grid-label">
+        Beatport
+      </span>
+    </button>
+
+  </div>
+</section>
+
+
+<!-- SOCIAL -->
+<section class="bio-section compact-section">
+
+  <div class="section-heading">
+    <span>📡</span>
+
+    <h2>
+      {{
+        translate.isPt()
+          ? 'CONECTE-SE'
+          : 'CONNECT'
+      }}
+    </h2>
+  </div>
+
+  <div class="social-grid">
+
+    <!-- INSTAGRAM -->
+    <button
+  type="button"
+  class="social-btn instagram"
+  (click)="openLink(
+    'https://raquelsynths.com/play/rqs-mainframe?service=instagram'
+  )"
+  aria-label="Instagram"
+  title="Instagram"
+>
+  <svg
+    class="social-svg"
+    viewBox="0 0 24 24"
+    aria-hidden="true"
+  >
+    <path
+      fill="currentColor"
+      d="M7 2C4.24 2 2 4.24 2 7v10c0 2.76 2.24 5 5 5h10c2.76 0 5-2.24 5-5V7c0-2.76-2.24-5-5-5H7zm0 2h10c1.66 0 3 1.34 3 3v10c0 1.66-1.34 3-3 3H7c-1.66 0-3-1.34-3-3V7c0-1.66 1.34-3 3-3zm11 1.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5zM12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"
+    />
+  </svg>
+
+  <span class="social-label">
+    Instagram
+  </span>
+</button>
+
+
+    <!-- TIKTOK -->
+    <button
+  type="button"
+  class="social-btn tiktok"
+  (click)="openLink(
+    'https://raquelsynths.com/play/rqs-mainframe?service=tiktok'
+  )"
+  aria-label="TikTok"
+  title="TikTok"
+>
+  <svg
+    class="social-svg"
+    viewBox="0 0 24 24"
+    aria-hidden="true"
+  >
+    <path
+      fill="currentColor"
+      d="M14 3v10.5a3.5 3.5 0 1 1-3-3.46V7.02A6.5 6.5 0 1 0 17 13.5V8.77A7.6 7.6 0 0 0 21 10V7a4.5 4.5 0 0 1-4-4h-3z"
+    />
+  </svg>
+
+  <span class="social-label">
+    TikTok
+  </span>
+</button>
+
+
+    <!-- BLUESKY -->
+    <button
+      type="button"
+      class="social-btn bluesky"
+      (click)="openLink(
+        'https://raquelsynths.com/play/rqs-mainframe?service=bluesky'
+      )"
+      aria-label="Bluesky"
+      title="Bluesky"
+    >
+      <span class="social-icon">
+        🦋
+      </span>
+
+      <span class="social-label">
+        Bluesky
+      </span>
+    </button>
+
+
+    <!-- X -->
+    <button
+      type="button"
+      class="social-btn x-network"
+      (click)="openLink(
+        'https://raquelsynths.com/play/rqs-mainframe?service=x'
+      )"
+      aria-label="X"
+      title="X"
+    >
+      <span class="social-icon">
+        𝕏
+      </span>
+
+      <span class="social-label">
+        X
+      </span>
+    </button>
+
+  </div>
+</section>
+
+    <!-- NEWSLETTER -->
     <section class="newsletter-box">
-      <p class="newsletter-title">
-        {{ translate.isPt() ? '📡 CONECTAR AO TRANSMISSOR RQS' : '📡 CONNECT TO RQS TRANSMITTER' }}
+
+      <span class="newsletter-kicker">
+        RQS TRANSMITTER
+      </span>
+
+      <h2>
+        {{
+          translate.isPt()
+            ? 'Receba novos lançamentos'
+            : 'Receive new transmissions'
+        }}
+      </h2>
+
+      <p>
+        {{
+          translate.isPt()
+            ? 'Novas faixas, sessões e transmissões diretamente no seu e-mail.'
+            : 'New tracks, sessions and transmissions directly to your inbox.'
+        }}
       </p>
 
-      <div *ngIf="!subscribed()" class="input-group">
+      <div
+        *ngIf="!subscribed()"
+        class="input-group"
+      >
         <input
           type="email"
-          title="Email Subscriber"
           aria-label="Email"
-          [placeholder]="translate.isPt() ? 'Seu melhor e-mail...' : 'Your best email...'"
+          [placeholder]="
+            translate.isPt()
+              ? 'seu@email.com'
+              : 'your@email.com'
+          "
           [(ngModel)]="emailInputValue"
         />
-        <button (click)="subscribeNewsletter()">
-          {{ translate.isPt() ? 'JOIN' : 'JOIN' }}
+
+        <button
+          (click)="subscribeNewsletter()"
+        >
+        {{
+          translate.isPt()
+            ? 'Inscrever-se'
+            : 'Subscribe'
+        }}
         </button>
       </div>
 
-      <p *ngIf="subscribed()" class="subscribed-msg">
-        {{ translate.isPt() ? '✔ Sinal registrado no Mainframe com sucesso!' : '✔ Signal successfully registered in the Mainframe!' }}
+      <p
+        *ngIf="subscribed()"
+        class="subscribed-msg"
+      >
+        ✔ {{
+          translate.isPt()
+            ? 'Sinal registrado no Mainframe.'
+            : 'Signal registered in the Mainframe.'
+        }}
       </p>
-    </section>
-
-    <!-- BOTÕES DAS PLATAFORMAS MUSICAIS -->
-    <section class="streaming-platforms">
-
-      <!-- SPOTIFY -->
-      <button class="btn-stream spotify" (click)="openLink('https://raquelsynths.com/play/rqs-mainframe?service=spotify')">
-        <i class="fab fa-spotify"></i> Spotify
-      </button>
-
-      <!-- SOUNDCLOUD -->
-      <button class="btn-stream soundcloud" (click)="openLink('https://raquelsynths.com/play/rqs-mainframe?service=soundcloud')">
-        <i class="fab fa-soundcloud"></i> SoundCloud
-      </button>
-
-      <!-- YOUTUBE -->
-      <button class="btn-stream youtube" (click)="openLink('https://raquelsynths.com/play/rqs-mainframe?service=youtube')">
-        <i class="fab fa-youtube"></i> YouTube Music / Channel
-      </button>
-
-      <!-- BANDCAMP -->
-      <button class="btn-stream bandcamp" (click)="openLink('https://raquelsynths-rqs.bandcamp.com')">
-        <i class="fab fa-bandcamp"></i> Bandcamp
-      </button>
 
     </section>
 
-    <!-- Rodapé Minimalista -->
-    <footer class="bio-footer">
-      <p>RAQUEL SYNTHS © 2026 // ALL RIGHTS RESERVED</p>
-    </footer>
-
-  </div>
+  </main>
 </div>
+

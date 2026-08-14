@@ -7,22 +7,57 @@ import { signal } from '@angular/core';
 export interface MusicalLinkData {
   id: string;
   title: string;
-  soundcloud?: string; // 👈 Adicione o ? para não quebrar se não existir
-  youtube?: string;    // 👈 Adicione o ?
-  artist?: string;
-  coverUrl?: string;
+
+  // PERFIS / STREAMING
   spotify?: string;
   spotifyUrl?: string;
   spotifyUriScheme?: string;
+
+  soundcloud?: string;
   soundCloudWebUrl?: string;
   soundCloudUriScheme?: string;
+
+  youtube?: string;
   youtubeUrl?: string;
+
+  appleMusic?: string;
   appleMusicUrl?: string;
-  primaryService?: 'spotify' | 'soundcloud' | 'youtube';
+
+  deezer?: string;
+  tidal?: string;
+  amazonMusic?: string;
+  bandcamp?: string;
+  beatport?: string;
+
+  // REDES SOCIAIS
+  instagram?: string;
+  tiktok?: string;
+  bluesky?: string;
+  x?: string;
+
+  // SITE
+  website?: string;
   siteUrl?: string;
+
+  // METADADOS
+  artist?: string;
+  coverUrl?: string;
+
+  primaryService?:
+    | 'spotify'
+    | 'soundcloud'
+    | 'youtube'
+    | 'applemusic'
+    | 'deezer'
+    | 'tidal'
+    | 'amazonmusic'
+    | 'bandcamp'
+    | 'beatport';
+
   isFeatured?: boolean;
   order?: number;
   releaseDate?: string;
+  linkType?: 'content' | 'profile';
 }
 
 @Injectable({

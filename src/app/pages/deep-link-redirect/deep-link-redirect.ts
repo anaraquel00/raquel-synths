@@ -57,174 +57,809 @@ export class DeepLinkRedirectComponent implements OnInit {
   private fallbackTimeoutId: any = null;
 
 
- ngOnInit(): void {
-      this.meta.updateTag({
-        name: 'robots',
-        content: 'noindex, nofollow'
-      });
-    if (!isPlatformBrowser(this.platformId)) return;
+ngOnInit(): void {
 
-    // 🛡️ DIZ AO GOOGLE PARA NÃO TENTAR INDEXAR ESTE REDIRECIONADOR:
-    this.meta.addTag({ name: 'robots', content: 'noindex, nofollow' });
+  this.meta.updateTag({
+    name: 'robots',
+    content: 'noindex, nofollow'
+  });
 
-    // 🛰️ TELEMETRIA BRUTA DE ROTA:
-  console.log('--- SCANNER DE ROTA LOCAL ---');
-  console.log('URL Completa detectada:', window.location.href);
-  console.log('ParamMap completo:', this.route.snapshot.paramMap.keys);
-  console.log('ID isolado por paramMap:', this.route.snapshot.paramMap.get('id'));
-  console.log('ID isolado por queryParamMap:', this.route.snapshot.queryParamMap.get('id'));
+  if (!isPlatformBrowser(this.platformId)) {
+    return;
+  }
 
-  if ((window as any).acionarRadarMeta) {
+  this.meta.addTag({
+    name: 'robots',
+    content: 'noindex, nofollow'
+  });
+
+
+  // =================================================
+  // TELEMETRIA DE ROTA
+  // =================================================
+
+  console.log(
+    '--- SCANNER DE ROTA LOCAL ---'
+  );
+
+  console.log(
+    'URL Completa detectada:',
+    window.location.href
+  );
+
+  console.log(
+    'ParamMap completo:',
+    this.route.snapshot.paramMap.keys
+  );
+
+  console.log(
+    'ID isolado por paramMap:',
+    this.route.snapshot.paramMap.get('id')
+  );
+
+  console.log(
+    'ID isolado por queryParamMap:',
+    this.route.snapshot.queryParamMap.get('id')
+  );
+
+
+  // =================================================
+  // META RADAR
+  // =================================================
+
+  if (
+    (window as any).acionarRadarMeta
+  ) {
+
     (window as any).acionarRadarMeta();
   }
 
-    // ⚡ ACORDA O RADAR DA META: Ativa o script do index.html e dispara o PageView base
-    if ((window as any).acionarRadarMeta) {
-      (window as any).acionarRadarMeta();
-    }
 
-    const id = this.route.snapshot.paramMap.get('id');
-    if (!id) {
-      this.handleError();
-      return;
-    }
+  // =================================================
+  // ID DA ROTA
+  // =================================================
 
-    this.linkService.getLinkData(id).pipe(first()).subscribe({
-  next: (data) => {
-    if (data) {
-      this.loading.set(false);
+  const id =
+    this.route.snapshot.paramMap.get('id');
 
-      /* // 🛰️ BYPASS DE EMERGÊNCIA: Força o navegador a sair da página IMEDIATAMENTE
-      const linkFinal = data.spotify || data.spotifyUrl;
-      if (linkFinal) {
-        console.log('-> FORÇANDO REDIRECIONAMENTO PARA:', linkFinal);
-        window.location.replace(linkFinal); // Usa replace para não quebrar o histórico
-        return;
-      } */
-
-      this.executeDeepLinkProtocol(data);
-    } else {
-      this.handleError();
-    }
-  },
-  error: () => this.handleError()
-});
+  if (!id) {
+    this.handleError();
+    return;
   }
 
-private executeDeepLinkProtocol(data: any): void {
-  if (typeof (window as any).fbq !== 'undefined') {
-    (window as any).fbq('track', 'ViewContent', {
-      content_name: data.title || 'Música',
-      content_category: 'DeepLink Redirect',
-      content_ids: [this.route.snapshot.paramMap.get('id')],
-      content_type: 'product',
-      status: this.route.snapshot.queryParamMap.get('service')
+
+  // =================================================
+  // FIRESTORE
+  // =================================================
+
+  this.linkService
+    .getLinkData(id)
+    .pipe(first())
+    .subscribe({
+
+      next: (data) => {
+
+        if (!data) {
+          this.handleError();
+          return;
+        }
+
+        this.loading.set(false);
+
+        // =============================================
+        // PROFILE DEEP LINK
+        // =============================================
+
+        if (
+          data.linkType === 'profile'
+        ) {
+
+          this.executeProfileDeepLinkProtocol(
+            data
+          );
+
+          return;
+        }
+
+
+        // =============================================
+        // TRACK / VIDEO / CONTENT DEEP LINK
+        // =============================================
+
+        this.executeDeepLinkProtocol(
+          data
+        );
+      },
+
+
+      error: () => {
+
+        this.handleError();
+      }
     });
+}
+
+private executeDeepLinkProtocol(
+  data: MusicalLinkData
+): void {
+
+  // =================================================
+  // TELEMETRIA
+  // =================================================
+
+  const clickedService =
+    this.route.snapshot.queryParamMap.get('service');
+
+  const contentId =
+    this.route.snapshot.paramMap.get('id');
+
+  if (
+    typeof (window as any).fbq !== 'undefined'
+  ) {
+    (window as any).fbq(
+      'track',
+      'ViewContent',
+      {
+        content_name:
+          data.title || 'Música',
+
+        content_category:
+          'DeepLink Redirect',
+
+        content_ids:
+          contentId
+            ? [contentId]
+            : [],
+
+        content_type:
+          'product',
+
+        status:
+          clickedService
+      }
+    );
   }
 
-  const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
-  const isMobile = /Android|iPhone|iPad|iPod/i.test(userAgent);
 
-  // 🟢 CORREÇÃO 1: Adicionar o 'youtube' como serviço de destino válido
-  const clickedService = this.route.snapshot.queryParamMap.get('service');
-  const targetService = (clickedService === 'spotify' || clickedService === 'soundcloud' || clickedService === 'youtube' || clickedService === 'site')
-    ? clickedService
-    : 'soundcloud';
+  // =================================================
+  // DISPOSITIVO
+  // =================================================
+
+  const userAgent =
+    navigator.userAgent ||
+    navigator.vendor ||
+    (window as any).opera ||
+    '';
+
+  const isMobile =
+    /Android|iPhone|iPad|iPod/i.test(
+      userAgent
+    );
+
+
+  // =================================================
+  // SERVIÇOS DE CONTEÚDO
+  // =================================================
+
+  type ContentService =
+    | 'spotify'
+    | 'soundcloud'
+    | 'youtube'
+    | 'site';
+
+
+  const validServices =
+    new Set<ContentService>([
+      'spotify',
+      'soundcloud',
+      'youtube',
+      'site'
+    ]);
+
+
+  const targetService: ContentService =
+    clickedService &&
+    validServices.has(
+      clickedService as ContentService
+    )
+      ? clickedService as ContentService
+      : 'soundcloud';
+
 
   let webUrl = '';
   let uriScheme = '';
 
-  if (targetService === 'spotify') {
-    const spotifyLink = data.spotify || data.spotifyUrl;
-    webUrl = spotifyLink;
 
-    if (spotifyLink && spotifyLink.includes('/track/')) {
-      const urlParts = spotifyLink.split('/track/');
-      const trackId = urlParts[1]?.split('?')[0];
-      uriScheme = `spotify:track:${trackId}`;
-    } else {
-      uriScheme = '';
-    }
-  }
-  // 🟢 CORREÇÃO 2: Bloco dedicado para o YouTube com extração de ID para Deep-Linking
-  else if (targetService === 'youtube') {
-    const ytLink = data.youtubeUrl || data.youtube;
-    webUrl = ytLink;
+  // =================================================
+  // SPOTIFY — TRACK
+  // =================================================
 
-    if (ytLink && ytLink.includes('v=')) {
-      const videoId = ytLink.split('v=')[1]?.split('&')[0];
-      uriScheme = `vnd.youtube:${videoId}`; // 📱 Força a abertura do app nativo do YouTube no celular!
-    } else if (ytLink && ytLink.includes('youtu.be/')) {
-      const videoId = ytLink.split('youtu.be/')[1]?.split('?')[0];
-      uriScheme = `vnd.youtube:${videoId}`;
-    } else {
-      uriScheme = '';
-    }
-  }
-  else if (targetService === 'site') {
-  const id = this.route.snapshot.paramMap.get('id');
+  if (
+    targetService === 'spotify'
+  ) {
 
-  let siteLink = data.siteUrl || data.url || '';
+    const spotifyLink =
+      data.spotify ||
+      data.spotifyUrl ||
+      '';
 
-  if (!siteLink && id) {
-    const contentType =
-      data.contentType || 'lore';
+    webUrl =
+      spotifyLink;
 
-    if (contentType === 'hybrid') {
-      siteLink =
-        `https://raquelsynths.com/hybrid-reader/${id}`;
-    }
 
-    else if (contentType === 'log') {
-      siteLink =
-        `https://raquelsynths.com/log-reader/${id}`;
-    }
+    /*
+     * Aqui tratamos conteúdo musical específico.
+     *
+     * Perfil de artista NÃO pertence a esta função.
+     */
+    if (
+      spotifyLink.includes('/track/')
+    ) {
 
-    else {
-      const mode =
-        data.mode === 'jonah'
-          ? 'jonah'
-          : 'broklin';
+      const trackId =
+        spotifyLink
+          .split('/track/')[1]
+          ?.split('?')[0];
 
-      siteLink =
-        `https://raquelsynths.com/lore/${mode}/${id}`;
+
+      if (trackId) {
+        uriScheme =
+          `spotify:track:${trackId}`;
+      }
+
+    } else if (
+      data.spotifyUriScheme
+    ) {
+
+      uriScheme =
+        data.spotifyUriScheme;
     }
   }
 
-  webUrl = siteLink;
 
-  if (isMobile && siteLink) {
-    if (userAgent.includes('Android')) {
-      const cleanUrl = siteLink
-        .replace('https://', '')
-        .replace('http://', '');
+  // =================================================
+  // YOUTUBE — VÍDEO
+  // =================================================
+
+  else if (
+    targetService === 'youtube'
+  ) {
+
+    const youtubeLink =
+      data.youtubeUrl ||
+      data.youtube ||
+      '';
+
+    webUrl =
+      youtubeLink;
+
+
+    if (
+      youtubeLink.includes('watch?v=')
+    ) {
+
+      const videoId =
+        youtubeLink
+          .split('v=')[1]
+          ?.split('&')[0];
+
+
+      if (videoId) {
+        uriScheme =
+          `vnd.youtube:${videoId}`;
+      }
+
+    } else if (
+      youtubeLink.includes('youtu.be/')
+    ) {
+
+      const videoId =
+        youtubeLink
+          .split('youtu.be/')[1]
+          ?.split('?')[0];
+
+
+      if (videoId) {
+        uriScheme =
+          `vnd.youtube:${videoId}`;
+      }
+    }
+  }
+
+
+  // =================================================
+  // SOUNDCLOUD — TRACK / RELEASE
+  // =================================================
+
+  else if (
+    targetService === 'soundcloud'
+  ) {
+
+    webUrl =
+      data.soundcloud ||
+      data.soundCloudWebUrl ||
+      '';
+
+    uriScheme =
+      data.soundCloudUriScheme ||
+      '';
+  }
+
+
+  // =================================================
+  // SITE / LORE / LOG / HYBRID
+  // =================================================
+
+  else if (
+    targetService === 'site'
+  ) {
+
+    const id =
+      contentId;
+
+
+    let siteLink =
+      data.siteUrl ||
+      '';
+
+
+    /*
+     * Caso não exista URL explícita,
+     * reconstrói a rota interna.
+     */
+    if (
+      !siteLink &&
+      id
+    ) {
+
+      const contentType =
+        (data as any).contentType ||
+        'lore';
+
+
+      if (
+        contentType === 'hybrid'
+      ) {
+
+        siteLink =
+          `https://raquelsynths.com/hybrid-reader/${id}`;
+
+      } else if (
+        contentType === 'log'
+      ) {
+
+        siteLink =
+          `https://raquelsynths.com/log-reader/${id}`;
+
+      } else {
+
+        const mode =
+          (data as any).mode === 'jonah'
+            ? 'jonah'
+            : 'broklin';
+
+
+        siteLink =
+          `https://raquelsynths.com/lore/${mode}/${id}`;
+      }
+    }
+
+
+    webUrl =
+      siteLink;
+
+
+    /*
+     * No Android podemos tentar abrir
+     * diretamente com o navegador associado.
+     */
+    if (
+      isMobile &&
+      siteLink &&
+      userAgent.includes('Android')
+    ) {
+
+      const cleanUrl =
+        siteLink
+          .replace('https://', '')
+          .replace('http://', '');
+
 
       uriScheme =
         `intent://${cleanUrl}` +
         `#Intent;scheme=https;` +
         `package=com.android.chrome;end`;
-    } else {
-      uriScheme = '';
     }
   }
-}
-  else {
-    webUrl = data.soundcloud;
-    uriScheme = data.soundcloudUriScheme;
-  }
 
-  if (!isMobile) {
-    if (webUrl) window.location.href = webUrl;
+
+  // =================================================
+  // URL INVÁLIDA / AUSENTE
+  // =================================================
+
+  if (!webUrl) {
+
+    console.warn(
+      '[RQS DEEPLINK] URL de conteúdo não encontrada:',
+      {
+        service:
+          targetService,
+
+        id:
+          contentId
+      }
+    );
+
+    this.handleError();
+
     return;
   }
 
+
+  // =================================================
+  // DESKTOP
+  // =================================================
+
+  if (!isMobile) {
+
+    window.location.href =
+      webUrl;
+
+    return;
+  }
+
+
+  // =================================================
+  // MOBILE — FALLBACK
+  // =================================================
+
   this.setupVisibilityListeners();
 
-  this.fallbackTimeoutId = setTimeout(() => {
-    if (webUrl) window.location.href = webUrl;
-  }, 1500);
 
-  if (uriScheme) window.location.href = uriScheme;
+  this.fallbackTimeoutId =
+    setTimeout(
+      () => {
+
+        if (webUrl) {
+          window.location.href =
+            webUrl;
+        }
+
+      },
+      1500
+    );
+
+
+  /*
+   * Se houver URI nativa,
+   * tenta abrir o aplicativo.
+   *
+   * Caso contrário,
+   * utiliza diretamente HTTPS.
+   */
+  if (uriScheme) {
+
+    window.location.href =
+      uriScheme;
+
+  } else {
+
+    window.location.href =
+      webUrl;
+  }
+}
+
+private executeProfileDeepLinkProtocol(
+  data: MusicalLinkData
+): void {
+
+  // =================================================
+  // IDENTIFICAÇÃO DO SERVIÇO
+  // =================================================
+
+  type ProfileService =
+  | 'spotify'
+  | 'soundcloud'
+  | 'youtube'
+  | 'applemusic'
+  | 'deezer'
+  | 'tidal'
+  | 'amazonmusic'
+  | 'bandcamp'
+  | 'beatport'
+  | 'instagram'
+  | 'tiktok'
+  | 'bluesky'
+  | 'x'
+  | 'site';
+
+
+  const clickedService =
+    this.route.snapshot.queryParamMap.get('service');
+
+
+  const validServices =
+    new Set<ProfileService>([
+      'spotify',
+      'soundcloud',
+      'youtube',
+      'applemusic',
+      'deezer',
+      'tidal',
+      'amazonmusic',
+      'bandcamp',
+      'beatport',
+      'instagram',
+      'tiktok',
+      'bluesky',
+      'x',
+      'site'
+    ]);
+
+
+  if (
+    !clickedService ||
+    !validServices.has(
+      clickedService as ProfileService
+    )
+  ) {
+
+    console.warn(
+      '[RQS PROFILE LINK] Serviço inválido:',
+      clickedService
+    );
+
+    this.handleError();
+
+    return;
+  }
+
+
+  const targetService =
+    clickedService as ProfileService;
+
+
+  // =================================================
+  // TELEMETRIA
+  // =================================================
+
+  const profileId =
+    this.route.snapshot.paramMap.get('id');
+
+
+  if (
+    typeof (window as any).fbq !== 'undefined'
+  ) {
+
+    (window as any).fbq(
+      'track',
+      'ViewContent',
+      {
+        content_name:
+          data.title ||
+          'RQS Mainframe',
+
+        content_category:
+          'Profile DeepLink',
+
+        content_ids:
+          profileId
+            ? [profileId]
+            : [],
+
+        content_type:
+          'profile',
+
+        status:
+          targetService
+      }
+    );
+  }
+
+
+  // =================================================
+  // MAPA DE PERFIS
+  // =================================================
+
+  const profileUrls:
+    Partial<
+      Record<
+        ProfileService,
+        string
+      >
+    > = {
+
+      spotify:
+        data.spotify ||
+        data.spotifyUrl,
+
+      soundcloud:
+        data.soundcloud ||
+        data.soundCloudWebUrl,
+
+      youtube:
+        data.youtube ||
+        data.youtubeUrl,
+
+      applemusic:
+        data.appleMusic ||
+        data.appleMusicUrl,
+
+      deezer:
+        data.deezer,
+
+      tidal:
+        data.tidal,
+
+      amazonmusic:
+        data.amazonMusic,
+
+      bandcamp:
+        data.bandcamp,
+
+      beatport:
+        data.beatport,
+
+      instagram:
+        data.instagram,
+
+      tiktok:
+        data.tiktok,
+
+      bluesky:
+        data.bluesky,
+
+      x:
+        data.x,
+
+      site:
+        data.website ||
+        data.siteUrl
+    };
+
+
+  const webUrl =
+    profileUrls[
+      targetService
+    ] || '';
+
+
+  // =================================================
+  // PERFIL NÃO CADASTRADO
+  // =================================================
+
+  if (!webUrl) {
+
+    console.warn(
+      '[RQS PROFILE LINK] Perfil não cadastrado:',
+      targetService
+    );
+
+    this.handleError();
+
+    return;
+  }
+
+
+  // =================================================
+  // DISPOSITIVO
+  // =================================================
+
+  const userAgent =
+    navigator.userAgent ||
+    navigator.vendor ||
+    (window as any).opera ||
+    '';
+
+  const isMobile =
+    /Android|iPhone|iPad|iPod/i.test(
+      userAgent
+    );
+
+
+  let uriScheme = '';
+
+
+  // =================================================
+  // SPOTIFY — PERFIL DE ARTISTA
+  // =================================================
+
+  if (
+    targetService === 'spotify' &&
+    webUrl.includes('/artist/')
+  ) {
+
+    const artistId =
+      webUrl
+        .split('/artist/')[1]
+        ?.split('?')[0];
+
+
+    if (artistId) {
+
+      uriScheme =
+        `spotify:artist:${artistId}`;
+    }
+  }
+
+
+  // =================================================
+  // SOUNDCLOUD
+  // =================================================
+
+  else if (
+    targetService === 'soundcloud' &&
+    data.soundCloudUriScheme
+  ) {
+
+    uriScheme =
+      data.soundCloudUriScheme;
+  }
+
+
+  /*
+   * YouTube Channel, Instagram, TikTok,
+   * Bluesky, Bandcamp, Deezer etc.
+   *
+   * Preferimos HTTPS/universal link.
+   *
+   * Não inventamos URI schemes
+   * não garantidos pelas plataformas.
+   */
+
+
+  // =================================================
+  // DESKTOP
+  // =================================================
+
+  if (!isMobile) {
+
+    window.location.href =
+      webUrl;
+
+    return;
+  }
+
+
+  // =================================================
+  // MOBILE
+  // =================================================
+
+  if (!uriScheme) {
+
+    /*
+     * Para plataformas baseadas em
+     * Universal/App Links, HTTPS já é
+     * o mecanismo correto.
+     */
+    window.location.href =
+      webUrl;
+
+    return;
+  }
+
+
+  // =================================================
+  // MOBILE COM URI NATIVA + FALLBACK
+  // =================================================
+
+  this.setupVisibilityListeners();
+
+
+  this.fallbackTimeoutId =
+    setTimeout(
+      () => {
+
+        window.location.href =
+          webUrl;
+
+      },
+      1500
+    );
+
+
+  window.location.href =
+    uriScheme;
 }
 
   private setupVisibilityListeners(): void {

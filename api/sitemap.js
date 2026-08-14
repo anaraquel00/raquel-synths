@@ -71,8 +71,6 @@ export default async function handler(req, res) {
 
   // =====================================================
   // 1. ROTAS ESTÁTICAS REALMENTE PRERENDERIZADAS
-  //
-  // 8 páginas
   // =====================================================
 
   const staticRoutes = [
@@ -122,6 +120,10 @@ export default async function handler(req, res) {
     },
     {
       path: '/store',
+      priority: '0.8'
+    },
+    {
+      path: '/bio',
       priority: '0.8'
     }
   ];

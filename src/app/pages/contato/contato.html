@@ -5,16 +5,6 @@
     <p>{{ text.subtitle }}</p>
   </div>
 
-  <div class="social-grid">
-    @for (card of text.socialCards; track card.name) {
-      <a [href]="card.link" target="_blank" class="social-card" [style.--hover-color]="card.color">
-        <i [innerHTML]="card.icon | safeHtml"></i>
-        <h3>{{ card.name }}</h3>
-        <span>{{ card.desc }}</span>
-      </a>
-    }
-  </div>
-
   <div class="divider">
     <span>{{ text.formTitle }}</span>
   </div>
