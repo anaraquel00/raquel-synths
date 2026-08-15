@@ -37,12 +37,13 @@ export class Creator implements OnInit, OnDestroy {
     // Atualiza o SEO Dinamicamente
     this.seoService.updateMetaTags({
       title: isPt
-        ? 'Ana Raquel de Holanda | Angular Developer • Software Engineer • AI Automation'
-        : 'Ana Raquel de Holanda | Angular Developer • Software Engineer • AI Automation',
+        ? 'Ana Raquel — Creative Technology Developer | Portfolio'
+        : 'Ana Raquel — Creative Technology Developer | Portfolio',
       description: isPt
-        ? 'Software Engineer especializada em Angular 20+, TypeScript, Firebase, IA Generativa e automação inteligente. Criadora da plataforma RaQuel Synths, onde desenvolve aplicações escaláveis, arquitetura Front-End moderna, SEO, Serverless e Growth Engineering.'
-        : 'Software Engineer specializing in Angular 20+, TypeScript, Firebase, Generative AI, and intelligent automation. Creator of the RaQuel Synths platform, where she develops scalable applications and focuses on modern front-end architecture, SEO, serverless technologies, and growth engineering.',
-      url: `https://raquelsynths.com${currentPath}`
+        ? 'Portfólio de Tecnologia Criativa de Ana Raquel: Angular, TypeScript, software de áudio, produtos digitais, RQS Studio e o Ecossistema Web RaQuel Synths.'
+        : 'Creative Technology portfolio by Ana Raquel: Angular, TypeScript, audio software, digital products, RQS Studio and the RaQuel Synths Web Ecosystem.',
+      url: `https://raquelsynths.com${currentPath}`,
+      image: 'https://raquelsynths.com/images/creator-creative-technology-og.webp'
     });
   }
 
@@ -87,58 +88,92 @@ ngOnInit() {
     this.updateSeoAndLang(isPt);
 
     // 3. 🚀 INJEÇÃO DE AUTORIDADE (JSON-LD): Perfil Profissional Verificado
-    this.seoService.setJsonLd({
-      "@context": "https://schema.org",
-      "@type": "ProfilePage",
-      "founder": {
-    "@type":"Organization",
-    "name":"RaQuel Synths"
-     },
-     "worksFor": {
-    "@type":"Organization",
-    "name":"RaQuel Synths"
-     },
-      "mainEntity": {
-        "@type": "Person",
-        "name": "Ana Raquel de Holanda",
-        "jobTitle": "Software Engineer | Front-End Architect | AI Product Builder",
-        "description": isPt
-          ? "Desenvolvedora de Software especializada em Angular 20+, TypeScript, Signals, RxJS, Firebase, SEO técnico, Performance Web, Arquitetura Front-End e aplicações Serverless."
-          : "Software Developer specializing in Angular 20+, TypeScript, Signals, RxJS, Firebase, technical SEO, web performance, front-end architecture, and serverless applications.",
-        "url": `https://raquelsynths.com${currentPath}`,
-        "image": "images/foto_perfil.webp",
-        "knowsAbout": [
-  "Angular 20",
-  "TypeScript",
-  "RxJS",
-  "Signals",
-  "Firebase",
-  "Front-End Architecture",
-  "Software Engineering",
-  "Technical SEO",
-  "Serverless Architecture",
-  "Artificial Intelligence",
-  "Web Performance",
-  "Google Analytics",
-  "n8n",
-  "GitHub Actions"
- ],
-  "hasOccupation":{
-   "@type":"Occupation",
-   "name":"Software Engineer"
- },
- "knowsLanguage":[
-    "Portuguese",
-    "English",
-    "French",
-    "Polish (basic)"
-],
-        "sameAs":[
-          "https://www.linkedin.com/in/ana-raquel-de-holanda",
-          "https://github.com/anaraquel00"
-        ]
-      }
-    });
+this.seoService.setJsonLd({
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+
+  "name": isPt
+    ? "Ana Raquel — Creative Technology Developer | Portfolio"
+    : "Ana Raquel — Creative Technology Developer | Portfolio",
+
+  "description": isPt
+    ? "Portfólio de Tecnologia Criativa de Ana Raquel: Angular, TypeScript, software de áudio, produtos digitais, RQS Studio e o Ecossistema Web RaQuel Synths."
+    : "Creative Technology portfolio by Ana Raquel: Angular, TypeScript, audio software, digital products, RQS Studio and the RaQuel Synths Web Ecosystem.",
+
+  "url": `https://raquelsynths.com${currentPath}`,
+
+  // Imagem de impacto do portfolio / social preview
+  "image": "https://raquelsynths.com/images/creator-creative-technology-og.webp",
+
+  "mainEntity": {
+    "@type": "Person",
+
+    "name": "Ana Raquel de Holanda Barros",
+
+    "jobTitle": "Creative Technology Developer",
+
+    "description": isPt
+      ? "Desenvolvedora de Creative Technology com foco em Angular, TypeScript, software de áudio, produtos digitais e desenvolvimento do RQS Studio."
+      : "Creative Technology Developer focused on Angular, TypeScript, audio software, digital products and the development of RQS Studio.",
+
+    "url": `https://raquelsynths.com${currentPath}`,
+
+    // Aqui permanece a foto real da pessoa
+    "image": "https://raquelsynths.com/images/foto_perfil.webp",
+
+    "worksFor": {
+      "@type": "Organization",
+      "name": "RaQuel Synths",
+      "url": "https://raquelsynths.com"
+    },
+
+    "knowsAbout": [
+      "Creative Technology",
+      "Angular 20",
+      "TypeScript",
+      "RxJS",
+      "Angular Signals",
+      "Web Audio API",
+      "Audio Software Development",
+      "Digital Product Development",
+      "Node.js",
+      "Express",
+      "Python",
+      "Firebase",
+      "Cloud Firestore",
+      "Supabase",
+      "AWS S3",
+      "REST APIs",
+      "Server-Side Rendering",
+      "Prerendering",
+      "Progressive Web Apps",
+      "Technical SEO",
+      "JSON-LD",
+      "Dynamic Sitemap Generation",
+      "FFmpeg",
+      "Audio Processing Workflows",
+      "Git",
+      "GitHub",
+      "Pull Requests"
+    ],
+
+    "hasOccupation": {
+      "@type": "Occupation",
+      "name": "Creative Technology Developer"
+    },
+
+    "knowsLanguage": [
+      "Portuguese",
+      "English",
+      "French"
+    ],
+
+    "sameAs": [
+      "https://www.linkedin.com/in/ana-raquel-de-holanda",
+      "https://github.com/anaraquel00"
+    ]
+  }
+  });
   }
 
   ngOnDestroy() {
