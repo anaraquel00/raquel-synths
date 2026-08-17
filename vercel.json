@@ -7,6 +7,26 @@
     }
   },
 
+  "redirects": [
+    {
+      "source": "/lore-reader/:id*",
+      "has": [
+        {
+          "type": "query",
+          "key": "mode",
+          "value": "jonah"
+        }
+      ],
+      "destination": "/lore/jonah/:id*",
+      "permanent": true
+    },
+    {
+      "source": "/lore-reader/:id*",
+      "destination": "/lore/broklin/:id*",
+      "permanent": true
+    }
+  ],
+
   "rewrites": [
     {
       "source": "/sitemap.xml",
