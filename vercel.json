@@ -1,4 +1,5 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
 
   "functions": {
@@ -7,9 +8,9 @@
     }
   },
 
-  "redirects": [
+  "routes": [
     {
-      "source": "/lore-reader/:id*",
+      "src": "/lore-reader/(.*)",
       "has": [
         {
           "type": "query",
@@ -17,13 +18,26 @@
           "value": "jonah"
         }
       ],
-      "destination": "/lore/jonah/:id*",
-      "permanent": true
+      "headers": {
+        "Location": "/lore/jonah/$1"
+      },
+      "status": 308,
+      "transforms": [
+        {
+          "type": "request.query",
+          "op": "delete",
+          "target": {
+            "key": "mode"
+          }
+        }
+      ]
     },
     {
-      "source": "/lore-reader/:id*",
-      "destination": "/lore/broklin/:id*",
-      "permanent": true
+      "src": "/lore-reader/(.*)",
+      "headers": {
+        "Location": "/lore/broklin/$1"
+      },
+      "status": 308
     }
   ],
 
