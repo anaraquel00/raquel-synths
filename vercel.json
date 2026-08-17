@@ -18,10 +18,7 @@
           "value": "jonah"
         }
       ],
-      "headers": {
-        "Location": "/lore/jonah/$1"
-      },
-      "status": 308,
+      "continue": true,
       "transforms": [
         {
           "type": "request.query",
@@ -29,8 +26,30 @@
           "target": {
             "key": "mode"
           }
+        },
+        {
+          "type": "request.headers",
+          "op": "set",
+          "target": {
+            "key": "x-rqs-legacy-mode"
+          },
+          "args": "jonah"
         }
       ]
+    },
+    {
+      "src": "/lore-reader/(.*)",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-rqs-legacy-mode",
+          "value": "jonah"
+        }
+      ],
+      "headers": {
+        "Location": "/lore/jonah/$1"
+      },
+      "status": 308
     },
     {
       "src": "/lore-reader/(.*)",
