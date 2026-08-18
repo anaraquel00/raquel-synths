@@ -104,6 +104,72 @@
         </div>
         }
 
+
+        @if (selectedDepartmentId() === 'sonic-arsenal') {
+        <article class="product-card studio-easter-egg fade-in-up" aria-labelledby="rqs-studio-title">
+          <div class="image-wrapper studio-image-wrapper">
+            <div
+              class="studio-visual"
+              role="img"
+              [attr.aria-label]="currentLang() === 'pt'
+                ? 'Interface classificada do RQS Studio, módulo de software do Sonic Arsenal'
+                : 'Classified RQS Studio interface, Sonic Arsenal software module'">
+              <div class="studio-terminal-bar">
+                <span>RQS_CORE://SLOT_06</span>
+                <span class="studio-terminal-led" aria-hidden="true"></span>
+              </div>
+
+              <div class="studio-visual-core" aria-hidden="true">
+                <span class="studio-core-label">RQS // STUDIO</span>
+                <div class="studio-module-grid">
+                  <span>MASTERING</span>
+                  <span>STEMS</span>
+                  <span>SETLIST</span>
+                  <span>UPLINK</span>
+                </div>
+              </div>
+
+              <div class="studio-scanline" aria-hidden="true"></div>
+            </div>
+          </div>
+
+          <div class="info studio-info">
+            <div class="studio-status-line">
+              <span class="studio-kicker">SLOT_06 // CLASSIFIED</span>
+              <span class="studio-status studio-status-locked">SOFTWARE WEAPON DETECTED</span>
+              <span class="studio-status studio-status-unlocked">SIGNAL DECRYPTED // MODULE UNLOCKED</span>
+            </div>
+
+            <h3 id="rqs-studio-title">RQS STUDIO</h3>
+            <p class="studio-type">SOFTWARE ARSENAL // PUBLIC BETA</p>
+
+            @if (currentLang() === 'pt') {
+              <p class="studio-copy">Nem toda arma ocupa espaço físico.</p>
+              <p class="studio-copy">O RQS Studio é o módulo de software construído dentro da RaQuel Synths para preparar a munição sonora antes da missão.</p>
+            } @else {
+              <p class="studio-copy">Not every weapon takes physical space.</p>
+              <p class="studio-copy">RQS Studio is the software module built inside RaQuel Synths to prepare the sonic ammunition before deployment.</p>
+            }
+
+            <p class="studio-features">MASTERING // STEMS // SETLIST // UPLINK</p>
+            <p class="studio-note">
+              {{ currentLang() === 'pt'
+                ? 'Não é merchandise. É o sistema por trás do som.'
+                : 'Not merchandise. The system behind the sound.' }}
+            </p>
+
+            <button
+              type="button"
+              class="studio-cta"
+              (click)="openRqsStudio()"
+              [attr.aria-label]="currentLang() === 'pt'
+                ? 'Inicializar RQS Studio em uma nova aba'
+                : 'Initialize RQS Studio in a new tab'">
+              {{ currentLang() === 'pt' ? 'INICIALIZAR RQS STUDIO ⏻' : 'INITIALIZE RQS STUDIO ⏻' }}
+            </button>
+          </div>
+        </article>
+        }
       </div>
     </div>
   }

@@ -358,6 +358,30 @@ checkCurrentMode() {
 
   goBackHome() { this.router.navigate(['/']); }
 
+
+  openRqsStudio(): void {
+    if (!this.isBrowser) return;
+
+    this.trackingService.trackCustomEvent('rqs_studio_arsenal_access', {
+      source: 'sonic-arsenal',
+      placement: 'slot-06',
+      destination: 'studio',
+      language: this.currentLang(),
+      mode: this.activeMode()
+    });
+
+    const win = this.document.defaultView;
+    if (!win) return;
+
+    const studioWindow = win.open(
+      'https://studio.raquelsynths.com',
+      '_blank',
+      'noopener,noreferrer'
+    );
+
+    if (studioWindow) studioWindow.opener = null;
+  }
+
   isJonahSector(id: string | null): boolean {
     if (!id) return false;
     // Adicione aqui todos os IDs que devem ser vermelhos/metal

@@ -600,3 +600,399 @@
     }
   }
 }
+
+/* =========================================
+   RQS STUDIO // SLOT_06 // SOFTWARE ARSENAL
+   ========================================= */
+.product-card.studio-easter-egg {
+  isolation: isolate;
+  border: 1px solid rgba(0, 243, 255, 0.62);
+  background:
+    radial-gradient(circle at 85% 10%, rgba(132, 76, 255, 0.16), transparent 34%),
+    linear-gradient(155deg, rgba(2, 18, 28, 0.98), rgba(10, 5, 24, 0.96));
+  box-shadow: inset 0 0 32px rgba(0, 243, 255, 0.035);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0.16;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 5px,
+      rgba(0, 243, 255, 0.07) 6px
+    );
+  }
+
+  &:hover,
+  &:focus-within {
+    transform: translateY(-6px);
+    border-color: rgba(139, 92, 246, 0.95);
+    box-shadow: 0 14px 34px -16px rgba(139, 92, 246, 0.5);
+
+    .studio-status-locked { opacity: 0; }
+    .studio-status-unlocked { opacity: 1; }
+
+    .studio-core-label {
+      color: #fff;
+      text-shadow: 0 0 16px rgba(0, 243, 255, 0.75);
+    }
+  }
+
+  .studio-image-wrapper {
+    height: 280px;
+    background:
+      linear-gradient(rgba(0, 243, 255, 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(139, 92, 246, 0.045) 1px, transparent 1px),
+      #040a12;
+    background-size: 28px 28px;
+  }
+
+  .studio-visual {
+    position: relative;
+    height: 100%;
+    padding: 1rem;
+    overflow: hidden;
+    font-family: 'Courier New', monospace;
+    color: #bffbff;
+  }
+
+  .studio-terminal-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 0.65rem;
+    border-bottom: 1px solid rgba(0, 243, 255, 0.22);
+    font-size: 0.72rem;
+    letter-spacing: 1.4px;
+  }
+
+  .studio-terminal-led {
+    width: 8px;
+    height: 8px;
+    flex: 0 0 8px;
+    border-radius: 50%;
+    background: #00f3ff;
+    box-shadow: 0 0 12px rgba(0, 243, 255, 0.9);
+  }
+
+  .studio-visual-core {
+    position: absolute;
+    inset: 54px 1rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.25rem;
+  }
+
+  .studio-core-label {
+    color: rgba(191, 251, 255, 0.7);
+    font-size: 1.9rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-align: center;
+    transition: color 0.25s ease, text-shadow 0.25s ease;
+  }
+
+  .studio-module-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem;
+
+    span {
+      padding: 0.48rem 0.6rem;
+      border: 1px solid rgba(139, 92, 246, 0.24);
+      background: rgba(139, 92, 246, 0.055);
+      font-size: 0.68rem;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+  }
+
+  .studio-scanline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 36%;
+    height: 1px;
+    background: rgba(0, 243, 255, 0.42);
+    box-shadow: 0 0 12px rgba(0, 243, 255, 0.35);
+    pointer-events: none;
+  }
+
+  .studio-info {
+    position: relative;
+    z-index: 3;
+  }
+
+  .studio-status-line {
+    position: relative;
+    min-height: 2.7rem;
+    font-family: 'Courier New', monospace;
+  }
+
+  .studio-kicker,
+  .studio-status {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1.1px;
+  }
+
+  .studio-kicker { color: #00f3ff; }
+
+  .studio-status {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    color: rgba(255, 255, 255, 0.62);
+    transition: opacity 0.2s ease;
+  }
+
+  .studio-status-unlocked {
+    opacity: 0;
+    color: #b49cff;
+  }
+
+  .studio-type,
+  .studio-features {
+    color: #b49cff;
+    font-family: 'Courier New', monospace;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+  }
+
+  .studio-copy {
+    color: #e5eef2;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0 0 0.7rem;
+  }
+
+  .studio-features {
+    color: #8ff8ff;
+    margin: 0.45rem 0 0.8rem;
+  }
+
+  .studio-note {
+    color: rgba(255, 255, 255, 0.68);
+    font-size: 0.8rem;
+    font-style: italic;
+  }
+
+  .studio-cta {
+    width: 100%;
+    margin-top: auto;
+    border: 1px solid #00f3ff;
+    border-radius: 4px;
+    background: rgba(0, 243, 255, 0.055);
+    color: #c9fcff;
+    padding: 0.78rem 1rem;
+    font-family: 'Courier New', monospace;
+    font-weight: 800;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      outline: 2px solid rgba(180, 156, 255, 0.55);
+      outline-offset: 2px;
+      border-color: #b49cff;
+      color: #fff;
+    }
+  }
+}
+
+:host-context(.mode-jonah) .product-card.studio-easter-egg {
+  border: 2px solid #5a1414;
+  border-left: 4px solid #ff3300;
+  border-radius: 0;
+
+  background:
+    radial-gradient(
+      circle at 85% 12%,
+      rgba(120, 0, 0, 0.22),
+      transparent 34%
+    ),
+    repeating-linear-gradient(
+      135deg,
+      rgba(255, 51, 0, 0.025) 0,
+      rgba(255, 51, 0, 0.025) 8px,
+      transparent 8px,
+      transparent 18px
+    ),
+    linear-gradient(
+      155deg,
+      #160303 0%,
+      #090202 52%,
+      #110604 100%
+    );
+
+  box-shadow:
+    inset 0 0 35px rgba(110, 0, 0, 0.28),
+    6px 6px 0 rgba(90, 12, 0, 0.35);
+
+  &::before {
+    opacity: 0.22;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 5px,
+      rgba(255, 51, 0, 0.08) 6px
+    );
+  }
+
+  &:hover,
+  &:focus-within {
+    transform: translate(-3px, -3px);
+
+    border-color: #ff3300;
+    border-left-color: #9b0000;
+
+    box-shadow:
+      6px 6px 0 rgba(255, 51, 0, 0.38),
+      0 0 22px rgba(155, 0, 0, 0.3);
+
+    .studio-core-label {
+      color: #ffd6cc;
+      text-shadow:
+        2px 2px 0 #3b0000,
+        0 0 14px rgba(255, 51, 0, 0.55);
+    }
+  }
+
+  .studio-image-wrapper {
+    background:
+      linear-gradient(
+        105deg,
+        transparent 68%,
+        rgba(255, 51, 0, 0.07) 70%,
+        transparent 72%
+      ),
+      repeating-linear-gradient(
+        0deg,
+        rgba(120, 0, 0, 0.035) 0,
+        rgba(120, 0, 0, 0.035) 1px,
+        transparent 1px,
+        transparent 28px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        rgba(255, 51, 0, 0.025) 0,
+        rgba(255, 51, 0, 0.025) 1px,
+        transparent 1px,
+        transparent 28px
+      ),
+      #080202;
+  }
+
+  .studio-terminal-bar {
+    color: #ff8a65;
+    border-bottom-color: rgba(255, 51, 0, 0.35);
+  }
+
+  .studio-terminal-led {
+    background: #ff3300;
+
+    box-shadow:
+      0 0 10px rgba(255, 51, 0, 0.9),
+      0 0 18px rgba(120, 0, 0, 0.7);
+  }
+
+  .studio-core-label {
+    color: #c96d5b;
+
+    text-shadow:
+      2px 2px 0 #260000;
+  }
+
+  .studio-module-grid {
+    span {
+      color: #ffb4a3;
+      border-color: rgba(255, 51, 0, 0.3);
+      background: rgba(70, 0, 0, 0.18);
+    }
+  }
+
+  .studio-scanline {
+    background: rgba(255, 51, 0, 0.48);
+
+    box-shadow:
+      0 0 12px rgba(255, 51, 0, 0.45);
+  }
+
+  .studio-kicker {
+    color: #ff3300;
+  }
+
+  .studio-status {
+    color: #b76b5e;
+  }
+
+  .studio-status-unlocked {
+    color: #ff6b4a;
+  }
+
+  .studio-type {
+    color: #c8462c;
+  }
+
+  .studio-copy {
+    color: #f0c2b8;
+  }
+
+  .studio-features {
+    color: #ff6b4a;
+  }
+
+  .studio-note {
+    color: rgba(255, 180, 160, 0.68);
+  }
+
+  .studio-cta {
+    border: 2px solid #ff3300;
+    background: #1a0000;
+    color: #ff6b4a;
+
+    &:hover,
+    &:focus-visible {
+      outline-color: rgba(155, 0, 0, 0.7);
+
+      border-color: #ff3300;
+
+      background: #ff3300;
+      color: #000;
+
+      box-shadow:
+        0 0 18px rgba(255, 51, 0, 0.5);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .product-card.studio-easter-egg {
+    .studio-core-label {
+      font-size: 1.45rem;
+      letter-spacing: 0.12em;
+    }
+
+    .studio-cta {
+      white-space: normal;
+      line-height: 1.35;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-card.studio-easter-egg,
+  .product-card.studio-easter-egg * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
