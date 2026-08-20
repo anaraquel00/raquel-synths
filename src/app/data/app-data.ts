@@ -337,25 +337,25 @@ export const CREATOR_DATA = {
           cardClass: '',
           desc: 'Servidor de transmissão contínua configurado em VPS Linux, automatizando o processamento de áudio via FFmpeg e broadcasting via protocolo RTMP, garantindo estabilidade de streaming para o ecossistema RQS',
           techs: ['AWS Lightsail', 'Linux', 'Ubuntu 24.04', 'RTMP', 'Nginx', 'FFmpeg'],
-          link: 'https://youtube.com/live/P4INjOJfnn8?feature=share',
+          link: 'https://raquelsynths.com/play/rqs-cyberpunk-radio?service=youtube',
           linkText: 'Acessar Rádio'
         },
         {
-  title: '7️⃣ RQS DSP Studio',
-  badge: 'AUDIO ENGINEERING',
-  badgeClass: 'secondary',
-  cardClass: 'featured',
-desc: 'Plataforma de engenharia de áudio baseada em navegador, desenvolvida para o fluxo de produção da RaQuel Synths. Realiza preparação para masterização, controle de qualidade, organização de playlists e gerenciamento de fluxo de trabalho de DSP para músicas geradas por IA.',
- techs: [
-    'Angular 20+',
-    'Web Audio API',
-    'DSP',
-    'Audio Workflow',
-    'PWA'
-  ],
-  link: 'https://studio.raquelsynths.com',
-  linkText: 'Open Studio (Modo Beta)'
-}
+          title: '7️⃣ RQS DSP Studio',
+          badge: 'AUDIO ENGINEERING',
+          badgeClass: 'secondary',
+          cardClass: 'featured',
+          desc: 'Plataforma de engenharia de áudio baseada em navegador, desenvolvida para o fluxo de produção da RaQuel Synths. Realiza preparação para masterização, controle de qualidade, organização de playlists e gerenciamento de fluxo de trabalho de DSP para músicas geradas por IA.',
+          techs: [
+            'Angular 20+',
+            'Web Audio API',
+            'DSP',
+            'Audio Workflow',
+            'PWA'
+          ],
+          link: 'https://studio.raquelsynths.com',
+          linkText: 'Open Studio (Modo Beta)'
+        }
       ]
     },
     business: {
