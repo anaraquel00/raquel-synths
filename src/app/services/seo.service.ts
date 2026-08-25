@@ -51,9 +51,20 @@ export class SeoService {
              @Inject(DOCUMENT) private dom: Document) { }
 
  // 🛡️ MÉTODO ATUALIZADO E BLINDADO CONTRA ESQUECIMENTO DE SPA
-  updateMetaTags(config: { title: string; description?: any; image?: string; url?: string; type?: string }) {
+  updateMetaTags(config: {
+    title: string;
+    description?: string;
+    ogDescription?: string;
+    twitterDescription?: string;
+    image?: string;
+    imageAlt?: string;
+    url?: string;
+    type?: string;
+  }) {
     const pageTitle = config.title ? `${config.title} | RaQuel Synths` : this.defaultTitle;
     const pageDesc = config.description || this.defaultDesc;
+    const ogDescription = config.ogDescription || pageDesc;
+    const twitterDescription = config.twitterDescription || ogDescription;
     const pageImage = config.image || this.defaultImage;
     const pageType = config.type || 'website';
 
@@ -94,14 +105,24 @@ export class SeoService {
     // Open Graph
     this.meta.updateTag({ property: 'og:type', content: pageType });
     this.meta.updateTag({ property: 'og:title', content: pageTitle });
-    this.meta.updateTag({ property: 'og:description', content: pageDesc });
+    this.meta.updateTag({ property: 'og:description', content: ogDescription });
     this.meta.updateTag({ property: 'og:image', content: pageImage });
+    if (config.imageAlt) {
+      this.meta.updateTag({ property: 'og:image:alt', content: config.imageAlt });
+    } else {
+      this.meta.removeTag("property='og:image:alt'");
+    }
 
     // Twitter
     this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
     this.meta.updateTag({ name: 'twitter:title', content: pageTitle });
-    this.meta.updateTag({ name: 'twitter:description', content: pageDesc });
+    this.meta.updateTag({ name: 'twitter:description', content: twitterDescription });
     this.meta.updateTag({ name: 'twitter:image', content: pageImage });
+    if (config.imageAlt) {
+      this.meta.updateTag({ name: 'twitter:image:alt', content: config.imageAlt });
+    } else {
+      this.meta.removeTag("name='twitter:image:alt'");
+    }
   }
 
   // 🛡️ Módulo de Blindagem de Rota

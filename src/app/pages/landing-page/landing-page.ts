@@ -32,7 +32,18 @@ ngOnInit() {
   // 🛡️ SOBERANIA DA LANDING PAGE (Apenas ela manda na Home)
   this.seoService.updateMetaTags({
     title: isPt ? 'Sagas Cyberpunk & Banda Virtual' : 'Cyberpunk Sagas & Virtual Band',
-    description: isPt ? 'Onde o analógico sangra no digital. Mergulhe na Guerra Sonora.' : 'Where analog bleeds into digital. Dive into the Sonic War.',
+    description: isPt
+      ? 'Sagas cyberpunk, música eletrônica e personagens da RaQuel Synths. Explore Blue Team, Red Team e as histórias do universo RQS.'
+      : 'Cyberpunk sagas, electronic music, and RaQuel Synths characters. Explore Blue Team, Red Team, and the stories of the RQS universe.',
+    ogDescription: isPt
+      ? 'Explore as sagas cyberpunk, personagens e música do universo RaQuel Synths.'
+      : 'Explore the cyberpunk sagas, characters, and music of the RaQuel Synths universe.',
+    twitterDescription: isPt
+      ? 'Explore as sagas cyberpunk, personagens e música do universo RaQuel Synths.'
+      : 'Explore the cyberpunk sagas, characters, and music of the RaQuel Synths universe.',
+    imageAlt: isPt
+      ? 'Broklin Garpeter e Jonah Cyperfield representando Blue Team e Red Team no universo cyberpunk RaQuel Synths.'
+      : 'Broklin Garpeter and Jonah Cyperfield representing Blue Team and Red Team in the RaQuel Synths cyberpunk universe.',
     url: 'https://raquelsynths.com/'
   });
 }
