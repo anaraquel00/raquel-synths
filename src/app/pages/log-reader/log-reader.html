@@ -47,6 +47,27 @@
 
     </div>
   </main>
+} @else if (loadFailed()) {
+  <main class="unavailable-state" aria-labelledby="log-unavailable-title">
+    <h1 id="log-unavailable-title">503</h1>
+    <p>
+      {{ translate.isPt()
+        ? '[ MAINFRAME_TEMPORARIAMENTE_INDISPONÍVEL ]'
+        : '[ MAINFRAME_TEMPORARILY_UNAVAILABLE ]' }}
+    </p>
+  </main>
+} @else if (loadComplete()) {
+  <main class="not-found-state" aria-labelledby="log-not-found-title">
+    <h1 id="log-not-found-title">404</h1>
+    <p>
+      {{ translate.isPt()
+        ? '[ LOG_NÃO_ENCONTRADO ]'
+        : '[ LOG_NOT_FOUND ]' }}
+    </p>
+    <a class="btn-back" routerLink="/logs-archive">
+      {{ translate.isPt() ? '[ < VOLTAR_AOS_LOGS ]' : '[ < BACK_TO_LOGS ]' }}
+    </a>
+  </main>
 } @else {
   <div class="loading-state">
     <p>[ 🔄 ESTABELECENDO_UPLINK_COM_O_MAINFRAME... ]</p>

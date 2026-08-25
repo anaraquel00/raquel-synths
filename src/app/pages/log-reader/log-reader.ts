@@ -16,12 +16,13 @@ import {
   DOCUMENT
 } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { SafeHtmlPipe } from "../../components/pipes/safe-html.pipe";
 import { ContentService } from '../../services/content.service';
 import { TranslationService } from '../../services/translation.service';
 import { SeoService } from '../../services/seo.service';
-import { Observable, combineLatest, map, switchMap, of, tap, catchError, from } from 'rxjs';
+import { Observable, combineLatest, map, switchMap, of, tap, catchError, timeout } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { AdArticleComponent } from '../../components/ad-article/ad-article';
 import { SplitContentPipe } from '../../components/pipes/content-splitter.pipe';
@@ -42,6 +43,7 @@ export class LogReaderComponent implements OnInit, OnDestroy {
   private document = inject(DOCUMENT);
   private injector = inject(Injector);
   private router = inject(Router);
+  private http = inject(HttpClient);
 
   // 🛡️ Injeção opcional para evitar quebras em ambientes Client-Side (CSR) e compilação de rotas (SSG)
   private responseInit = inject(RESPONSE_INIT, { optional: true });
@@ -49,8 +51,11 @@ export class LogReaderComponent implements OnInit, OnDestroy {
   private isPt$ = toObservable(this.translate.isPt);
 
   logData$!: Observable<any>;
+  loadComplete = signal(false);
+  loadFailed = signal(false);
   isJonahMode = signal<boolean>(false);
   private themeObserver: MutationObserver | null = null;
+  private ssrFetchFailed = false;
 
   constructor() {
     this.isJonahMode.set(false);
@@ -80,8 +85,12 @@ export class LogReaderComponent implements OnInit, OnDestroy {
   ]).pipe(
 
     switchMap(([id, isPt]) => {
+      this.loadComplete.set(false);
+      this.loadFailed.set(false);
+
       if (!id) {
         this.setSsrStatus(404);
+        this.loadComplete.set(true);
         return of(null);
       }
 
@@ -96,8 +105,12 @@ export class LogReaderComponent implements OnInit, OnDestroy {
       return source$.pipe(
 
         map((data: any) => {
+          this.loadComplete.set(true);
+
           if (!data) {
-            this.setSsrStatus(404);
+            if (!this.ssrFetchFailed) {
+              this.setSsrStatus(404);
+            }
             return null;
           }
 
@@ -208,7 +221,10 @@ export class LogReaderComponent implements OnInit, OnDestroy {
             err
           );
 
-          this.setSsrStatus(404);
+          this.ssrFetchFailed = true;
+          this.loadFailed.set(true);
+          this.loadComplete.set(true);
+          this.setSsrStatus(503);
 
           return of(null);
         })
@@ -224,6 +240,8 @@ export class LogReaderComponent implements OnInit, OnDestroy {
   id: string
 ): Observable<any> {
 
+  this.ssrFetchFailed = false;
+
   const projectId =
     'raquel-synths-platform';
 
@@ -234,23 +252,17 @@ export class LogReaderComponent implements OnInit, OnDestroy {
     `https://firestore.googleapis.com/v1/projects/` +
     `${projectId}/databases/(default)/documents/logs/${safeId}`;
 
-  return from(
-    fetch(url).then(async res => {
+  return this.http.get<any>(url).pipe(
 
-      if (!res.ok) {
-        if (res.status === 404) {
-          this.setSsrStatus(404);
-        }
-
-        return null;
-      }
-
-      return res.json();
-    })
-  ).pipe(
+    timeout({ first: 10000 }),
 
     map((doc: any) => {
       if (!doc?.fields) {
+        return null;
+      }
+
+      if (doc.fields.published?.booleanValue === false) {
+        this.setSsrStatus(404);
         return null;
       }
 
@@ -321,12 +333,20 @@ export class LogReaderComponent implements OnInit, OnDestroy {
     }),
 
     catchError(err => {
+      if (err?.status === 404) {
+        this.setSsrStatus(404);
+        return of(null);
+      }
+
       console.error(
         '🛡️ [RQS SSR REST] Erro crítico ao buscar dados do log:',
         err
       );
 
-      this.setSsrStatus(404);
+      this.ssrFetchFailed = true;
+      this.loadFailed.set(true);
+      this.loadComplete.set(true);
+      this.setSsrStatus(503);
 
       return of(null);
     })

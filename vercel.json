@@ -82,8 +82,8 @@
     },
 
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "source": "/((?!api(?:/|$)|.*\\.[^/]+$).*)",
+      "destination": "/api/index.js"
     }
   ]
 }
