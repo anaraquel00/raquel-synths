@@ -15,8 +15,6 @@ export default async function handler(req, res) {
   const siteUrl = 'https://raquelsynths.com';
 
   const now = new Date();
-  const todayStr = now.toISOString().split('T')[0];
-
   let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
 
   xml +=
@@ -36,13 +34,13 @@ export default async function handler(req, res) {
 
   const normalizeDate = (value) => {
     if (!value) {
-      return todayStr;
+      return undefined;
     }
 
     const date = new Date(value);
 
     if (Number.isNaN(date.getTime())) {
-      return todayStr;
+      return undefined;
     }
 
     return date.toISOString().split('T')[0];
@@ -50,13 +48,16 @@ export default async function handler(req, res) {
 
   const appendUrl = ({
     path,
-    lastmod = todayStr,
+    lastmod,
     changefreq,
     priority
   }) => {
     xml += `  <url>\n`;
     xml += `    <loc>${escapeXml(`${siteUrl}${path}`)}</loc>\n`;
-    xml += `    <lastmod>${escapeXml(lastmod)}</lastmod>\n`;
+
+    if (lastmod) {
+      xml += `    <lastmod>${escapeXml(lastmod)}</lastmod>\n`;
+    }
 
     if (changefreq) {
       xml += `    <changefreq>${changefreq}</changefreq>\n`;
@@ -125,13 +126,16 @@ export default async function handler(req, res) {
     {
       path: '/bio',
       priority: '0.8'
+    },
+    {
+      path: '/hybrid-saga',
+      priority: '0.8'
     }
   ];
 
   for (const route of staticRoutes) {
     appendUrl({
       path: route.path,
-      lastmod: todayStr,
       changefreq: 'weekly',
       priority: route.priority
     });
@@ -159,7 +163,6 @@ export default async function handler(req, res) {
   for (const path of visualNovelRoutes) {
     appendUrl({
       path,
-      lastmod: todayStr,
       changefreq: 'weekly',
       priority: '0.9'
     });
@@ -255,15 +258,17 @@ export default async function handler(req, res) {
       fields?.releaseDate?.stringValue ??
       fields?.releaseDate?.timestampValue;
 
-    if (releaseDateValue) {
-      const releaseDate = new Date(releaseDateValue);
+    if (!releaseDateValue) {
+      return false;
+    }
 
-      if (
-        !Number.isNaN(releaseDate.getTime()) &&
-        releaseDate > now
-      ) {
-        return false;
-      }
+    const releaseDate = new Date(releaseDateValue);
+
+    if (
+      Number.isNaN(releaseDate.getTime()) ||
+      releaseDate > now
+    ) {
+      return false;
     }
 
     return true;
@@ -342,24 +347,65 @@ const appendPublishedLogs = (documents) => {
       return;
     }
 
+    const fields = doc.fields ?? {};
+
+    if (
+      Object.prototype.hasOwnProperty.call(fields, 'published') &&
+      fields.published?.booleanValue !== true
+    ) {
+      return;
+    }
+
     const dateValue =
-      doc.fields?.date?.stringValue ??
-      doc.fields?.date?.timestampValue;
+      fields.date?.stringValue ??
+      fields.date?.timestampValue;
 
     if (!dateValue) {
       return;
     }
 
-    const logDate =
-      String(dateValue).slice(0, 10);
+    const logDate = new Date(dateValue);
 
-    if (logDate > todayStr) {
+    if (
+      Number.isNaN(logDate.getTime()) ||
+      logDate > now
+    ) {
       return;
     }
+
+    const hasSubstantiveLocale = (locale) => {
+      const localeFields =
+        locale?.mapValue?.fields ?? {};
+
+      const title =
+        localeFields.title?.stringValue?.trim();
+
+      const hasBody = [
+        'description',
+        'techContent',
+        'jonahComment'
+      ].some((key) =>
+        localeFields[key]?.stringValue?.trim()
+      );
+
+      return Boolean(title && hasBody);
+    };
+
+    if (
+      !hasSubstantiveLocale(fields.pt) &&
+      !hasSubstantiveLocale(fields.en)
+    ) {
+      return;
+    }
+
+    const orderDate =
+      fields.orderDate?.stringValue ??
+      fields.orderDate?.timestampValue;
 
     const lastmod =
       normalizeDate(
         doc.updateTime ??
+        orderDate ??
         dateValue
       );
 
