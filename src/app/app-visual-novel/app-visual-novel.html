@@ -16,10 +16,10 @@
         <h3>{{ matrixGlitchSaga.title }}</h3>
         <p>{{ matrixGlitchSaga.description }}</p>
 
-        <button class="btn-watch-crossover" (click)="navigate(matrixGlitchSaga.route)">
+        <a class="btn-watch-crossover" [routerLink]="matrixGlitchSaga.route">
           <mat-icon>terminal</mat-icon>
           {{ translate.isPt() ? 'ACESSAR WAWEL CORE' : 'ACCESS WAWEL CORE' }}
-        </button>
+        </a>
       </div>
     </div>
   </header>

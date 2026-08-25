@@ -51,21 +51,19 @@
     </div>
 
     <div class="season-tabs">
-      <a class="neon-tab"
-         [routerLink]="['/hybrid-reader']"
-         [queryParams]="{ season: 1 }"
-         queryParamsHandling="merge"
+      <button type="button"
+         class="neon-tab"
+         (click)="setTemporada(1)"
          [class.active]="temporadaAtiva === 1">
         {{ translate.isPt() ? 'Temporada 1' : 'Season 1' }}
-      </a>
+      </button>
 
-      <a class="neon-tab"
-         [routerLink]="['/hybrid-reader']"
-         [queryParams]="{ season: 2 }"
-         queryParamsHandling="merge"
+      <button type="button"
+         class="neon-tab"
+         (click)="setTemporada(2)"
          [class.active]="temporadaAtiva === 2">
         {{ translate.isPt() ? 'Temporada 2' : 'Season 2' }}
-      </a>
+      </button>
     </div>
 
     <div class="episode-grid">

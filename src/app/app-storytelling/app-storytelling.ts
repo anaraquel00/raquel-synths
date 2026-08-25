@@ -71,13 +71,7 @@ export class StorytellingComponent implements OnInit, OnDestroy {
           })
         );
       } else {
-        return of([{
-          id: 'mock-seo',
-          title: 'RQS Cyberpunk Sagas & Lore',
-          date: new Date().toISOString(),
-          description: '<p>Where analog bleeds into digital. Read our transmedia storytelling, Cyberpunk logs, and Night City aesthetics. General Kelma and Broklin combat Jonah in this Audio Civil War.</p>',
-          isExpanded: true
-        }]);
+        return of([]);
       }
     })
   );

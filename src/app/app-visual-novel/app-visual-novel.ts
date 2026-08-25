@@ -2,7 +2,7 @@ import { Component, inject, OnInit, OnDestroy, signal, afterNextRender, Injector
 import { CommonModule } from '@angular/common';
 import { TranslationService } from '../services/translation.service';
 import { VISUAL_NOVEL_PT, VISUAL_NOVEL_EN, VN_INTRO_PT, VN_INTRO_EN, VN_INTRO_JONAH_PT, VN_INTRO_JONAH_EN } from '../data/app-data';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from '@angular/material/button';
 import { ContentService } from '../services/content.service';
@@ -17,7 +17,7 @@ import { SeoService } from '../services/seo.service';
 @Component({
   selector: 'app-visual-novel',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule],
+  imports: [CommonModule, MatIconModule, MatButtonModule, RouterLink],
   templateUrl: './app-visual-novel.html',
   styleUrls: ['./app-visual-novel.scss']
 })
