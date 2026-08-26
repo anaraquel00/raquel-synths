@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy, Inject, PLATFORM_ID, signal, afterNextRender } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, Inject, PLATFORM_ID, signal, effect } from '@angular/core';
 import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ContentService } from '../../services/content.service';
@@ -24,6 +24,11 @@ export class VisualNovelComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
 
   public currentMode = signal<'broklin' | 'jonah'>('broklin');
+  private seasonSchemaState = signal<{
+    mode: 'broklin' | 'jonah';
+    season: number;
+    episodes: any[];
+  } | null>(null);
   private modeSubject = new BehaviorSubject<'broklin' | 'jonah'>('broklin');
 
   // 🚀 AQUI ESTÁ A NOSSA VARIÁVEL DE ESTADO DAS ABAS
@@ -63,6 +68,17 @@ export class VisualNovelComponent implements OnInit, OnDestroy {
   @Inject(PLATFORM_ID) private platformId: Object
 ) {
   this.isBrowser = isPlatformBrowser(this.platformId);
+
+  effect(() => {
+    const state = this.seasonSchemaState();
+    this.translate.isPt();
+
+    if (!state) {
+      return;
+    }
+
+    this.setSeasonJsonLd(state.mode, state.season, state.episodes);
+  });
 }
 
 ngOnInit(): void {
@@ -110,7 +126,7 @@ this.route.paramMap.subscribe(params => {
       this.applyModeTheme(mode);
 
       this.filteredEpisodes$.pipe(take(1)).subscribe(episodes => {
-        this.setSeasonJsonLd(mode, season, episodes);
+        this.seasonSchemaState.set({ mode, season, episodes });
       });
     });
 
@@ -224,4 +240,3 @@ private applyModeTheme(
  ngOnDestroy(): void {
 }
 }
-

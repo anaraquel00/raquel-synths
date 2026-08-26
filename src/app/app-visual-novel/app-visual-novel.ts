@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy, signal, afterNextRender, Injector, Inject } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal, afterNextRender, Injector, Inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslationService } from '../services/translation.service';
 import { VISUAL_NOVEL_PT, VISUAL_NOVEL_EN, VN_INTRO_PT, VN_INTRO_EN, VN_INTRO_JONAH_PT, VN_INTRO_JONAH_EN } from '../data/app-data';
@@ -32,6 +32,11 @@ export class AppVisualNovel implements OnInit, OnDestroy {
   // --- ESTADO REATIVO ---
   private modeSubject = new BehaviorSubject<'broklin' | 'jonah'>('broklin');
   currentMode = signal<'broklin' | 'jonah'>('broklin');
+  private sagaSeasons = signal<Array<{
+    mode: 'broklin' | 'jonah';
+    position: number;
+    episodes: LoreEpisode[];
+  }> | null>(null);
 
   // Esse Observable vai buscar os episódios do Firebase toda vez que o modo mudar
   episodes$ = this.modeSubject.asObservable().pipe(
@@ -65,6 +70,17 @@ export class AppVisualNovel implements OnInit, OnDestroy {
   constructor(
     @Inject(DOCUMENT) private document: Document
   ) {
+    effect(() => {
+      const seasons = this.sagaSeasons();
+      const isPt = this.translate.isPt();
+
+      if (!seasons) {
+        return;
+      }
+
+      this.setSagaJsonLd(seasons, isPt);
+    });
+
     // 🛡️ TRAVA TÁTICA: Sincroniza o estado do tema e o observador apenas após a hidratação (DOM Estável)
     afterNextRender(() => {
       this.checkTheme();
@@ -104,42 +120,57 @@ export class AppVisualNovel implements OnInit, OnDestroy {
       broklin: this.episodes$.pipe(take(1)),
       jonah: contentService.getEpisodes('jonah').pipe(take(1))
     }).subscribe(({ broklin, jonah }) => {
-      const seasons = [
-        { mode: 'broklin', position: 1, episodes: broklin.filter(ep => ep.id.startsWith('s1-')) },
-        { mode: 'broklin', position: 2, episodes: broklin.filter(ep => ep.id.startsWith('s2-')) },
-        { mode: 'jonah', position: 1, episodes: jonah.filter(ep => ep.id.startsWith('s1-')) },
-        { mode: 'jonah', position: 2, episodes: jonah.filter(ep => ep.id.startsWith('s2-')) }
+      const seasons: Array<{
+        mode: 'broklin' | 'jonah';
+        position: number;
+        episodes: LoreEpisode[];
+      }> = [
+        { mode: 'broklin' as const, position: 1, episodes: broklin.filter(ep => ep.id.startsWith('s1-')) },
+        { mode: 'broklin' as const, position: 2, episodes: broklin.filter(ep => ep.id.startsWith('s2-')) },
+        { mode: 'jonah' as const, position: 1, episodes: jonah.filter(ep => ep.id.startsWith('s1-')) },
+        { mode: 'jonah' as const, position: 2, episodes: jonah.filter(ep => ep.id.startsWith('s2-')) }
       ].filter(season => season.episodes.length > 0);
 
-      this.seoService.setJsonLd({
-        '@context': 'https://schema.org',
-        '@type': 'CreativeWorkSeries',
-        '@id': 'https://raquelsynths.com/saga#series',
-        url: 'https://raquelsynths.com/saga',
-        name: isPt ? 'Sagas Literárias RaQuel Synths' : 'RaQuel Synths Literary Sagas',
-        genre: 'Cyberpunk, Sci-Fi',
-        inLanguage: isPt ? 'pt-BR' : 'en-US',
-        author: {
-          '@type': 'Person',
-          name: 'Ana Raquel'
-        },
-        publisher: {
-          '@id': 'https://raquelsynths.com/#organization'
-        },
-        description: isPt
-          ? 'Crônicas literárias que narram a guerra sonora entre as facções Broklin e Jonah.'
-          : 'Literary chronicles narrating the sonic war between Broklin and Jonah factions.',
-        hasPart: seasons.map(season => ({
-          '@type': 'CollectionPage',
-          '@id': `https://raquelsynths.com/visual-novel/${season.mode}/s${season.position}#season`,
-          url: `https://raquelsynths.com/visual-novel/${season.mode}/s${season.position}`,
-          name: `${season.mode === 'broklin' ? 'Broklin' : 'Jonah'} — ${isPt ? 'Temporada' : 'Season'} ${season.position}`,
-          position: season.position
-        }))
-      });
+      this.sagaSeasons.set(seasons);
     });
   }
 }
+
+  private setSagaJsonLd(
+    seasons: Array<{
+      mode: 'broklin' | 'jonah';
+      position: number;
+      episodes: LoreEpisode[];
+    }>,
+    isPt: boolean
+  ): void {
+    this.seoService.setJsonLd({
+      '@context': 'https://schema.org',
+      '@type': 'CreativeWorkSeries',
+      '@id': 'https://raquelsynths.com/saga#series',
+      url: 'https://raquelsynths.com/saga',
+      name: isPt ? 'Sagas Literárias RaQuel Synths' : 'RaQuel Synths Literary Sagas',
+      genre: 'Cyberpunk, Sci-Fi',
+      inLanguage: isPt ? 'pt-BR' : 'en-US',
+      author: {
+        '@type': 'Person',
+        name: 'Ana Raquel'
+      },
+      publisher: {
+        '@id': 'https://raquelsynths.com/#organization'
+      },
+      description: isPt
+        ? 'Crônicas literárias que narram a guerra sonora entre as facções Broklin e Jonah.'
+        : 'Literary chronicles narrating the sonic war between Broklin and Jonah factions.',
+      hasPart: seasons.map(season => ({
+        '@type': 'CollectionPage',
+        '@id': `https://raquelsynths.com/visual-novel/${season.mode}/s${season.position}#season`,
+        url: `https://raquelsynths.com/visual-novel/${season.mode}/s${season.position}`,
+        name: `${season.mode === 'broklin' ? 'Broklin' : 'Jonah'} — ${isPt ? 'Temporada' : 'Season'} ${season.position}`,
+        position: season.position
+      }))
+    });
+  }
 
   ngOnDestroy() {
     if (this.themeObserver) this.themeObserver.disconnect();
