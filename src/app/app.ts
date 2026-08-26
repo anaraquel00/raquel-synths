@@ -126,16 +126,13 @@ export class App implements OnInit {
         this.cookiesAccepted.set(consent);
       }
 
-      // 4. Protocolo de Idioma
-      this.iniciarProtocoloDeIdioma();
-
-      // 5. Override de Tema via URL
+      // 4. Override de Tema via URL
       if (win) {
         const params = new URLSearchParams(win.location.search);
         if (params.get('mode') === 'jonah') this.aplicarModo('jonah');
       }
 
-      // 6. AdSense e Tracking Injetados em Segurança
+      // 5. AdSense e Tracking Injetados em Segurança
       this.adSenseService.initLazyLoad('ca-pub-5619990751602183');
       this.trackingService.initLazyTracking('GTM-P3KFK5T5');
       });
@@ -210,16 +207,4 @@ ngOnInit() {
     }
   }
 
-  private iniciarProtocoloDeIdioma() {
-    if (isPlatformBrowser(this.platformId)) {
-      const win = this.document.defaultView as any;
-      if (!win) return;
-      const idiomaGuardado = win.localStorage.getItem('rqs_lang_override');
-      if (!idiomaGuardado) {
-        const idiomaNavegador = win.navigator.language || win.navigator.languages[0];
-        if (idiomaNavegador.startsWith('en')) this.translate.setLanguage('en');
-        else this.translate.setLanguage('pt');
-      }
-    }
-  }
 }
