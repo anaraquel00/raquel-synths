@@ -6,7 +6,7 @@ import { Router, RouterLink } from '@angular/router';
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from '@angular/material/button';
 import { ContentService } from '../services/content.service';
-import { Observable, BehaviorSubject, switchMap, of } from 'rxjs';
+import { Observable, BehaviorSubject, forkJoin, shareReplay, switchMap } from 'rxjs';
 import { LoreEpisode } from '../data/lore-data';
 import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
@@ -35,24 +35,11 @@ export class AppVisualNovel implements OnInit, OnDestroy {
 
   // Esse Observable vai buscar os episódios do Firebase toda vez que o modo mudar
   episodes$ = this.modeSubject.asObservable().pipe(
-  switchMap(mode => {
-    if (!isPlatformBrowser(this.platformId)) {
-      return of([
-        {
-          id: 'seo-mock',
-          title: 'Literary Sagas: Cyberpunk Story',
-          description: 'Interactive audio civil war narrative.',
-          mode: 'broklin',
-          route: '/saga'
-        } as any
-      ]);
-    }
-
-    return this.injector
+    switchMap(mode => this.injector
       .get(ContentService)
       .getEpisodes(mode)
-      .pipe(take(1));
-  })
+      .pipe(take(1))),
+    shareReplay(1)
 );
 
   private themeObserver: MutationObserver | null = null;
@@ -111,19 +98,45 @@ export class AppVisualNovel implements OnInit, OnDestroy {
       url: 'https://raquelsynths.com/saga'
     });
 
-    // 🚀 INJEÇÃO DE SÉRIE CRIATIVA (JSON-LD): Avisa ao Google que isso é uma Série Literária
-    this.seoService.setJsonLd({
-      "@context": "https://schema.org",
-      "@type": "CreativeWorkSeries",
-      "name": isPt ? "Sagas Literárias RaQuel Synths" : "RaQuel Synths Literary Sagas",
-      "genre": "Cyberpunk, Sci-Fi",
-      "author": {
-        "@type": "Person",
-        "name": "Ana Raquel"
-      },
-      "description": isPt
-        ? "Crônicas literárias que narram a guerra sonora entre as facções Broklin e Jonah."
-        : "Literary chronicles narrating the sonic war between Broklin and Jonah factions."
+    const contentService = this.injector.get(ContentService);
+
+    forkJoin({
+      broklin: this.episodes$.pipe(take(1)),
+      jonah: contentService.getEpisodes('jonah').pipe(take(1))
+    }).subscribe(({ broklin, jonah }) => {
+      const seasons = [
+        { mode: 'broklin', position: 1, episodes: broklin.filter(ep => ep.id.startsWith('s1-')) },
+        { mode: 'broklin', position: 2, episodes: broklin.filter(ep => ep.id.startsWith('s2-')) },
+        { mode: 'jonah', position: 1, episodes: jonah.filter(ep => ep.id.startsWith('s1-')) },
+        { mode: 'jonah', position: 2, episodes: jonah.filter(ep => ep.id.startsWith('s2-')) }
+      ].filter(season => season.episodes.length > 0);
+
+      this.seoService.setJsonLd({
+        '@context': 'https://schema.org',
+        '@type': 'CreativeWorkSeries',
+        '@id': 'https://raquelsynths.com/saga#series',
+        url: 'https://raquelsynths.com/saga',
+        name: isPt ? 'Sagas Literárias RaQuel Synths' : 'RaQuel Synths Literary Sagas',
+        genre: 'Cyberpunk, Sci-Fi',
+        inLanguage: isPt ? 'pt-BR' : 'en-US',
+        author: {
+          '@type': 'Person',
+          name: 'Ana Raquel'
+        },
+        publisher: {
+          '@id': 'https://raquelsynths.com/#organization'
+        },
+        description: isPt
+          ? 'Crônicas literárias que narram a guerra sonora entre as facções Broklin e Jonah.'
+          : 'Literary chronicles narrating the sonic war between Broklin and Jonah factions.',
+        hasPart: seasons.map(season => ({
+          '@type': 'CollectionPage',
+          '@id': `https://raquelsynths.com/visual-novel/${season.mode}/s${season.position}#season`,
+          url: `https://raquelsynths.com/visual-novel/${season.mode}/s${season.position}`,
+          name: `${season.mode === 'broklin' ? 'Broklin' : 'Jonah'} — ${isPt ? 'Temporada' : 'Season'} ${season.position}`,
+          position: season.position
+        }))
+      });
     });
   }
 }

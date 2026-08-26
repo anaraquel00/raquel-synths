@@ -146,43 +146,92 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
         url: canonicalUrl
       });
 
-      this.seoService.setJsonLd({
-        '@context': 'https://schema.org',
-        '@type': 'BlogPosting',
+      const structure = this.getEpisodeStructure(ep.id);
 
-        headline: title,
-        description: desc,
+      if (!structure) {
+        return;
+      }
 
-        image: [
-          imageUrl
-        ],
+      const seasonUrl =
+        `https://raquelsynths.com/visual-novel/${mode}/s${structure.season}`;
+      const seasonName =
+        `${mode === 'broklin' ? 'Broklin' : 'Jonah'} — ${isPt ? 'Temporada' : 'Season'} ${structure.season}`;
 
-        datePublished: ep.releaseDate,
-
-        author: [
-          {
-            '@type': 'Person',
-            name: 'Ana Raquel',
-            jobTitle: 'Dev & Creator',
-            url: 'https://raquelsynths.com/creator'
-          }
-        ],
-
-        publisher: {
-          '@type': 'Organization',
-          name: 'RaQuel Synths',
-
-          logo: {
-            '@type': 'ImageObject',
-            url: 'https://raquelsynths.com/rqs-logo.webp'
+      this.seoService.setJsonLdGraph([
+        {
+          '@type': 'CreativeWork',
+          '@id': `${canonicalUrl}#episode`,
+          url: canonicalUrl,
+          name: title,
+          headline: title,
+          description: desc,
+          image: [imageUrl],
+          datePublished: ep.releaseDate,
+          inLanguage: isPt ? 'pt-BR' : 'en-US',
+          position: structure.position,
+          isPartOf: {
+            '@type': 'CollectionPage',
+            '@id': `${seasonUrl}#season`,
+            url: seasonUrl,
+            name: seasonName,
+            position: structure.season,
+            isPartOf: {
+              '@id': 'https://raquelsynths.com/saga#series'
+            }
+          },
+          author: [
+            {
+              '@type': 'Person',
+              name: 'Ana Raquel',
+              jobTitle: 'Dev & Creator',
+              url: 'https://raquelsynths.com/creator'
+            }
+          ],
+          publisher: {
+            '@type': 'Organization',
+            '@id': 'https://raquelsynths.com/#organization',
+            name: 'RaQuel Synths',
+            logo: {
+              '@type': 'ImageObject',
+              url: 'https://raquelsynths.com/rqs-logo.webp'
+            }
+          },
+          mainEntityOfPage: {
+            '@type': 'WebPage',
+            '@id': canonicalUrl
           }
         },
-
-        mainEntityOfPage: {
-          '@type': 'WebPage',
-          '@id': canonicalUrl
+        {
+          '@type': 'BreadcrumbList',
+          '@id': `${canonicalUrl}#breadcrumb`,
+          itemListElement: [
+            {
+              '@type': 'ListItem',
+              position: 1,
+              name: 'RaQuel Synths',
+              item: 'https://raquelsynths.com/'
+            },
+            {
+              '@type': 'ListItem',
+              position: 2,
+              name: isPt ? 'Saga' : 'Saga',
+              item: 'https://raquelsynths.com/saga'
+            },
+            {
+              '@type': 'ListItem',
+              position: 3,
+              name: seasonName,
+              item: seasonUrl
+            },
+            {
+              '@type': 'ListItem',
+              position: 4,
+              name: title,
+              item: canonicalUrl
+            }
+          ]
         }
-      });
+      ]);
     });
   }
 
@@ -306,6 +355,21 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
     this.responseInit.status = statusCode;
   }
 }
+
+  private getEpisodeStructure(
+    id: string | undefined
+  ): { season: number; position: number } | null {
+    const match = id?.match(/^s([12])-e(\d+)$/);
+
+    if (!match) {
+      return null;
+    }
+
+    return {
+      season: Number(match[1]),
+      position: Number(match[2])
+    };
+  }
 
   /**
    * O modo visual agora acompanha a URL.

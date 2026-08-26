@@ -3,8 +3,7 @@ import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ContentService } from '../../services/content.service';
 import { TranslationService } from '../../services/translation.service';
-// 🛡️ AQUI: Adicionamos o 'of' para criar a rota de fuga do servidor
-import { Observable, BehaviorSubject, switchMap, combineLatest, map, take, of } from 'rxjs';
+import { Observable, BehaviorSubject, switchMap, combineLatest, map, take, shareReplay } from 'rxjs';
 import { NgOptimizedImage } from '@angular/common';
 import { SeoService } from '../../services/seo.service';
 import { ActivatedRoute } from '@angular/router';
@@ -42,16 +41,10 @@ export class VisualNovelComponent implements OnInit, OnDestroy {
     this.temporadaAtivaSubject.next(numeroDaTemporada); // 🚀 Dispara o sinal!
   }
 
-  // 🚀 A MÁGICA ORIGINAL: Blindada para não explodir o Build!
+  // A mesma fonte REST atende SSR e browser e participa do transfer cache do Angular.
   episodes$: Observable<any[]> = this.modeSubject.asObservable().pipe(
-    switchMap(mode => {
-      // 🛡️ Se for o Servidor do Angular rodando o build, ignora o Firebase e devolve vazio instantaneamente (Adeus Timeout!)
-      if (!isPlatformBrowser(this.platformId)) {
-        return of([]);
-      }
-      // 🌐 Se for o Navegador do Usuário, vai no Firebase e busca os episódios normalmente
-      return this.contentService.getEpisodes(mode).pipe(take(1));
-    })
+    switchMap(mode => this.contentService.getEpisodes(mode).pipe(take(1))),
+    shareReplay(1)
   );
 
   // 🛡️ O SEU FILTRO INTACTO: Pega todos os episódios e entrega pro HTML SÓ os da temporada certa
@@ -115,6 +108,10 @@ this.route.paramMap.subscribe(params => {
       this.setTemporada(season);
 
       this.applyModeTheme(mode);
+
+      this.filteredEpisodes$.pipe(take(1)).subscribe(episodes => {
+        this.setSeasonJsonLd(mode, season, episodes);
+      });
     });
 
   const isPt = this.translate.isPt();
@@ -134,28 +131,68 @@ this.route.paramMap.subscribe(params => {
     type: 'website'
   });
 
-  this.seoService.setJsonLd({
-    '@context': 'https://schema.org',
-    '@type': 'CollectionPage',
+}
 
-    name: isPt
-      ? 'Sagas Interativas RaQuel Synths'
-      : 'RaQuel Synths Interactive Sagas',
+private setSeasonJsonLd(
+  mode: 'broklin' | 'jonah',
+  season: number,
+  episodes: any[]
+): void {
+  const isPt = this.translate.isPt();
+  const seasonUrl = `https://raquelsynths.com/visual-novel/${mode}/s${season}`;
+  const seasonId = `${seasonUrl}#season`;
 
-    description: isPt
-      ? 'Arquivos de episódios da narrativa transmídia Ecos da RQS.'
-      : 'Episode archives of the Echoes of RQS transmedia narrative.',
+  const episodeItems = episodes
+    .map(episode => ({ episode, position: this.getEpisodePosition(episode.id) }))
+    .filter(item => item.position !== null)
+    .map(({ episode, position }) => ({
+      '@type': 'ListItem',
+      position,
+      item: {
+        '@type': 'CreativeWork',
+        '@id': `https://raquelsynths.com/lore/${mode}/${episode.id}#episode`,
+        url: `https://raquelsynths.com/lore/${mode}/${episode.id}`,
+        name: isPt ? episode.title : (episode.title_en || episode.title),
+        description: isPt
+          ? episode.description
+          : (episode.description_en || episode.description),
+        datePublished: episode.releaseDate,
+        inLanguage: isPt ? 'pt-BR' : 'en-US',
+        position,
+        isPartOf: { '@id': seasonId }
+      }
+    }));
 
-    publisher: {
-      '@type': 'Organization',
-      name: 'RaQuel Synths',
-
-      logo: {
-        '@type': 'ImageObject',
-        url: 'https://raquelsynths.com/rqs-logo.webp'
+  this.seoService.setJsonLdGraph([
+    {
+      '@type': 'CreativeWorkSeries',
+      '@id': 'https://raquelsynths.com/saga#series',
+      url: 'https://raquelsynths.com/saga',
+      name: isPt ? 'Sagas Literárias RaQuel Synths' : 'RaQuel Synths Literary Sagas'
+    },
+    {
+      '@type': 'CollectionPage',
+      '@id': seasonId,
+      url: seasonUrl,
+      name: `${mode === 'broklin' ? 'Broklin' : 'Jonah'} — ${isPt ? 'Temporada' : 'Season'} ${season}`,
+      description: isPt
+        ? 'Arquivos de episódios da narrativa transmídia Ecos da RQS.'
+        : 'Episode archives of the Echoes of RQS transmedia narrative.',
+      inLanguage: isPt ? 'pt-BR' : 'en-US',
+      position: season,
+      publisher: { '@id': 'https://raquelsynths.com/#organization' },
+      isPartOf: { '@id': 'https://raquelsynths.com/saga#series' },
+      mainEntity: {
+        '@type': 'ItemList',
+        itemListElement: episodeItems
       }
     }
-  });
+  ]);
+}
+
+private getEpisodePosition(id: string | undefined): number | null {
+  const match = id?.match(/^s[12]-e(\d+)$/);
+  return match ? Number(match[1]) : null;
 }
 
 private applyModeTheme(
@@ -187,5 +224,4 @@ private applyModeTheme(
  ngOnDestroy(): void {
 }
 }
-
 

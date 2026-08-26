@@ -95,22 +95,33 @@ export class ContentService {
     }
 
     const collectionName = mode === 'jonah' ? 'lore-jonah' : 'lore';
-    const colRef = collection(this.firestore, collectionName);
+    const url =
+      'https://firestore.googleapis.com/v1/projects/' +
+      'raquel-synths-platform/databases/(default)/documents/' +
+      `${collectionName}?pageSize=300`;
 
-    const q = query(
-      colRef,
-      where('mode', '==', mode),
-      orderBy('releaseDate', 'desc'),
-      where('releaseDate', '<=', new Date().toISOString()),
-      where('published', '==', true)
-    );
+    return this.http.get<FirestoreRestCollection>(url).pipe(
+      timeout(4000),
+      map(response => {
+        const episodes = (response.documents ?? [])
+          .map(restDoc => {
+            const id = restDoc.name.split('/').pop() ?? '';
+            const fields = restDoc.fields ?? {};
 
-    return from(getDocs(q)).pipe(
-      map(snapshot => {
-        const episodes = snapshot.docs.map(docSnap => ({
-          id: docSnap.id,
-          ...docSnap.data()
-        })) as LoreEpisode[];
+            return {
+              id,
+              ...Object.fromEntries(
+                Object.entries(fields).map(([key, value]) => [
+                  key,
+                  this.parseFirestoreValue(value)
+                ])
+              )
+            } as LoreEpisode;
+          })
+          .filter(episode =>
+            episode.mode === mode &&
+            this.isEpisodePublic(episode)
+          );
 
         const sorted = episodes.sort((a, b) =>
           (a.id || '').localeCompare(b.id || '', undefined, { numeric: true, sensitivity: 'base' })
