@@ -11,7 +11,7 @@ import {
   collectionData
 } from '@angular/fire/firestore';
 import { Observable, of, from } from 'rxjs';
-import { map, catchError, take } from 'rxjs/operators';
+import { map, catchError, take, timeout } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { isPlatformServer } from '@angular/common';
 import { LoreEpisode } from '../data/lore-data';
@@ -38,6 +38,10 @@ interface FirestoreRestDocument {
   createTime?: string;
   updateTime?: string;
 }
+
+interface FirestoreRestCollection {
+  documents?: FirestoreRestDocument[];
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -56,9 +60,27 @@ export class ContentService {
 
   // 🎵 1. DISCOGRAFIA (One-Shot SSR)
   getDiscography(): Observable<any[]> {
-    const colRef = collection(this.firestore, 'discography');
-    return from(getDocs(colRef)).pipe(
-      map(snapshot => snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }))),
+    const url =
+      'https://firestore.googleapis.com/v1/projects/' +
+      'raquel-synths-platform/databases/(default)/documents/' +
+      'discography?pageSize=300';
+
+    return this.http.get<FirestoreRestCollection>(url).pipe(
+      timeout(4000),
+      map(response => (response.documents ?? []).map(restDoc => {
+        const id = restDoc.name.split('/').pop() ?? '';
+        const fields = restDoc.fields ?? {};
+
+        return {
+          id,
+          ...Object.fromEntries(
+            Object.entries(fields).map(([key, value]) => [
+              key,
+              this.parseFirestoreValue(value)
+            ])
+          )
+        };
+      })),
       catchError(err => {
         console.error('⚠️ [ContentService] Erro ao buscar discografia:', err);
         return of([]);

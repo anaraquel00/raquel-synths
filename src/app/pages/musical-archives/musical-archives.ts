@@ -110,23 +110,37 @@ getArchives() {
       // 🚀 INJEÇÃO DE LEGADO (JSON-LD): O catálogo completo para o Google
       this.seoService.setJsonLd({
         "@context": "https://schema.org",
-        "@type": "CollectionPage",
-        "name": this.translate.isPt() ? "Arquivos Musicais RaQuel Synths" : "RaQuel Synths Musical Archives",
-        "mainEntity": {
-          "@type": "ItemList",
-          "itemListElement": albums.map((a, index) => ({
-            "@type": "ListItem",
-            "position": index + 1,
-            "item": {
-              "@type": "MusicAlbum",
-              "name": a.title,
-              "image": a.cover,
-              "datePublished": a.releaseDate,
-              "description": this.translate.isPt() ? a.descriptionPT : (a.descriptionEN || a.descriptionPT),
-              "byArtist": { "@type": "MusicGroup", "name": "RaQuel Synths" }
+        "@graph": [
+          {
+            "@type": "MusicGroup",
+            "@id": "https://raquelsynths.com/#musicgroup",
+            "name": "RaQuel Synths"
+          },
+          {
+            "@type": "CollectionPage",
+            "url": "https://raquelsynths.com/musical-archives",
+            "name": this.translate.isPt() ? "Arquivos Musicais RaQuel Synths" : "RaQuel Synths Musical Archives",
+            "mainEntity": {
+              "@type": "ItemList",
+              "itemListElement": albums
+                .filter(album => Boolean(album.title))
+                .map((album, index) => ({
+                  "@type": "ListItem",
+                  "position": index + 1,
+                  "item": {
+                    "@type": "MusicAlbum",
+                    "name": album.title,
+                    "image": album.cover,
+                    "datePublished": album.releaseDate,
+                    "description": this.translate.isPt()
+                      ? album.descriptionPT
+                      : (album.descriptionEN || album.descriptionPT),
+                    "byArtist": { "@id": "https://raquelsynths.com/#musicgroup" }
+                  }
+                }))
             }
-          }))
-        }
+          }
+        ]
       });
         this.isLoading = false;
       }

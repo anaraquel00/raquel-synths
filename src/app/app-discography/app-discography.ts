@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, computed, HostListener, inject, Input, OnInit, signal, afterNextRender, Injector } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, HostListener, inject, Input, OnInit, signal, afterNextRender } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DOCUMENT } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -17,8 +17,7 @@ import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { TrackingService } from '../services/tracking.service';
 import { SeoService } from '../services/seo.service';
-import { catchError, take, timeout } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { SpotifyPlaylistComponent } from "../components/spotify-playlist/spotify-playlist";
 
 @Component({
@@ -33,7 +32,7 @@ export class DiscographyComponent implements OnInit {
   public translate = inject(TranslationService);
   private sanitizer = inject(DomSanitizer);
   private platformId = inject(PLATFORM_ID);
-  private injector = inject(Injector);
+  private contentService = inject(ContentService);
   private cdr = inject(ChangeDetectorRef);
   private seoService = inject(SeoService);
   private document = inject(DOCUMENT);
@@ -138,30 +137,7 @@ getDiscography() {
       this.router.url.includes('/discografia') ||
       this.router.url.includes('/musical-archives');
 
-    // 🛡️ SE FOR O SERVIDOR NODE.JS (BUILD/SSR), INJETA MOCK PARA SEO E ESTABILIZA IMEDIATAMENTE
-    if (!isPlatformBrowser(this.platformId)) {
-      this.allAlbums = [{
-        title: 'RaQuel Synths - Official Discography',
-        faction: 'hybrid',
-        releaseDate: '2026-01-01',
-        cover: 'images/banner-seo-global.jpg',
-        descriptionPT: 'Discografia oficial da banda virtual RaQuel Synths. Synthwave, Nu-Metal e caos Industrial.',
-        descriptionEN: 'Official discography of the virtual band RaQuel Synths. Synthwave, Nu-Metal, and Industrial chaos.',
-        spotify: 'https://open.spotify.com/artist/1yrPZaFyIcsCjj876LaHXL'
-      } as any];
-      this.isLoading = false;
-      return;
-    }
-
-    // 🌐 SE FOR O NAVEGADOR, FAZ A BUSCA REAL NO FIREBASE
-    this.injector.get(ContentService).getDiscography().pipe(
-      take(1),
-      timeout(4000),
-      catchError(err => {
-        console.warn('⚠️ Timeout do Firebase no SSR. Renderizando vazio...', err);
-        return of([]); // Salva o servidor do colapso
-      })
-    ).subscribe({
+    this.contentService.getDiscography().pipe(take(1)).subscribe({
       next: (data: any[]) => {
         this.allAlbums = data as Album[];
         this.isLoading = false;
@@ -170,32 +146,48 @@ getDiscography() {
         if (isDedicatedPage && this.allAlbums.length > 0) {
           const isPt = this.translate.isPt();
 
-          // Schema 1: O Grupo Musical e seus Álbuns
-          const schemas: any[] = [
+          const albumItems = this.allAlbums
+            .filter(album => Boolean(album.title))
+            .map((album, index) => ({
+              "@type": "ListItem",
+              "position": index + 1,
+              "item": {
+                "@type": "MusicAlbum",
+                "name": album.title,
+                "image": album.cover,
+                "datePublished": album.releaseDate,
+                "description": isPt
+                  ? album.descriptionPT
+                  : (album.descriptionEN || album.descriptionPT),
+                "byArtist": { "@id": "https://raquelsynths.com/#musicgroup" }
+              }
+            }));
+
+          const schemas: Record<string, unknown>[] = [
             {
-              "@context": "https://schema.org",
               "@type": "MusicGroup",
+              "@id": "https://raquelsynths.com/#musicgroup",
               "name": "RaQuel Synths",
               "alternateName": "RQS",
               "genre": ["Cyberpunk", "Nu-Metal", "Synthwave"],
               "description": isPt
                 ? "Banda Virtual Cyberpunk mesclando frequências puras com o caos industrial."
-                : "Cyberpunk Virtual Band blending pure frequencies with industrial chaos.",
-              "album": this.featuredBroklin.map(a => ({
-                "@type": "MusicAlbum",
-                "name": a.title,
-                "image": a.cover,
-                "datePublished": a.releaseDate,
-                "description": isPt ? a.descriptionPT : (a.descriptionEN || a.descriptionPT),
-                "byArtist": { "@type": "MusicGroup", "name": "RaQuel Synths" }
-              }))
+                : "Cyberpunk Virtual Band blending pure frequencies with industrial chaos."
+            },
+            {
+              "@type": "CollectionPage",
+              "url": "https://raquelsynths.com/discografia",
+              "name": isPt ? "Discografia RaQuel Synths" : "RaQuel Synths Discography",
+              "mainEntity": {
+                "@type": "ItemList",
+                "itemListElement": albumItems
+              }
             }
           ];
 
           // Schema 2: A Acoplagem do Vídeo (Apenas na página dedicada)
           if (isDedicatedPage) {
             schemas.push({
-              "@context": "https://schema.org",
               "@type": "VideoObject",
               "name": "BLUE TEAM 24/7 // THE PRISTINE CODE - RaQuel Synths",
               "description": isPt
@@ -211,7 +203,7 @@ getDiscography() {
           }
 
           // Envia o lote de dados estruturados unificado para o serviço de SEO
-          this.seoService.setJsonLd(schemas);
+          this.seoService.setJsonLdGraph(schemas);
         }
       },
       error: (err) => {
