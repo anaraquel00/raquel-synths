@@ -70,9 +70,8 @@ export class SobreComponent implements OnInit, OnDestroy {
           : 'Blue Team classified profiles: Broklin, Kelma, and RQS architecture.',
         url: 'https://raquelsynths.com/dossier'
       });
-    }
-    // 2. DISPARA O PAYLOAD para a função que já existe no seu serviço!
-const dossierSchema = {
+      // 2. O schema do dossiê só pertence à rota standalone.
+      const dossierSchema = {
   "@context": "https://schema.org",
   "@type": "MusicGroup",
   "@id": "https://raquelsynths.com/#musicgroup",
@@ -140,9 +139,9 @@ const dossierSchema = {
       "jobTitle": "Sound Anomaly & System Metalhead"
     }
   ]
-};
-    // 🚀 DISPARAR GATILHO: Injeta direto na cabeça do HTML
-    this.seoService.setJsonLd(dossierSchema);
+      };
+      this.seoService.setJsonLd(dossierSchema);
+    }
   }
 
   ngOnDestroy() {

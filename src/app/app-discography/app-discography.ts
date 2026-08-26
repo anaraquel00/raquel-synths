@@ -134,6 +134,10 @@ ngOnInit() {
   }
 
 getDiscography() {
+    const isDedicatedPage =
+      this.router.url.includes('/discografia') ||
+      this.router.url.includes('/musical-archives');
+
     // 🛡️ SE FOR O SERVIDOR NODE.JS (BUILD/SSR), INJETA MOCK PARA SEO E ESTABILIZA IMEDIATAMENTE
     if (!isPlatformBrowser(this.platformId)) {
       this.allAlbums = [{
@@ -162,10 +166,9 @@ getDiscography() {
         this.allAlbums = data as Album[];
         this.isLoading = false;
 
-        // 🚀 INJEÇÃO NEURAL: Structured Data para a Vitrine
-        if (this.allAlbums.length > 0) {
+        // Structured data só pertence às rotas dedicadas, nunca à homepage embutida.
+        if (isDedicatedPage && this.allAlbums.length > 0) {
           const isPt = this.translate.isPt();
-          const isDedicatedPage = this.router.url.includes('/discografia') || this.router.url.includes('/musical-archives');
 
           // Schema 1: O Grupo Musical e seus Álbuns
           const schemas: any[] = [

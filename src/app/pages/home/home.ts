@@ -157,21 +157,30 @@ currentLanguage: any;
       type: 'website'
     });
 
-    // 🚀 INJEÇÃO DE ENTIDADE (JSON-LD): Transforma o site em uma Organização para o Google
-    this.seoService.setJsonLd({
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "RaQuel Synths",
-      "url": "https://raquelsynths.com",
-      "logo": "https://raquelsynths.com/rqs-logo.webp",
-      "description": isPt
-        ? "Banda virtual e universo transmídia de ficção científica cyberpunk."
-        : "Virtual band and cyberpunk sci-fi transmedia universe.",
-      "sameAs": [
-        "https://raquelsynths.com/logs-archive",
-        "https://www.youtube.com/@raquelsynths"
-      ]
-    });
+    // 🚀 GRAFO DA PÁGINA: entidades artística e operacional com IDs estáveis.
+    this.seoService.setJsonLdGraph([
+      {
+        '@type': 'MusicGroup',
+        '@id': 'https://raquelsynths.com/#musicgroup',
+        name: 'RaQuel Synths',
+        alternateName: 'RQS',
+        url: 'https://raquelsynths.com/',
+        logo: 'https://raquelsynths.com/rqs-logo.webp',
+        description: isPt
+          ? 'Banda virtual e universo transmídia de ficção científica cyberpunk.'
+          : 'Virtual band and cyberpunk sci-fi transmedia universe.',
+        sameAs: [
+          'https://www.youtube.com/@raquelsynths'
+        ]
+      },
+      {
+        '@type': 'Organization',
+        '@id': 'https://raquelsynths.com/#organization',
+        name: 'RaQuel Synths',
+        url: 'https://raquelsynths.com/',
+        logo: 'https://raquelsynths.com/rqs-logo.webp'
+      }
+    ]);
 
     // Inicializa conteúdo dinâmico
     this.updateContent();

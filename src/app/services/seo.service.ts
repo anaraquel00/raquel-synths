@@ -140,7 +140,7 @@ export class SeoService {
 
   // 🚀 O NOVO INJETOR NEURAL (Structured Data JSON-LD)
   // Esse cara vai processar o payload do webcode.tools!
-setJsonLd(schema: any) {
+setJsonLd(schema: Record<string, unknown> | readonly Record<string, unknown>[]) {
   const head = this.dom.getElementsByTagName('head')[0];
 
   let script: HTMLScriptElement | null =
@@ -165,5 +165,12 @@ setJsonLd(schema: any) {
   }
 
   script.textContent = JSON.stringify(schema);
+}
+
+setJsonLdGraph(entities: readonly Record<string, unknown>[]) {
+  this.setJsonLd({
+    '@context': 'https://schema.org',
+    '@graph': entities
+  });
 }
 }

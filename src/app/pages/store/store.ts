@@ -315,24 +315,21 @@ checkCurrentMode() {
         "name": seoTitle,
         "description": seoDesc, // Aqui não tem problema ser a Lore inteira
         "url": `https://raquelsynths.com/store?dept=${deptId}`,
-        "itemListElement": this.filteredProducts.map((product, index) => ({
-          "@type": "ListItem",
-          "position": index + 1,
-          "item": {
-            "@type": "Product",
-            "name": product.name ? product.name[lang] : 'RQS Item',
-            "image": product.images ? product.images[0] : seoImage,
-            "description": product.description ? product.description[lang] : seoDesc,
-            "brand": { "@type": "Brand", "name": "RaQuel Synths" },
-            "offers": {
-              "@type": "Offer",
-              "url": product.link || `https://raquelsynths.com/store?dept=${deptId}`,
-              "priceCurrency": "BRL",
-              "price": product.price || "0.00",
-              "availability": "https://schema.org/InStock"
+        "itemListElement": this.filteredProducts.map((product, index) => {
+          const content = product.content?.[lang];
+
+          return {
+            "@type": "ListItem",
+            "position": index + 1,
+            "item": {
+              "@type": "Product",
+              "name": content?.name,
+              "image": product.image || seoImage,
+              "description": content?.description,
+              "brand": { "@type": "Brand", "name": "RaQuel Synths" }
             }
-          }
-        }))
+          };
+        })
       });
     }
   }
