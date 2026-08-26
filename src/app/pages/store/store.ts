@@ -126,7 +126,7 @@ private updateSeoAndLang(isPt: boolean) {
   const finalData = isPt ? currentSeo.pt : currentSeo.en;
 
   // 🚀 CONSTRUÇÃO DETERMINÍSTICA: Não dependemos do delay do Router
-  const canonicalPath = `/store${dept ? '?dept=' + dept : ''}`;
+  const canonicalPath = '/store';
 
   //this.seoService.updateCanonical(canonicalPath);
   this.seoService.updateMetaTags({
@@ -307,14 +307,14 @@ checkCurrentMode() {
       const seoDesc = deptData.loreDescription ? deptData.loreDescription[lang] : (deptData.description ? deptData.description[lang] : 'RQS Protocol');
       const imgPath = deptData.image || 'assets/images/banner-seo-global.jpg';
       const seoImage = imgPath.startsWith('http') ? imgPath : `https://raquelsynths.com/${imgPath}`;
-      this.seoService.updateCanonical(this.router.url);
+      this.seoService.updateCanonical('/store');
       // O JSON-LD aceita textos mais longos e formatação diferente, não afeta a Meta Tag suja
       this.seoService.setJsonLd({
         "@context": "https://schema.org",
         "@type": "ItemList",
         "name": seoTitle,
         "description": seoDesc, // Aqui não tem problema ser a Lore inteira
-        "url": `https://raquelsynths.com/store?dept=${deptId}`,
+        "url": "https://raquelsynths.com/store",
         "itemListElement": this.filteredProducts.map((product, index) => {
           const content = product.content?.[lang];
 
