@@ -1,5 +1,5 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { Injectable, PLATFORM_ID, computed, inject, signal } from '@angular/core';
+import { Injectable, PLATFORM_ID, REQUEST, computed, inject, signal } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
@@ -7,6 +7,7 @@ import { Injectable, PLATFORM_ID, computed, inject, signal } from '@angular/core
 export class TranslationService {
   private document = inject(DOCUMENT);
   private platformId = inject(PLATFORM_ID);
+  private request = inject(REQUEST, { optional: true });
 
   // 🚀 Define o idioma explicitamente (PT ou EN)
   setLanguage(lang: string) {
@@ -43,12 +44,38 @@ export class TranslationService {
   }
 
   private getInitialLanguageIsPt(): boolean {
-    if (!isPlatformBrowser(this.platformId)) {
-      return true;
+    if (isPlatformBrowser(this.platformId)) {
+      return this.document.documentElement.lang
+        .toLowerCase()
+        .startsWith('pt');
     }
 
-    return !this.document.documentElement.lang
-      .toLowerCase()
-      .startsWith('en');
+    const isPt = this.hasPortuguesePreference(
+      this.request?.headers.get('accept-language')
+    );
+
+    this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
+    return isPt;
+  }
+
+  private hasPortuguesePreference(acceptLanguage: string | null | undefined): boolean {
+    if (!acceptLanguage) {
+      return false;
+    }
+
+    return acceptLanguage.split(',').some(preference => {
+      const [languageRange, ...parameters] = preference
+        .trim()
+        .toLowerCase()
+        .split(';');
+      const qualityParameter = parameters.find(parameter =>
+        parameter.trim().startsWith('q=')
+      );
+      const quality = qualityParameter
+        ? Number.parseFloat(qualityParameter.trim().slice(2))
+        : 1;
+
+      return quality > 0 && (languageRange === 'pt' || languageRange.startsWith('pt-'));
+    });
   }
 }

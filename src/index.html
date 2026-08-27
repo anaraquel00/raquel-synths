@@ -108,12 +108,7 @@
   (function() {
     try {
       var savedTheme = localStorage.getItem('rqs-theme');
-      var savedLang = localStorage.getItem('lang');
-      var userLang = savedLang || navigator.language || navigator.userLanguage;
-      var isPt = userLang.toLowerCase().includes('pt');
-
-      // 🛡️ PATCH DE IDIOMA: Sincroniza a tag HTML com o radar do usuário
-      document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
+      var isPt = document.documentElement.lang.toLowerCase().startsWith('pt');
 
       var title = document.getElementById('boot-title');
       var subtitle = document.getElementById('boot-subtitle');
