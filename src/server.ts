@@ -251,6 +251,10 @@ app.use(async (req, res, next) => {
       await angularApp.handle(req);
 
     if (response) {
+      if (response.headers.get('content-type')?.includes('text/html')) {
+        res.vary('Accept-Language');
+      }
+
       await writeResponseToNodeResponse(
         response,
         res

@@ -2,7 +2,7 @@ import { RenderMode, ServerRoute, PrerenderFallback } from '@angular/ssr';
 
 export const serverRoutes: ServerRoute[] = [
   // --- ROTAS ESTÁTICAS E SUMÁRIOS ---
-  { path: '', renderMode: RenderMode.Prerender },
+  { path: '', renderMode: RenderMode.Server },
   { path: 'compliance', renderMode: RenderMode.Prerender },
   { path: 'dossier', renderMode: RenderMode.Prerender },
   { path: 'creator', renderMode: RenderMode.Prerender },
@@ -22,7 +22,7 @@ export const serverRoutes: ServerRoute[] = [
 },
   { path: 'discografia', renderMode: RenderMode.Prerender },
   { path: 'hybrid-saga', renderMode: RenderMode.Prerender },
-  { path: 'bio', renderMode: RenderMode.Prerender },
+  { path: 'bio', renderMode: RenderMode.Server },
 
   // --- 🚀 PRERENDER ESTÁTICO PARA AS SAGAS CONCLUÍDAS (Broklin & Jonah) ---
   {
