@@ -83,6 +83,8 @@ get limitToHome(): number {
   allAlbums: Album[] = [];
   isLoading = true;
   last: any;
+  private homeAlbumsByMode: Partial<Record<'broklin' | 'jonah', Album[]>> = {};
+  private homeLoadingModes = new Set<'broklin' | 'jonah'>();
 
   // 1. Criamos um signal privado que guarda o estado
 private _modeSignal = signal<'broklin' | 'jonah'>('broklin');
@@ -91,7 +93,9 @@ private _modeSignal = signal<'broklin' | 'jonah'>('broklin');
     // 🛡️ TRAVA TÁTICA: Sincroniza o estado do tema apenas após a hidratação ser concluída
     afterNextRender(() => {
       const isJonah = document.body.classList.contains('mode-jonah');
-      this._modeSignal.set(isJonah ? 'jonah' : 'broklin');
+      const mode = isJonah ? 'jonah' : 'broklin';
+      this._modeSignal.set(mode);
+      this.loadHomeDiscography(mode);
     });
   }
 
@@ -104,7 +108,9 @@ isJonahMode(): boolean {
 onThemeChange() {
   if (isPlatformBrowser(this.platformId)) {
     const isJonah = document.body.classList.contains('mode-jonah');
-    this._modeSignal.set(isJonah ? 'jonah' : 'broklin');
+    const mode = isJonah ? 'jonah' : 'broklin';
+    this._modeSignal.set(mode);
+    this.loadHomeDiscography(mode);
   }
   this.cdr.detectChanges(); // Força o redesenho físico
 }
@@ -136,6 +142,11 @@ getDiscography() {
     const isDedicatedPage =
       this.router.url.includes('/discografia') ||
       this.router.url.includes('/musical-archives');
+
+    if (!isDedicatedPage) {
+      this.loadHomeDiscography('broklin');
+      return;
+    }
 
     this.contentService.getDiscography().pipe(take(1)).subscribe({
       next: (data: any[]) => {
@@ -209,6 +220,45 @@ getDiscography() {
       error: (err) => {
         console.error('Erro ao carregar álbuns:', err);
         this.isLoading = false;
+      }
+    });
+  }
+
+private loadHomeDiscography(mode: 'broklin' | 'jonah') {
+    if (this.router.url.includes('/discografia') || this.router.url.includes('/musical-archives')) {
+      return;
+    }
+
+    const cachedAlbums = this.homeAlbumsByMode[mode];
+
+    if (cachedAlbums) {
+      this.allAlbums = cachedAlbums;
+      this.isLoading = false;
+      return;
+    }
+
+    if (this.homeLoadingModes.has(mode)) {
+      return;
+    }
+
+    this.isLoading = true;
+    this.homeLoadingModes.add(mode);
+    this.contentService.getLatestDiscography(mode, this.limitToHome).pipe(take(1)).subscribe({
+      next: (data: any[]) => {
+        const albums = data as Album[];
+        this.homeLoadingModes.delete(mode);
+        this.homeAlbumsByMode[mode] = albums;
+
+        if (this._modeSignal() === mode) {
+          this.allAlbums = albums;
+          this.isLoading = false;
+        }
+      },
+      error: () => {
+        this.homeLoadingModes.delete(mode);
+        if (this._modeSignal() === mode) {
+          this.isLoading = false;
+        }
       }
     });
   }

@@ -42,6 +42,10 @@ interface FirestoreRestDocument {
 interface FirestoreRestCollection {
   documents?: FirestoreRestDocument[];
 }
+
+interface FirestoreRunQueryResult {
+  document?: FirestoreRestDocument;
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -83,6 +87,62 @@ export class ContentService {
       })),
       catchError(err => {
         console.error('⚠️ [ContentService] Erro ao buscar discografia:', err);
+        return of([]);
+      })
+    );
+  }
+
+  getLatestDiscography(
+    faction: 'broklin' | 'jonah',
+    resultLimit: number = 5
+  ): Observable<any[]> {
+    const url =
+      'https://firestore.googleapis.com/v1/projects/' +
+      'raquel-synths-platform/databases/(default)/documents:runQuery';
+    const limit = Math.max(1, Math.floor(resultLimit));
+
+    return this.http.post<FirestoreRunQueryResult[]>(url, {
+      structuredQuery: {
+        from: [{ collectionId: 'discography' }],
+        where: {
+          fieldFilter: {
+            field: { fieldPath: 'faction' },
+            op: 'IN',
+            value: {
+              arrayValue: {
+                values: [
+                  { stringValue: faction },
+                  { stringValue: 'hybrid' }
+                ]
+              }
+            }
+          }
+        },
+        orderBy: [
+          {
+            field: { fieldPath: 'releaseDate' },
+            direction: 'DESCENDING'
+          }
+        ],
+        limit
+      }
+    }).pipe(
+      timeout(4000),
+      map(results => results.flatMap(result => {
+        const restDoc = result.document;
+
+        if (!restDoc) {
+          return [];
+        }
+
+        const id = restDoc.name.split('/').pop() ?? '';
+        return [this.mapFirestoreRestDocument(restDoc, id)];
+      })),
+      catchError(err => {
+        console.error(
+          `⚠️ [ContentService] Erro ao buscar discografia limitada (${faction}):`,
+          err
+        );
         return of([]);
       })
     );
