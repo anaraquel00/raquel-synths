@@ -190,7 +190,7 @@ export class BioLinkComponent implements OnInit {
 
 
     return isJonahMode
-      ? 'images/rqs-logo-redteam.webp'
+      ? 'images/rqs-logo_redteam.webp'
       : 'icons/icon-128x128.png';
   }
 
