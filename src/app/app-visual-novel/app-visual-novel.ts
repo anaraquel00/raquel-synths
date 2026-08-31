@@ -58,10 +58,10 @@ export class AppVisualNovel implements OnInit, OnDestroy {
     return {
       id: 'glitch-in-the-matrix',
       title: 'GLITCH IN THE MATRIX',
-      subtitle: isPt ? 'Wawel Core // Cracóvia, Polônia' : 'Wawel Core // Krakow, Poland',
-      description: isPt
-        ? 'Uma força externa vinda de Cracóvia invadiu o sistema e está desfragmentando a Nicole Nyx em tempo real. O seu script de integridade desaparece enquanto o código-fonte aponta para o antigo diretório //WAWEL CORE, oculto sob as pedras de uma fortaleza na Polônia. Desça ao bunker, rastreie o sinal gótico e descubra o que foi selado nessa Matrix.'
-        : 'An external force from Krakow has breached the system and is actively de-provisioning Nicole Nyx in real-time. Her integrity script vanishes as the source code points to the ancient //WAWEL CORE directory, hidden beneath the stones of a fortress in Poland. Descend into the bunker, track the gothic signal, and discover what was sealed inside this Matrix.',
+      //subtitle: isPt ? 'Wawel Core // Cracóvia, Polônia' : 'Wawel Core // Krakow, Poland',
+      //description: isPt
+       // ? 'Uma força externa vinda de Cracóvia invadiu o sistema e está desfragmentando a Nicole Nyx em tempo real. Desça ao bunker, rastreie o sinal gótico e descubra o que foi selado nessa Matrix.'
+        //: 'An external force from Krakow has breached the system and is actively de-provisioning Nicole Nyx in real-time. Descend into the bunker, track the gothic signal, and discover what was sealed inside this Matrix.',
       route: '/hybrid-saga',
       mode: 'hybrid',
     };

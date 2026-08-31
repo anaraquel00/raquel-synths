@@ -284,6 +284,7 @@
     order: 4;
     gap: 2.5rem; /* Reduz o gap monstruoso de 10rem para os cards não ficarem muito longe no mobile */
     margin-bottom: 3rem; /* Dá um espaçamento antes de começar o texto longo do Adsense */
+    margin-top: 2rem;
   }
 
   /* 🛡️ Ordem 5: EMPURRA O TEXTO LONGO DO ADSENSE PARA O FIM DO DOCUMENTO */
@@ -299,160 +300,213 @@
     max-width: 340px; /* Mantém o tamanho estético do card centralizado */
   }
 }
+/* =========================================================
+   DESKTOP — HERO CINEMATOGRÁFICO
+   ========================================================= */
 
 .crossover-promo-banner {
-  width: 90%;
-  min-height: 380px;
-  // Fusão exata: Ciano da Blue Team cruzando com o Vermelho da Red Team
-  background: linear-gradient(135deg, rgba(0, 229, 255, 0.15) 0%, rgba(255, 0, 0, 0.15) 100%),
-              url('/images/cyberpunk_woman_disintegrating.webp') 15% center/contain no-repeat;
-  background-position: left center;
-  background-size: contain; // 🎯 GARANTE A IMAGEM COMPLETA SEM CORTES
-  background-repeat: no-repeat;
-  background-color: #000000; // 🛡️ PRETO ABSOLUTO preenche o restante do espaço na direita
+  width: 100%;
+  aspect-ratio: 16 / 9;
 
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding: 40px 60px;
-  border: 2px solid #9d42c4;
-  border-radius: 8px;
   position: relative;
   overflow: hidden;
+
+  margin: 0 auto;
+  padding: 0;
+
+  border: 2px solid #9d42c4;
+  border-radius: 8px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.02) 0%,
+      rgba(0, 0, 0, 0.15) 100%
+    ),
+    url('/images/glitch_in_the_matrix_banner.webp')
+      center center / cover no-repeat;
+
+  background-color: #050007;
+
   box-shadow: 0 0 20px rgba(157, 66, 196, 0.2);
-
-  .crossover-content {
-  position: relative;
-  z-index: 2;
-  font-family: 'Courier New', monospace;
-  text-align: right;
-
-  // 🚀 EXPANSÃO HORIZONTAL: Aumentei para o texto se espalhar mais pelo banner
-  max-width: 650px;
-
-  .matrix-alert {
-    color: #9d42c4;
-    font-size: 0.85rem;
-    font-weight: bold;
-    letter-spacing: 3px; // Espalha o alerta do sistema
-  }
-
-  h3 {
-    font-size: 2.8rem; // Título ligeiramente maior para impor autoridade visual
-    color: #ffffff;
-    margin: 12px 0;
-    letter-spacing: 2px;
-    text-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
-  }
-
-  p {
-    color: #dddddd;
-    font-size: 1.05rem;
-
-    // 🚀 RESPIRO VERTICAL: Aumenta a distância entre as linhas do parágrafo
-    line-height: 1.65;
-
-    // 🚀 DISTRIBUIÇÃO CINEMATOGRÁFICA: Afasta levemente as letras
-    letter-spacing: 0.5px;
-    margin-bottom: 20px;
-  }
-
-  .status-badge {
-    display: inline-block;
-    margin-top: 5px;
-    padding: 5px 12px;
-    background: rgba(157, 66, 196, 0.25);
-    color: #ffffff;
-    font-size: 0.75rem;
-    border-radius: 4px;
-    letter-spacing: 1px;
-  }
-}
 }
 
-// 🚀 COMPILADOR MOBILE: Ajusta a interface para telas de smartphones e tablets
-@media (max-width: 768px) {
-  .crossover-promo-banner {
-    min-height: 500px; // Dá espaço vertical para a imagem e o texto respirarem juntos
-
-    // 🎯 MUDANÇA DE ESTRUTURA: Transforma em coluna e joga o texto para a parte inferior
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
-
-    // Altera o preenchimento para não esmagar a tela em displays finos
-    padding: 30px 20px;
-
-    // 🎨 GRADIENTE VERTICAL: A imagem cobre o fundo e a sombra sobe para dar leitura ao texto
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.95) 75%),
-                url('/images/cyberpunk_woman_disintegrating.webp') center/contain no-repeat !important;
-
-    .crossover-content {
-      text-align: center; // Centraliza a leitura para melhor UX em celulares
-      max-width: 100%;    // O texto agora ganha liberdade para usar toda a largura disponível
-
-      .matrix-alert {
-        font-size: 0.75rem;
-        letter-spacing: 2px;
-      }
-
-      h3 {
-        font-size: 1.8rem; // Reduz o tamanho da fonte para o título caber em uma única linha
-        margin: 8px 0;
-        line-height: 1.2;
-      }
-
-      p {
-        font-size: 0.95rem; // Calibra o corpo do parágrafo para telas menores
-        line-height: 1.5;
-        margin-bottom: 15px;
-        color: #e0e0e0;
-      }
-
-      .status-badge {
-        margin-top: 5px;
-        font-size: 0.7rem;
-      }
-    }
-
-    // Garante que o botão de assistir o crossover fique centralizado e confortável para o toque do polegar
-    .btn-watch-crossover {
-      width: 100%;
-      justify-content: center;
-      padding: 14px 20px; // Aumenta a área de clique para evitar miss-clicks no celular
-      font-size: 0.9rem;
-    }
-  }
-}
 
 .btn-watch-crossover {
-  background: #9d42c4;
-  color: #ffffff;
-  text-decoration: none;
-  border: none;
-  padding: 12px 24px;
-  font-family: 'Courier New', monospace;
-  font-weight: bold;
-  font-size: 0.95rem;
-  border-radius: 4px;
-  cursor: pointer;
+  position: absolute;
+
+  right: 40px;
+  bottom: 22px;
+
+  z-index: 3;
+
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  margin: 15px 0;
-  box-shadow: 0 0 10px rgba(157, 66, 196, 0.5);
-  transition: all 0.3s ease;
+
+  width: auto;
+
+  padding: 12px 22px;
+
+  background: #9d42c4;
+  color: #fff;
+
+  border: none;
+  border-radius: 4px;
+
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  font-weight: 700;
+
+  text-decoration: none;
+  white-space: nowrap;
+
+  box-shadow: 0 0 12px rgba(157, 66, 196, 0.55);
+
+  transition: all 0.25s ease;
 
   &:hover {
-    background: #ffffff;
-    color: #9d42c4;
-    box-shadow: 0 0 20px #ffffff;
-    transform: scale(1.05);
+    background: #fff;
+    color: #7c269f;
+
+    transform: scale(1.03);
   }
 }
+
+
+/* =========================================================
+   MOBILE — CARD ESTILO CATÁLOGO
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+  .saga-header.neutral-core {
+    width: 100%;
+  }
+
+  .crossover-promo-banner {
+    width: 100%;
+
+    /*
+     * Sai do 16:9 e vira um card mais alto,
+     * semelhante aos demais cards de saga.
+     */
+    aspect-ratio: auto;
+    min-height: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 0;
+
+    border: 1px solid #9d42c4;
+    border-radius: 8px;
+
+    /*
+     * Cria a área da imagem.
+     */
+    background: none !important;
+
+    overflow: hidden;
+  }
+
+
+  /*
+   * A própria caixa recebe uma "capa" visual por pseudo-elemento.
+   * Assim podemos ter imagem em cima e CTA separado embaixo.
+   */
+  .crossover-promo-banner::before {
+    content: '';
+
+    display: block;
+
+    width: 100%;
+
+    /*
+     * Formato mais próximo de card/poster.
+     */
+    aspect-ratio: 4 / 3;
+
+    background:
+      url('/images/glitch_in_the_matrix_banner.webp')
+        center center / cover no-repeat;
+
+    background-color: #050007;
+
+    flex-shrink: 0;
+  }
+
+
+  /*
+   * Cria a área escura inferior do card.
+   */
+  .crossover-promo-banner::after {
+    content: '';
+
+    display: block;
+
+    width: 100%;
+    height: 58px;
+
+    background:
+      linear-gradient(
+        180deg,
+        #0d0612 0%,
+        #08030c 100%
+      );
+
+    flex-shrink: 0;
+  }
+
+
+  .btn-watch-crossover {
+    /*
+     * Continua absoluto,
+     * mas agora fica dentro da faixa inferior criada acima.
+     */
+    position: absolute;
+
+    left: 50%;
+    right: auto;
+
+    bottom: 10px;
+
+    transform: translateX(-50%);
+
+    width: calc(100% - 24px);
+    max-width: 220px;
+
+    padding: 10px 12px;
+
+    font-size: 0.68rem;
+
+    gap: 6px;
+
+    border-radius: 3px;
+
+    white-space: nowrap;
+
+    box-shadow:
+      0 0 8px rgba(157, 66, 196, 0.45);
+
+    mat-icon {
+      width: 15px;
+      height: 15px;
+
+      font-size: 15px;
+      line-height: 15px;
+    }
+
+    &:hover {
+      transform: translateX(-50%) scale(1.02);
+    }
+  }
+}
+
 :host-context(body.mode-jonah) .crossover-promo-banner {
   background: linear-gradient(135deg, rgba(255, 61, 0, 0.15) 0%, rgba(255, 0, 0, 0.15) 100%),
-              url('/images/cyberpunk_woman_disintegrating.webp') 15% center/center no-repeat;
+              url('/images/glitch_in_the_matrix_banner.webp') 15% center/center no-repeat;
   border: 2px solid #ff3d00;
   box-shadow: 0 0 20px rgba(255, 61, 0, 0.2);
   .crossover-content {
@@ -482,7 +536,7 @@
   }
   @media (max-width: 768px) {
     background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.95) 75%),
-                url('/images/cyberpunk_woman_disintegrating.webp') center center/contain no-repeat !important;
+                url('/images/glitch_in_the_matrix_banner_.webp') center center/contain no-repeat !important;
     .crossover-content {
       .matrix-alert {
         color: #ff3d00;
