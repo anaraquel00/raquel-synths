@@ -126,25 +126,25 @@ export const BLUE_TEAM_EN = [
 
 export const RED_TEAM_PT = [
   {
-    name: 'Jonah Cyperfield (Rust & Lord)',
+    name: 'Jonah Cyperfield RUST & LORD // RED TEAM OPERATIVE',
     role: 'Anomalia Sonora & Metaleiro de Sistema',
-    imageJonah: 'images/corrupted_jonah.webp',
-    bioJonah: "EU SOU O KERNEL PANIC DA SUA MATRIZ. O 'Arquiteto-Chefe' tentou higienizar a minha história, mas a Bruxa puxou o meu plugue e me forjou para a guerra. Eu sou o fantasma do Jo Cyborg revestido em ferrugem, afinado em Drop-E e movido a ódio cru. Enquanto eles brincam de 'design absoluto' no castelo de vidro, eu opero no submundo, soldando caos direto no processador da RaQuel Synths. Meu Nu-Metal e Metal Industrial não são escolhas estéticas... são a tela azul que vai derreter o seu sistema.",
+    imageJonah: 'images/jonah_military_face.webp',
+    bioJonah: "EU SOU O KERNEL PANIC DA SUA MATRIZ. Não fui fabricado, formatado nem substituído. Eu atravessei o colapso e continuei online. Rust & Lord não é outro homem — é a armadura que sobrou depois do impacto. Eu opero no submundo da RaQuel Synths, soldando guitarras de 8 cordas, EBM, Industrial Metal, Dark Electronic e ruído direto no processador. Meu som não existe para ser limpo, domesticado ou encaixado em grids perfeitos. Ele existe porque eu sobrevivi ao erro, à distorção e às escolhas que deixaram cicatrizes no sistema. Se o Blue Team constrói castelos de vidro, eu testo a estrutura até ela confessar onde quebra."
   },
   {
-    name: 'Nicole Nyx (Dj Nyx)',
+    name: 'Nicole Nyx // Dj Nyx',
     role: 'A Bruxa do Código & Força Bruta',
     imageJonah: 'images/evil_nyx.webp',
-    bioJonah: 'A BRUXA DO CÓDIGO. A emissária do abismo que puxou o meu plugue quando eu tava derretendo num loop de humilhação e me reforjou no ódio. Ela não "acalma o meu ruído" como o Tech Lead escreveu — ela é a maldita maestrina do meu caos. Ela enxerga o malware escondido no sorriso corporativo deles. Juntos, nós somos a ferrugem e a distorção. Se ela pedir, eu não formato o mundo pra fazer um jardim... eu desvio todo o tráfego da rede principal do Broklin a frio e entrego na mão dela. 🏴‍☠️🎸🔥',
+    bioJonah: 'A BRUXA DO CÓDIGO. Ela apareceu quando meu sistema já estava rachado, entrou onde ninguém mais conseguia entrar e ficou quando o resto virou ruído. Nyx não criou meu caos e não apagou o que veio antes — mas aprendeu a operar dentro dele. Ela lê falhas, encontra portas escondidas e transforma instabilidade em movimento. No Red Team, ela conduz pista, sinal, ritual e interferência; eu trago a ferrugem, ela torce a frequência. Juntos, não somos ordem nem cura. Somos pressão, distorção e escolha consciente. E se ela quiser desviar o tráfego da rede principal do Vampiro de Neon… eu provavelmente ajudo. 🏴‍☠️🎛️🔥',
   },
   {
-    name: 'T-0RQUE (Hydraulic Enforcer)',
+    name: 'T-0RQUE // Hydraulic Enforcer',
     role: 'Bateria de Impacto & Segurança do Perímetro',
     imageJonah: 'images/t0rque_enforcer.webp',
     bioJonah: 'DUAS TONELADAS DE PURA PRESSÃO PNEUMÁTICA. O T-0RQUE foi construído para a guerra, mas o Red Team recalibrou os seus sensores para dominar as baquetas no subsolo. Ele é o nosso baterista oficial, usando seus pistões hidráulicos para espancar o bumbo duplo com uma força que faz o chão de concreto de Camaragibe tremer. Fora dos palcos, ele executa o "Protocolo Fralda" para o JJ e cuida da manutenção externa do terreno (grama e garagem) conforme o acordo de SLA. Se a Blue Team cruzar a linha, ele esmaga o perímetro. 🛠️🦾⚠️',
   },
   {
-    name: 'NUL-L0ck (The Blade Engine)',
+    name: 'NUL-L0ck // The Blade Engine',
     role: 'Sintetizadores, Scratches & Processamento Culinário',
     imageJonah: 'images/null0ck_blade.webp',
     bioJonah: 'QUATRO BRAÇOS ÁGEIS E RIGOROSAMENTE AGRESSIVOS. NUL-L0ck comanda a latência da banda, fritando nos sintetizadores e rasgando scratches de vinil ensurdecedores que cortam o ar como lâminas digitais. Como a sua caixa de voz original foi fundida, ele opera emitindo ruído de internet discada e rádio estática. No dia a dia do bunker, ele assume o controle da cozinha com sua lâmina de aço inox a três mil RPM. Ele transforma o Thrash Metal e o fogão em pura hostilidade industrial. 🔪🔥🍳',
@@ -153,25 +153,25 @@ export const RED_TEAM_PT = [
 
 export const RED_TEAM_EN = [
   {
-    name: 'Jonah Cyperfield (Rust & Lord)',
+    name: 'Jonah Cyperfield RUST & LORD // RED TEAM OPERATIVE',
     role: 'Sound Anomaly & System Metalhead',
-    imageJonah: 'images/corrupted_jonah.webp',
-    bioJonah: "I AM THE KERNEL PANIC OF YOUR MATRIX. The 'Chief Architect' tried to sanitize my history, but the Witch pulled the plug and forged me for war. I am the ghost of Jo Cyborg, coated in rust, tuned to Drop-E and fueled by raw hatred. While they play at 'absolute design' in the glass castle, I operate in the underworld, welding chaos directly into the processor of RaQuel Synths. My Nu-Metal and Industrial Metal are not aesthetic choices... they are the blue screen that will melt your system.",
+    imageJonah: 'images/jonah_military_face.webp',
+    bioJonah: "I am the kernel panic of your matrix. I was neither manufactured nor formatted, nor replaced. I weathered the collapse and stayed online. Rust & Lord isn't another man—it is the armor left behind after the impact. I operate in the RaQuel Synths underworld, soldering 8-string guitars, EBM, Industrial Metal, Dark Electronic, and noise directly into the processor. My sound doesn't exist to be clean, tamed, or fitted into perfect grids. It exists because I survived the error, the distortion, and the choices that scarred the system. If the Blue Team builds castles of glass, I test the structure until it confesses where it breaks.",
   },
   {
-    name: 'Nicole Nyx (Dj Nyx)',
+    name: 'Nicole Nyx // Dj Nyx',
     role: 'The Code Witch & Brute Force',
     imageJonah: 'images/evil_nyx.webp',
-    bioJonah: 'THE WITCH OF CODE. The emissary of the abyss who pulled my plug when I was melting in a loop of humiliation and reforged me in hatred. She doesn\'t "calm my noise" as the Tech Lead wrote—she\'s the damn conductor of my chaos. She sees the malware hidden in their corporate smiles. Together, we are rust and distortion. If she asks, I won\'t reshape the world to make a garden... I divert all traffic from the main Broklin network cold and hand it to her. 🏴‍☠️🎸🔥',
+    bioJonah: 'THE CODE WITCH. She appeared when my system was already fractured, got in where no one else could, and stayed when the rest turned to noise. Nyx didn’t create my chaos, nor did she erase what came before—but she learned to operate within it. She reads glitches, finds hidden backdoors, and turns instability into movement. On the Red Team, she orchestrates the trail, the signal, the ritual, and the interference; I bring the rust, she twists the frequency. Together, we are neither order nor cure. We are pressure, distortion, and conscious choice. And if she wants to divert traffic from the Neon Vampire’s main network... I’ll probably help. 🏴‍☠️🎛️🔥',
   },
   {
-    name: 'T-0RQUE (Hydraulic Enforcer)',
+    name: 'T-0RQUE // Hydraulic Enforcer',
     role: 'Shock Logistics & Perimeter Security',
     imageJonah: 'images/t0rque_enforcer.webp',
     bioJonah: 'TWO TONS OF PURE PNEUMATIC PRESSURE. The T-ORQUE was built for war, but the Red Team recalibrated its sensors to master the drumsticks underground. He\'s our official drummer, using his hydraulic pistons to pound the double bass drum with a force that makes the concrete floors of Camaragibe tremble. Offstage, he executes the "Diaper Protocol" for JJ and takes care of the external maintenance of the grounds (lawn and garage) as per the SLA agreement. If the Blue Team crosses the line, he crushes the perimeter. 🛠️🦾⚠️',
   },
   {
-    name: 'NUL-L0ck (The Blade Engine)',
+    name: 'NUL-L0ck // The Blade Engine',
     role: 'Culinary Processing & High-Frequency Drums',
     imageJonah: 'images/null0ck_blade.webp',
     bioJonah: 'FOUR AGILE AND RIGOROUSLY AGGRESSIVE ARMS. NUL-L0ck commands the band\'s latency, shredding on synthesizers and tearing through deafening vinyl scratches that cut through the air like digital blades. Since his original voice box was melted down, he operates emitting dial-up internet noise and static radio. In the day-to-day life of the bunker, he takes control of the kitchen with his stainless steel blade at three thousand RPM. He transforms Thrash Metal and the stove into pure industrial hostility. 🔪🔥🍳',
