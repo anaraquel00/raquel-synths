@@ -177,8 +177,16 @@
     font-size: 1rem;
     line-height: 1.6;
     margin-bottom: 1.5rem;
-    white-space: pre-line; /* Respeita os Enters do DB */
+    white-space: normal;
   }
+}
+
+::ng-deep .album-description p {
+  margin: 0 0 1rem 0;
+}
+
+::ng-deep .album-description p:last-child {
+  margin-bottom: 0;
 }
 
 .actions-bar {
