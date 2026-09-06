@@ -18,12 +18,31 @@
 
         <a class="btn-watch-crossover" [routerLink]="matrixGlitchSaga.route">
           <mat-icon>terminal</mat-icon>
-          {{ translate.isPt() ? 'ACESSAR WAWEL CORE' : 'ACCESS WAWEL CORE' }}
+          {{ translate.isPt() ? 'CONHECER GLITCH IN THE MATRIX' : 'EXPLORE GLITCH IN THE MATRIX' }}
         </a>
       </div>
     </div>
   </header>
 </div>
+
+  <aside class="new-reader-guide" aria-labelledby="new-reader-title">
+    <h3 id="new-reader-title">
+      {{ translate.isPt() ? 'NOVO NO UNIVERSO RQS?' : 'NEW TO THE RQS UNIVERSE?' }}
+    </h3>
+    @if (translate.isPt()) {
+      <p>Você pode começar por qualquer arco.</p>
+      <p>Jonah revela o lado caótico e industrial da história.<br>
+        Broklin acompanha o lado melancólico e tecnológico.<br>
+        Glitch in the Matrix reúne essas linhas em uma nova história e também pode ser lida como ponto de entrada.</p>
+      <p>Não é necessário ter lido as sagas anteriores para começar.</p>
+    } @else {
+      <p>You can start with any story arc.</p>
+      <p>Jonah reveals the chaotic and industrial side of the story.<br>
+        Broklin follows its melancholic and technological side.<br>
+        Glitch in the Matrix brings these lines together in a new story and can also be read as an entry point.</p>
+      <p>You do not need to read the previous sagas before starting.</p>
+    }
+  </aside>
 
   <div class="intro-box">
 
@@ -43,6 +62,9 @@
           </div>
         <div class="arc-info">
           <h3>{{ arc?.title }}</h3>
+          @if (arc?.titleDetail) {
+            <span class="title-detail">{{ arc.titleDetail }}</span>
+          }
           <span class="subtitle">{{ arc?.subtitle }}</span>
           <p>{{ arc?.description }}</p>
 

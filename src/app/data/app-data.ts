@@ -563,7 +563,8 @@ export const ADS_DATA = {
 
 export const VISUAL_NOVEL_PT = [
     {
-      title: '📼 RQS: ORIGINS (Before the Metal)',
+      title: '📼 SAGA JONAH // RQS: ORIGINS',
+      titleDetail: '(Before the Metal)',
       subtitle: 'Caos, Fios & Revolução',
       description: 'Quando o sistema falha, a verdade aparece. A revolta industrial de Jonah contra a programação.',
       image: 'images/lore_jonah.webp', // Capa do Jonah
@@ -584,7 +585,8 @@ export const VISUAL_NOVEL_PT = [
 export const VISUAL_NOVEL_EN = [
 
   {
-      title: '📼 RQS: ORIGINS (Before the Metal)',
+      title: '📼 JONAH SAGA // RQS: ORIGINS',
+      titleDetail: '(Before the Metal)',
       subtitle: 'Chaos, Wires & Revolution',
       description: 'When the system fails, the truth comes out. Jonahs industrial revolt against programming.',
       image: 'images/lore_jonah.webp',

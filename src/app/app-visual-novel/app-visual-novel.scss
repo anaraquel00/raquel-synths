@@ -61,6 +61,31 @@
   em { color: var(--accent-color); }
 }
 
+.new-reader-guide {
+  max-width: 900px;
+  margin: 2rem auto 2.5rem;
+  padding: 1.25rem 1.5rem;
+  text-align: left;
+  color: #e0e0e0;
+  background: rgba(10, 15, 25, 0.65);
+  border-left: 3px solid var(--accent-color);
+
+  h3 {
+    margin: 0 0 0.75rem;
+    color: var(--accent-color);
+    font-family: var(--font-heading);
+  }
+
+  p {
+    margin: 0 0 0.75rem;
+    line-height: 1.6;
+  }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+}
+
 /* Opcional: Estilo para o botão de bloqueio */
 .lock-mode {
   background-color: #333 !important; /* Cinza escuro */
@@ -137,6 +162,14 @@
   color: var(--accent-color);
   margin: 0;
   font-family: var(--font-heading);
+}
+
+.title-detail {
+  display: block;
+  color: var(--accent-color);
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
 }
 
 .subtitle {
@@ -279,15 +312,21 @@
     order: 3;
   }
 
-  /* 🚀 Ordem 4: PUXA AS DUAS CAPAS (ARCS-GRID) PARA O TOPO */
-  .arcs-grid {
+  .new-reader-guide {
     order: 4;
+    margin: 0 0 2rem;
+    padding: 1rem;
+  }
+
+  /* Ordem 6: Mantém as escolhas depois da orientação e do contexto */
+  .arcs-grid {
+    order: 6;
     gap: 2.5rem; /* Reduz o gap monstruoso de 10rem para os cards não ficarem muito longe no mobile */
-    margin-bottom: 3rem; /* Dá um espaçamento antes de começar o texto longo do Adsense */
+    margin-bottom: 3rem;
     margin-top: 2rem;
   }
 
-  /* 🛡️ Ordem 5: EMPURRA O TEXTO LONGO DO ADSENSE PARA O FIM DO DOCUMENTO */
+  /* Ordem 5: Apresenta o contexto aprofundado antes das escolhas */
   .intro-box {
     order: 5;
     margin-bottom: 0;
@@ -371,6 +410,11 @@
     color: #7c269f;
 
     transform: scale(1.03);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
   }
 }
 
