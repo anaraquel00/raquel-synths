@@ -1,69 +1,49 @@
-<div class="home-container">
+<section class="home-container" aria-labelledby="home-title">
+  <div class="hero-section">
+    <div class="hero-copy fade-in-up">
+      <p class="hero-kicker">
+        {{ translate.isPt()
+          ? 'BANDA VIRTUAL CYBERPUNK // MÚSICA + LORE'
+          : 'VIRTUAL CYBERPUNK BAND // MUSIC + LORE' }}
+      </p>
 
-  <div class="hero-section hero-layout-split">
+      <h1 id="home-title" class="hero-title">RAQUEL SYNTHS</h1>
 
-    <div class="hero-left fade-in-up" style="text-align: left;">
-      <div class="title-wrapper">
-        <h1 class="hero-title" [attr.data-text]="navText.title">{{ navText.title }}</h1>
+      <p class="hero-proposition">
+        {{ translate.isPt()
+          ? 'RaQuel Synths é uma banda virtual cyberpunk que transforma música eletrônica em um universo narrativo de personagens, facções e transmissões.'
+          : 'RaQuel Synths is a virtual cyberpunk band that transforms electronic music into a narrative universe of characters, factions, and transmissions.' }}
+      </p>
+
+      <p class="hero-tagline">
+        {{ translate.isPt() ? 'Onde o analógico sangra no digital.' : 'Where analog bleeds into digital.' }}
+      </p>
+
+      <div class="hero-actions" [attr.aria-label]="translate.isPt() ? 'Navegação principal' : 'Primary navigation'">
+        <a
+          class="hero-cta hero-cta-primary"
+          routerLink="/discografia"
+          (click)="trackHomeAction('HOME_LISTEN_CLICK')"
+        >
+          {{ translate.isPt() ? 'OUVIR AGORA' : 'LISTEN NOW' }}
+        </a>
+
+        <a
+          class="hero-cta hero-cta-secondary"
+          routerLink="/saga"
+          (click)="trackHomeAction('HOME_UNIVERSE_CLICK')"
+        >
+          {{ translate.isPt() ? 'EXPLORAR O UNIVERSO' : 'EXPLORE THE UNIVERSE' }}
+        </a>
       </div>
-      <p class="hero-subtitle" style="max-width: 500px;">{{ navText.subtitle }}</p>
-    </div>
 
-    <div class="hero-right">
-      <section class="netrunner-terminal">
-        <div class="scanline"></div>
-        <div class="terminal-header">
-          <h2>{{ translate.isPt() ? '[ TERMINAL UPLINK RQS // ACESSO ROOT ]' : '[ RQS UPLINK TERMINAL // ROOT ACCESS ]' }}</h2>
-          <p class="blink">{{ translate.isPt() ? '_AGUARDANDO COMANDO DA HORDA...' : '_AWAITING HORDE COMMAND...' }}</p>
-        </div>
-
-        <div class="quickhacks-grid" style="display: flex; flex-direction: column; gap: 8px;">
-
-      <button class="hack-btn uplink-hack" (click)="triggerUplink()">
-      <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ NET: ACESSAR_COMUNIDADE.sh ]' : '[ NET: ACCESS_COMMUNITY.sh ]' }}
+      <button class="terminal-trigger" type="button" (click)="triggerUplink()">
+        {{ translate.isPt() ? 'ACESSAR TERMINAL RQS' : 'ACCESS RQS TERMINAL' }}
       </button>
-
-      <button class="hack-btn" (click)="executarQuickhack('storytelling')">
-        <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ EXE: SYSTEM_LOGS.sh ]' : '[ EXE: SYSTEM_LOGS.sh ]' }}
-      </button>
-
-        <!-- 🛡️ ALTERADOS PARA TAGS <a> (Links estáticos de SEO legíveis para robôs) -->
-     <a class="hack-btn" routerLink="/dossier" >
-    <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ EXE: DOSSIÊ_OPERATIVO.sh ]' : '[ EXE: OPERATIVE_DOSSIER.sh ]' }}
-      </a>
-
-     <a class="hack-btn" routerLink="/saga" >
-    <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ EXE: LOGS_NARRATIVOS.sh ]' : '[ EXE: NARRATIVE_LOGS.sh ]' }}
-     </a>
-
-    <a class="hack-btn" routerLink="/discografia" >
-    <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ EXE: EXTRAIR_FREQUENCIAS.exe ]' : '[ EXE: EXTRACT_FREQUENCIES.exe ]' }}
-    </a>
-
-    <a class="hack-btn" routerLink="/contato">
-    <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ NET: UPLINK_BASE_OPERATIVA.exe ]' : '[ NET: OPERATING_BASE_UPLINK.exe ]' }}
-    </a>
-
-    <a class="hack-btn store-hack" routerLink="/store" >
-    <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ DIR: SUPRIMENTOS_DA_HORDA.sys ]' : '[ DIR: HORDE_SUPPLIES.sys ]' }}
-    </a>
-
-    <a class="hack-btn creator-hack" routerLink="/creator" >
-     <span class="cmd-arrow">> </span>{{ translate.isPt() ? '[ DIR: A_CRIADORA.sys ]' : '[ DIR: THE_CREATOR.sys ]' }}
-    </a>
-      <button class="hack-btn jonah-hack" (click)="forcarModoJonah()">
-        <span class="cmd-arrow">> </span>{{ isJonahMode()
-           ? (translate.isPt() ? '[ OVR: MODO_BROKLIN.bat ]' : '[ OVR: BROKLIN_MODE.bat ]')
-           : (translate.isPt() ? '[ OVR: MODO_JONAH.bat ]' : '[ OVR: JONAH_MODE.bat ]')
-        }}
-      </button>
-        </div>
-      </section>
     </div>
   </div>
 
   @if (showUplink) {
     <app-uplink-terminal ngSkipHydration (close)="closeUplink()"></app-uplink-terminal>
   }
-
-</div>
+</section>

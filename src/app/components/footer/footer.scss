@@ -39,7 +39,7 @@
 }
 
 /* Títulos das Colunas */
-.footer-column h3 {
+.footer-column h2 {
   margin-top: 0;
   margin-bottom: 15px;
   font-family: var(--font-heading);
@@ -106,7 +106,7 @@ button.donate-btn {
   .rqs-footer {
     border-top-style: dashed; /* Linha tracejada industrial */
   }
-  .footer-column h3 {
+  .footer-column h2 {
     text-transform: uppercase;
     border-bottom: 2px solid #bf360c;
     display: inline-block;
@@ -170,4 +170,21 @@ button.donate-btn {
     width: 80%;
     margin: 5px auto;
   }
+}
+
+.support-heading {
+  scroll-margin-top: 90px;
+  margin-top: 15px;
+  margin-bottom: 5px;
+
+  strong {
+    color: var(--accent-color);
+    font-size: 0.9rem;
+  }
+}
+
+.footer-column a:focus-visible,
+.footer-column button.donate-btn:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
 }
