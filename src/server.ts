@@ -193,10 +193,22 @@ const isAllowedDestination = (service: ProfileService, destination: string): boo
   return allowedByService[service];
 };
 
+const canonicalAllowedHosts = [
+  'raquelsynths.com',
+  'www.raquelsynths.com'
+];
+
+// Vercel exposes the deployment hostname at runtime. Allow only that exact
+// Preview hostname, keeping Production restricted to the canonical domains.
+const previewDeploymentHost =
+  process.env['VERCEL_ENV'] === 'preview'
+    ? process.env['VERCEL_URL']?.split(':')[0].trim().toLowerCase()
+    : undefined;
+
 const angularApp = new AngularNodeAppEngine({
   allowedHosts: [
-    'raquelsynths.com',
-    'www.raquelsynths.com'
+    ...canonicalAllowedHosts,
+    ...(previewDeploymentHost ? [previewDeploymentHost] : [])
   ],
 
   trustProxyHeaders: [
