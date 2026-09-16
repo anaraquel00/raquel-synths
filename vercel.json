@@ -2,6 +2,8 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
 
+  "outputDirectory": "dist/raquel-synths/browser",
+
   "functions": {
     "api/index.js": {
       "includeFiles": "dist/raquel-synths/**"
