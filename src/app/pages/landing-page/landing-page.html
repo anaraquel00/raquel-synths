@@ -1,7 +1,7 @@
 <app-home id="inicio"></app-home>
 
 <section id="current-music" class="journey-section current-music-section" [attr.aria-label]="translate.isPt() ? 'Música atual' : 'Current music'">
-  <app-discography [limitToHome]="5" ngSkipHydration></app-discography>
+  <app-discography [limitToHome]="5"></app-discography>
   <div class="section-cta-row">
     <a
       class="journey-cta journey-cta-primary"
@@ -14,28 +14,40 @@
 </section>
 
 <section id="latest-signal" class="journey-section signal-section" aria-labelledby="latest-signal-title">
-  <div class="section-shell signal-card">
-    <div class="section-heading">
-      <p class="section-kicker">{{ latestSignal.label }}</p>
-      <span class="preview-badge">{{ latestSignal.status }}</span>
+  @if (latestSignal(); as signal) {
+    @let content = getLogContent(signal);
+    <div class="section-shell signal-feature">
+      <div class="signal-feature-copy">
+        <div class="section-heading">
+          <p class="section-kicker">{{ translate.isPt() ? 'ÚLTIMO SINAL' : 'LATEST SIGNAL' }}</p>
+          <span class="preview-badge">{{ translate.isPt() ? 'SYSTEM_LOG' : 'SYSTEM_LOG' }}</span>
+        </div>
+        <p class="signal-origin">{{ translate.isPt() ? 'ORIGEM // SYSTEM_LOGS' : 'SOURCE // SYSTEM_LOGS' }}</p>
+        <h2 id="latest-signal-title">{{ content?.title }}</h2>
+        <p class="section-summary">{{ content?.description }}</p>
+        @if (signal.date) {
+          <p class="signal-frequency">{{ signal.date | date:'MMM dd, yyyy' | uppercase }}</p>
+        }
+        <a
+          class="journey-cta journey-cta-primary"
+          [routerLink]="['/log-reader', signal.id]"
+          (click)="trackHomeAction('HOME_LATEST_SIGNAL_CLICK', signal.id)"
+        >
+          {{ translate.isPt() ? 'DECODIFICAR O LOG' : 'DECODE THE LOG' }}
+        </a>
+      </div>
+      @if (signal.image) {
+        <div class="signal-feature-visual">
+          <img [src]="signal.image" [alt]="content?.title || ''" loading="lazy" />
+        </div>
+      }
     </div>
-    <h2 id="latest-signal-title">
-      {{ translate.isPt() ? latestSignal.title_pt : latestSignal.title_en }}
-    </h2>
-    <p class="section-summary">
-      {{ translate.isPt() ? latestSignal.summary_pt : latestSignal.summary_en }}
-    </p>
-    @if (latestSignal.optional_frequency) {
-      <p class="signal-frequency">{{ latestSignal.optional_frequency }}</p>
-    }
-    <a
-      class="journey-cta"
-      [routerLink]="latestSignal.target_route_or_url"
-      (click)="trackHomeAction('HOME_LATEST_SIGNAL_CLICK', latestSignal.target_route_or_url)"
-    >
-      {{ translate.isPt() ? latestSignal.cta_pt : latestSignal.cta_en }}
-    </a>
-  </div>
+  } @else {
+    <div class="section-shell signal-card signal-loading">
+      <p class="section-kicker">{{ translate.isPt() ? 'ÚLTIMO SINAL' : 'LATEST SIGNAL' }}</p>
+      <h2 id="latest-signal-title">{{ translate.isPt() ? 'Sinal em sincronização' : 'Signal synchronizing' }}</h2>
+    </div>
+  }
 </section>
 
 <section class="ads-section">
@@ -116,7 +128,7 @@
 </section>
 
 <section id="storytelling" class="journey-section system-logs-section" [attr.aria-label]="translate.isPt() ? 'Logs do sistema' : 'System logs'">
-  <app-storytelling ngSkipHydration></app-storytelling>
+  <app-storytelling [logs]="systemLogs()"></app-storytelling>
 </section>
 
 <section id="archive" class="journey-section archive-section" aria-labelledby="archive-title">

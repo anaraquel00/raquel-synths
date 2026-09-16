@@ -1,4 +1,4 @@
-import { Injectable, inject, PLATFORM_ID } from '@angular/core';
+import { Injectable, inject, makeStateKey, PLATFORM_ID, TransferState } from '@angular/core';
 import {
   Firestore,
   collection,
@@ -11,7 +11,7 @@ import {
   collectionData
 } from '@angular/fire/firestore';
 import { Observable, of, from } from 'rxjs';
-import { map, catchError, take, timeout } from 'rxjs/operators';
+import { map, catchError, take, tap, timeout } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { isPlatformServer } from '@angular/common';
 import { LoreEpisode } from '../data/lore-data';
@@ -54,12 +54,14 @@ export class ContentService {
   private firestore = inject(Firestore);
   private platformId = inject(PLATFORM_ID);
   private http = inject(HttpClient);
+  private transferState = inject(TransferState);
 
   // 🎭 DUAL MODE ENGINE (Restaurado para o Uplink Terminal e componentes visuais)
   public currentMode: 'broklin' | 'jonah' = 'broklin';
 
   private episodesCache: { [mode: string]: LoreEpisode[] } = {};
   private globalSagasCache: LoreEpisode[] | null = null;
+  private homeContentCache = new Map<string, any[]>();
 
 
   // 🎵 1. DISCOGRAFIA (One-Shot SSR)
@@ -100,6 +102,20 @@ export class ContentService {
       'https://firestore.googleapis.com/v1/projects/' +
       'raquel-synths-platform/databases/(default)/documents:runQuery';
     const limit = Math.max(1, Math.floor(resultLimit));
+    const cacheKey = `discography:${faction}:${limit}`;
+    const transferKey = makeStateKey<any[]>(`rqs-home-${cacheKey}`);
+    const cachedAlbums = this.homeContentCache.get(cacheKey);
+
+    if (cachedAlbums) {
+      return of(cachedAlbums);
+    }
+
+    if (this.transferState.hasKey(transferKey)) {
+      const transferredAlbums = this.transferState.get(transferKey, []);
+      this.transferState.remove(transferKey);
+      this.homeContentCache.set(cacheKey, transferredAlbums);
+      return of(transferredAlbums);
+    }
 
     return this.http.post<FirestoreRunQueryResult[]>(url, {
       structuredQuery: {
@@ -138,6 +154,13 @@ export class ContentService {
         const id = restDoc.name.split('/').pop() ?? '';
         return [this.mapFirestoreRestDocument(restDoc, id)];
       })),
+      tap(albums => {
+        this.homeContentCache.set(cacheKey, albums);
+
+        if (isPlatformServer(this.platformId)) {
+          this.transferState.set(transferKey, albums);
+        }
+      }),
       catchError(err => {
         console.error(
           `⚠️ [ContentService] Erro ao buscar discografia limitada (${faction}):`,
@@ -496,6 +519,71 @@ private isEpisodePublic(
     return from(getDocs(colRef)).pipe(
       map(snapshot => snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() })) as Department[]),
       catchError(() => of([]))
+    );
+  }
+
+  getLatestLogs(resultLimit: number = 5): Observable<any[]> {
+    const limit = Math.max(1, Math.floor(resultLimit));
+    const cacheKey = `logs:${limit}`;
+    const transferKey = makeStateKey<any[]>(`rqs-home-${cacheKey}`);
+    const cachedLogs = this.homeContentCache.get(cacheKey);
+
+    if (cachedLogs) {
+      return of(cachedLogs);
+    }
+
+    if (this.transferState.hasKey(transferKey)) {
+      const transferredLogs = this.transferState.get(transferKey, []);
+      this.transferState.remove(transferKey);
+      this.homeContentCache.set(cacheKey, transferredLogs);
+      return of(transferredLogs);
+    }
+
+    const url =
+      'https://firestore.googleapis.com/v1/projects/' +
+      'raquel-synths-platform/databases/(default)/documents:runQuery';
+
+    return this.http.post<FirestoreRunQueryResult[]>(url, {
+      structuredQuery: {
+        from: [{ collectionId: 'logs' }],
+        where: {
+          fieldFilter: {
+            field: { fieldPath: 'date' },
+            op: 'LESS_THAN_OR_EQUAL',
+            value: { stringValue: new Date().toISOString() }
+          }
+        },
+        orderBy: [
+          {
+            field: { fieldPath: 'date' },
+            direction: 'DESCENDING'
+          }
+        ],
+        limit
+      }
+    }).pipe(
+      timeout(4000),
+      map(results => results.flatMap(result => {
+        const restDoc = result.document;
+
+        if (!restDoc) {
+          return [];
+        }
+
+        const id = restDoc.name.split('/').pop() ?? '';
+        return [this.mapFirestoreRestDocument(restDoc, id)];
+      })),
+      tap(logs => {
+        this.homeContentCache.set(cacheKey, logs);
+
+        if (isPlatformServer(this.platformId)) {
+          this.transferState.set(transferKey, logs);
+        }
+      }),
+      catchError(err => {
+        console.error('⚠️ [ContentService] Erro ao buscar logs limitados:', err);
+        return of([]);
+      })
     );
   }
 

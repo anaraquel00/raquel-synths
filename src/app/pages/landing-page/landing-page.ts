@@ -1,5 +1,6 @@
-import { Component, DOCUMENT, PLATFORM_ID, inject, signal } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Component, DOCUMENT, PLATFORM_ID, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { DiscographyComponent } from '../../app-discography/app-discography';
@@ -9,26 +10,23 @@ import { AdBannerComponent } from '../../components/ad-banner/ad-banner';
 import { SeoService } from '../../services/seo.service';
 import { TrackingService } from '../../services/tracking.service';
 import { TranslationService } from '../../services/translation.service';
+import { ContentService } from '../../services/content.service';
 
 type TransmitterStatus = 'idle' | 'submitting' | 'success' | 'empty' | 'invalid' | 'consent' | 'error';
 
-interface LatestSignalPreview {
-  label: string;
-  title_pt: string;
-  title_en: string;
-  summary_pt: string;
-  summary_en: string;
-  optional_frequency?: string;
-  cta_pt: string;
-  cta_en: string;
-  target_route_or_url: string;
+interface LatestSignalLog {
+  id: string;
+  isArchiveLink?: boolean;
   date?: string;
-  status: 'PREVIEW';
+  image?: string;
+  pt?: { title?: string; description?: string };
+  en?: { title?: string; description?: string };
 }
 
 @Component({
   selector: 'app-landing-page',
   imports: [
+    CommonModule,
     FormsModule,
     RouterLink,
     DiscographyComponent,
@@ -45,24 +43,38 @@ export class LandingPage {
   private platformId = inject(PLATFORM_ID);
   private seoService = inject(SeoService);
   private trackingService = inject(TrackingService);
+  private contentService = inject(ContentService);
 
   emailInputValue = '';
   transmitterConsent = false;
   transmitterStatus = signal<TransmitterStatus>('idle');
 
-  // PREVIEW ONLY: replace this local placeholder before approving a production signal.
-  readonly latestSignal: LatestSignalPreview = {
-    label: 'LATEST SIGNAL // PREVIEW',
-    title_pt: 'Próximo sinal em calibração',
-    title_en: 'Next signal in calibration',
-    summary_pt: 'Este espaço está preparado para o próximo lançamento, capítulo ou transmissão oficial. O conteúdo final ainda depende de aprovação da Owner.',
-    summary_en: 'This space is ready for the next official release, chapter, or transmission. Final content still requires Owner approval.',
-    optional_frequency: 'FREQUENCY // PENDING',
-    cta_pt: 'EXPLORAR SYSTEM_LOGS',
-    cta_en: 'EXPLORE SYSTEM_LOGS',
-    target_route_or_url: '/logs-archive',
-    status: 'PREVIEW'
-  };
+  private readonly homeLogs = toSignal(this.contentService.getLatestLogs(5), {
+    initialValue: [] as LatestSignalLog[]
+  });
+  private readonly publishedLogs = computed(() =>
+    [...this.homeLogs()]
+      .filter(log => !log.isArchiveLink)
+      .sort((a, b) =>
+        (Date.parse(b.date ?? '') || 0) - (Date.parse(a.date ?? '') || 0)
+      ) as LatestSignalLog[]
+  );
+
+  readonly latestSignal = computed<LatestSignalLog | null>(() => {
+    const logs = this.publishedLogs();
+    return logs.find(log => Boolean(log.image)) ?? logs[0] ?? null;
+  });
+  readonly systemLogs = computed<LatestSignalLog[]>(() => {
+    const featuredLog = this.latestSignal();
+    return this.publishedLogs()
+      .filter(log => log.id !== featuredLog?.id)
+      .slice(0, 3);
+  });
+
+  getLogContent(log: LatestSignalLog) {
+    return this.translate.isPt() ? log.pt : log.en;
+  }
+
 
   ngOnInit() {
     const isPt = this.translate.isPt();

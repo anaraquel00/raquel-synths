@@ -52,7 +52,6 @@ export class Header implements OnInit, OnDestroy {
   // 🛡️ A FUNÇÃO DO BOTÃO MANUAL AGORA USA O SERVIÇO CORRETO
   mudarIdioma(novoIdioma: string) {
     this.translate.setLanguage(novoIdioma); // USA O MÉTODO 'setLanguage'
-    localStorage.setItem('rqs_lang_override', novoIdioma);
     this.trackingService.trackCustomEvent('HOME_LANGUAGE_TOGGLE', {
       location: 'header',
       selected_language: novoIdioma

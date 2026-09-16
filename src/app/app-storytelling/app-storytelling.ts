@@ -1,33 +1,27 @@
-import { Component, inject, PLATFORM_ID, signal, OnInit, OnDestroy, afterNextRender, Injector } from '@angular/core';
-import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
+import { Component, inject, input, signal, OnDestroy, afterNextRender } from '@angular/core';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { Observable, of, BehaviorSubject } from 'rxjs';
-import { map, catchError, tap, take, timeout, switchMap } from 'rxjs/operators';
 
 import { TranslationService } from '../services/translation.service';
-import { ContentService } from '../services/content.service';
 import { SafeHtmlPipe } from '../components/pipes/safe-html.pipe';
-import { AdBannerComponent } from "../components/ad-banner/ad-banner";
 import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-storytelling',
   standalone: true,
-  imports: [CommonModule, RouterModule, SafeHtmlPipe, AdBannerComponent, NgOptimizedImage],
+  imports: [CommonModule, RouterModule, SafeHtmlPipe, NgOptimizedImage],
   templateUrl: './app-storytelling.html',
   styleUrls: ['./app-storytelling.scss']
 })
-export class StorytellingComponent implements OnInit, OnDestroy {
+export class StorytellingComponent implements OnDestroy {
 
   private router = inject(Router);
   public translate = inject(TranslationService);
-  private platformId = inject(PLATFORM_ID);
-  private injector = inject(Injector);
   private document = inject(DOCUMENT);
 
+  readonly logs = input<any[]>([]);
   public isJonahMode = signal<boolean>(false);
   private themeObserver: MutationObserver | undefined;
-  private retryTrigger = new BehaviorSubject<void>(undefined);
 
   constructor() {
     // 🛡️ TRAVA TÁTICA: Sincroniza o estado do tema e inicializa o observador apenas após a hidratação (DOM Estável)
@@ -43,46 +37,6 @@ export class StorytellingComponent implements OnInit, OnDestroy {
         attributeFilter: ['class']
       });
     });
-  }
-
-// 🔥 HOME: Corta os 4 primeiros e não liga pro ano!
-  logs$: Observable<any[]> = this.retryTrigger.pipe(
-    switchMap(() => {
-      if (isPlatformBrowser(this.platformId)) {
-        return this.injector.get(ContentService).getLogs().pipe(
-          take(1),
-          timeout(4000),
-          map(logs => {
-            if (!logs) return [];
-            const archiveLinkDoc = logs.find(log => log.isArchiveLink);
-            let contentLogs = logs.filter(log => !log.isArchiveLink);
-            contentLogs.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-            const recentLogs = contentLogs.slice(0, 4);
-            if (archiveLinkDoc) {
-              if (!archiveLinkDoc.pt) archiveLinkDoc.pt = { description: '' };
-              if (!archiveLinkDoc.en) archiveLinkDoc.en = { description: '' };
-              return [...recentLogs, archiveLinkDoc];
-            }
-            return recentLogs;
-          }),
-          catchError(error => {
-            console.error('🔥 [FIREBASE TIMEOUT/ERROR]:', error);
-            return of([{ _isError: true, id: 'error-timeout', message: this.translate.isPt() ? 'Tempo esgotado. A conexão 3G com a matriz falhou.' : 'Timeout occurred. 3G uplink to the matrix failed.' }]);
-          })
-        );
-      } else {
-        return of([]);
-      }
-    })
-  );
-
-  retryConnection() {
-    this.retryTrigger.next();
-  }
-
-  ngOnInit() {
-    // Removida a verificação síncrona do DOM no OnInit.
-    // Deixamos a inicialização exclusiva para o fluxo assíncrono do Firebase (logs$).
   }
 
   ngOnDestroy() {

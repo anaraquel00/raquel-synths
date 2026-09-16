@@ -284,6 +284,7 @@ app.use(async (req, res, next) => {
     if (response) {
       if (response.headers.get('content-type')?.includes('text/html')) {
         res.vary('Accept-Language');
+        res.vary('Cookie');
       }
 
       await writeResponseToNodeResponse(
