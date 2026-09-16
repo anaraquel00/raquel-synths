@@ -1,16 +1,26 @@
 <section class="disco-container">
-  <h1 class="section-title">{{ translate.isPt() ? 'DISCOGRAFIA E STREAMS' : 'DISCOGRAPHY AND STREAMS' }}</h1>
+  @if (isHomeView) {
+    <h2 class="section-title">{{ translate.isPt() ? 'MÚSICA ATUAL' : 'CURRENT MUSIC' }}</h2>
+  } @else {
+    <h1 class="section-title">{{ translate.isPt() ? 'DISCOGRAFIA E STREAMS' : 'DISCOGRAPHY AND STREAMS' }}</h1>
+  }
 
   <div class="disco-intro">
+    @if (isHomeView) {
+      <p class="intro-text home-music-intro">
+        {{ translate.isPt()
+          ? 'Ouça os lançamentos e transmissões em destaque da RaQuel Synths.'
+          : 'Listen to featured RaQuel Synths releases and transmissions.' }}
+      </p>
+    } @else {
+      @if (!isJonahMode()) {
+        <div class="intro-text broklin-text" [innerHTML]="translate.isPt() ? introBroklinPT : introBroklinEN"></div>
+      }
 
-    @if (!isJonahMode()) {
-      <div class="intro-text broklin-text" [innerHTML]="translate.isPt() ? introBroklinPT : introBroklinEN"></div>
+      @if (isJonahMode()) {
+        <div class="intro-text jonah-text" [innerHTML]="translate.isPt() ? introJonahPT : introJonahEN"></div>
+      }
     }
-
-    @if (isJonahMode()) {
-      <div class="intro-text jonah-text" [innerHTML]="translate.isPt() ? introJonahPT : introJonahEN"></div>
-    }
-
 <div class="discography-grid-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto; padding: 2rem 1rem;">
 
   <!-- 🛡️ CARD BLUE TEAM: EXCLUSIVO DO MODO BROKLIN -->

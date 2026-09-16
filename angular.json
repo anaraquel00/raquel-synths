@@ -22,12 +22,6 @@
               "browser": "src/main.ts",
               "server": "src/main.server.ts",
 
-              "security": {
-              "allowedHosts": [
-                "raquelsynths.com",
-                "www.raquelsynths.com"
-              ]
-            },
               "outputMode": "server",
 
               "ssr": {

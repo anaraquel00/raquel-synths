@@ -1,63 +1,72 @@
 <footer class="rqs-footer">
   <div class="footer-container">
-
     <div class="footer-column brand-column">
-      <h3>{{ t.name }}</h3>
+      <h2>{{ t.name }}</h2>
       <p>{{ t.madeby }}</p>
-      <!-- 🛡️ BACKDOOR TÁTICO: Easter Egg de 5 cliques oculto nos Direitos Autorais -->
-      <p (click)="togglePwaStealthMode()" style="cursor: default; user-select: none; -webkit-user-select: none;">
-      <p>{{ t.rights }}</p>
+      <p (click)="togglePwaStealthMode()" class="copyright-line">
+        {{ t.rights }}
+      </p>
       <p>{{ t.owers }}</p>
-      <p>{{t.madeWith}}</p>
-     <p style="margin-top: 10px;">
-    <a [routerLink]="['/creator']" 
-     class="tech-link" 
-     aria-label="Perfil do Desenvolvedor e Criador">
-     {{ t.devProfile }}
-    </a>
-    </p>
-    <p style="margin-top: 10px;">
-    <a [routerLink]="['/compliance']" 
-     class="compliance-link" 
-     aria-label="Política de Privacidade e Compliance">
-     {{ t.compliance }}
-     </a>
-     </p>
-     </div>
+      <p>{{ t.madeWith }}</p>
+      <p>
+        <a
+          routerLink="/creator"
+          class="tech-link"
+          [attr.aria-label]="translate.isPt() ? 'Perfil da criadora' : 'Creator profile'"
+        >
+          {{ t.devProfile }}
+        </a>
+      </p>
+      <p>
+        <a
+          routerLink="/compliance"
+          class="compliance-link"
+          [attr.aria-label]="translate.isPt() ? 'Política de Privacidade e Compliance' : 'Privacy Policy and Compliance'"
+        >
+          {{ t.compliance }}
+        </a>
+      </p>
+    </div>
 
     <div class="footer-column">
-      <h3>{{ t.listen }}</h3>
+      <h2>{{ t.listen }}</h2>
       <ul class="nav-list">
-        <li><a href="https://open.spotify.com/intl-pt/artist/1yrPZaFyIcsCjj876LaHXL?si=Qd2pr8ueQPuF-OwfqKGMUQ" target="_blank">Spotify</a></li>
-        <li><a href="https://soundcloud.com/you/albums" target="_blank">SoundCloud</a></li>
-        <li><a href="https://www.youtube.com/channel/UC4XQ29bhRmhxvYT9-4a9Otw" target="_blank">YouTube</a></li>
-        <!-- <li><a href="https://raquelsynths-rqs.bandcamp.com/music" target="_blank">Bandcamp</a></li> -->
-      <li style="margin-top: 15px; margin-bottom: 5px;">
-          <strong style="color: var(--accent-color); font-size: 0.9rem;">APOIE A BANDA:</strong>
+        <li>
+          <a href="https://www.youtube.com/channel/UC4XQ29bhRmhxvYT9-4a9Otw" target="_blank" rel="noopener noreferrer">YouTube</a>
         </li>
         <li>
-          <a [href]="paypalLink" target="_blank" rel="noopener noreferrer" class="donate-btn paypal" style="cursor: pointer; text-decoration: none;">
+          <a href="https://open.spotify.com/intl-pt/artist/1yrPZaFyIcsCjj876LaHXL?si=Qd2pr8ueQPuF-OwfqKGMUQ" target="_blank" rel="noopener noreferrer">Spotify</a>
+        </li>
+        <li>
+          <a href="https://soundcloud.com/you/albums" target="_blank" rel="noopener noreferrer">SoundCloud</a>
+        </li>
+        <li id="support-rqs" class="support-heading">
+          <strong>{{ t.support }}</strong>
+        </li>
+        <li>
+          <a [href]="paypalLink" target="_blank" rel="noopener noreferrer" class="donate-btn paypal">
             <mat-icon>public</mat-icon> PayPal (Intl.)
           </a>
         </li>
         <li>
-          <button (click)="copyPix()" class="donate-btn pix" style="cursor: pointer; text-decoration: none;">
+          <button
+            type="button"
+            (click)="copyPix()"
+            class="donate-btn pix"
+            [attr.aria-label]="translate.isPt() ? 'Copiar chave PIX para apoiar a banda' : 'Copy PIX key to support the band'"
+          >
             <mat-icon>pix</mat-icon> PIX (Brasil)
           </button>
         </li>
       </ul>
-
     </div>
 
     <div class="footer-column">
-      <h3>{{ t.connect }}</h3>
+      <h2>{{ t.connect }}</h2>
       <ul class="nav-list">
-        <li><a href="https://www.instagram.com/rqs_synths" target="_blank">Instagram</a></li>
-        <li><a href="https://www.tiktok.com/@raquel_holanda_" target="_blank">TikTok</a></li>
-        <li><a href="https://x.com/anaraquel00" target="_blank">X / Twitter</a></li>
-        <li><a href="https://www.facebook.com/profile.php?id=61585926695560" target="_blank">Facebook</a></li>
-        <li><a href="https://discord.gg/ryvhdRnQpQ" target="_blank">Discord</a></li>
-       
+        <li><a href="https://www.instagram.com/rqs_synths" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+        <li><a href="https://www.facebook.com/profile.php?id=61585926695560" target="_blank" rel="noopener noreferrer">Facebook</a></li>
+        <li><a href="https://bsky.app/profile/raquelsynths.com" target="_blank" rel="noopener noreferrer">Bluesky</a></li>
       </ul>
     </div>
   </div>

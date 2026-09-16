@@ -193,11 +193,42 @@ const isAllowedDestination = (service: ProfileService, destination: string): boo
   return allowedByService[service];
 };
 
+const canonicalAllowedHosts = [
+  'raquelsynths.com',
+  'www.raquelsynths.com'
+];
+
+// Vercel exposes deployment and branch hostnames at runtime. Allow only
+// those exact Preview hosts, keeping Production restricted to the canonical domains.
+const normalizeAllowedHost = (value: string | undefined): string | undefined => {
+  const trimmed = value?.trim();
+
+  if (!trimmed) {
+    return undefined;
+  }
+
+  try {
+    const withProtocol = /^[a-z][a-z0-9+.-]*:\/\//i.test(trimmed)
+      ? trimmed
+      : `http://${trimmed}`;
+    return new URL(withProtocol).hostname.toLowerCase() || undefined;
+  } catch {
+    return undefined;
+  }
+};
+
+const previewAllowedHosts = process.env['VERCEL_ENV'] === 'preview'
+  ? [
+      normalizeAllowedHost(process.env['VERCEL_URL']),
+      normalizeAllowedHost(process.env['VERCEL_BRANCH_URL'])
+    ].filter((host): host is string => Boolean(host))
+  : [];
+
 const angularApp = new AngularNodeAppEngine({
-  allowedHosts: [
-    'raquelsynths.com',
-    'www.raquelsynths.com'
-  ],
+  allowedHosts: Array.from(new Set([
+    ...canonicalAllowedHosts,
+    ...previewAllowedHosts
+  ])),
 
   trustProxyHeaders: [
     'x-forwarded-host',
@@ -253,6 +284,7 @@ app.use(async (req, res, next) => {
     if (response) {
       if (response.headers.get('content-type')?.includes('text/html')) {
         res.vary('Accept-Language');
+        res.vary('Cookie');
       }
 
       await writeResponseToNodeResponse(

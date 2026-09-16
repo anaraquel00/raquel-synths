@@ -5,13 +5,21 @@ import { Injectable, PLATFORM_ID, REQUEST, computed, inject, signal } from '@ang
   providedIn: 'root'
 })
 export class TranslationService {
+  private readonly languagePreferenceKey = 'rqs_lang_override';
   private document = inject(DOCUMENT);
   private platformId = inject(PLATFORM_ID);
   private request = inject(REQUEST, { optional: true });
 
   // 🚀 Define o idioma explicitamente (PT ou EN)
   setLanguage(lang: string) {
-    this.isPt.set(lang === 'pt');
+    const language = this.normalizeLanguage(lang) ?? 'en';
+
+    this.isPt.set(language === 'pt');
+    this.updateDocumentLanguage(language);
+
+    if (isPlatformBrowser(this.platformId)) {
+      this.persistLanguage(language);
+    }
   }
   // --- ESTADO DO IDIOMA ---
   // true = Português, false = Inglês
@@ -31,7 +39,7 @@ export class TranslationService {
 
   // Troca o idioma
   toggle() {
-    this.isPt.update(val => !val);
+    this.setLanguage(this.isPt() ? 'en' : 'pt');
   }
 
   // Alterna entre Broklin e Jonah
@@ -44,38 +52,88 @@ export class TranslationService {
   }
 
   private getInitialLanguageIsPt(): boolean {
-    if (isPlatformBrowser(this.platformId)) {
-      return this.document.documentElement.lang
-        .toLowerCase()
-        .startsWith('pt');
-    }
-
-    const isPt = this.hasPortuguesePreference(
-      this.request?.headers.get('accept-language')
+    const persistedLanguage = this.readLanguageCookie();
+    const language = persistedLanguage ?? (
+      isPlatformBrowser(this.platformId)
+        ? this.normalizeLanguage(this.document.documentElement.lang) ?? 'en'
+        : this.getRequestLanguage(this.request?.headers.get('accept-language'))
     );
 
-    this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
-    return isPt;
+    this.updateDocumentLanguage(language);
+    return language === 'pt';
   }
 
-  private hasPortuguesePreference(acceptLanguage: string | null | undefined): boolean {
-    if (!acceptLanguage) {
-      return false;
+  private persistLanguage(language: 'pt' | 'en'): void {
+    const secureAttribute = this.document.location.protocol === 'https:' ? '; Secure' : '';
+    this.document.cookie = `${this.languagePreferenceKey}=${language}; Path=/; Max-Age=31536000; SameSite=Lax${secureAttribute}`;
+  }
+
+  private readLanguageCookie(): 'pt' | 'en' | null {
+    const cookieHeader = isPlatformBrowser(this.platformId)
+      ? this.document.cookie
+      : this.request?.headers.get('cookie') ?? '';
+
+    const rawValue = cookieHeader
+      .split(';')
+      .map(cookie => cookie.trim())
+      .find(cookie => cookie.startsWith(`${this.languagePreferenceKey}=`))
+      ?.split('=')
+      .slice(1)
+      .join('=');
+
+    if (!rawValue) {
+      return null;
     }
 
-    return acceptLanguage.split(',').some(preference => {
-      const [languageRange, ...parameters] = preference
-        .trim()
-        .toLowerCase()
-        .split(';');
-      const qualityParameter = parameters.find(parameter =>
-        parameter.trim().startsWith('q=')
-      );
-      const quality = qualityParameter
-        ? Number.parseFloat(qualityParameter.trim().slice(2))
-        : 1;
+    try {
+      return this.normalizeLanguage(decodeURIComponent(rawValue));
+    } catch {
+      return null;
+    }
+  }
 
-      return quality > 0 && (languageRange === 'pt' || languageRange.startsWith('pt-'));
-    });
+  private getRequestLanguage(acceptLanguage: string | null | undefined): 'pt' | 'en' {
+    if (!acceptLanguage) {
+      return 'en';
+    }
+
+    const preferences = acceptLanguage
+      .split(',')
+      .map((preference, index) => {
+        const [languageRange, ...parameters] = preference.trim().toLowerCase().split(';');
+        const language = this.normalizeLanguage(languageRange);
+        const qualityParameter = parameters.find(parameter => parameter.trim().startsWith('q='));
+        const parsedQuality = qualityParameter
+          ? Number.parseFloat(qualityParameter.trim().slice(2))
+          : 1;
+
+        return {
+          language,
+          quality: Number.isFinite(parsedQuality) ? parsedQuality : 0,
+          index
+        };
+      })
+      .filter(preference => preference.language && preference.quality > 0)
+      .sort((a, b) => b.quality - a.quality || a.index - b.index);
+
+    return preferences[0]?.language ?? 'en';
+  }
+
+  private normalizeLanguage(language: string | null | undefined): 'pt' | 'en' | null {
+    const normalizedLanguage = language?.trim().toLowerCase();
+
+    if (normalizedLanguage === 'pt' || normalizedLanguage?.startsWith('pt-')) {
+      return 'pt';
+    }
+
+    if (normalizedLanguage === 'en' || normalizedLanguage?.startsWith('en-')) {
+      return 'en';
+    }
+
+    return null;
+  }
+
+  private updateDocumentLanguage(language: 'pt' | 'en'): void {
+    this.document.documentElement.lang = language === 'pt' ? 'pt-BR' : 'en-US';
   }
 }

@@ -1,50 +1,293 @@
 <app-home id="inicio"></app-home>
 
+<section id="current-music" class="journey-section current-music-section" [attr.aria-label]="translate.isPt() ? 'Música atual' : 'Current music'">
+  <app-discography [limitToHome]="5"></app-discography>
+  <div class="section-cta-row">
+    <a
+      class="journey-cta journey-cta-primary"
+      routerLink="/discografia"
+      (click)="trackHomeAction('HOME_LISTEN_CLICK', 'discografia')"
+    >
+      {{ translate.isPt() ? 'VER MÚSICA ATUAL' : 'VIEW CURRENT MUSIC' }}
+    </a>
+  </div>
+</section>
+
+<section id="latest-signal" class="journey-section signal-section" aria-labelledby="latest-signal-title">
+  @if (latestSignal(); as signal) {
+    @let content = getLogContent(signal);
+    <div class="section-shell signal-feature">
+      <div class="signal-feature-copy">
+        <div class="section-heading">
+          <p class="section-kicker">{{ translate.isPt() ? 'ÚLTIMO SINAL' : 'LATEST SIGNAL' }}</p>
+          <span class="preview-badge">{{ translate.isPt() ? 'SYSTEM_LOG' : 'SYSTEM_LOG' }}</span>
+        </div>
+        <p class="signal-origin">{{ translate.isPt() ? 'ORIGEM // SYSTEM_LOGS' : 'SOURCE // SYSTEM_LOGS' }}</p>
+        <h2 id="latest-signal-title">{{ content?.title }}</h2>
+        <p class="section-summary">{{ content?.description }}</p>
+        @if (signal.date) {
+          <p class="signal-frequency">{{ signal.date | date:'MMM dd, yyyy' | uppercase }}</p>
+        }
+        <a
+          class="journey-cta journey-cta-primary"
+          [routerLink]="['/log-reader', signal.id]"
+          (click)="trackHomeAction('HOME_LATEST_SIGNAL_CLICK', signal.id)"
+        >
+          {{ translate.isPt() ? 'DECODIFICAR O LOG' : 'DECODE THE LOG' }}
+        </a>
+      </div>
+      @if (signal.image) {
+        <div class="signal-feature-visual">
+          <img [src]="signal.image" [alt]="content?.title || ''" loading="lazy" />
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="section-shell signal-card signal-loading">
+      <p class="section-kicker">{{ translate.isPt() ? 'ÚLTIMO SINAL' : 'LATEST SIGNAL' }}</p>
+      <h2 id="latest-signal-title">{{ translate.isPt() ? 'Sinal em sincronização' : 'Signal synchronizing' }}</h2>
+    </div>
+  }
+</section>
+
 <section class="ads-section">
   @defer (on viewport) {
     <app-ad-banner ngSkipHydration></app-ad-banner>
   } @placeholder {
-    <div style="min-height: 100px; width: 100%;"></div>
+    <div class="ad-placeholder"></div>
   }
 </section>
 
-<div id="storytelling" style="position: relative; top: -80px;"></div>
-<section class="anchor-pad">
-    <app-storytelling ngSkipHydration></app-storytelling>
-</section>
+<section id="universe" class="journey-section universe-section" aria-labelledby="universe-title">
+  <div class="section-shell">
+    <p class="section-kicker">{{ translate.isPt() ? 'ENTRE NO UNIVERSO' : 'ENTER THE UNIVERSE' }}</p>
+    <h2 id="universe-title">
+      {{ translate.isPt() ? 'Escolha seu ponto de entrada' : 'Choose your entry point' }}
+    </h2>
+    <p class="section-summary">
+      {{ translate.isPt()
+        ? 'Conheça as forças, as pessoas e a história que conectam cada transmissão da RaQuel Synths.'
+        : 'Meet the forces, people, and story connecting every RaQuel Synths transmission.' }}
+    </p>
 
-<div id="sobre" style="position: relative; top: -80px;"></div>
-<section class="anchor-pad">
-    <app-sobre></app-sobre>
+    <div class="journey-grid universe-grid">
+      <a
+        class="journey-card"
+        routerLink="/dossier"
+        (click)="trackHomeAction('HOME_UNIVERSE_CLICK', 'dossier')"
+      >
+        <span class="card-index">01</span>
+        <h3>{{ translate.isPt() ? 'DOSSIÊ OPERATIVO' : 'OPERATIVE DOSSIER' }}</h3>
+        <p>
+          {{ translate.isPt()
+            ? 'Conheça os personagens, as facções e as forças que moldam o universo RQS.'
+            : 'Meet the characters, factions, and forces shaping the RQS universe.' }}
+        </p>
+        <span class="card-link">{{ translate.isPt() ? 'ABRIR DOSSIÊ' : 'OPEN DOSSIER' }}</span>
+      </a>
+
+      <a
+        class="journey-card"
+        routerLink="/saga"
+        (click)="trackHomeAction('HOME_UNIVERSE_CLICK', 'sagas')"
+      >
+        <span class="card-index">02</span>
+        <h3>{{ translate.isPt() ? 'SAGAS' : 'SAGAS' }}</h3>
+        <p>
+          {{ translate.isPt()
+            ? 'Comece pelas histórias que conectam personagens, músicas e acontecimentos do universo.'
+            : 'Start with the stories connecting characters, music, and events across the universe.' }}
+        </p>
+        <span class="card-link">{{ translate.isPt() ? 'EXPLORAR SAGAS' : 'EXPLORE SAGAS' }}</span>
+      </a>
+
+      <a
+        class="journey-card"
+        routerLink="/hybrid-saga"
+        (click)="trackHomeAction('HOME_UNIVERSE_CLICK', 'glitch')"
+      >
+        <span class="card-index">03</span>
+        <h3>GLITCH IN THE MATRIX</h3>
+        <p>
+          {{ translate.isPt()
+            ? 'Entre no ponto de convergência entre Blue Team, Red Team e o próximo estágio da narrativa.'
+            : 'Enter the convergence point between Blue Team, Red Team, and the narrative’s next stage.' }}
+        </p>
+        <span class="card-link">{{ translate.isPt() ? 'CONHECER GLITCH' : 'DISCOVER GLITCH' }}</span>
+      </a>
+    </div>
+  </div>
 </section>
 
 <section class="ads-section">
   @defer (on viewport) {
     <app-ad-banner ngSkipHydration></app-ad-banner>
   } @placeholder {
-    <div style="min-height: 100px; width: 100%;"></div>
+    <div class="ad-placeholder"></div>
   }
 </section>
 
-  <app-visual-novel ngSkipHydration></app-visual-novel>
+<section id="storytelling" class="journey-section system-logs-section" [attr.aria-label]="translate.isPt() ? 'Logs do sistema' : 'System logs'">
+  <app-storytelling [logs]="systemLogs()"></app-storytelling>
+</section>
 
+<section id="archive" class="journey-section archive-section" aria-labelledby="archive-title">
+  <div class="section-shell archive-card">
+    <p class="section-kicker">{{ translate.isPt() ? 'DO ARQUIVO' : 'FROM THE ARCHIVE' }}</p>
+    <h2 id="archive-title">
+      {{ translate.isPt() ? 'Frequências que continuam ecoando' : 'Frequencies that keep echoing' }}
+    </h2>
+    <p class="section-summary">
+      {{ translate.isPt()
+        ? 'Revisite lançamentos, notas e processos criativos no arquivo musical completo.'
+        : 'Revisit releases, notes, and creative processes in the complete musical archive.' }}
+    </p>
+    <a
+      class="journey-cta"
+      routerLink="/musical-archives"
+      (click)="trackHomeAction('HOME_ARCHIVE_CLICK', 'musical-archives')"
+    >
+      {{ translate.isPt() ? 'EXPLORAR O ARQUIVO' : 'EXPLORE THE ARCHIVE' }}
+    </a>
+  </div>
+</section>
 
 <section class="ads-section">
   @defer (on viewport) {
     <app-ad-banner ngSkipHydration></app-ad-banner>
   } @placeholder {
-    <div style="min-height: 100px; width: 100%;"></div>
+    <div class="ad-placeholder"></div>
   }
 </section>
 
-  <app-discography [limitToHome]="5" ngSkipHydration></app-discography>
+<section id="transmitter" class="journey-section transmitter-section" aria-labelledby="transmitter-title">
+  <div class="section-shell transmitter-card">
+    <p class="section-kicker">{{ translate.isPt() ? 'TRANSMISSOR RQS' : 'RQS TRANSMITTER' }}</p>
+    <h2 id="transmitter-title">
+      {{ translate.isPt() ? 'Receba o próximo sinal.' : 'Receive the next signal.' }}
+    </h2>
+    <p class="section-summary">
+      {{ translate.isPt()
+        ? 'Sintonize sua frequência para receber os próximos lançamentos, capítulos e transmissões importantes da RaQuel Synths. Sem depender apenas dos algoritmos das plataformas.'
+        : 'Tune your frequency to receive upcoming releases, chapters and important transmissions from RaQuel Synths, without depending only on platform algorithms.' }}
+    </p>
+
+    @if (transmitterStatus() !== 'success') {
+      <form class="transmitter-form" (ngSubmit)="subscribeNewsletter()" novalidate>
+        <label for="home-transmitter-email">
+          {{ translate.isPt() ? 'Seu e-mail' : 'Your email' }}
+        </label>
+        <div class="transmitter-input-row">
+          <input
+            id="home-transmitter-email"
+            name="email"
+            type="email"
+            inputmode="email"
+            autocomplete="email"
+            required
+            [placeholder]="translate.isPt() ? 'seu@email.com' : 'your@email.com'"
+            [(ngModel)]="emailInputValue"
+            [attr.aria-describedby]="'transmitter-consent transmitter-status'"
+          />
+          <button type="submit" [disabled]="transmitterStatus() === 'submitting'">
+            {{ transmitterStatus() === 'submitting'
+              ? (translate.isPt() ? 'SINTONIZANDO...' : 'TUNING...')
+              : (translate.isPt() ? 'SINTONIZAR' : 'TUNE IN') }}
+          </button>
+        </div>
+
+        <label id="transmitter-consent" class="consent-control">
+          <input
+            name="consent"
+            type="checkbox"
+            [(ngModel)]="transmitterConsent"
+          />
+          <span>
+            {{ translate.isPt()
+              ? 'Concordo em receber transmissões da RaQuel Synths e li a'
+              : 'I agree to receive RaQuel Synths transmissions and have read the' }}
+            <a routerLink="/compliance">
+              {{ translate.isPt() ? 'Política de Privacidade' : 'Privacy Policy' }}
+            </a>.
+          </span>
+        </label>
+      </form>
+    }
+
+    <div id="transmitter-status" class="form-status" aria-live="polite">
+      @switch (transmitterStatus()) {
+        @case ('empty') {
+          <p>{{ translate.isPt() ? 'Digite seu e-mail para sintonizar.' : 'Enter your email to tune in.' }}</p>
+        }
+        @case ('invalid') {
+          <p>{{ translate.isPt() ? 'Digite um e-mail válido.' : 'Enter a valid email address.' }}</p>
+        }
+        @case ('consent') {
+          <p>{{ translate.isPt() ? 'Confirme o consentimento para continuar.' : 'Confirm your consent to continue.' }}</p>
+        }
+        @case ('error') {
+          <p>{{ translate.isPt()
+            ? 'Não foi possível registrar o sinal agora. Tente novamente.'
+            : 'We could not register the signal right now. Please try again.' }}</p>
+        }
+        @case ('success') {
+          <p class="success-message">
+            {{ translate.isPt()
+              ? 'Sinal registrado. A próxima transmissão chegará ao seu e-mail.'
+              : 'Signal registered. The next transmission will reach your inbox.' }}
+          </p>
+        }
+      }
+    </div>
+  </div>
+</section>
+
+<section id="creator" class="journey-section creator-section" aria-labelledby="creator-title">
+  <div class="section-shell creator-card">
+    <p class="section-kicker">{{ translate.isPt() ? 'A CRIADORA' : 'THE CREATOR' }}</p>
+    <h2 id="creator-title">
+      {{ translate.isPt() ? 'A mente por trás da música e do código' : 'The mind behind the music and code' }}
+    </h2>
+    <p class="section-summary">
+      {{ translate.isPt()
+        ? 'Conheça Ana Raquel e o processo que une composição, narrativa e tecnologia na RaQuel Synths.'
+        : 'Meet Ana Raquel and the process connecting composition, narrative, and technology at RaQuel Synths.' }}
+    </p>
+    <a
+      class="journey-cta"
+      routerLink="/creator"
+      (click)="trackHomeAction('HOME_CREATOR_CLICK', 'creator')"
+    >
+      {{ translate.isPt() ? 'CONHECER A CRIADORA' : 'MEET THE CREATOR' }}
+    </a>
+  </div>
+</section>
 
 <section class="ads-section">
   @defer (on viewport) {
     <app-ad-banner ngSkipHydration></app-ad-banner>
   } @placeholder {
-    <div style="min-height: 100px; width: 100%;"></div>
+    <div class="ad-placeholder"></div>
   }
 </section>
 
-<app-contato ></app-contato>
+<section id="store-contact" class="journey-section support-section" aria-labelledby="support-title">
+  <div class="section-shell">
+    <p class="section-kicker">{{ translate.isPt() ? 'LOJA // CONTATO' : 'STORE // CONTACT' }}</p>
+    <h2 id="support-title">
+      {{ translate.isPt() ? 'Conecte-se à RQS' : 'Connect with RQS' }}
+    </h2>
+    <div class="journey-grid support-grid">
+      <a class="journey-card" routerLink="/store">
+        <h3>{{ translate.isPt() ? 'LOJA' : 'STORE' }}</h3>
+        <p>{{ translate.isPt() ? 'Explore merch e seleções da RQS.' : 'Explore RQS merch and selections.' }}</p>
+        <span class="card-link">{{ translate.isPt() ? 'ABRIR LOJA' : 'OPEN STORE' }}</span>
+      </a>
+      <a class="journey-card" routerLink="/contato">
+        <h3>{{ translate.isPt() ? 'CONTATO' : 'CONTACT' }}</h3>
+        <p>{{ translate.isPt() ? 'Envie propostas, imprensa ou colaborações.' : 'Send proposals, press requests, or collaborations.' }}</p>
+        <span class="card-link">{{ translate.isPt() ? 'ESTABELECER CONTATO' : 'GET IN TOUCH' }}</span>
+      </a>
+    </div>
+  </div>
+</section>

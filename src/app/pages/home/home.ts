@@ -9,6 +9,7 @@ import { TranslationService } from '../../services/translation.service';
 import { CONTACT_DATA, HOME_DATA } from '../../data/app-data';
 import { UplinkTerminalComponent } from "../../components/uplink-terminal/uplink-terminal";
 import { SeoService } from '../../services/seo.service';
+import { TrackingService } from '../../services/tracking.service';
 
 
 @Component({
@@ -83,12 +84,17 @@ executarQuickhack(targetId: string) {
 
   // Função que o botão chama
   triggerUplink() {
+    this.trackHomeAction('HOME_TERMINAL_OPEN');
     this.showUplink = true;
   }
 
   // Função que o modal chama quando fecha
   closeUplink() {
     this.showUplink = false;
+  }
+
+  trackHomeAction(eventName: 'HOME_LISTEN_CLICK' | 'HOME_UNIVERSE_CLICK' | 'HOME_TERMINAL_OPEN') {
+    this.trackingService.trackCustomEvent(eventName, { location: 'home_hero' });
   }
 currentLanguage: any;
 
@@ -103,6 +109,7 @@ currentLanguage: any;
   private contactSignal = signal<any>({});
   private themeObserver: MutationObserver | undefined;
   private seoService = inject(SeoService);
+  private trackingService = inject(TrackingService);
 
   constructor(
     public translate: TranslationService,

@@ -670,3 +670,220 @@
       }
   }
 }
+
+/* Homepage Evolution V1: editorial hero */
+.home-container {
+  min-height: auto;
+  overflow: hidden;
+}
+
+.hero-section {
+  --hero-signal: #58dcff;
+  --hero-signal-rgb: 88, 220, 255;
+  min-height: min(820px, calc(100vh - 70px));
+  box-sizing: border-box;
+  justify-content: flex-start;
+  padding: clamp(7rem, 13vw, 10rem) clamp(1.25rem, 7vw, 7rem) clamp(4rem, 9vw, 7rem);
+  text-align: left;
+  background:
+    linear-gradient(90deg, rgba(2, 7, 18, 0.98) 0%, rgba(2, 8, 20, 0.92) 48%, rgba(1, 9, 24, 0.66) 100%),
+    linear-gradient(180deg, rgba(1, 5, 14, 0.26) 0%, rgba(1, 5, 14, 0.62) 100%),
+    radial-gradient(circle at 78% 38%, rgba(61, 125, 255, 0.18), transparent 40%),
+    url('/images/background3_rqs.webp') center center / cover no-repeat;
+  background-color: #020712;
+
+  .hero-copy {
+    width: min(760px, 100%);
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-kicker {
+    margin: 0 0 1.25rem;
+    color: var(--hero-signal);
+    font-family: 'Roboto Mono', monospace;
+    font-size: clamp(0.72rem, 1.4vw, 0.92rem);
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    line-height: 1.5;
+  }
+
+  .hero-title {
+    margin: 0;
+    max-width: none;
+    font-size: clamp(3rem, 8vw, 6.8rem);
+    line-height: 0.95;
+    letter-spacing: clamp(0.08rem, 0.6vw, 0.3rem);
+    background: linear-gradient(90deg, #ffffff 0%, #d9f7ff 34%, var(--hero-signal) 72%, #9b8cff 100%);
+    background-size: 100% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: none;
+    filter: drop-shadow(0 0 18px rgba(var(--hero-signal-rgb), 0.3));
+  }
+
+  .hero-proposition {
+    max-width: 680px;
+    margin: 2rem 0 0;
+    color: #f4f7fb;
+    font-size: clamp(1.05rem, 2vw, 1.35rem);
+    line-height: 1.65;
+  }
+
+  .hero-tagline {
+    margin: 1rem 0 0;
+    color: var(--hero-signal);
+    font-family: var(--font-heading);
+    font-size: clamp(1.05rem, 2vw, 1.3rem);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  .hero-actions {
+    margin: 2.25rem 0 0;
+    display: flex;
+    justify-content: flex-start;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+  }
+
+  .hero-cta,
+  .terminal-trigger {
+    box-sizing: border-box;
+    min-height: 48px;
+    border-radius: 4px;
+    padding: 0.85rem 1.3rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.84rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
+    transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+  }
+
+  .hero-cta-primary {
+    border: 1px solid var(--hero-signal);
+    border-color: var(--hero-signal) !important;
+    background: var(--hero-signal);
+    color: #02070b;
+    box-shadow: 0 0 22px rgba(var(--hero-signal-rgb), 0.28);
+  }
+
+  .hero-cta-secondary {
+    border: 1px solid rgba(var(--hero-signal-rgb), 0.72);
+    border-color: rgba(var(--hero-signal-rgb), 0.72) !important;
+    background: rgba(2, 12, 24, 0.82);
+    color: #ffffff;
+  }
+
+  .terminal-trigger {
+    margin-top: 1.15rem;
+    border: 0;
+    border-bottom: 1px solid currentColor;
+    background: transparent;
+    color: #bed8e6;
+    cursor: pointer;
+    padding-inline: 0.15rem;
+    min-height: 40px;
+    font-weight: 600;
+  }
+
+  .hero-cta:hover,
+  .terminal-trigger:hover {
+    box-shadow: 0 0 24px rgba(var(--hero-signal-rgb), 0.34);
+  }
+
+  .hero-cta:focus-visible,
+  .terminal-trigger:focus-visible {
+    outline: 3px solid #ffffff;
+    outline-offset: 4px;
+  }
+}
+
+:host-context(body.mode-jonah) {
+  .hero-section {
+    background:
+      linear-gradient(90deg, rgba(12, 3, 2, 0.98) 0%, rgba(12, 3, 2, 0.92) 48%, rgba(17, 4, 1, 0.67) 100%),
+      linear-gradient(180deg, rgba(10, 2, 1, 0.3) 0%, rgba(10, 2, 1, 0.68) 100%),
+      radial-gradient(circle at 78% 38%, rgba(255, 61, 0, 0.17), transparent 40%),
+      url('/images/background_jonah.webp') center center / cover no-repeat;
+    background-color: #0c0302;
+  }
+
+  .hero-section .hero-title {
+    animation: none;
+    color: #fff5ef;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 16px rgba(255, 61, 0, 0.35));
+  }
+
+  .hero-section .hero-cta-primary {
+    background: #ff5a1f;
+    border-color: #ff5a1f !important;
+    color: #090201;
+    box-shadow: 0 0 22px rgba(255, 61, 0, 0.3);
+  }
+
+  .hero-section .hero-cta-secondary {
+    border-color: #ff7a30 !important;
+  }
+
+  .hero-section .hero-kicker,
+  .hero-section .hero-tagline {
+    color: #ff7a30;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-section .hero-title {
+    font-size: clamp(5.5rem, 7.5vw, 6.8rem) !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .hero-section {
+    min-height: auto;
+    padding: 5rem 1.15rem 4rem;
+    background:
+      linear-gradient(180deg, rgba(2, 7, 18, 0.86) 0%, rgba(2, 8, 20, 0.94) 62%, rgba(2, 7, 18, 0.99) 100%),
+      linear-gradient(90deg, rgba(1, 7, 18, 0.24), rgba(1, 7, 18, 0.56)),
+      url('/images/background3_rqs_mobile.webp') center top / cover no-repeat;
+
+    .hero-actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      width: 100%;
+    }
+
+    .hero-cta {
+      width: 100%;
+    }
+
+    .terminal-trigger {
+      width: 100%;
+      margin-top: 0.85rem;
+    }
+  }
+
+  :host-context(body.mode-jonah) .hero-section {
+    background:
+      linear-gradient(180deg, rgba(12, 3, 2, 0.87) 0%, rgba(12, 3, 2, 0.95) 62%, rgba(12, 3, 2, 0.99) 100%),
+      linear-gradient(90deg, rgba(12, 3, 2, 0.2), rgba(20, 4, 1, 0.58)),
+      url('/images/background_jonah_mobile.webp') center top / cover no-repeat;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-section *,
+  .hero-section *::before,
+  .hero-section *::after {
+    animation: none !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

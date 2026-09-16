@@ -99,7 +99,11 @@ private _modeSignal = signal<'broklin' | 'jonah'>('broklin');
     });
   }
 
-isJonahMode(): boolean {
+get isHomeView(): boolean {
+    return !this.router.url.includes('/discografia') && !this.router.url.includes('/musical-archives');
+  }
+
+  isJonahMode(): boolean {
     // Retorna o valor do signal. No SSR e hidratação inicial, será sempre 'broklin', evitando Mismatch.
     return this._modeSignal() === 'jonah';
   }

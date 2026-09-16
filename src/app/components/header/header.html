@@ -1,87 +1,86 @@
 <mat-toolbar color="primary">
-  <a routerLink="/" class="brand-logo" aria-label="Home">
-    RQS Base &uArr;
+  <a routerLink="/" class="brand-logo" [attr.aria-label]="translate.isPt() ? 'Página inicial' : 'Home'">
+    RQS &uArr;
   </a>
 
   <span class="spacer"></span>
 
   <div class="desktop-nav">
-    <button mat-button (click)="translate.toggle()">
+    <button
+      mat-button
+      type="button"
+      (click)="mudarIdioma(translate.isPt() ? 'en' : 'pt')"
+      [attr.aria-label]="translate.isPt() ? 'Mudar idioma para inglês' : 'Switch language to Portuguese'"
+    >
       {{ translate.isPt() ? '🇺🇸 EN' : '🇧🇷 PT' }}
     </button>
 
-   @if (!isJonahMode()) {
-     <!-- SE ESTIVER NO MODO BROKLIN (Mostra o botão pra ir pro Jonah) -->
-     <button mat-button class="jonah-trigger" (click)="activateJonahMode()">
-          {{ navText.darkmode }} <!-- Texto: "MODO JONAH" -->
-     </button>
-   } @else {
-     <!-- SE ESTIVER NO MODO JONAH (Mostra o botão pra voltar pro Broklin) -->
-     <button mat-button class="broklin-escape" (click)="activateBroklinMode()">
-      <mat-icon>shield</mat-icon> <!-- Ícone de Escudo/Segurança -->
-      {{ navText.lightmode }} <!-- Texto: "VOLTAR À BASE" -->
-     </button>
-   }
+    @if (!isJonahMode()) {
+      <button mat-button type="button" class="jonah-trigger" (click)="activateJonahMode()">
+        {{ navText.darkmode }}
+      </button>
+    } @else {
+      <button mat-button type="button" class="broklin-escape" (click)="activateBroklinMode()">
+        <mat-icon>shield</mat-icon>
+        {{ navText.lightmode }}
+      </button>
+    }
 
-     <a mat-button [routerLink]="['/dossier']">{{ navText.sobre }}</a>
-     <a mat-button [routerLink]="['/saga']">{{ navText.visualNovel }}</a>
-
-    <a mat-button [routerLink]="['/bio']" target="_blank" rel="noopener noreferrer">
-  <mat-icon>hub</mat-icon>
-  {{ navText.bio }}
-    </a>
-
-    <button mat-button [routerLink]="['/creator']" class="btn-creator">
-      <mat-icon>terminal</mat-icon> {{ navText.creator }}
+    <button mat-button type="button" (click)="scrollTo('current-music')">
+      {{ translate.isPt() ? 'MÚSICA' : 'MUSIC' }}
     </button>
-
-    <button mat-button [routerLink]="['/discografia']">{{ navText.discografia }}</button>
-
-    <button mat-button [routerLink]="['/store']" class="store-container">
-      {{ navText.store }} <mat-icon iconPositionEnd>open_in_new</mat-icon>
+    <button mat-button type="button" (click)="scrollTo('universe')">
+      {{ translate.isPt() ? 'UNIVERSO' : 'UNIVERSE' }}
     </button>
+    <button mat-button type="button" (click)="scrollTo('latest-signal')">
+      {{ translate.isPt() ? 'ÚLTIMO SINAL' : 'LATEST SIGNAL' }}
+    </button>
+    <a mat-button routerLink="/bio">{{ navText.bio }}</a>
+    <a mat-button routerLink="/creator" class="btn-creator">{{ navText.creator }}</a>
+    <a mat-button routerLink="/store" class="store-container">{{ navText.store }}</a>
   </div>
 
-  <button mat-icon-button [matMenuTriggerFor]="mobileMenu" class="mobile-menu-btn">
+  <button
+    mat-icon-button
+    type="button"
+    [matMenuTriggerFor]="mobileMenu"
+    class="mobile-menu-btn"
+    [attr.aria-label]="translate.isPt() ? 'Abrir menu principal' : 'Open main menu'"
+  >
     <mat-icon>menu</mat-icon>
   </button>
 
   <mat-menu #mobileMenu="matMenu" xPosition="before" class="cyber-menu">
-    <button mat-menu-item (click)="translate.toggle()">
+    <button mat-menu-item type="button" (click)="mudarIdioma(translate.isPt() ? 'en' : 'pt')">
       <mat-icon>translate</mat-icon>
-      <span>{{ translate.isPt() ? 'Mudar idioma' : 'Switch Language' }}</span>
+      <span>{{ translate.isPt() ? 'Mudar para inglês' : 'Switch to Portuguese' }}</span>
     </button>
 
-    <mat-divider></mat-divider>
-
     @if (isJonahMode()) {
-      <button mat-menu-item class="nav-item-broklin" (click)="activateBroklinMode()">
-        <mat-icon>diamond</mat-icon> <span>{{ translate.isPt() ? 'Modo Broklin' : 'Broklin Mode' }}</span>
+      <button mat-menu-item type="button" class="nav-item-broklin" (click)="activateBroklinMode()">
+        <mat-icon>diamond</mat-icon>
+        <span>{{ translate.isPt() ? 'Modo Broklin' : 'Broklin Mode' }}</span>
       </button>
     } @else {
-      <button mat-menu-item class="nav-item-jonah" (click)="activateJonahMode()">
-        <mat-icon>warning</mat-icon> <span>{{ translate.isPt() ? 'Modo Jonah' : 'Jonah Mode' }}</span>
+      <button mat-menu-item type="button" class="nav-item-jonah" (click)="activateJonahMode()">
+        <mat-icon>warning</mat-icon>
+        <span>{{ translate.isPt() ? 'Modo Jonah' : 'Jonah Mode' }}</span>
       </button>
     }
 
     <mat-divider></mat-divider>
 
-    <a mat-menu-item [routerLink]="['/creator']">
-      <mat-icon style="color: var(--accent-color);">terminal</mat-icon>
-      <span style="color: var(--accent-color); font-weight: bold;">{{ navText.creator }}</span>
-    </a>
-
-    <a mat-menu-item [routerLink]="['/dossier']">{{ navText.sobre }}</a>
-    <a mat-menu-item [routerLink]="['/saga']">{{ navText.visualNovel }}</a>
-
-    <mat-divider></mat-divider>
-
-    <a mat-menu-item [routerLink]="['/bio']" target="_blank" rel="noopener noreferrer">
-    <mat-icon>hub</mat-icon>
-    <span>{{ navText.bio }}</span>
-    </a>
-
-    <a mat-menu-item [routerLink]="['/discografia']">DISCOGRAFIA</a>
-    <a mat-menu-item [routerLink]="['/store']">{{ navText.store }}</a>
+    <button mat-menu-item type="button" (click)="scrollTo('current-music')">
+      <span>{{ translate.isPt() ? 'MÚSICA' : 'MUSIC' }}</span>
+    </button>
+    <button mat-menu-item type="button" (click)="scrollTo('universe')">
+      <span>{{ translate.isPt() ? 'UNIVERSO' : 'UNIVERSE' }}</span>
+    </button>
+    <button mat-menu-item type="button" (click)="scrollTo('latest-signal')">
+      <span>{{ translate.isPt() ? 'ÚLTIMO SINAL' : 'LATEST SIGNAL' }}</span>
+    </button>
+    <a mat-menu-item routerLink="/bio"><span>{{ navText.bio }}</span></a>
+    <a mat-menu-item routerLink="/creator"><span>{{ navText.creator }}</span></a>
+    <a mat-menu-item routerLink="/store"><span>{{ navText.store }}</span></a>
   </mat-menu>
 </mat-toolbar>

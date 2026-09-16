@@ -9,6 +9,7 @@ import { NAV_DATA } from '../../data/app-data';
 import { Router, RouterModule } from '@angular/router';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { TrackingService } from '../../services/tracking.service';
 
 @Component({
   selector: 'app-header',
@@ -27,7 +28,8 @@ export class Header implements OnInit, OnDestroy {
   constructor(
     @Inject(DOCUMENT) private document: Document,
     public translate: TranslationService, // ← SERVIÇO CORRETO INJETADO
-    private router: Router
+    private router: Router,
+    private trackingService: TrackingService
   ) {
     // 🛡️ TRAVA TÁTICA: Sincroniza o estado do tema apenas após a hidratação (DOM Estável)
     afterNextRender(() => {
@@ -50,7 +52,10 @@ export class Header implements OnInit, OnDestroy {
   // 🛡️ A FUNÇÃO DO BOTÃO MANUAL AGORA USA O SERVIÇO CORRETO
   mudarIdioma(novoIdioma: string) {
     this.translate.setLanguage(novoIdioma); // USA O MÉTODO 'setLanguage'
-    localStorage.setItem('rqs_lang_override', novoIdioma);
+    this.trackingService.trackCustomEvent('HOME_LANGUAGE_TOGGLE', {
+      location: 'header',
+      selected_language: novoIdioma
+    });
   }
 
   get navText() {
@@ -96,6 +101,11 @@ export class Header implements OnInit, OnDestroy {
     new CustomEvent('theme-changed')
   );
 
+  this.trackingService.trackCustomEvent('HOME_MODE_TOGGLE', {
+    location: 'header',
+    selected_mode: 'broklin'
+  });
+
   this.navigateForMode('broklin');
 }
 
@@ -114,6 +124,11 @@ activateJonahMode(): void {
   this.document.defaultView?.dispatchEvent(
     new CustomEvent('theme-changed')
   );
+
+  this.trackingService.trackCustomEvent('HOME_MODE_TOGGLE', {
+    location: 'header',
+    selected_mode: 'jonah'
+  });
 
   this.navigateForMode('jonah');
 }
