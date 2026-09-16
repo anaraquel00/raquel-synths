@@ -178,12 +178,17 @@ ngOnInit() {
 
       // 🛡️ A TRAVA DE TELEMETRIA
       const isDeveloper = window.localStorage.getItem('RQS_DEV_MODE') === 'true';
-      const isLocalhost = window.location.hostname === 'localhost';
+      const hostname = window.location.hostname;
+      const isLocalhost = hostname === 'localhost';
+      const isVercelPreview = hostname.endsWith('.vercel.app');
+      const isProduction = hostname === 'raquelsynths.com' || hostname === 'www.raquelsynths.com';
 
-      if (isLocalhost || isDeveloper) {
+      if (isLocalhost || isVercelPreview || (isProduction && isDeveloper)) {
         // ⚠️ ATENÇÃO GENERAL: Substitua o 'G-XXXXXXXXXX' pelo seu ID real de métricas do GA4!
         (window as any)['ga-disable-G-Z1TSQ0NV6T'] = true;
         console.warn('⚡ [RQS SECURITY] Navegação fantasma em andamento. O GA4 não está te vendo.');
+      } else {
+        (window as any)['ga-disable-G-Z1TSQ0NV6T'] = false;
       }
     }
   }
