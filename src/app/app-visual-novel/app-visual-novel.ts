@@ -212,33 +212,4 @@ export class AppVisualNovel implements OnInit, OnDestroy {
     // Se a General está no comando (Padrão)
     return this.translate.isPt() ? VN_INTRO_PT : VN_INTRO_EN;
   }
-
-  navigate(link: string) {
-  if (!isPlatformBrowser(this.platformId)) {
-    return;
-  }
-
-  window.scrollTo(0, 0);
-
-  if (link === '/visual-novel') {
-    this.router.navigate([
-      '/visual-novel',
-      this.currentMode(),
-      's1'
-    ]);
-
-    return;
-  }
-
-  if (link.startsWith('/')) {
-    this.router.navigateByUrl(link);
-    return;
-  }
-
-  window.open(link, '_blank');
-}
-
-  scrollToTop() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
 }

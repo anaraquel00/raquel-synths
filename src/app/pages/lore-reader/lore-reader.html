@@ -1,14 +1,14 @@
 <div class="lore-container">
   <a
-  class="back-btn"
-  (click)="goBack(); $event.preventDefault()">
+    class="back-btn"
+    [routerLink]="seasonRoute()">
 
-  &larr;
-  {{ translate.isPt()
-      ? 'VOLTAR AO SUMÁRIO'
-      : 'BACK TO LIST'
-  }}
-</a>
+    &larr;
+    {{ translate.isPt()
+        ? 'VOLTAR AO SUMÁRIO'
+        : 'BACK TO LIST'
+    }}
+  </a>
   <header class="saga-header">
     <h1>{{ translate.isPt() ? 'ECOS DA RQS' : 'RQS ECHOES' }}</h1>
     <p class="subtitle">
@@ -62,6 +62,35 @@
       <app-author-signature></app-author-signature>
       </article>
 
+      <nav
+        class="episode-navigation"
+        [attr.aria-label]="translate.isPt() ? 'Navegação entre episódios' : 'Episode navigation'">
+
+        @if (previousEpisode(); as previous) {
+          <a
+            class="episode-nav-link previous-episode"
+            [routerLink]="['/lore', currentMode(), previous.id]">
+            <span>{{ translate.isPt() ? '← Episódio anterior' : '← Previous episode' }}</span>
+            <strong>{{ episodeTitle(previous) }}</strong>
+          </a>
+        }
+
+        <a
+          class="episode-nav-link season-link"
+          [routerLink]="seasonRoute()">
+          {{ translate.isPt() ? 'Voltar à temporada' : 'Back to season' }}
+        </a>
+
+        @if (nextEpisode(); as next) {
+          <a
+            class="episode-nav-link next-episode"
+            [routerLink]="['/lore', currentMode(), next.id]">
+            <span>{{ translate.isPt() ? 'Próximo episódio →' : 'Next episode →' }}</span>
+            <strong>{{ episodeTitle(next) }}</strong>
+          </a>
+        }
+      </nav>
+
    } @else {
       <div style="padding: 100px; text-align: center; font-family: 'Courier New', monospace;"
            [style.color]="currentMode() === 'jonah' ? '#ff0000' : '#00e5ff'">
@@ -73,16 +102,4 @@
 
   </div>
 
-  <div class="bottom-back-action">
-    <a
-  class="back-btn bottom-btn"
-  (click)="goBack(); $event.preventDefault()">
-
-  &larr;
-  {{ translate.isPt()
-      ? 'VOLTAR AO SUMÁRIO'
-      : 'BACK TO LIST'
-  }}
-</a>
-  </div>
 </div>

@@ -19,9 +19,9 @@ import {
 } from '@angular/common';
 
 import {
-  Router,
   ActivatedRoute,
-  } from '@angular/router';
+  RouterLink
+} from '@angular/router';
 
 import { TranslationService } from '../../services/translation.service';
 import { ContentService } from '../../services/content.service';
@@ -32,7 +32,8 @@ import {
   switchMap,
   tap,
   take,
-  catchError
+  catchError,
+  map
 } from 'rxjs/operators';
 
 import { SplitContentPipe } from '../../components/pipes/content-splitter.pipe';
@@ -49,7 +50,8 @@ import { AuthorSignatureComponent } from '../../components/author-signature/auth
     SplitContentPipe,
     AdArticleComponent,
     NgOptimizedImage,
-    AuthorSignatureComponent
+    AuthorSignatureComponent,
+    RouterLink
   ],
   templateUrl: './lore-reader.html',
   styleUrls: ['./lore-reader.scss']
@@ -59,7 +61,6 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
   public translate = inject(TranslationService);
 
   private seoService = inject(SeoService);
-  private router = inject(Router);
   private route = inject(ActivatedRoute);
   private injector = inject(Injector);
   private document = inject(DOCUMENT);
@@ -86,6 +87,8 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
   episode$!: Observable<LoreEpisode | null>;
 
   activeEpisode = signal<LoreEpisode | null>(null);
+  previousEpisode = signal<LoreEpisode | null>(null);
+  nextEpisode = signal<LoreEpisode | null>(null);
 
   constructor() {
 
@@ -266,6 +269,8 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
           rawMode !== 'jonah'
         ) {
           this.activeEpisode.set(null);
+          this.previousEpisode.set(null);
+          this.nextEpisode.set(null);
           this.setSsrStatus(404);
 
           return of(null);
@@ -285,6 +290,8 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
 
         if (!id) {
           this.activeEpisode.set(null);
+          this.previousEpisode.set(null);
+          this.nextEpisode.set(null);
           this.setSsrStatus(404);
 
           return of(null);
@@ -310,14 +317,24 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
 
             take(1),
 
-            tap(ep => {
+            switchMap(ep =>
+              contentService.getEpisodes(mode).pipe(
+                take(1),
+                map(episodes => ({ ep, episodes }))
+              )
+            ),
+
+            tap(({ ep, episodes }) => {
 
               if (!ep) {
                 this.setSsrStatus(404);
               }
 
               this.activeEpisode.set(ep);
+              this.setAdjacentEpisodes(id, episodes);
             }),
+
+            map(({ ep }) => ep),
 
             catchError(err => {
 
@@ -327,6 +344,8 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
               );
 
               this.activeEpisode.set(null);
+              this.previousEpisode.set(null);
+              this.nextEpisode.set(null);
 
               this.setSsrStatus(404);
 
@@ -425,21 +444,58 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
      */
   }
 
-  goBack(): void {
-  const mode = this.currentMode();
+  seasonRoute(): string[] {
+    const id =
+      this.activeEpisode()?.id ??
+      this.route.snapshot.paramMap.get('id') ??
+      '';
 
-  const id =
-    this.route.snapshot.paramMap.get('id') ?? '';
+    const season =
+      this.getEpisodeStructure(id)?.season === 2
+        ? 's2'
+        : 's1';
 
-  const season =
-    id.startsWith('s2-')
-      ? 's2'
-      : 's1';
+    return ['/visual-novel', this.currentMode(), season];
+  }
 
-  this.router.navigate([
-    '/visual-novel',
-    mode,
-    season
-  ]);
-}
+  episodeTitle(episode: LoreEpisode): string {
+    return this.translate.isPt()
+      ? episode.title
+      : (episode.title_en || episode.title);
+  }
+
+  private setAdjacentEpisodes(
+    currentId: string,
+    episodes: LoreEpisode[]
+  ): void {
+    const currentStructure = this.getEpisodeStructure(currentId);
+
+    if (!currentStructure) {
+      this.previousEpisode.set(null);
+      this.nextEpisode.set(null);
+      return;
+    }
+
+    const seasonEpisodes = episodes.filter(episode =>
+      this.getEpisodeStructure(episode.id)?.season === currentStructure.season
+    );
+    const currentIndex = seasonEpisodes.findIndex(
+      episode => episode.id === currentId
+    );
+
+    if (currentIndex < 0) {
+      this.previousEpisode.set(null);
+      this.nextEpisode.set(null);
+      return;
+    }
+
+    this.previousEpisode.set(
+      currentIndex > 0 ? seasonEpisodes[currentIndex - 1] : null
+    );
+    this.nextEpisode.set(
+      currentIndex < seasonEpisodes.length - 1
+        ? seasonEpisodes[currentIndex + 1]
+        : null
+    );
+  }
 }
