@@ -128,11 +128,25 @@
   color: #ff3d00;
   border-color: rgba(255, 61, 0, 0.5);
 
+  span,
+  strong {
+    color: inherit;
+  }
+
+  &:visited {
+    color: #ff3d00;
+  }
+
   &:hover,
   &:focus-visible {
-    color: #fff;
+    color: #1a0800;
     background: #ff3d00;
     box-shadow: 0 0 16px rgba(255, 61, 0, 0.35);
+
+    span,
+    strong {
+      color: inherit;
+    }
   }
 }
 
