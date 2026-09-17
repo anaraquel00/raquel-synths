@@ -61,32 +61,93 @@
     }
   }
 }
-/* --- ROTA DE FUGA (Rodapé RQS) --- */
-.bottom-back-action {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.episode-navigation {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 1rem;
+  align-items: stretch;
   width: 100%;
-  padding-bottom: 4rem; /* Respiro pesado antes de encostar no rodapé do site */
+  padding-bottom: 4rem;
+}
 
-  .bottom-btn {
-    font-size: 1.1rem;
-    padding: 12px 24px;
-    letter-spacing: 1.5px;
-    /* A classe .back-btn que você colocou nele já vai garantir o efeito neon
-       e as cores, nós só centralizamos e ajustamos a dimensão de clique! */
+.episode-nav-link {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.35rem;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 12px 18px;
+  color: #00f3ff;
+  border: 1px solid rgba(0, 243, 255, 0.5);
+  border-radius: 8px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.8rem;
+  text-decoration: none;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+  transition: all 0.3s ease;
+
+  strong {
+    color: inherit;
+    font-size: 0.75rem;
+  }
+
+  &:hover,
+  &:focus-visible {
+    color: #000;
+    background: #00f3ff;
+    box-shadow: 0 0 16px rgba(0, 243, 255, 0.35);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
   }
 }
-:host-context(body.mode-jonah) .bottom-back-action {
-  .bottom-btn {
-    color: #ff3d00;
-    border-color: rgba(255, 61, 0, 0.4);
 
-    &:hover {
-      color: #fff;
-      background: #ff3d00;
-      text-shadow: 0 0 8px rgba(255, 61, 0, 0.5);
-    }
+.previous-episode {
+  grid-column: 1;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.season-link {
+  grid-column: 2;
+  align-items: center;
+  text-align: center;
+}
+
+.next-episode {
+  grid-column: 3;
+  align-items: flex-end;
+  text-align: right;
+}
+
+:host-context(body.mode-jonah) .episode-nav-link {
+  color: #ff3d00;
+  border-color: rgba(255, 61, 0, 0.5);
+
+  &:hover,
+  &:focus-visible {
+    color: #fff;
+    background: #ff3d00;
+    box-shadow: 0 0 16px rgba(255, 61, 0, 0.35);
+  }
+}
+
+@media (max-width: 768px) {
+  .episode-navigation {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .previous-episode,
+  .season-link,
+  .next-episode {
+    grid-column: 1;
+    align-items: center;
+    width: 100%;
+    text-align: center;
   }
 }
 
