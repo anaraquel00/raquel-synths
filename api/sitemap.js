@@ -32,6 +32,11 @@ export default async function handler(req, res) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&apos;');
 
+  const parseReleaseDate = (value) =>
+    /^\d{4}-\d{2}-\d{2}$/.test(value)
+      ? new Date(`${value}T00:00:00-03:00`)
+      : new Date(value);
+
   const normalizeDate = (value) => {
     if (!value) {
       return undefined;
@@ -227,10 +232,12 @@ export default async function handler(req, res) {
   const [
     broklinDocs,
     jonahDocs,
+    hybridDocs,
     logsDocs
   ] = await Promise.all([
     fetchCollection('lore'),
     fetchCollection('lore-jonah'),
+    fetchCollection('global-sagas'),
     fetchCollection('logs')
   ]);
 
@@ -262,7 +269,7 @@ export default async function handler(req, res) {
       return false;
     }
 
-    const releaseDate = new Date(releaseDateValue);
+    const releaseDate = parseReleaseDate(releaseDateValue);
 
     if (
       Number.isNaN(releaseDate.getTime()) ||
@@ -327,6 +334,24 @@ export default async function handler(req, res) {
     jonahDocs,
     'jonah'
   );
+
+  const appendHybridEpisodes = (documents) => {
+    documents
+      .filter(isPublicEpisode)
+      .forEach((doc) => {
+        const id = doc.name?.split('/').pop();
+        if (!id) return;
+        const releaseDate = doc.fields?.releaseDate?.stringValue ?? doc.fields?.releaseDate?.timestampValue;
+        appendUrl({
+          path: "/hybrid-reader/" + encodeURIComponent(id),
+          lastmod: normalizeDate(doc.updateTime ?? releaseDate),
+          changefreq: 'monthly',
+          priority: '0.8'
+        });
+      });
+  };
+
+  appendHybridEpisodes(hybridDocs);
 
   // =====================================================
 // 7. LOGS PUBLICADOS

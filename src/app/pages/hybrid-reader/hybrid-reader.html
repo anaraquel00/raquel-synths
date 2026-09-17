@@ -51,6 +51,18 @@
 
       <div class="divider"><span>● ● ●</span></div>
       <app-author-signature></app-author-signature>
+
+      @if (navigation$ | async; as navigation) {
+        <nav class="episode-navigation" [attr.aria-label]="translate.isPt() ? 'Navegação do episódio' : 'Episode navigation'">
+          @if (navigation.previous; as previous) {
+            <a [routerLink]="['/hybrid-reader', previous.id]">&larr; {{ translate.isPt() ? 'Episódio anterior' : 'Previous episode' }} — {{ translate.isPt() ? previous.title : (previous.title_en || previous.title) }}</a>
+          }
+          <a routerLink="/hybrid-saga">{{ translate.isPt() ? 'Voltar à saga híbrida' : 'Back to Hybrid Saga' }}</a>
+          @if (navigation.next; as next) {
+            <a [routerLink]="['/hybrid-reader', next.id]">{{ translate.isPt() ? 'Próximo episódio' : 'Next episode' }} &rarr; — {{ translate.isPt() ? next.title : (next.title_en || next.title) }}</a>
+          }
+        </nav>
+      }
       </article>
 
    } @else {

@@ -19,8 +19,8 @@ import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslationService } from '../../services/translation.service';
 import { ContentService } from '../../services/content.service';
 import { SeoService } from '../../services/seo.service';
-import { Observable, of, BehaviorSubject } from 'rxjs';
-import { map, switchMap, tap, take, catchError } from 'rxjs/operators';
+import { Observable, of, BehaviorSubject, combineLatest } from 'rxjs';
+import { map, switchMap, tap, take, catchError, shareReplay } from 'rxjs/operators';
 import { SplitContentPipe } from "../../components/pipes/content-splitter.pipe";
 import { LoreEpisode } from '../../data/lore-data';
 import { AdArticleComponent } from "../../components/ad-article/ad-article";
@@ -57,6 +57,7 @@ export class HybridReaderComponent implements OnInit, OnDestroy {
   isBrowser = isPlatformBrowser(this.platformId);
 
   episode$!: Observable<LoreEpisode | null>;
+  navigation$!: Observable<{ previous: LoreEpisode | null; next: LoreEpisode | null; }>;
   activeEpisode = signal<LoreEpisode | null>(null);
 
   private mode$ = new BehaviorSubject<'broklin' | 'jonah'>('broklin');
@@ -150,6 +151,23 @@ export class HybridReaderComponent implements OnInit, OnDestroy {
             return of(null);
           })
         );
+      })
+    );
+
+    const publicEpisodes$ = this.contentService.getGlobalSagas('hybrid').pipe(
+      take(1),
+      shareReplay({ bufferSize: 1, refCount: true })
+    );
+    this.navigation$ = combineLatest([this.episode$, publicEpisodes$]).pipe(
+      map(([episode, episodes]) => {
+        if (!episode) return { previous: null, next: null };
+        const seasonPrefix = episode.id.match(/^s\d+-/)?.[0];
+        const seasonEpisodes = seasonPrefix ? episodes.filter(candidate => candidate.id.startsWith(seasonPrefix)) : [];
+        const index = seasonEpisodes.findIndex(candidate => candidate.id === episode.id);
+        return {
+          previous: index > 0 ? seasonEpisodes[index - 1] : null,
+          next: index >= 0 && index < seasonEpisodes.length - 1 ? seasonEpisodes[index + 1] : null
+        };
       })
     );
   }

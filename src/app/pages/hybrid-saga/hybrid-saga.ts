@@ -1,9 +1,9 @@
 import { Component, inject, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ContentService } from '../../services/content.service';
 import { TranslationService } from '../../services/translation.service';
-import { Observable, BehaviorSubject, combineLatest, map, take, of, switchMap } from 'rxjs';
+import { Observable, BehaviorSubject, combineLatest, map, take } from 'rxjs';
 import { NgOptimizedImage } from '@angular/common';
 import { SeoService } from '../../services/seo.service';
 import { ActivatedRoute } from '@angular/router';
@@ -37,18 +37,8 @@ export class HybridSagaComponent implements OnInit, OnDestroy {
     this.temporadaAtivaSubject.next(numeroDaTemporada);
   }
 
-  // 🌐 BUSCA UNIFICADA: Puxa os episódios do Core Híbrido sem divisão de facção
- episodes$: Observable<any[]> = of(true).pipe(
-  map(() => {
-    if (!isPlatformBrowser(this.platformId)) {
-      return of([]);
-    }
-    // 🚀 Chama corretamente a coleção global híbrida!
-    return this.contentService.getGlobalSagas('hybrid'); // O segundo argumento (id) é necessário pela assinatura do método, mas não é usado na implementação para esta listagem.
-  }),
-  switchMap(obs => obs),
-  take(1)
- );
+  // 🌐 Fonte única de episódios públicos, disponível em SSR e browser.
+  episodes$: Observable<any[]> = this.contentService.getGlobalSagas('hybrid').pipe(take(1));
 
   // 🛡️ FILTRO DE TEMPORADA INTACTO
   filteredEpisodes$: Observable<any[]> = combineLatest([this.episodes$, this.temporadaAtivaSubject]).pipe(
@@ -58,11 +48,7 @@ export class HybridSagaComponent implements OnInit, OnDestroy {
     })
   );
 
-  isBrowser: boolean;
-
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
-    this.isBrowser = isPlatformBrowser(this.platformId);
-  }
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit() {
     // 🛡️ ESCUTA ATIVA: Captura o parâmetro de temporada na URL de forma segura

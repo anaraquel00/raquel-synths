@@ -63,6 +63,23 @@ export class ContentService {
   private globalSagasCache: LoreEpisode[] | null = null;
   private homeContentCache = new Map<string, any[]>();
 
+  // Relógio de release: nulo em produção; sobrescrevível apenas em QA isolado.
+  private readonly HYBRID_PREVIEW_NOW: string | null = null;
+
+  private getHybridNowIso(): string {
+    return this.HYBRID_PREVIEW_NOW ?? new Date().toISOString();
+  }
+
+  private getHybridNowMs(): number {
+    return this.HYBRID_PREVIEW_NOW ? new Date(this.HYBRID_PREVIEW_NOW).getTime() : Date.now();
+  }
+
+  private parseHybridReleaseDate(value: string): Date {
+    return /^\d{4}-\d{2}-\d{2}$/.test(value)
+      ? new Date(`${value}T00:00:00-03:00`)
+      : new Date(value);
+  }
+
 
   // 🎵 1. DISCOGRAFIA (One-Shot SSR)
   getDiscography(): Observable<any[]> {
@@ -384,12 +401,27 @@ private parseFirestoreValue(value: FirestoreRestValue): unknown {
     }
 
     const collectionName = mode === 'hybrid' ? 'global-sagas' : 'lore';
+
+    if (mode === 'hybrid' && isPlatformServer(this.platformId)) {
+      const url = 'https://firestore.googleapis.com/v1/projects/raquel-synths-platform/databases/(default)/documents/global-sagas?pageSize=300';
+      return this.http.get<FirestoreRestCollection>(url).pipe(
+        timeout(4000),
+        map(response => this.sortPublicGlobalSagas((response.documents ?? []).map(restDoc =>
+          this.mapFirestoreRestDocument(restDoc, restDoc.name.split('/').pop() ?? '')
+        ))),
+        tap(episodes => { this.globalSagasCache = episodes; }),
+        catchError(err => {
+          console.error('⚠️ [ContentService] Erro ao buscar sagas globais via SSR:', err);
+          return of([]);
+        })
+      );
+    }
     const colRef = collection(this.firestore, collectionName);
 
     const q = query(
       colRef,
       orderBy('releaseDate', 'desc'),
-      where('releaseDate', '<=', new Date().toISOString()),
+      where('releaseDate', '<=', this.getHybridNowIso()),
       where('published', '==', true)
     );
 
@@ -400,9 +432,7 @@ private parseFirestoreValue(value: FirestoreRestValue): unknown {
           ...docSnap.data()
         })) as LoreEpisode[];
 
-        const sorted = episodes.sort((a, b) =>
-          (a.id || '').localeCompare(b.id || '', undefined, { numeric: true, sensitivity: 'base' })
-        );
+        const sorted = this.sortPublicGlobalSagas(episodes);
 
         this.globalSagasCache = sorted;
         return sorted;
@@ -412,6 +442,14 @@ private parseFirestoreValue(value: FirestoreRestValue): unknown {
         return of([]);
       })
     );
+  }
+
+  private sortPublicGlobalSagas(episodes: LoreEpisode[]): LoreEpisode[] {
+    return episodes
+      .filter(episode => this.isEpisodePublic(episode))
+      .sort((a, b) =>
+        (a.id || '').localeCompare(b.id || '', undefined, { numeric: true, sensitivity: 'base' })
+      );
   }
 
 getGlobalSagaById(
@@ -495,13 +533,13 @@ private isEpisodePublic(
   }
 
   const releaseDate =
-    new Date(episode.releaseDate);
+    this.parseHybridReleaseDate(episode.releaseDate);
 
   if (Number.isNaN(releaseDate.getTime())) {
     return false;
   }
 
-  return releaseDate.getTime() <= Date.now();
+  return releaseDate.getTime() <= this.getHybridNowMs();
 }
 
   // 🛒 4. LOJA (Produtos)
