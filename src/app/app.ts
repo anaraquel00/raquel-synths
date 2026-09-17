@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, PLATFORM_ID, Renderer2, signal, afterNextRender, effect } from '@angular/core';
+import { Component, inject, OnInit, PLATFORM_ID, Renderer2, REQUEST, signal, afterNextRender, effect } from '@angular/core';
 import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
 
 import { Router, NavigationEnd, ActivatedRoute, RouterModule, RouterOutlet } from '@angular/router';
@@ -32,6 +32,7 @@ export class App implements OnInit {
   private document = inject(DOCUMENT);
   private renderer = inject(Renderer2);
   private platformId = inject(PLATFORM_ID);
+  private request = inject(REQUEST, { optional: true });
 
   cookiesAccepted = signal(false);
    // 📡 NOVO SIGNAL: Vai guardar o contexto da rota para o SEO processar
@@ -44,6 +45,9 @@ export class App implements OnInit {
     private adSenseService: AdSenseService,
     private trackingService: TrackingService
   ) {
+
+    // A rota é a autoridade visual no SSR e na hidratação inicial.
+    this.applyRouteTheme(this.request?.url ?? this.router.url);
 
      // 📡 O NOVO RADAR GLOBAL DE SEO
     effect(() => {
@@ -116,9 +120,10 @@ export class App implements OnInit {
       // Pegamos a referência da janela (window) com segurança
       const win = this.document.defaultView as any;
 
-      // 2.5. Injeta o Tema Base de forma segura pós-hidratação
+      // 2.5. A preferência só vale quando a rota não define um modo.
       const savedTheme = win && win.localStorage ? win.localStorage.getItem('rqs-theme') : null;
-      this.aplicarModo(savedTheme === 'jonah' ? 'jonah' : 'broklin');
+      const routeMode = this.getRouteMode(this.router.url);
+      this.aplicarModo(routeMode ?? (savedTheme === 'jonah' ? 'jonah' : 'broklin'));
 
       // 3. Lógica de Cookies
       if (win && win.localStorage) {
@@ -129,13 +134,31 @@ export class App implements OnInit {
       // 4. Override de Tema via URL
       if (win) {
         const params = new URLSearchParams(win.location.search);
-        if (params.get('mode') === 'jonah') this.aplicarModo('jonah');
+        if (!routeMode && params.get('mode') === 'jonah') this.aplicarModo('jonah');
       }
 
       // 5. AdSense e Tracking Injetados em Segurança
       this.adSenseService.initLazyLoad('ca-pub-5619990751602183');
       this.trackingService.initLazyTracking('GTM-P3KFK5T5');
       });
+  }
+
+  private getRouteMode(url: string): 'broklin' | 'jonah' | null {
+    const path = url.startsWith('http') ? new URL(url).pathname : (url.startsWith('/') ? url : `/${url}`);
+    const match = path.match(/^\/(?:visual-novel|lore)\/(broklin|jonah)(?:\/|$)/);
+    return (match?.[1] as 'broklin' | 'jonah' | undefined) ?? null;
+  }
+
+  private applyRouteTheme(url: string): void {
+    const mode = this.getRouteMode(url);
+
+    if (!mode) {
+      return;
+    }
+
+    this.renderer.removeClass(this.document.body, 'mode-broklin');
+    this.renderer.removeClass(this.document.body, 'mode-jonah');
+    this.renderer.addClass(this.document.body, `mode-${mode}`);
   }
 
 ngOnInit() {
@@ -155,6 +178,7 @@ ngOnInit() {
 
       const currentPath = this.router.url.split('?')[0];
       const isHome = currentPath === '/' || currentPath === '';
+      this.applyRouteTheme(currentPath);
 
       // Apenas entrega as coordenadas para o Radar (effect) trabalhar!
       this.activeRouteState.set({

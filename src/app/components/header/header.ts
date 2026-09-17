@@ -1,4 +1,4 @@
-import { Component, Inject, inject, PLATFORM_ID, signal, OnInit, OnDestroy, afterNextRender } from '@angular/core';
+import { Component, Inject, inject, PLATFORM_ID, REQUEST, signal, OnInit, OnDestroy, afterNextRender } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { TranslationService } from '../../services/translation.service';
 import { NAV_DATA } from '../../data/app-data';
-import { Router, RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TrackingService } from '../../services/tracking.service';
@@ -25,12 +25,19 @@ export class Header implements OnInit, OnDestroy {
   private platformId = inject(PLATFORM_ID);
   private themeObserver: MutationObserver | null = null;
 
+  private request = inject(REQUEST, { optional: true });
   constructor(
     @Inject(DOCUMENT) private document: Document,
     public translate: TranslationService, // ← SERVIÇO CORRETO INJETADO
     private router: Router,
     private trackingService: TrackingService
   ) {
+    // A URL é a fonte de verdade do modo durante o SSR e a hidratação.
+    const routeMode = this.getRouteMode(this.request?.url ?? this.router.url);
+    if (routeMode) {
+      this.isJonahMode.set(routeMode === 'jonah');
+    }
+
     // 🛡️ TRAVA TÁTICA: Sincroniza o estado do tema apenas após a hidratação (DOM Estável)
     afterNextRender(() => {
       this.isJonahMode.set(this.document.body.classList.contains('mode-jonah'));
@@ -39,7 +46,15 @@ export class Header implements OnInit, OnDestroy {
       });
       this.themeObserver.observe(this.document.body, { attributes: true, attributeFilter: ['class'] });
     });
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        const routeMode = this.getRouteMode(event.urlAfterRedirects);
+        if (routeMode) this.isJonahMode.set(routeMode === 'jonah');
+      }
+    });
+
   }
+
 
   ngOnInit() {
     // Removido - Movido para afterNextRender no construtor para proteção de Hidratação
@@ -47,6 +62,13 @@ export class Header implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     if (this.themeObserver) this.themeObserver.disconnect();
+
+  }
+
+  private getRouteMode(url: string): 'broklin' | 'jonah' | null {
+    const path = url.startsWith('http') ? new URL(url).pathname : (url.startsWith('/') ? url : `/${url}`);
+    const match = path.match(/^\/(?:visual-novel|lore)\/(broklin|jonah)(?:\/|$)/);
+    return (match?.[1] as 'broklin' | 'jonah' | undefined) ?? null;
   }
 
   // 🛡️ A FUNÇÃO DO BOTÃO MANUAL AGORA USA O SERVIÇO CORRETO
