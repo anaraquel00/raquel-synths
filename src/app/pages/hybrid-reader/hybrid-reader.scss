@@ -336,3 +336,98 @@ a.back-btn, .btn-decriptar {
     line-height: 1.35;
   }
 }
+
+/* --- SOUNDTRACK DO EPISÓDIO (HTML EDITORIAL DO FIRESTORE) --- */
+::ng-deep .story-content {
+  .rqs-soundtrack {
+    margin: 0;
+    padding: 0;
+  }
+
+  .rqs-soundtrack-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 0;
+    box-sizing: border-box;
+    margin-top: 2rem;
+    margin-bottom: 12px;
+    padding: 1.1rem;
+    border: 1px solid var(--hybrid-border);
+    background: var(--hybrid-badge-bg);
+    box-shadow: 0 0 15px var(--hybrid-glow);
+    color: #fff;
+    font-family: 'Courier New', Courier, monospace;
+    text-align: center;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+
+    &[href="#"] {
+      display: none !important;
+    }
+
+    &:hover,
+    &:focus-visible {
+      border-color: var(--hybrid-accent);
+      background: var(--hybrid-badge-bg);
+      color: #fff;
+      box-shadow: 0 0 22px var(--hybrid-glow);
+      outline: none;
+      transform: translateY(-1px);
+    }
+  }
+
+  .rqs-soundtrack-status,
+  .rqs-soundtrack-copy,
+  .rqs-soundtrack-cta {
+    display: block;
+  }
+
+  .rqs-soundtrack-status {
+    color: var(--hybrid-accent);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .rqs-soundtrack-cta {
+    align-self: center;
+    margin-top: 0.25rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--hybrid-border);
+    color: var(--hybrid-accent);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .rqs-soundtrack-title {
+    color: inherit;
+    font-size: 1.05rem;
+    overflow-wrap: anywhere;
+  }
+
+  .rqs-soundtrack-copy {
+    color: inherit;
+    opacity: 0.85;
+  }
+
+  .rqs-soundtrack-link:hover,
+  .rqs-soundtrack-link:focus-visible,
+  .rqs-soundtrack-link:visited:hover,
+  .rqs-soundtrack-link:visited:focus-visible {
+    .rqs-soundtrack-cta {
+      background: var(--hybrid-accent);
+      border-color: var(--hybrid-accent);
+      color: #08100e;
+      box-shadow: 0 0 14px var(--hybrid-glow);
+    }
+  }
+}
+
+@media (max-width: 390px) {
+  ::ng-deep .story-content .rqs-soundtrack-link {
+    margin-top: 1.5rem;
+    padding: 1rem;
+  }
+}
