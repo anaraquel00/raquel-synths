@@ -579,20 +579,114 @@ function isHttpsUrl(value) {
   }
 }
 
+function escapeEditorialHtml(value) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function splitTrailingUrlPunctuation(value) {
+  let url = value;
+  let suffix = '';
+
+  while (/[.,;:!?]$/u.test(url)) {
+    suffix = url.at(-1) + suffix;
+    url = url.slice(0, -1);
+  }
+
+  for (const [opening, closing] of [
+    ['(', ')'],
+    ['[', ']'],
+    ['{', '}']
+  ]) {
+    while (
+      url.endsWith(closing) &&
+      url.split(closing).length > url.split(opening).length
+    ) {
+      suffix = closing + suffix;
+      url = url.slice(0, -1);
+    }
+  }
+
+  return { url, suffix };
+}
+
+function normalizeEditorialLine(line) {
+  const urlPattern = /https?:\/\/[^\s<>"']+/giu;
+  let normalized = '';
+  let previousIndex = 0;
+
+  for (const match of line.matchAll(urlPattern)) {
+    const index = match.index ?? 0;
+    const { url, suffix } = splitTrailingUrlPunctuation(match[0]);
+
+    normalized += escapeEditorialHtml(
+      line.slice(previousIndex, index)
+    );
+
+    try {
+      const parsed = new URL(url);
+
+      if (!['http:', 'https:'].includes(parsed.protocol)) {
+        throw new Error('Unsupported editorial URL protocol.');
+      }
+
+      const escapedUrl = escapeEditorialHtml(url);
+      normalized +=
+        `<a href="${escapedUrl}" target="_blank" ` +
+        `rel="noopener noreferrer">${escapedUrl}</a>`;
+    } catch {
+      normalized += escapeEditorialHtml(url);
+    }
+
+    normalized += escapeEditorialHtml(suffix);
+    previousIndex = index + match[0].length;
+  }
+
+  return normalized + escapeEditorialHtml(line.slice(previousIndex));
+}
+
+export function normalizeEditorialDescription(rawDescription) {
+  if (typeof rawDescription !== 'string') return '';
+
+  const normalizedLineEndings = rawDescription
+    .replace(/\r\n?/g, '\n')
+    .trim();
+
+  if (!normalizedLineEndings) return '';
+
+  return normalizedLineEndings
+    .split(/\n[ \t]*\n+/u)
+    .map(block => (
+      '<p>' +
+      block
+        .split('\n')
+        .map(normalizeEditorialLine)
+        .join('<br>\n') +
+      '</p>'
+    ))
+    .join('\n\n');
+}
+
 export function validateRelease(rawRelease) {
+  const rawDescriptionPT =
+    typeof rawRelease?.descriptionPT === 'string'
+      ? rawRelease.descriptionPT
+      : '';
+  const rawDescriptionEN =
+    typeof rawRelease?.descriptionEN === 'string'
+      ? rawRelease.descriptionEN
+      : '';
   const release = {
     title:
       typeof rawRelease?.title === 'string'
         ? rawRelease.title
         : '',
-    descriptionPT:
-      typeof rawRelease?.descriptionPT === 'string'
-        ? rawRelease.descriptionPT
-        : '',
-    descriptionEN:
-      typeof rawRelease?.descriptionEN === 'string'
-        ? rawRelease.descriptionEN
-        : '',
+    descriptionPT: normalizeEditorialDescription(rawDescriptionPT),
+    descriptionEN: normalizeEditorialDescription(rawDescriptionEN),
     cover:
       typeof rawRelease?.cover === 'string'
         ? rawRelease.cover
@@ -626,14 +720,14 @@ export function validateRelease(rawRelease) {
     missingFields.push('title');
   }
   if (
-    !release.descriptionPT.trim() ||
-    release.descriptionPT.length > 100_000
+    !rawDescriptionPT.trim() ||
+    rawDescriptionPT.length > 100_000
   ) {
     missingFields.push('descriptionPT');
   }
   if (
-    !release.descriptionEN.trim() ||
-    release.descriptionEN.length > 100_000
+    !rawDescriptionEN.trim() ||
+    rawDescriptionEN.length > 100_000
   ) {
     missingFields.push('descriptionEN');
   }
@@ -863,6 +957,11 @@ function verifyDryRunToken(
 
 function buildDryRunChecks(release, documentId, missingFields) {
   const missing = new Set(missingFields);
+  const descriptionCheck = field => ({
+    raw: missing.has(field) ? 'MISSING' : 'FOUND',
+    htmlNormalization: missing.has(field) ? 'BLOCKED' : 'PASS',
+    renderedPreview: missing.has(field) ? 'UNAVAILABLE' : 'AVAILABLE'
+  });
 
   return {
     documentId:
@@ -871,10 +970,8 @@ function buildDryRunChecks(release, documentId, missingFields) {
         : 'MISSING',
     title: missing.has('title') ? 'MISSING' : release.title,
     cover: missing.has('cover') ? 'MISSING' : 'FOUND',
-    descriptionEN:
-      missing.has('descriptionEN') ? 'MISSING' : 'FOUND',
-    descriptionPT:
-      missing.has('descriptionPT') ? 'MISSING' : 'FOUND',
+    descriptionEN: descriptionCheck('descriptionEN'),
+    descriptionPT: descriptionCheck('descriptionPT'),
     releaseDate:
       missing.has('releaseDate') ? 'MISSING' : 'FOUND',
     soundcloud:
@@ -920,6 +1017,14 @@ async function handleDryRun(rawRelease, adminSecret, operationId) {
     missingFields: validation.missingFields,
     firestore,
     existingDocument: exists,
+    preview: {
+      descriptionEN: validation.missingFields.includes('descriptionEN')
+        ? ''
+        : validation.release.descriptionEN,
+      descriptionPT: validation.missingFields.includes('descriptionPT')
+        ? ''
+        : validation.release.descriptionPT
+    },
     dryRunToken: blocked
       ? null
       : createDryRunToken(

@@ -50,12 +50,18 @@ interface ImportRelease {
   type: ReleaseType | '';
 }
 
+interface DescriptionDryRunCheck {
+  raw: 'FOUND' | 'MISSING';
+  htmlNormalization: 'PASS' | 'BLOCKED';
+  renderedPreview: 'AVAILABLE' | 'UNAVAILABLE';
+}
+
 interface DryRunChecks {
   documentId: string;
   title: string;
   cover: string;
-  descriptionEN: string;
-  descriptionPT: string;
+  descriptionEN: DescriptionDryRunCheck;
+  descriptionPT: DescriptionDryRunCheck;
   releaseDate: string;
   soundcloud: string;
   faction: string;
@@ -69,6 +75,10 @@ interface DryRunResult {
   firestore: 'BLOCKED' | 'WOULD CREATE';
   existingDocument: boolean;
   dryRunToken: string | null;
+  preview: {
+    descriptionEN: string;
+    descriptionPT: string;
+  };
 }
 
 interface ApiError {

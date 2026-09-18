@@ -261,6 +261,32 @@ textarea[readonly] {
   }
 }
 
+.description-check {
+  margin: 1.25rem 0;
+  border: 1px solid rgba(119, 203, 216, 0.4);
+  border-radius: 6px;
+  padding: 1rem;
+
+  h3 {
+    margin: 0 0 1rem;
+    color: #8ff1ff;
+    font-size: 0.9rem;
+    letter-spacing: 0.08em;
+  }
+}
+
+.rendered-description {
+  overflow-wrap: anywhere;
+  margin-top: 1rem;
+  border: 1px dashed rgba(143, 241, 255, 0.45);
+  border-radius: 5px;
+  padding: 1rem;
+  color: #e9f8ff;
+  background: #071019;
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+}
+
 .feedback {
   min-height: 2rem;
   margin-top: 1rem;

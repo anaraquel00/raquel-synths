@@ -218,8 +218,45 @@
           <p><strong>DOCUMENT ID:</strong><br>{{ result.checks.documentId }}</p>
           <p><strong>TITLE:</strong><br>{{ result.checks.title }}</p>
           <p><strong>COVER:</strong><br>{{ result.checks.cover }}</p>
-          <p><strong>DESCRIPTION EN:</strong><br>{{ result.checks.descriptionEN }}</p>
-          <p><strong>DESCRIPTION PT:</strong><br>{{ result.checks.descriptionPT }}</p>
+
+          <section class="description-check" aria-labelledby="description-en-check">
+            <h3 id="description-en-check">DESCRIPTION EN</h3>
+            <p><strong>RAW:</strong> {{ result.checks.descriptionEN.raw }}</p>
+            <p>
+              <strong>HTML NORMALIZATION:</strong>
+              {{ result.checks.descriptionEN.htmlNormalization }}
+            </p>
+            <p>
+              <strong>RENDERED PREVIEW:</strong>
+              {{ result.checks.descriptionEN.renderedPreview }}
+            </p>
+            @if (result.preview.descriptionEN) {
+              <div
+                class="rendered-description"
+                [innerHTML]="result.preview.descriptionEN"
+              ></div>
+            }
+          </section>
+
+          <section class="description-check" aria-labelledby="description-pt-check">
+            <h3 id="description-pt-check">DESCRIPTION PT</h3>
+            <p><strong>RAW:</strong> {{ result.checks.descriptionPT.raw }}</p>
+            <p>
+              <strong>HTML NORMALIZATION:</strong>
+              {{ result.checks.descriptionPT.htmlNormalization }}
+            </p>
+            <p>
+              <strong>RENDERED PREVIEW:</strong>
+              {{ result.checks.descriptionPT.renderedPreview }}
+            </p>
+            @if (result.preview.descriptionPT) {
+              <div
+                class="rendered-description"
+                [innerHTML]="result.preview.descriptionPT"
+              ></div>
+            }
+          </section>
+
           <p><strong>RELEASE DATE:</strong><br>{{ result.checks.releaseDate }}</p>
           <p><strong>SOUNDCLOUD:</strong><br>{{ result.checks.soundcloud }}</p>
           <p><strong>FACTION:</strong><br>{{ result.checks.faction }}</p>
