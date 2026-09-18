@@ -235,6 +235,13 @@ export const routes: Routes = [
       .then(m => m.DeepLinkRedirectComponent),
     title: 'RaQuel Synths // Uplink Player'
   },
+  {
+    path: 'admin/soundcloud-importer',
+    loadComponent: () =>
+      import('./pages/soundcloud-importer/soundcloud-importer')
+        .then(m => m.SoundcloudImporterComponent),
+    title: 'RQS SoundCloud Importer'
+  },
   // 🛰️ ROTA DE BIO CENTRAL (O "Beacons" Próprio da RaQuel Synths)
   {
     path: 'bio',

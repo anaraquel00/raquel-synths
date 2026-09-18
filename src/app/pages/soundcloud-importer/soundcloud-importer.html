@@ -1,0 +1,245 @@
+<main class="importer-shell">
+  <header class="importer-header">
+    <p class="eyebrow">INTERNAL ADMIN TOOL</p>
+    <h1>RQS SOUNDCLOUD IMPORTER</h1>
+    <p>
+      Resolve metadados públicos do SoundCloud, valide o payload e crie um
+      documento novo em <code>discography</code>.
+    </p>
+  </header>
+
+  @if (!sessionChecked()) {
+    <section class="panel session-panel" aria-live="polite">
+      <p>CHECKING ADMIN SESSION...</p>
+    </section>
+  } @else if (!authenticated()) {
+    <section class="panel" aria-labelledby="login-title">
+      <h2 id="login-title">ADMIN LOGIN</h2>
+
+      <form [formGroup]="loginForm" (ngSubmit)="login()">
+        <div class="field">
+          <label for="admin-credential">ADMIN CREDENTIAL</label>
+          <input
+            id="admin-credential"
+            type="password"
+            formControlName="credential"
+            autocomplete="off"
+            spellcheck="false"
+          >
+        </div>
+
+        <button
+          type="submit"
+          class="button primary"
+          [disabled]="loginForm.invalid || busyAction() !== null"
+          [attr.aria-busy]="busyAction() === 'login'"
+        >
+          {{ busyAction() === 'login' ? 'AUTHENTICATING...' : 'ADMIN LOGIN' }}
+        </button>
+      </form>
+    </section>
+  } @else {
+    <section class="session-bar" aria-label="Sessão administrativa ativa">
+      <p>
+        ADMIN SESSION ACTIVE
+        @if (sessionExpiresAt(); as expiresAt) {
+          <small>expires {{ expiresAt | date:'HH:mm:ss' }}</small>
+        }
+      </p>
+      <button
+        type="button"
+        class="button logout"
+        [disabled]="busyAction() !== null"
+        [attr.aria-busy]="busyAction() === 'logout'"
+        (click)="logout()"
+      >
+        {{ busyAction() === 'logout' ? 'LOGGING OUT...' : 'LOGOUT' }}
+      </button>
+    </section>
+
+    <section class="panel" aria-labelledby="resolve-title">
+      <h2 id="resolve-title">1. RESOLVE</h2>
+
+      <form [formGroup]="resolveForm" (ngSubmit)="resolve()">
+      <div class="field">
+        <label for="soundcloud-url">SOUNDCLOUD URL</label>
+        <input
+          id="soundcloud-url"
+          type="url"
+          formControlName="soundcloudUrl"
+          placeholder="https://soundcloud.com/..."
+          autocomplete="off"
+          spellcheck="false"
+        >
+      </div>
+
+      <button
+        type="submit"
+        class="button primary"
+        [disabled]="resolveForm.invalid || busyAction() !== null"
+        [attr.aria-busy]="busyAction() === 'resolve'"
+      >
+        {{ busyAction() === 'resolve' ? 'RESOLVING...' : 'RESOLVE' }}
+      </button>
+    </form>
+    </section>
+  }
+
+  @if (release(); as resolved) {
+    <section class="panel" aria-labelledby="release-title">
+      <h2 id="release-title">2. RELEASE DATA</h2>
+
+      <dl class="metadata-grid">
+        <div>
+          <dt>DOCUMENT ID</dt>
+          <dd><code>{{ documentId || 'Selecione TYPE' }}</code></dd>
+        </div>
+
+        <div>
+          <dt>TITLE</dt>
+          <dd>{{ resolved.title || 'MISSING' }}</dd>
+        </div>
+
+        <div>
+          <dt>RELEASE DATE</dt>
+          <dd>{{ resolved.releaseDate || 'MISSING' }}</dd>
+        </div>
+
+        <div>
+          <dt>SOUNDCLOUD</dt>
+          <dd>
+            <a
+              [href]="resolved.soundcloud"
+              target="_blank"
+              rel="noopener noreferrer"
+            >{{ resolved.soundcloud }}</a>
+          </dd>
+        </div>
+      </dl>
+
+      <div class="cover-preview">
+        <span>COVER</span>
+        @if (resolved.cover) {
+          <img
+            [src]="resolved.cover"
+            [alt]="'Capa de ' + resolved.title"
+            width="320"
+            height="320"
+          >
+        } @else {
+          <strong>MISSING</strong>
+        }
+      </div>
+
+      <div class="field">
+        <label for="description-en">DESCRIPTION EN — READ ONLY</label>
+        <textarea
+          id="description-en"
+          [value]="resolved.descriptionEN"
+          rows="12"
+          readonly
+        ></textarea>
+      </div>
+
+      <form
+        [formGroup]="detailsForm"
+        (input)="invalidateDryRun()"
+        (change)="invalidateDryRun()"
+      >
+        <div class="field">
+          <label for="description-pt">DESCRIPTION PT</label>
+          <textarea
+            id="description-pt"
+            formControlName="descriptionPT"
+            rows="12"
+            placeholder="Conteúdo editorial em português..."
+          ></textarea>
+        </div>
+
+        <div class="select-grid">
+          <div class="field">
+            <label for="faction">FACTION</label>
+            <select id="faction" formControlName="faction">
+              <option value="">Selecione</option>
+              <option value="broklin">broklin</option>
+              <option value="hybrid">hybrid</option>
+              <option value="jonah">jonah</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="release-type">TYPE</label>
+            <select id="release-type" formControlName="type">
+              <option value="">Selecione</option>
+              <option value="EP">EP</option>
+              <option value="Album">Album</option>
+              <option value="Single">Single</option>
+            </select>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel actions-panel" aria-labelledby="validation-title">
+      <h2 id="validation-title">3. VALIDATION</h2>
+
+      <div class="button-row">
+        <button
+          type="button"
+          class="button secondary"
+          [disabled]="busyAction() !== null"
+          [attr.aria-busy]="busyAction() === 'dry-run'"
+          (click)="runDryRun()"
+        >
+          {{ busyAction() === 'dry-run' ? 'VALIDATING...' : 'DRY RUN' }}
+        </button>
+
+        <button
+          type="button"
+          class="button danger"
+          [disabled]="
+            !dryRun()?.dryRunToken ||
+            dryRun()?.firestore !== 'WOULD CREATE' ||
+            busyAction() !== null
+          "
+          [attr.aria-busy]="busyAction() === 'import'"
+          (click)="importRelease()"
+        >
+          {{ busyAction() === 'import' ? 'IMPORTING...' : 'IMPORT RELEASE' }}
+        </button>
+      </div>
+
+      @if (dryRun(); as result) {
+        <div
+          class="dry-run-output"
+          [class.blocked]="result.firestore === 'BLOCKED'"
+          aria-live="polite"
+        >
+          <p><strong>DOCUMENT ID:</strong><br>{{ result.checks.documentId }}</p>
+          <p><strong>TITLE:</strong><br>{{ result.checks.title }}</p>
+          <p><strong>COVER:</strong><br>{{ result.checks.cover }}</p>
+          <p><strong>DESCRIPTION EN:</strong><br>{{ result.checks.descriptionEN }}</p>
+          <p><strong>DESCRIPTION PT:</strong><br>{{ result.checks.descriptionPT }}</p>
+          <p><strong>RELEASE DATE:</strong><br>{{ result.checks.releaseDate }}</p>
+          <p><strong>SOUNDCLOUD:</strong><br>{{ result.checks.soundcloud }}</p>
+          <p><strong>FACTION:</strong><br>{{ result.checks.faction }}</p>
+          <p><strong>TYPE:</strong><br>{{ result.checks.type }}</p>
+          <p class="firestore-status">
+            <strong>FIRESTORE:</strong><br>{{ result.firestore }}
+          </p>
+          <small>operationId: {{ result.operationId }}</small>
+        </div>
+      }
+    </section>
+  }
+
+  <div class="feedback" aria-live="assertive">
+    @if (errorMessage()) {
+      <p class="error-message">{{ errorMessage() }}</p>
+    }
+
+    @if (successMessage()) {
+      <p class="success-message">{{ successMessage() }}</p>
+    }
+  </div>
+</main>
