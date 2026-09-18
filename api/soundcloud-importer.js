@@ -419,9 +419,49 @@ function inferReleaseType(resource) {
   return '';
 }
 
+export function normalizeSoundCloudArtworkUrl(artworkUrl) {
+  if (typeof artworkUrl !== 'string') return '';
+
+  try {
+    const url = new URL(artworkUrl);
+
+    if (
+      url.protocol !== 'https:' ||
+      !/^i\d+\.sndcdn\.com$/iu.test(url.hostname)
+    ) {
+      return artworkUrl;
+    }
+
+    const namedReducedVariant =
+      /-(?:mini|tiny|small|badge|large|crop)(?=\.[a-z0-9]+$)/iu;
+    const sizedVariant =
+      /-t(\d+)x(\d+)(?=\.[a-z0-9]+$)/iu;
+    const dimensions = url.pathname.match(sizedVariant);
+
+    if (namedReducedVariant.test(url.pathname)) {
+      url.pathname = url.pathname.replace(
+        namedReducedVariant,
+        '-t500x500'
+      );
+    } else if (
+      dimensions &&
+      (Number(dimensions[1]) < 500 || Number(dimensions[2]) < 500)
+    ) {
+      url.pathname = url.pathname.replace(
+        sizedVariant,
+        '-t500x500'
+      );
+    }
+
+    return url.toString();
+  } catch {
+    return artworkUrl;
+  }
+}
+
 function findArtwork(resource) {
   if (typeof resource.artwork_url === 'string') {
-    return resource.artwork_url;
+    return normalizeSoundCloudArtworkUrl(resource.artwork_url);
   }
 
   if (Array.isArray(resource.tracks)) {
@@ -429,7 +469,9 @@ function findArtwork(resource) {
       track => typeof track?.artwork_url === 'string'
     );
 
-    return trackWithArtwork?.artwork_url || '';
+    return normalizeSoundCloudArtworkUrl(
+      trackWithArtwork?.artwork_url
+    );
   }
 
   return '';
@@ -497,8 +539,14 @@ async function resolveSoundCloudRelease(rawUrl) {
 export function createDocumentId(title, type) {
   if (!RELEASE_TYPES.has(type)) return '';
 
-  const baseTitle = String(title || '')
-    .split(/\s+[—–]\s+/u, 1)[0]
+  const rawTitle = String(title || '');
+  const blueprintTitle = rawTitle.match(
+    /^\s*(the\s+blueprint\s+sessions)\s+vol(?:ume)?\.?\s*(\d+)\b/iu
+  );
+  const canonicalTitle = blueprintTitle
+    ? `${blueprintTitle[1]} v${blueprintTitle[2]}`
+    : rawTitle.split(/\s+[—–]\s+/u, 1)[0];
+  const baseTitle = canonicalTitle
     .replace(/\bvol(?:ume)?\.?\s*(\d+)/giu, 'v$1')
     .replace(/\bv\.?\s*(\d+)/giu, 'v$1')
     .normalize('NFKD')

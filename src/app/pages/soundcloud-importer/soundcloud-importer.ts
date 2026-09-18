@@ -443,8 +443,13 @@ implements OnInit, OnDestroy {
     title: string,
     type: ReleaseType
   ): string {
-    const baseTitle = title
-      .split(/\s+[—–]\s+/u, 1)[0]
+    const blueprintTitle = title.match(
+      /^\s*(the\s+blueprint\s+sessions)\s+vol(?:ume)?\.?\s*(\d+)\b/iu
+    );
+    const canonicalTitle = blueprintTitle
+      ? `${blueprintTitle[1]} v${blueprintTitle[2]}`
+      : title.split(/\s+[—–]\s+/u, 1)[0];
+    const baseTitle = canonicalTitle
       .replace(/\bvol(?:ume)?\.?\s*(\d+)/giu, 'v$1')
       .replace(/\bv\.?\s*(\d+)/giu, 'v$1')
       .normalize('NFKD')
