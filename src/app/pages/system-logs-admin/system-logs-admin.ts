@@ -220,7 +220,7 @@ export class SystemLogsAdminComponent implements OnInit {
     });
     const result = await response.json();
     if (!response.ok) {
-      throw new Error(result.message || 'Falha no módulo System Logs.');
+      throw new Error(result.message || 'Falha no módulo Logs do Sistema.');
     }
     return result as T;
   }

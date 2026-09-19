@@ -1,8 +1,8 @@
 <main class="importer-shell">
-  <a class="back-link" routerLink="/admin">← Admin dashboard</a>
+  <a class="back-link" routerLink="/admin">← Painel Admin</a>
   <header class="importer-header">
-    <p class="eyebrow">RQS ADMIN / MUSIC CATALOG</p>
-    <h1>RQS STREAM IMPORTER</h1>
+    <p class="eyebrow">RQS ADMIN / CATÁLOGO MUSICAL</p>
+    <h1>RQS IMPORTADOR DE STREAMING</h1>
     <p>
       Gerencie a presença de uma faixa canônica no SoundCloud e no Spotify.
       A criação em <code>discography</code> permanece protegida pelo fluxo SoundCloud existente.
@@ -11,18 +11,18 @@
 
   @if (!sessionChecked()) {
     <section class="panel session-panel" aria-live="polite">
-      <p>CHECKING ADMIN SESSION...</p>
+      <p>VERIFICANDO SESSÃO ADMIN...</p>
     </section>
   } @else if (!authenticated()) {
     <section class="panel session-panel" aria-live="polite">
-      <p>REDIRECTING TO ADMIN LOGIN...</p>
+      <p>REDIRECIONANDO PARA O LOGIN ADMIN...</p>
     </section>
   } @else {
     <section class="session-bar" aria-label="Sessão administrativa ativa">
       <p>
-        ADMIN SESSION ACTIVE
+        SESSÃO ADMIN ATIVA
         @if (sessionExpiresAt(); as expiresAt) {
-          <small>expires {{ expiresAt | date:'HH:mm:ss' }}</small>
+          <small>expira às {{ expiresAt | date:'HH:mm:ss' }}</small>
         }
       </p>
       <button
@@ -32,31 +32,31 @@
         [attr.aria-busy]="busyAction() === 'logout'"
         (click)="logout()"
       >
-        {{ busyAction() === 'logout' ? 'LOGGING OUT...' : 'LOGOUT' }}
+        {{ busyAction() === 'logout' ? 'SAINDO...' : 'SAIR' }}
       </button>
     </section>
 
     <section class="panel platform-scope" aria-labelledby="platform-scope-title">
       <div class="scope-heading">
-        <h2 id="platform-scope-title">PLATFORM SCOPE</h2>
+        <h2 id="platform-scope-title">ESCOPO DAS PLATAFORMAS</h2>
         <span>V1</span>
       </div>
       <div class="platform-grid">
         <article>
           <span class="platform-name">SOUNDCLOUD</span>
-          <strong class="platform-status live">SUPPORTED</strong>
-          <p>Native source and current metadata resolver.</p>
+          <strong class="platform-status live">ATIVO</strong>
+          <p>Fonte nativa e resolvedor atual de metadados.</p>
         </article>
         <article>
           <span class="platform-name">SPOTIFY</span>
-          <strong class="platform-status waiting">NOT AVAILABLE</strong>
-          <p>Future link on the same canonical track. No automatic discovery.</p>
+          <strong class="platform-status waiting">NÃO DISPONÍVEL</strong>
+          <p>Link futuro na mesma faixa canônica. Sem descoberta automática.</p>
         </article>
       </div>
     </section>
 
     <section class="panel" aria-labelledby="resolve-title">
-      <h2 id="resolve-title">1. RESOLVE</h2>
+      <h2 id="resolve-title">1. RESOLVER</h2>
 
       <form [formGroup]="resolveForm" (ngSubmit)="resolve()">
       <div class="field">
@@ -77,7 +77,7 @@
         [disabled]="resolveForm.invalid || busyAction() !== null"
         [attr.aria-busy]="busyAction() === 'resolve'"
       >
-        {{ busyAction() === 'resolve' ? 'RESOLVING...' : 'RESOLVE' }}
+        {{ busyAction() === 'resolve' ? 'RESOLVENDO...' : 'RESOLVER' }}
       </button>
     </form>
     </section>
@@ -85,23 +85,23 @@
 
   @if (release(); as resolved) {
     <section class="panel" aria-labelledby="release-title">
-      <h2 id="release-title">2. CANONICAL TRACK</h2>
+      <h2 id="release-title">2. FAIXA CANÔNICA</h2>
 
-      <section class="track-card" aria-label="Canonical track identity">
+      <section class="track-card" aria-label="Identidade da faixa canônica">
         <div class="track-heading">
-          <span>TRACK</span>
+          <span>FAIXA</span>
           <strong>{{ resolved.title }}</strong>
         </div>
         <div class="track-columns">
           <div>
-            <h3>SOURCE / NATIVE</h3>
+            <h3>FONTE / NATIVA</h3>
             <p>SoundCloud</p>
             <a [href]="resolved.soundcloud" target="_blank" rel="noopener noreferrer">{{ resolved.soundcloud }}</a>
           </div>
           <div>
-            <h3>PLATFORMS</h3>
+            <h3>PLATAFORMAS</h3>
             <p>SoundCloud <strong class="live">LIVE</strong></p>
-            <p>Spotify <strong class="waiting">NOT AVAILABLE</strong></p>
+            <p>Spotify <strong class="waiting">NÃO DISPONÍVEL</strong></p>
           </div>
           <div>
             <h3>RQS</h3>
@@ -115,7 +115,7 @@
       <dl class="metadata-grid">
         <div>
           <dt>DOCUMENT ID</dt>
-          <dd><code>{{ documentId || 'Selecione TYPE' }}</code></dd>
+          <dd><code>{{ documentId || 'Selecione o TYPE' }}</code></dd>
         </div>
 
         <div>
@@ -155,7 +155,7 @@
       </div>
 
       <div class="field">
-        <label for="description-en">DESCRIPTION EN — READ ONLY</label>
+        <label for="description-en">DESCRIPTION EN — SOMENTE LEITURA</label>
         <textarea
           id="description-en"
           [value]="resolved.descriptionEN"
@@ -204,7 +204,7 @@
     </section>
 
     <section class="panel actions-panel" aria-labelledby="validation-title">
-      <h2 id="validation-title">3. VALIDATION</h2>
+      <h2 id="validation-title">3. VALIDAÇÃO</h2>
 
       <div class="button-row">
         <button
@@ -214,7 +214,7 @@
           [attr.aria-busy]="busyAction() === 'dry-run'"
           (click)="runDryRun()"
         >
-          {{ busyAction() === 'dry-run' ? 'VALIDATING...' : 'DRY RUN' }}
+          {{ busyAction() === 'dry-run' ? 'VALIDANDO...' : 'DRY RUN' }}
         </button>
 
         <button
@@ -228,7 +228,7 @@
           [attr.aria-busy]="busyAction() === 'import'"
           (click)="importRelease()"
         >
-          {{ busyAction() === 'import' ? 'IMPORTING...' : 'IMPORT RELEASE' }}
+          {{ busyAction() === 'import' ? 'IMPORTANDO...' : 'IMPORTAR LANÇAMENTO' }}
         </button>
       </div>
 
@@ -244,13 +244,13 @@
 
           <section class="description-check" aria-labelledby="description-en-check">
             <h3 id="description-en-check">DESCRIPTION EN</h3>
-            <p><strong>RAW:</strong> {{ result.checks.descriptionEN.raw }}</p>
+            <p><strong>CONTEÚDO ORIGINAL:</strong> {{ result.checks.descriptionEN.raw }}</p>
             <p>
-              <strong>HTML NORMALIZATION:</strong>
+              <strong>NORMALIZAÇÃO HTML:</strong>
               {{ result.checks.descriptionEN.htmlNormalization }}
             </p>
             <p>
-              <strong>RENDERED PREVIEW:</strong>
+              <strong>PRÉVIA RENDERIZADA:</strong>
               {{ result.checks.descriptionEN.renderedPreview }}
             </p>
             @if (result.preview.descriptionEN) {
@@ -263,13 +263,13 @@
 
           <section class="description-check" aria-labelledby="description-pt-check">
             <h3 id="description-pt-check">DESCRIPTION PT</h3>
-            <p><strong>RAW:</strong> {{ result.checks.descriptionPT.raw }}</p>
+            <p><strong>CONTEÚDO ORIGINAL:</strong> {{ result.checks.descriptionPT.raw }}</p>
             <p>
-              <strong>HTML NORMALIZATION:</strong>
+              <strong>NORMALIZAÇÃO HTML:</strong>
               {{ result.checks.descriptionPT.htmlNormalization }}
             </p>
             <p>
-              <strong>RENDERED PREVIEW:</strong>
+              <strong>PRÉVIA RENDERIZADA:</strong>
               {{ result.checks.descriptionPT.renderedPreview }}
             </p>
             @if (result.preview.descriptionPT) {

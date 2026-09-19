@@ -1,5 +1,5 @@
 <main class="module-shell">
-  <a class="back-link" routerLink="/admin">← Admin dashboard</a>
+  <a class="back-link" routerLink="/admin">← Painel Admin</a>
 
   @if (!checked()) {
     <p class="session-message" aria-live="polite">Validando sessão administrativa…</p>
@@ -12,32 +12,32 @@
         <h1>Lore</h1>
         <p>Uma interface editorial, duas fontes narrativas preservadas.</p>
       </div>
-      <span class="state preview">PREVIEW</span>
+      <span class="state preview">PRÉVIA</span>
     </header>
 
-    <section class="source-grid" aria-label="Lore sources">
+    <section class="source-grid" aria-label="Fontes de Lore">
       <a class="source-card broklin" [class.selected]="loreSource === 'broklin'" routerLink="/admin/lore/broklin">
-        <span class="source-label">SOURCE</span>
+        <span class="source-label">FONTE</span>
         <h2>Broklin</h2>
         <p>Google Drive: <strong>Lore - Broklin</strong></p>
-        <span class="source-state">PREVIEW / HOLD</span>
+        <span class="source-state">PRÉVIA / EM ESPERA</span>
       </a>
 
       <a class="source-card jonah" [class.selected]="loreSource === 'jonah'" routerLink="/admin/lore/jonah">
-        <span class="source-label">SOURCE</span>
+        <span class="source-label">FONTE</span>
         <h2>Jonah</h2>
         <p>Google Drive: <strong>Lore - Jonah</strong></p>
-        <span class="source-state">PREVIEW / HOLD</span>
+        <span class="source-state">PRÉVIA / EM ESPERA</span>
       </a>
     </section>
 
     @if (loreSource) {
       <section class="hold-panel">
-        <p class="eyebrow">{{ loreSource.toUpperCase() }} WORKSPACE</p>
-        <h2>Source identified</h2>
+        <p class="eyebrow">MÓDULO {{ loreSource.toUpperCase() }}</p>
+        <h2>Fonte identificada</h2>
         <p>
-          Publishing and import actions remain on Hold. This Preview does not
-          alter or reorganize the Google Drive source folders.
+          As ações de publicação e importação permanecem em espera. Esta Prévia não
+          altera nem reorganiza as pastas de origem no Google Drive.
         </p>
       </section>
     }
@@ -45,22 +45,22 @@
     <header class="module-header">
       <div>
         <p class="eyebrow">RQS ADMIN / EDITORIAL</p>
-        <h1>Global Sagas</h1>
-        <p>Seasons, episodes and future PT/EN organization.</p>
+        <h1>Sagas Globais</h1>
+        <p>Temporadas, episódios e futura organização PT/EN.</p>
       </div>
-      <span class="state hold">HOLD</span>
+      <span class="state hold">EM ESPERA</span>
     </header>
 
     <section class="hold-panel">
-      <p class="eyebrow">GOOGLE DRIVE SOURCE</p>
+      <p class="eyebrow">FONTE NO GOOGLE DRIVE</p>
       <h2>RQS Editorial / Global Sagas</h2>
       <dl>
-        <div><dt>SEASONS</dt><dd>Source structure preserved</dd></div>
-        <div><dt>EPISODES</dt><dd>Source structure preserved</dd></div>
-        <div><dt>PT / EN PAIRING</dt><dd>Future importer stage</dd></div>
+        <div><dt>TEMPORADAS</dt><dd>Estrutura da fonte preservada</dd></div>
+        <div><dt>EPISÓDIOS</dt><dd>Estrutura da fonte preservada</dd></div>
+        <div><dt>ORGANIZAÇÃO PT / EN</dt><dd>Etapa futura do importador</dd></div>
       </dl>
       <p class="notice">
-        No publishing or import contract has been enabled in this Preview.
+        Nenhum contrato de publicação ou importação foi ativado nesta Prévia.
       </p>
     </section>
   }

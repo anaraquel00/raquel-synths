@@ -141,7 +141,7 @@ implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.title.setTitle('RQS Stream Importer');
+    this.title.setTitle('RQS Importador de Streaming');
     this.meta.updateTag({
       name: 'robots',
       content: 'noindex, nofollow, noarchive'
@@ -402,7 +402,7 @@ implements OnInit, OnDestroy {
     if (!response.ok) {
       const requestError = new Error(
         result.message ||
-        'O RQS SoundCloud Importer recusou a operação.'
+        'O Importador SoundCloud da RQS recusou a operação.'
       );
 
       Object.assign(requestError, { status: response.status });
@@ -426,7 +426,7 @@ implements OnInit, OnDestroy {
     this.errorMessage.set(
       error instanceof Error
         ? error.message
-        : 'Falha inesperada no importer.'
+        : 'Falha inesperada no importador.'
     );
   }
 

@@ -1,11 +1,11 @@
 <main class="system-logs-admin">
-  <a class="back-link" routerLink="/admin">← Admin dashboard</a>
+  <a class="back-link" routerLink="/admin">← Painel Admin</a>
   <header>
     <p class="eyebrow">RQS ADMIN / EDITORIAL</p>
-    <h1>System Logs</h1>
+    <h1>Logs do Sistema</h1>
     <p class="module-purpose">
-      Technical and editorial archive for Último Sinal, site updates,
-      sessions, videos and YouTube Channel announcements.
+      Arquivo técnico e editorial, Último Sinal, atualizações do site,
+      sessões, vídeos e anúncios do canal do YouTube.
     </p>
   </header>
 
@@ -19,49 +19,49 @@
     <section class="source-card">
       <div class="card-heading">
         <div>
-          <p class="section-label">EDITORIAL SOURCE</p>
-          <h2>GOOGLE DRIVE / SYSTEM LOGS</h2>
+          <p class="section-label">FONTE EDITORIAL</p>
+          <h2>GOOGLE DRIVE / LOGS DO SISTEMA</h2>
         </div>
-        <button type="button" (click)="refresh()">REFRESH DOCUMENTS</button>
+        <button type="button" (click)="refresh()">ATUALIZAR DOCUMENTOS</button>
       </div>
       <div class="source-select">
-        <select aria-label="System Logs document" #sourceSelect>
-          <option value="">Select document</option>
+        <select aria-label="Documento dos Logs do Sistema" #sourceSelect>
+          <option value="">Selecione um documento</option>
           @for (document of documents(); track document.documentId) {
             <option [value]="document.documentId">{{ document.name }}</option>
           }
         </select>
-        <button type="button" [disabled]="!sourceSelect.value" (click)="selectDocument(sourceSelect.value)">LOAD</button>
+        <button type="button" [disabled]="!sourceSelect.value" (click)="selectDocument(sourceSelect.value)">CARREGAR</button>
       </div>
     </section>
 
     @if (parsed(); as content) {
       <section class="parse-card">
-        <h2>PARSE RESULT</h2>
+        <h2>RESULTADO DA LEITURA</h2>
         <dl>
-          <dt>Source</dt><dd>{{ selected()?.name }}</dd>
-          <dt>Document ID</dt><dd>{{ content.date }}-log</dd>
-          <dt>Date</dt><dd>{{ content.date }}</dd>
-          <dt>Status</dt><dd>{{ dryRun()?.checks?.scheduleStatus || 'READY FOR DRY RUN' }}</dd>
+          <dt>Fonte</dt><dd>{{ selected()?.name }}</dd>
+          <dt>ID do documento</dt><dd>{{ content.date }}-log</dd>
+          <dt>Data</dt><dd>{{ content.date }}</dd>
+          <dt>Status</dt><dd>{{ dryRun()?.checks?.scheduleStatus || 'PRONTO PARA DRY RUN' }}</dd>
         </dl>
         <div class="checks">
           <div>
             <h3>PORTUGUÊS</h3>
-            <p>Title ✓</p><p>Description ✓</p>
-            <p>Tech Content {{ content.pt.techContent ? '✓' : '—' }}</p>
-            <p>Jonah Comment {{ content.pt.jonahComment ? '✓' : '—' }}</p>
+            <p>Título ✓</p><p>Descrição ✓</p>
+            <p>Conteúdo técnico {{ content.pt.techContent ? '✓' : '—' }}</p>
+            <p>Comentário de Jonah {{ content.pt.jonahComment ? '✓' : '—' }}</p>
           </div>
           <div>
-            <h3>ENGLISH</h3>
-            <p>Title ✓</p><p>Description ✓</p>
-            <p>Tech Content {{ content.en.techContent ? '✓' : '—' }}</p>
-            <p>Jonah Comment {{ content.en.jonahComment ? '✓' : '—' }}</p>
+            <h3>INGLÊS</h3>
+            <p>Título ✓</p><p>Descrição ✓</p>
+            <p>Conteúdo técnico {{ content.en.techContent ? '✓' : '—' }}</p>
+            <p>Comentário de Jonah {{ content.en.jonahComment ? '✓' : '—' }}</p>
           </div>
-          <p>Image {{ content.image ? '✓' : '—' }}</p>
+          <p>Imagem {{ content.image ? '✓' : '—' }}</p>
         </div>
         <div class="actions">
-          <button type="button" (click)="viewPreview('pt')">VIEW PT PREVIEW</button>
-          <button type="button" (click)="viewPreview('en')">VIEW EN PREVIEW</button>
+          <button type="button" (click)="viewPreview('pt')">VER PRÉVIA PT</button>
+          <button type="button" (click)="viewPreview('en')">VER PRÉVIA EN</button>
         </div>
         @if (preview() === 'pt') { <article class="preview" [innerHTML]="content.pt.techContent"></article> }
         @if (preview() === 'en') { <article class="preview" [innerHTML]="content.en.techContent"></article> }
@@ -75,29 +75,29 @@
         <p>{{ result.checks.documentId }} · {{ result.checks.scheduleStatus }}</p>
         <div class="diagnostic-grid">
           <article>
-            <h3>PORTUGUÊS / TECH CONTENT</h3>
-            <p><strong>SOURCE FORMAT</strong> {{ result.checks.pt.techContent.sourceFormat }}</p>
-            <p><strong>HTML VALIDATION</strong> {{ result.checks.pt.techContent.htmlValidation }}</p>
-            <p><strong>ALLOWED TAGS ONLY</strong> {{ result.checks.pt.techContent.allowedTagsOnly }}</p>
-            <p><strong>RENDERABLE CONTENT</strong> {{ result.checks.pt.techContent.renderableContent }}</p>
-            <p><strong>PUBLISH ALLOWED</strong> {{ result.checks.pt.techContent.publishAllowed }}</p>
+            <h3>PORTUGUÊS / CONTEÚDO TÉCNICO</h3>
+            <p><strong>FORMATO DA FONTE</strong> {{ result.checks.pt.techContent.sourceFormat }}</p>
+            <p><strong>VALIDAÇÃO HTML</strong> {{ result.checks.pt.techContent.htmlValidation }}</p>
+            <p><strong>SOMENTE TAGS PERMITIDAS</strong> {{ result.checks.pt.techContent.allowedTagsOnly }}</p>
+            <p><strong>CONTEÚDO RENDERIZÁVEL</strong> {{ result.checks.pt.techContent.renderableContent }}</p>
+            <p><strong>PUBLICAÇÃO PERMITIDA</strong> {{ result.checks.pt.techContent.publishAllowed }}</p>
           </article>
           <article>
-            <h3>ENGLISH / TECH CONTENT</h3>
-            <p><strong>SOURCE FORMAT</strong> {{ result.checks.en.techContent.sourceFormat }}</p>
-            <p><strong>HTML VALIDATION</strong> {{ result.checks.en.techContent.htmlValidation }}</p>
-            <p><strong>ALLOWED TAGS ONLY</strong> {{ result.checks.en.techContent.allowedTagsOnly }}</p>
-            <p><strong>RENDERABLE CONTENT</strong> {{ result.checks.en.techContent.renderableContent }}</p>
-            <p><strong>PUBLISH ALLOWED</strong> {{ result.checks.en.techContent.publishAllowed }}</p>
+            <h3>INGLÊS / CONTEÚDO TÉCNICO</h3>
+            <p><strong>FORMATO DA FONTE</strong> {{ result.checks.en.techContent.sourceFormat }}</p>
+            <p><strong>VALIDAÇÃO HTML</strong> {{ result.checks.en.techContent.htmlValidation }}</p>
+            <p><strong>SOMENTE TAGS PERMITIDAS</strong> {{ result.checks.en.techContent.allowedTagsOnly }}</p>
+            <p><strong>CONTEÚDO RENDERIZÁVEL</strong> {{ result.checks.en.techContent.renderableContent }}</p>
+            <p><strong>PUBLICAÇÃO PERMITIDA</strong> {{ result.checks.en.techContent.publishAllowed }}</p>
           </article>
         </div>
         <p>FIRESTORE: {{ result.firestore }}</p>
-        <button type="button" [disabled]="result.firestore !== 'WOULD CREATE'" (click)="create()">IMPORT SYSTEM LOG</button>
+        <button type="button" [disabled]="result.firestore !== 'WOULD CREATE'" (click)="create()">IMPORTAR LOG DO SISTEMA</button>
       </section>
     }
 
     <p class="policy">CREATE ONLY · DRY RUN REQUIRED · NO OVERWRITE · NO PATCH · NO DELETE</p>
-    <button class="logout" type="button" (click)="logout()">LOGOUT</button>
+    <button class="logout" type="button" (click)="logout()">SAIR</button>
   }
 
   @if (error()) { <p role="alert">{{ error() }}</p> }

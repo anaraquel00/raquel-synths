@@ -248,7 +248,7 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/soundcloud-importer/soundcloud-importer')
         .then(m => m.SoundcloudImporterComponent),
-    title: 'RQS Admin // Stream Importer'
+    title: 'RQS Admin // Importador de Streaming'
   },
   {
     path: 'admin/soundcloud-importer',
@@ -260,7 +260,7 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/system-logs-admin/system-logs-admin')
         .then(m => m.SystemLogsAdminComponent),
-    title: 'RQS Admin // System Logs'
+    title: 'RQS Admin // Logs do Sistema'
   },
   {
     path: 'admin/lore',
@@ -292,7 +292,7 @@ export const routes: Routes = [
       import('./pages/admin-module/admin-module')
         .then(m => m.AdminModuleComponent),
     data: { adminModule: 'global-sagas' },
-    title: 'RQS Admin // Global Sagas'
+    title: 'RQS Admin // Sagas Globais'
   },
   // 🛰️ ROTA DE BIO CENTRAL (O "Beacons" Próprio da RaQuel Synths)
   {
