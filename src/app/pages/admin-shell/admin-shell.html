@@ -1,0 +1,102 @@
+<main class="admin-shell">
+  <header class="admin-header">
+    <p class="eyebrow">RQS ADMIN</p>
+    <h1>Editorial &amp; Catalog Control</h1>
+    <p class="lede">
+      Central administrativa do ecossistema editorial e musical RaQuel Synths.
+    </p>
+  </header>
+
+  @if (!checked()) {
+    <section class="session-state" aria-live="polite">
+      <p>Validando sessão administrativa…</p>
+    </section>
+  } @else if (!authenticated()) {
+    <section class="login-card" aria-labelledby="admin-login-title">
+      <div>
+        <p class="section-label">SECURE ACCESS</p>
+        <h2 id="admin-login-title">Admin Login</h2>
+      </div>
+
+      <label for="admin-credential">
+        RQS Admin token
+        <input
+          #adminCredential
+          id="admin-credential"
+          type="password"
+          autocomplete="current-password"
+          (keyup.enter)="login(adminCredential.value)"
+        >
+      </label>
+
+      <button
+        type="button"
+        class="primary-action"
+        (click)="login(adminCredential.value)"
+      >
+        LOGIN
+      </button>
+    </section>
+  } @else {
+    <section class="session-bar" aria-label="Sessão administrativa ativa">
+      <div>
+        <span class="status-dot" aria-hidden="true"></span>
+        <strong>ADMIN SESSION ACTIVE</strong>
+      </div>
+      <button type="button" class="logout" (click)="logout()">LOGOUT</button>
+    </section>
+
+    <section class="modules" aria-labelledby="modules-title">
+      <div class="section-heading">
+        <p class="section-label">CONTROL MODULES</p>
+        <h2 id="modules-title">Choose a workspace</h2>
+      </div>
+
+      <div class="module-grid">
+        <a class="module-card" routerLink="/admin/system-logs">
+          <span class="module-index">01</span>
+          <span class="module-status ready">OPEN</span>
+          <h3>System Logs</h3>
+          <p>Technical and editorial archive, Último Sinal and channel announcements.</p>
+          <span class="module-action">Open module <span aria-hidden="true">→</span></span>
+        </a>
+
+        <a class="module-card" routerLink="/admin/lore">
+          <span class="module-index">02</span>
+          <span class="module-status preview">PREVIEW</span>
+          <h3>Lore</h3>
+          <p>One editorial workspace for the distinct Broklin and Jonah sources.</p>
+          <span class="module-action">Open module <span aria-hidden="true">→</span></span>
+        </a>
+
+        <a class="module-card" routerLink="/admin/global-sagas">
+          <span class="module-index">03</span>
+          <span class="module-status hold">HOLD</span>
+          <h3>Global Sagas</h3>
+          <p>Seasons, episodes and future PT/EN editorial pairing.</p>
+          <span class="module-action">View workspace <span aria-hidden="true">→</span></span>
+        </a>
+
+        <a class="module-card" routerLink="/admin/stream-importer">
+          <span class="module-index">04</span>
+          <span class="module-status ready">OPEN</span>
+          <h3>Stream Importer</h3>
+          <p>Canonical track presence across SoundCloud and Spotify.</p>
+          <span class="module-action">Open module <span aria-hidden="true">→</span></span>
+        </a>
+      </div>
+    </section>
+
+    <aside class="separation-note">
+      <strong>PRODUCT BOUNDARY</strong>
+      <p>
+        Music catalog presence belongs to Stream Importer. Editorial, video
+        and channel announcements belong to System Logs.
+      </p>
+    </aside>
+  }
+
+  @if (error()) {
+    <p class="error-message" role="alert">{{ error() }}</p>
+  }
+</main>

@@ -236,11 +236,63 @@ export const routes: Routes = [
     title: 'RaQuel Synths // Uplink Player'
   },
   {
-    path: 'admin/soundcloud-importer',
+    path: 'admin',
+    pathMatch: 'full',
+    loadComponent: () =>
+      import('./pages/admin-shell/admin-shell')
+        .then(m => m.AdminShellComponent),
+    title: 'RQS Admin'
+  },
+  {
+    path: 'admin/stream-importer',
     loadComponent: () =>
       import('./pages/soundcloud-importer/soundcloud-importer')
         .then(m => m.SoundcloudImporterComponent),
-    title: 'RQS SoundCloud Importer'
+    title: 'RQS Admin // Stream Importer'
+  },
+  {
+    path: 'admin/soundcloud-importer',
+    redirectTo: 'stream-importer',
+    pathMatch: 'full'
+  },
+  {
+    path: 'admin/system-logs',
+    loadComponent: () =>
+      import('./pages/system-logs-admin/system-logs-admin')
+        .then(m => m.SystemLogsAdminComponent),
+    title: 'RQS Admin // System Logs'
+  },
+  {
+    path: 'admin/lore',
+    loadComponent: () =>
+      import('./pages/admin-module/admin-module')
+        .then(m => m.AdminModuleComponent),
+    data: { adminModule: 'lore' },
+    title: 'RQS Admin // Lore'
+  },
+  {
+    path: 'admin/lore/broklin',
+    loadComponent: () =>
+      import('./pages/admin-module/admin-module')
+        .then(m => m.AdminModuleComponent),
+    data: { adminModule: 'lore', loreSource: 'broklin' },
+    title: 'RQS Admin // Lore // Broklin'
+  },
+  {
+    path: 'admin/lore/jonah',
+    loadComponent: () =>
+      import('./pages/admin-module/admin-module')
+        .then(m => m.AdminModuleComponent),
+    data: { adminModule: 'lore', loreSource: 'jonah' },
+    title: 'RQS Admin // Lore // Jonah'
+  },
+  {
+    path: 'admin/global-sagas',
+    loadComponent: () =>
+      import('./pages/admin-module/admin-module')
+        .then(m => m.AdminModuleComponent),
+    data: { adminModule: 'global-sagas' },
+    title: 'RQS Admin // Global Sagas'
   },
   // 🛰️ ROTA DE BIO CENTRAL (O "Beacons" Próprio da RaQuel Synths)
   {

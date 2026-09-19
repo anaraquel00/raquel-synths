@@ -1,0 +1,71 @@
+<main class="module-shell">
+  <a class="back-link" routerLink="/admin">← Admin dashboard</a>
+
+  @if (!checked()) {
+    <p class="session-message" aria-live="polite">Validando sessão administrativa…</p>
+  } @else if (!authenticated()) {
+    <p class="session-message">Redirecionando para o Admin…</p>
+  } @else if (module === 'lore') {
+    <header class="module-header">
+      <div>
+        <p class="eyebrow">RQS ADMIN / EDITORIAL</p>
+        <h1>Lore</h1>
+        <p>Uma interface editorial, duas fontes narrativas preservadas.</p>
+      </div>
+      <span class="state preview">PREVIEW</span>
+    </header>
+
+    <section class="source-grid" aria-label="Lore sources">
+      <a class="source-card broklin" [class.selected]="loreSource === 'broklin'" routerLink="/admin/lore/broklin">
+        <span class="source-label">SOURCE</span>
+        <h2>Broklin</h2>
+        <p>Google Drive: <strong>Lore - Broklin</strong></p>
+        <span class="source-state">PREVIEW / HOLD</span>
+      </a>
+
+      <a class="source-card jonah" [class.selected]="loreSource === 'jonah'" routerLink="/admin/lore/jonah">
+        <span class="source-label">SOURCE</span>
+        <h2>Jonah</h2>
+        <p>Google Drive: <strong>Lore - Jonah</strong></p>
+        <span class="source-state">PREVIEW / HOLD</span>
+      </a>
+    </section>
+
+    @if (loreSource) {
+      <section class="hold-panel">
+        <p class="eyebrow">{{ loreSource.toUpperCase() }} WORKSPACE</p>
+        <h2>Source identified</h2>
+        <p>
+          Publishing and import actions remain on Hold. This Preview does not
+          alter or reorganize the Google Drive source folders.
+        </p>
+      </section>
+    }
+  } @else {
+    <header class="module-header">
+      <div>
+        <p class="eyebrow">RQS ADMIN / EDITORIAL</p>
+        <h1>Global Sagas</h1>
+        <p>Seasons, episodes and future PT/EN organization.</p>
+      </div>
+      <span class="state hold">HOLD</span>
+    </header>
+
+    <section class="hold-panel">
+      <p class="eyebrow">GOOGLE DRIVE SOURCE</p>
+      <h2>RQS Editorial / Global Sagas</h2>
+      <dl>
+        <div><dt>SEASONS</dt><dd>Source structure preserved</dd></div>
+        <div><dt>EPISODES</dt><dd>Source structure preserved</dd></div>
+        <div><dt>PT / EN PAIRING</dt><dd>Future importer stage</dd></div>
+      </dl>
+      <p class="notice">
+        No publishing or import contract has been enabled in this Preview.
+      </p>
+    </section>
+  }
+
+  @if (error()) {
+    <p class="error-message" role="alert">{{ error() }}</p>
+  }
+</main>

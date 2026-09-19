@@ -1,10 +1,11 @@
 <main class="importer-shell">
+  <a class="back-link" routerLink="/admin">← Admin dashboard</a>
   <header class="importer-header">
-    <p class="eyebrow">INTERNAL ADMIN TOOL</p>
-    <h1>RQS SOUNDCLOUD IMPORTER</h1>
+    <p class="eyebrow">RQS ADMIN / MUSIC CATALOG</p>
+    <h1>RQS STREAM IMPORTER</h1>
     <p>
-      Resolve metadados públicos do SoundCloud, valide o payload e crie um
-      documento novo em <code>discography</code>.
+      Gerencie a presença de uma faixa canônica no SoundCloud e no Spotify.
+      A criação em <code>discography</code> permanece protegida pelo fluxo SoundCloud existente.
     </p>
   </header>
 
@@ -13,30 +14,8 @@
       <p>CHECKING ADMIN SESSION...</p>
     </section>
   } @else if (!authenticated()) {
-    <section class="panel" aria-labelledby="login-title">
-      <h2 id="login-title">ADMIN LOGIN</h2>
-
-      <form [formGroup]="loginForm" (ngSubmit)="login()">
-        <div class="field">
-          <label for="admin-credential">ADMIN CREDENTIAL</label>
-          <input
-            id="admin-credential"
-            type="password"
-            formControlName="credential"
-            autocomplete="off"
-            spellcheck="false"
-          >
-        </div>
-
-        <button
-          type="submit"
-          class="button primary"
-          [disabled]="loginForm.invalid || busyAction() !== null"
-          [attr.aria-busy]="busyAction() === 'login'"
-        >
-          {{ busyAction() === 'login' ? 'AUTHENTICATING...' : 'ADMIN LOGIN' }}
-        </button>
-      </form>
+    <section class="panel session-panel" aria-live="polite">
+      <p>REDIRECTING TO ADMIN LOGIN...</p>
     </section>
   } @else {
     <section class="session-bar" aria-label="Sessão administrativa ativa">
@@ -55,6 +34,25 @@
       >
         {{ busyAction() === 'logout' ? 'LOGGING OUT...' : 'LOGOUT' }}
       </button>
+    </section>
+
+    <section class="panel platform-scope" aria-labelledby="platform-scope-title">
+      <div class="scope-heading">
+        <h2 id="platform-scope-title">PLATFORM SCOPE</h2>
+        <span>V1</span>
+      </div>
+      <div class="platform-grid">
+        <article>
+          <span class="platform-name">SOUNDCLOUD</span>
+          <strong class="platform-status live">SUPPORTED</strong>
+          <p>Native source and current metadata resolver.</p>
+        </article>
+        <article>
+          <span class="platform-name">SPOTIFY</span>
+          <strong class="platform-status waiting">NOT AVAILABLE</strong>
+          <p>Future link on the same canonical track. No automatic discovery.</p>
+        </article>
+      </div>
     </section>
 
     <section class="panel" aria-labelledby="resolve-title">
@@ -87,7 +85,32 @@
 
   @if (release(); as resolved) {
     <section class="panel" aria-labelledby="release-title">
-      <h2 id="release-title">2. RELEASE DATA</h2>
+      <h2 id="release-title">2. CANONICAL TRACK</h2>
+
+      <section class="track-card" aria-label="Canonical track identity">
+        <div class="track-heading">
+          <span>TRACK</span>
+          <strong>{{ resolved.title }}</strong>
+        </div>
+        <div class="track-columns">
+          <div>
+            <h3>SOURCE / NATIVE</h3>
+            <p>SoundCloud</p>
+            <a [href]="resolved.soundcloud" target="_blank" rel="noopener noreferrer">{{ resolved.soundcloud }}</a>
+          </div>
+          <div>
+            <h3>PLATFORMS</h3>
+            <p>SoundCloud <strong class="live">LIVE</strong></p>
+            <p>Spotify <strong class="waiting">NOT AVAILABLE</strong></p>
+          </div>
+          <div>
+            <h3>RQS</h3>
+            <p>slug <code>{{ trackSlug || 'select-type' }}</code></p>
+            <p>uplink <code>go.raquelsynths.com/{{ trackSlug || 'pending' }}</code></p>
+            <p>status <strong>DRAFT</strong></p>
+          </div>
+        </div>
+      </section>
 
       <dl class="metadata-grid">
         <div>

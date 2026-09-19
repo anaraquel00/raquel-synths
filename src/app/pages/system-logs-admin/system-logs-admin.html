@@ -1,0 +1,105 @@
+<main class="system-logs-admin">
+  <a class="back-link" routerLink="/admin">← Admin dashboard</a>
+  <header>
+    <p class="eyebrow">RQS ADMIN / EDITORIAL</p>
+    <h1>System Logs</h1>
+    <p class="module-purpose">
+      Technical and editorial archive for Último Sinal, site updates,
+      sessions, videos and YouTube Channel announcements.
+    </p>
+  </header>
+
+  @if (!checked()) {
+    <p>Validando sessão administrativa…</p>
+  }
+  @if (!authenticated() && checked()) {
+    <p>Redirecionando para o Admin…</p>
+  }
+  @if (authenticated()) {
+    <section class="source-card">
+      <div class="card-heading">
+        <div>
+          <p class="section-label">EDITORIAL SOURCE</p>
+          <h2>GOOGLE DRIVE / SYSTEM LOGS</h2>
+        </div>
+        <button type="button" (click)="refresh()">REFRESH DOCUMENTS</button>
+      </div>
+      <div class="source-select">
+        <select aria-label="System Logs document" #sourceSelect>
+          <option value="">Select document</option>
+          @for (document of documents(); track document.documentId) {
+            <option [value]="document.documentId">{{ document.name }}</option>
+          }
+        </select>
+        <button type="button" [disabled]="!sourceSelect.value" (click)="selectDocument(sourceSelect.value)">LOAD</button>
+      </div>
+    </section>
+
+    @if (parsed(); as content) {
+      <section class="parse-card">
+        <h2>PARSE RESULT</h2>
+        <dl>
+          <dt>Source</dt><dd>{{ selected()?.name }}</dd>
+          <dt>Document ID</dt><dd>{{ content.date }}-log</dd>
+          <dt>Date</dt><dd>{{ content.date }}</dd>
+          <dt>Status</dt><dd>{{ dryRun()?.checks?.scheduleStatus || 'READY FOR DRY RUN' }}</dd>
+        </dl>
+        <div class="checks">
+          <div>
+            <h3>PORTUGUÊS</h3>
+            <p>Title ✓</p><p>Description ✓</p>
+            <p>Tech Content {{ content.pt.techContent ? '✓' : '—' }}</p>
+            <p>Jonah Comment {{ content.pt.jonahComment ? '✓' : '—' }}</p>
+          </div>
+          <div>
+            <h3>ENGLISH</h3>
+            <p>Title ✓</p><p>Description ✓</p>
+            <p>Tech Content {{ content.en.techContent ? '✓' : '—' }}</p>
+            <p>Jonah Comment {{ content.en.jonahComment ? '✓' : '—' }}</p>
+          </div>
+          <p>Image {{ content.image ? '✓' : '—' }}</p>
+        </div>
+        <div class="actions">
+          <button type="button" (click)="viewPreview('pt')">VIEW PT PREVIEW</button>
+          <button type="button" (click)="viewPreview('en')">VIEW EN PREVIEW</button>
+        </div>
+        @if (preview() === 'pt') { <article class="preview" [innerHTML]="content.pt.techContent"></article> }
+        @if (preview() === 'en') { <article class="preview" [innerHTML]="content.en.techContent"></article> }
+        <button class="dry-run" type="button" (click)="runDryRun()">DRY RUN</button>
+      </section>
+    }
+
+    @if (dryRun(); as result) {
+      <section class="dry-run-card">
+        <h2>DRY RUN</h2>
+        <p>{{ result.checks.documentId }} · {{ result.checks.scheduleStatus }}</p>
+        <div class="diagnostic-grid">
+          <article>
+            <h3>PORTUGUÊS / TECH CONTENT</h3>
+            <p><strong>SOURCE FORMAT</strong> {{ result.checks.pt.techContent.sourceFormat }}</p>
+            <p><strong>HTML VALIDATION</strong> {{ result.checks.pt.techContent.htmlValidation }}</p>
+            <p><strong>ALLOWED TAGS ONLY</strong> {{ result.checks.pt.techContent.allowedTagsOnly }}</p>
+            <p><strong>RENDERABLE CONTENT</strong> {{ result.checks.pt.techContent.renderableContent }}</p>
+            <p><strong>PUBLISH ALLOWED</strong> {{ result.checks.pt.techContent.publishAllowed }}</p>
+          </article>
+          <article>
+            <h3>ENGLISH / TECH CONTENT</h3>
+            <p><strong>SOURCE FORMAT</strong> {{ result.checks.en.techContent.sourceFormat }}</p>
+            <p><strong>HTML VALIDATION</strong> {{ result.checks.en.techContent.htmlValidation }}</p>
+            <p><strong>ALLOWED TAGS ONLY</strong> {{ result.checks.en.techContent.allowedTagsOnly }}</p>
+            <p><strong>RENDERABLE CONTENT</strong> {{ result.checks.en.techContent.renderableContent }}</p>
+            <p><strong>PUBLISH ALLOWED</strong> {{ result.checks.en.techContent.publishAllowed }}</p>
+          </article>
+        </div>
+        <p>FIRESTORE: {{ result.firestore }}</p>
+        <button type="button" [disabled]="result.firestore !== 'WOULD CREATE'" (click)="create()">IMPORT SYSTEM LOG</button>
+      </section>
+    }
+
+    <p class="policy">CREATE ONLY · DRY RUN REQUIRED · NO OVERWRITE · NO PATCH · NO DELETE</p>
+    <button class="logout" type="button" (click)="logout()">LOGOUT</button>
+  }
+
+  @if (error()) { <p role="alert">{{ error() }}</p> }
+  @if (message()) { <p role="status">{{ message() }}</p> }
+</main>

@@ -18,6 +18,7 @@ import {
   Validators
 } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
+import { Router, RouterLink } from '@angular/router';
 
 interface ResolvedRelease {
   title: string;
@@ -31,7 +32,6 @@ interface ResolvedRelease {
 type Faction = 'broklin' | 'hybrid' | 'jonah';
 type ReleaseType = 'EP' | 'Album' | 'Single';
 type BusyAction =
-  | 'login'
   | 'logout'
   | 'resolve'
   | 'dry-run'
@@ -94,19 +94,12 @@ interface SessionResult {
 @Component({
   selector: 'app-soundcloud-importer',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './soundcloud-importer.html',
   styleUrl: './soundcloud-importer.scss'
 })
 export class SoundcloudImporterComponent
 implements OnInit, OnDestroy {
-  readonly loginForm = new FormGroup({
-    credential: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required]
-    })
-  });
-
   readonly resolveForm = new FormGroup({
     soundcloudUrl: new FormControl('', {
       nonNullable: true,
@@ -143,11 +136,12 @@ implements OnInit, OnDestroy {
     @Inject(DOCUMENT) private readonly document: Document,
     @Inject(PLATFORM_ID) private readonly platformId: object,
     private readonly meta: Meta,
-    private readonly title: Title
+    private readonly title: Title,
+    private readonly router: Router
   ) {}
 
   ngOnInit(): void {
-    this.title.setTitle('RQS SoundCloud Importer');
+    this.title.setTitle('RQS Stream Importer');
     this.meta.updateTag({
       name: 'robots',
       content: 'noindex, nofollow, noarchive'
@@ -171,27 +165,8 @@ implements OnInit, OnDestroy {
       : '';
   }
 
-  async login(): Promise<void> {
-    if (this.loginForm.invalid || this.busyAction()) return;
-
-    this.startAction('login');
-    const credential = this.loginForm.controls.credential.value;
-    const request = this.callApi<SessionResult>({
-      action: 'login',
-      credential
-    }, false);
-
-    this.loginForm.reset({ credential: '' });
-
-    try {
-      const result = await request;
-      this.applySession(result);
-    } catch (error) {
-      this.clearSessionState();
-      this.handleError(error);
-    } finally {
-      this.busyAction.set(null);
-    }
+  get trackSlug(): string {
+    return this.documentId.replace(/^(?:ep|album|single)-/, '');
   }
 
   async logout(): Promise<void> {
@@ -203,6 +178,7 @@ implements OnInit, OnDestroy {
       await this.callApi<SessionResult>({ action: 'logout' });
       this.clearSessionState();
       this.resetImporter();
+      await this.router.navigate(['/admin']);
     } catch (error) {
       this.handleError(error);
     } finally {
@@ -336,8 +312,12 @@ implements OnInit, OnDestroy {
         action: 'session'
       }, false);
       this.applySession(result);
+      if (!this.authenticated()) {
+        await this.router.navigate(['/admin']);
+      }
     } catch {
       this.clearSessionState();
+      await this.router.navigate(['/admin']);
     } finally {
       this.sessionChecked.set(true);
     }
@@ -440,6 +420,7 @@ implements OnInit, OnDestroy {
     ) {
       this.clearSessionState();
       this.resetImporter();
+      void this.router.navigate(['/admin']);
     }
 
     this.errorMessage.set(

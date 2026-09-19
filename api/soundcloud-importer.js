@@ -17,7 +17,8 @@ const FACTIONS = new Set(['broklin', 'hybrid', 'jonah']);
 const RELEASE_TYPES = new Set(['EP', 'Album', 'Single']);
 const DRY_RUN_TTL_MS = 10 * 60 * 1000;
 const ADMIN_SESSION_TTL_MS = 20 * 60 * 1000;
-const ADMIN_SESSION_COOKIE = '__Host-rqs_sc_importer_session';
+const ADMIN_SESSION_COOKIE = '__Host-rqs_admin_session';
+const LEGACY_ADMIN_SESSION_COOKIE = '__Host-rqs_sc_importer_session';
 
 let soundCloudTokenCache = null;
 let soundCloudTokenRequest = null;
@@ -71,7 +72,7 @@ function safeEqual(left, right) {
 
 function getAdminSecret() {
   const configuredToken =
-    process.env.RQS_SOUNDCLOUD_IMPORTER_TOKEN;
+    process.env.RQS_ADMIN_TOKEN;
 
   if (
     !configuredToken ||
@@ -212,6 +213,13 @@ function expiredSessionCookie() {
   ].join('; ');
 }
 
+function expiredAdminSessionCookies() {
+  return [
+    expiredSessionCookie(),
+    `${LEGACY_ADMIN_SESSION_COOKIE}=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Strict`
+  ];
+}
+
 function readAdminSession(req, secret) {
   const token = parseCookies(req)[ADMIN_SESSION_COOKIE];
   const [payload, suppliedSignature, ...extra] =
@@ -231,6 +239,9 @@ function readAdminSession(req, secret) {
       session.version !== 1 ||
       typeof session.csrfToken !== 'string' ||
       !session.csrfToken ||
+      typeof session.nonce !== 'string' ||
+      !session.nonce ||
+      Number(session.issuedAt) > Date.now() ||
       Number(session.expiresAt) <= Date.now()
     ) {
       return null;
@@ -614,6 +625,27 @@ function splitTrailingUrlPunctuation(value) {
   return { url, suffix };
 }
 
+function editorialLinkLabel(parsedUrl) {
+  const maxLength = 72;
+  const hostname = parsedUrl.hostname.replace(/^www\./iu, '');
+  const pathname =
+    parsedUrl.pathname === '/'
+      ? ''
+      : parsedUrl.pathname.replace(/\/$/u, '');
+  const label =
+    hostname +
+    (parsedUrl.port ? `:${parsedUrl.port}` : '') +
+    pathname +
+    parsedUrl.search +
+    parsedUrl.hash;
+
+  if (label.length <= maxLength) return label;
+
+  const suffixLength = 19;
+  const prefixLength = maxLength - suffixLength - 1;
+  return `${label.slice(0, prefixLength)}…${label.slice(-suffixLength)}`;
+}
+
 function normalizeEditorialLine(line) {
   const urlPattern = /https?:\/\/[^\s<>"']+/giu;
   let normalized = '';
@@ -635,9 +667,12 @@ function normalizeEditorialLine(line) {
       }
 
       const escapedUrl = escapeEditorialHtml(url);
+      const escapedLabel = escapeEditorialHtml(
+        editorialLinkLabel(parsed)
+      );
       normalized +=
-        `<a href="${escapedUrl}" target="_blank" ` +
-        `rel="noopener noreferrer">${escapedUrl}</a>`;
+        `<a class="rqs-editorial-link" href="${escapedUrl}" target="_blank" ` +
+        `rel="noopener noreferrer">${escapedLabel}</a>`;
     } catch {
       normalized += escapeEditorialHtml(url);
     }
@@ -1173,7 +1208,7 @@ export default async function handler(req, res) {
       const session = readAdminSession(req, adminSecret);
 
       if (!session) {
-        res.setHeader('Set-Cookie', expiredSessionCookie());
+        res.setHeader('Set-Cookie', expiredAdminSessionCookies());
         return res.status(200).json({
           operationId,
           authenticated: false
@@ -1192,7 +1227,7 @@ export default async function handler(req, res) {
     requireCsrf(req, adminSession);
 
     if (action === 'logout') {
-      res.setHeader('Set-Cookie', expiredSessionCookie());
+      res.setHeader('Set-Cookie', expiredAdminSessionCookies());
 
       logOperation({
         operationId,
