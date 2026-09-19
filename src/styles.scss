@@ -86,6 +86,37 @@ body {
   font-weight: 700;
 }
 
+
+
+/* ======================================================= */
+/* RQS TECH BODY LINK THEME                                */
+/* Links dos artigos técnicos seguem a facção ativa.       */
+/* ======================================================= */
+
+.tech-body a {
+  color: var(--accent-color) !important;
+  text-decoration-color: var(--accent-color);
+  text-underline-offset: 3px;
+  transition:
+    opacity 0.2s ease,
+    text-shadow 0.2s ease;
+}
+
+.tech-body a:visited {
+  color: var(--accent-color) !important;
+}
+
+.tech-body a:hover {
+  opacity: 0.9;
+  text-shadow: 0 0 8px var(--accent-color);
+}
+
+.tech-body a:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 3px;
+}
+
+
 /* Listas Hacker com setinha > */
 .tech-body ul {
   margin-bottom: 2rem;
