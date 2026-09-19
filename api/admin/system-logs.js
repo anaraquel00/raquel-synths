@@ -14,9 +14,29 @@ const SESSION_TTL = 20 * 60 * 1000;
 const DRY_RUN_TTL = 10 * 60 * 1000;
 const DRIVE_FOLDER_ID = process.env.RQS_SYSTEM_LOGS_DRIVE_FOLDER_ID || '';
 const HEADERS = [
-  'DATE', 'IMAGE', 'PT TITLE', 'PT DESCRIPTION', 'PT TECH CONTENT',
-  'PT JONAH COMMENT', 'EN TITLE', 'EN DESCRIPTION', 'EN TECH CONTENT',
-  'EN JONAH COMMENT'
+  'DATE',
+  'IMAGE',
+
+  // Metadados editoriais reconhecidos, mas não persistidos no Firestore.
+  'TYPE',
+  'CATEGORY',
+  'TAGS',
+
+  'PT TITLE',
+  'PT DESCRIPTION',
+  'PT TECH CONTENT',
+  'PT JONAH COMMENT',
+
+  'EN TITLE',
+  'EN DESCRIPTION',
+  'EN TECH CONTENT',
+  'EN JONAH COMMENT',
+
+  // Metadados SEO/editoriais reconhecidos, mas não persistidos.
+  'PT SEO DESCRIPTION',
+  'EN SEO DESCRIPTION',
+  'SLUG PT',
+  'SLUG EN'
 ];
 
 class SystemLogsError extends Error {
@@ -90,18 +110,101 @@ async function documentText(documentId) {
 }
 function isDate(value) { if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false; const d = new Date(`${value}T00:00:00.000Z`); return d.toISOString().slice(0, 10) === value; }
 function parseSystemLogDocument(text) {
-  const lines = String(text || '').replace(/\r\n?/g, '\n').split('\n'); const sections = Object.fromEntries(HEADERS.map(header => [header, ''])); const seen = new Set(); let current = null;
-  for (const line of lines) { const header = line.trim(); if (HEADERS.includes(header)) { if (current) sections[current] = sections[current].trim(); if (seen.has(header)) throw new SystemLogsError(400, 'DUPLICATE_HEADER', `Header duplicado: ${header}`); seen.add(header); current = header; continue; } if (current) sections[current] += `${line}\n`; else if (line.trim()) throw new SystemLogsError(400, 'CONTENT_BEFORE_HEADER', 'Conteúdo encontrado antes do primeiro header.'); }
-  if (current) sections[current] = sections[current].trim();
-  const required = ['DATE', 'IMAGE', 'PT TITLE', 'PT DESCRIPTION', 'PT TECH CONTENT', 'EN TITLE', 'EN DESCRIPTION', 'EN TECH CONTENT'];
-  const missing = required.filter(header => !sections[header]); if (missing.length || !isDate(sections.DATE)) throw new SystemLogsError(400, 'INVALID_DOCUMENT_FORMAT', 'O documento não atende ao contrato de System Logs.', { missing });
-  for (const key of ['IMAGE']) if (!/^https?:\/\//i.test(sections[key])) throw new SystemLogsError(400, 'INVALID_IMAGE_URL', 'IMAGE deve ser uma URL http(s).');
-  const ptTechContent = validateTechContent(sections['PT TECH CONTENT']);
-  const enTechContent = validateTechContent(sections['EN TECH CONTENT']);
+  const lines = String(text || '')
+    .replace(/\r\n?/g, '\n')
+    .replace(/\u000b/g, '\n')
+    .split('\n');
+
+  const sections = Object.fromEntries(
+    HEADERS.map(header => [header, ''])
+  );
+
+  const seen = new Set();
+  let current = null;
+
+  for (const line of lines) {
+    const header = line.trim();
+
+    // Separadores editoriais não fazem parte do conteúdo.
+    if (header === '---') {
+      continue;
+    }
+
+    if (HEADERS.includes(header)) {
+      if (current) {
+        sections[current] = sections[current].trim();
+      }
+
+      if (seen.has(header)) {
+        throw new SystemLogsError(
+          400,
+          'DUPLICATE_HEADER',
+          `Header duplicado: ${header}`
+        );
+      }
+
+      seen.add(header);
+      current = header;
+      continue;
+    }
+
+    if (current) {
+      sections[current] += `${line}\n`;
+    } else if (line.trim()) {
+      throw new SystemLogsError(
+        400,
+        'CONTENT_BEFORE_HEADER',
+        'Conteúdo encontrado antes do primeiro header.'
+      );
+    }
+  }
+
+  if (current) {
+    sections[current] = sections[current].trim();
+  }
+
+  const required = [
+    'DATE',
+    'IMAGE',
+    'PT TITLE',
+    'PT DESCRIPTION',
+    'PT TECH CONTENT',
+    'EN TITLE',
+    'EN DESCRIPTION',
+    'EN TECH CONTENT'
+  ];
+
+  const missing = required.filter(
+    header => !sections[header]
+  );
+
+  if (missing.length || !isDate(sections.DATE)) {
+    throw new SystemLogsError(
+      400,
+      'INVALID_DOCUMENT_FORMAT',
+      'O documento não atende ao contrato de System Logs.',
+      { missing }
+    );
+  }
+
+  if (!/^https?:\/\//i.test(sections.IMAGE)) {
+    throw new SystemLogsError(
+      400,
+      'INVALID_IMAGE_URL',
+      'IMAGE deve ser uma URL http(s).'
+    );
+  }
+
+  const ptTechContent =
+    validateTechContent(sections['PT TECH CONTENT']);
+
+  const enTechContent =
+    validateTechContent(sections['EN TECH CONTENT']);
 
   return {
     date: sections.DATE,
     image: sections.IMAGE,
+
     pt: {
       title: sections['PT TITLE'],
       description: sections['PT DESCRIPTION'],
@@ -109,6 +212,7 @@ function parseSystemLogDocument(text) {
       techContentDiagnostic: ptTechContent.diagnostic,
       jonahComment: sections['PT JONAH COMMENT']
     },
+
     en: {
       title: sections['EN TITLE'],
       description: sections['EN DESCRIPTION'],
@@ -155,57 +259,99 @@ function safeAnchor(attributes) {
 }
 function validateTechContent(value) {
   const source = String(value || '').replace(/\r\n?/g, '\n').trim();
-  if (!source) return invalidTechContent('PLAIN_TEXT');
-  if (!/[<>]/u.test(source)) return invalidTechContent('PLAIN_TEXT');
+
+  if (!source) {
+    return invalidTechContent('PLAIN_TEXT');
+  }
+
+  if (!/[<>]/u.test(source)) {
+    return invalidTechContent('PLAIN_TEXT');
+  }
 
   const tokens = source.match(/<[^>]*>|[^<>]+|[<>]/gu) || [];
-  if (tokens.join('') !== source) return invalidTechContent('HTML');
+
+  if (tokens.join('') !== source) {
+    return invalidTechContent('HTML');
+  }
 
   const stack = [];
   let content = '';
   let hasText = false;
+
   for (const token of tokens) {
     if (!token.startsWith('<')) {
       if (token === '>' || token.trim().startsWith('<')) {
         return invalidTechContent('HTML');
       }
+
       content += token;
-      if (token.replace(/&(?:[a-z]+|#\d+|#x[\da-f]+);/giu, '').trim()) {
+
+      if (
+        token
+          .replace(/&(?:[a-z]+|#\d+|#x[\da-f]+);/giu, '')
+          .trim()
+      ) {
         hasText = true;
       }
+
       continue;
     }
 
-    const close = /^<\s*\/\s*(p|h2|strong|em|a)\s*>$/iu.exec(token);
+    const close =
+      /^<\s*\/\s*(p|h2|strong|em|a|ul|li)\s*>$/iu.exec(token);
+
     if (close) {
       const tag = close[1].toLowerCase();
-      if (stack.pop() !== tag) return invalidTechContent('HTML');
+
+      if (stack.pop() !== tag) {
+        return invalidTechContent('HTML');
+      }
+
       content += `</${tag}>`;
       continue;
     }
+
     if (/^<\s*br\s*\/?>$/iu.test(token)) {
       content += '<br>';
       continue;
     }
-    const open = /^<\s*(p|h2|strong|em)\s*>$/iu.exec(token);
+
+    if (/^<\s*hr\s*\/?>$/iu.test(token)) {
+      content += '<hr>';
+      continue;
+    }
+
+    const open =
+      /^<\s*(p|h2|strong|em|ul|li)\s*>$/iu.exec(token);
+
     if (open) {
       const tag = open[1].toLowerCase();
       stack.push(tag);
       content += `<${tag}>`;
       continue;
     }
+
     const anchor = /^<\s*a\s+([^>]*)>$/iu.exec(token);
+
     if (anchor) {
       const safe = safeAnchor(anchor[1]);
-      if (!safe) return invalidTechContent('HTML');
+
+      if (!safe) {
+        return invalidTechContent('HTML');
+      }
+
       stack.push('a');
       content += safe;
       continue;
     }
+
     return invalidTechContent('HTML');
   }
 
-  if (stack.length || !hasText) return invalidTechContent('HTML');
+  if (stack.length || !hasText) {
+    return invalidTechContent('HTML');
+  }
+
   return {
     content,
     diagnostic: {
