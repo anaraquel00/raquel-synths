@@ -15,6 +15,7 @@ import {
   isPlatformServer, // 👈 Necessário para isolar execuções de backend de forma segura
   DOCUMENT
 } from '@angular/common';
+import { Meta } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { toObservable } from '@angular/core/rxjs-interop';
@@ -26,6 +27,8 @@ import { Observable, combineLatest, map, switchMap, of, tap, catchError, timeout
 import { take } from 'rxjs/operators';
 import { AdArticleComponent } from '../../components/ad-article/ad-article';
 import { SplitContentPipe } from '../../components/pipes/content-splitter.pipe';
+// @ts-ignore Shared neutral JS manifest is also consumed by api/sitemap.js.
+import { getSystemLogPolicy } from '../../../../shared/system-log-policy.js';
 
 @Component({
   selector: 'app-log-reader',
@@ -39,6 +42,7 @@ export class LogReaderComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   public translate = inject(TranslationService);
   private seoService = inject(SeoService);
+  private meta = inject(Meta);
   private platformId = inject(PLATFORM_ID);
   private document = inject(DOCUMENT);
   private injector = inject(Injector);
@@ -54,6 +58,7 @@ export class LogReaderComponent implements OnInit, OnDestroy {
   loadComplete = signal(false);
   loadFailed = signal(false);
   isJonahMode = signal<boolean>(false);
+  isLogMonetizable = signal<boolean>(true);
   private themeObserver: MutationObserver | null = null;
   private ssrFetchFailed = false;
 
@@ -89,10 +94,13 @@ export class LogReaderComponent implements OnInit, OnDestroy {
       this.loadFailed.set(false);
 
       if (!id) {
+        this.applyLogPolicy('');
         this.setSsrStatus(404);
         this.loadComplete.set(true);
         return of(null);
       }
+
+      this.applyLogPolicy(id);
 
       const source$ =
         isPlatformServer(this.platformId)
@@ -232,6 +240,18 @@ export class LogReaderComponent implements OnInit, OnDestroy {
     })
   );
 }
+
+  private applyLogPolicy(id: string): void {
+    const policy = getSystemLogPolicy(id);
+
+    this.isLogMonetizable.set(policy.monetizable);
+    this.meta.updateTag({
+      name: 'robots',
+      content: policy.indexable
+        ? 'index, follow'
+        : 'noindex, follow'
+    });
+  }
 
   /**
    * Realiza a consulta ao Firestore utilizando REST API puro para impedir o travamento de ciclo do Node.js

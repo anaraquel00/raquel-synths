@@ -1,5 +1,7 @@
 /* api/sitemap.js */
 
+import { getSystemLogPolicy } from '../shared/system-log-policy.js';
+
 export default async function handler(req, res) {
   // =====================================================
   // HEADERS
@@ -367,8 +369,9 @@ const appendPublishedLogs = (documents) => {
       return;
     }
 
-    // Página de navegação/ponte, não é artigo
-    if (id === 'system-archive') {
+    const logPolicy = getSystemLogPolicy(id);
+
+    if (!logPolicy.indexable) {
       return;
     }
 
