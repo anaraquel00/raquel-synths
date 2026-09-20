@@ -12,6 +12,8 @@ import { TranslationService } from './services/translation.service';
 import { SeoService } from './services/seo.service';
 import { AdSenseService } from './services/ad-sense.service';
 import { TrackingService } from './services/tracking.service';
+import { ConsentService } from './services/consent.service';
+import { MonetizationPolicyService } from './services/monetization-policy.service';
 
 @Component({
   selector: 'app-root',
@@ -28,6 +30,8 @@ export class App implements OnInit {
   private seoService = inject(SeoService);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
+  private consent = inject(ConsentService);
+  private monetizationPolicy = inject(MonetizationPolicyService);
 
   private document = inject(DOCUMENT);
   private renderer = inject(Renderer2);
@@ -45,6 +49,15 @@ export class App implements OnInit {
     private adSenseService: AdSenseService,
     private trackingService: TrackingService
   ) {
+
+    effect(() => {
+      const accepted = this.consent.state() === 'ACCEPTED';
+      const adsEnabled = accepted && this.monetizationPolicy.currentEligible();
+      const bannerAdsEnabled = accepted && this.monetizationPolicy.currentBannerEligible();
+      if (!isPlatformBrowser(this.platformId)) return;
+      adsEnabled ? this.renderer.addClass(this.document.body, 'rqs-ads-enabled') : this.renderer.removeClass(this.document.body, 'rqs-ads-enabled');
+      bannerAdsEnabled ? this.renderer.addClass(this.document.body, 'rqs-banner-ads-enabled') : this.renderer.removeClass(this.document.body, 'rqs-banner-ads-enabled');
+    });
 
     // A rota é a autoridade visual no SSR e na hidratação inicial.
     this.applyRouteTheme(this.request?.url ?? this.router.url);
@@ -110,7 +123,6 @@ export class App implements OnInit {
       this.isBrowser.set(true);
 
       // 1. Vercel Speed Insights (Injeta script de forma segura, pós-hidratação)
-      injectSpeedInsights();
 
       // 2. Atualiza o atributo Lang do HTML sem quebrar o DOM inicial
       const currentLang = this.translate.currentLang();
@@ -127,8 +139,7 @@ export class App implements OnInit {
 
       // 3. Lógica de Cookies
       if (win && win.localStorage) {
-        const consent = win.localStorage.getItem('rqs_cookies_consent') === 'true';
-        this.cookiesAccepted.set(consent);
+        this.cookiesAccepted.set(this.consent.state() !== 'UNKNOWN');
       }
 
       // 4. Override de Tema via URL
@@ -138,8 +149,7 @@ export class App implements OnInit {
       }
 
       // 5. AdSense e Tracking Injetados em Segurança
-      this.adSenseService.initLazyLoad('ca-pub-5619990751602183');
-      this.trackingService.initLazyTracking('GTM-P3KFK5T5');
+      this.initializeConsentServices();
       });
   }
 
@@ -163,7 +173,7 @@ export class App implements OnInit {
 
 ngOnInit() {
   // Inicializa o Ahrefs apenas no navegador de forma limpa
-    this.seoService.initAhrefs();
+    if (this.consent.state() === 'ACCEPTED') this.seoService.initAhrefs();
 
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
@@ -178,6 +188,7 @@ ngOnInit() {
 
       const currentPath = this.router.url.split('?')[0];
       const isHome = currentPath === '/' || currentPath === '';
+      this.monetizationPolicy.updateCurrent(currentPath);
       this.applyRouteTheme(currentPath);
 
       // Apenas entrega as coordenadas para o Radar (effect) trabalhar!
@@ -186,6 +197,10 @@ ngOnInit() {
         path: currentPath,
         seoData: data['seo'] || null
       });
+
+      if (this.consent.state() === 'ACCEPTED') {
+        this.adSenseService.initLazyLoad('ca-pub-5619990751602183');
+      }
 
     });
     if (isPlatformBrowser(this.platformId)) {
@@ -228,12 +243,15 @@ ngOnInit() {
     }
   }
 
-  acceptCookies() {
-    this.cookiesAccepted.set(true);
-    if (isPlatformBrowser(this.platformId)) {
-      const win = this.document.defaultView as any;
-      if (win && win.localStorage) win.localStorage.setItem('rqs_cookies_consent', 'true');
-    }
+  acceptCookies() { this.consent.accept(); this.cookiesAccepted.set(true); this.initializeConsentServices(); this.adSenseService.initLazyLoad('ca-pub-5619990751602183'); }
+
+  rejectCookies() { this.consent.reject(); this.cookiesAccepted.set(true); }
+
+  private initializeConsentServices() {
+    if (this.consent.state() !== 'ACCEPTED') return;
+    injectSpeedInsights();
+    this.trackingService.initLazyTracking('GTM-P3KFK5T5');
+    this.seoService.initAhrefs();
   }
 
 }

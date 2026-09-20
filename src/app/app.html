@@ -32,9 +32,7 @@
         </p>
       </div>
 
-      <button (click)="acceptCookies()" class="btn-accept">
-        {{ translate.isPt() ? 'ACEITAR DADOS' : 'ACCEPT DATA' }}
-      </button>
+      <div class="cookie-actions"><button (click)="acceptCookies()" class="btn-accept">{{ translate.isPt() ? 'ACEITAR' : 'ACCEPT' }}</button><button (click)="rejectCookies()" class="btn-reject">{{ translate.isPt() ? 'RECUSAR' : 'REJECT' }}</button></div>
     </div>
   }
 }

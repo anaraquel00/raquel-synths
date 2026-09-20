@@ -3,6 +3,7 @@ import { Meta, Title } from '@angular/platform-browser';
 import { DOCUMENT } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
+import { ConsentService } from './consent.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,9 +11,10 @@ import { Router } from '@angular/router';
 export class SeoService {
  private platformId = inject(PLATFORM_ID);
  private router = inject(Router);
+ private consent = inject(ConsentService);
   // 📡 INJETOR DINÂMICO E SEGURO DO AHREFS
   initAhrefs() {
-    if (isPlatformBrowser(this.platformId)) {
+    if (isPlatformBrowser(this.platformId) && this.consent.state() === 'ACCEPTED') {
       const head = this.dom.getElementsByTagName('head')[0];
 
       // Evita injeções duplicadas se a rota mudar no SPA

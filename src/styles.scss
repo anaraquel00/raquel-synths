@@ -706,3 +706,20 @@ a.rqs-archive-button {
   /* Compensa os 70px do padding-top do body. O scroll freia antes de engolir o título! */
   scroll-margin-top: 80px; 
 }
+body:not(.rqs-banner-ads-enabled) .ads-section {
+  display: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  min-height: 0 !important;
+  height: 0 !important;
+}
+
+body:not(.rqs-ads-enabled) .inner-ad,
+body:not(.rqs-ads-enabled) .ad-module,
+body:not(.rqs-ads-enabled) .inter-list-ad {
+  display: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  min-height: 0 !important;
+  height: 0 !important;
+}

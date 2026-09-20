@@ -1,5 +1,6 @@
 import { Injectable, PLATFORM_ID, inject, afterNextRender, Injector } from '@angular/core';
 import { isPlatformBrowser, DOCUMENT } from '@angular/common';
+import { ConsentService } from './consent.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,9 +11,10 @@ export class TrackingService {
   private document = inject(DOCUMENT);
   private injector = inject(Injector);
   private scriptsLoaded = false;
+  private consent = inject(ConsentService);
 
   trackAffiliateClick(productName: string, platform: string) {
-    if (isPlatformBrowser(this.platformId)) {
+    if (isPlatformBrowser(this.platformId) && this.consent.state() === 'ACCEPTED') {
       const win = this.document.defaultView as any;
       if (win && typeof win.fbq === 'function') {
         // 🎯 EVENTO 'ViewContent': Avisa que o fã quer ver o produto na loja parceira
@@ -28,12 +30,12 @@ export class TrackingService {
 
   public initLazyTracking(gtmId: string): void {
     // Aborta se estiver a correr no servidor (SSR) ou se já estiver carregado
-    if (!isPlatformBrowser(this.platformId) || this.scriptsLoaded) return;
+    if (!isPlatformBrowser(this.platformId) || this.scriptsLoaded || this.consent.state() !== 'ACCEPTED') return;
 
     // 🛡️ TRAVA TÁTICA: Move a inicialização do rastreamento para pós-hidratação
     afterNextRender(() => {
       const loadScripts = () => {
-        if (this.scriptsLoaded) return;
+        if (this.scriptsLoaded || this.consent.state() !== 'ACCEPTED') return;
         const win = this.document.defaultView as any;
         if (!win) return;
 
@@ -70,7 +72,7 @@ export class TrackingService {
    * Dispara um evento personalizado para o painel do Google Analytics
    */
   public trackCustomEvent(eventName: string, eventParams: any = {}): void {
-    if (isPlatformBrowser(this.platformId)) {
+    if (isPlatformBrowser(this.platformId) && this.consent.state() === 'ACCEPTED') {
       const win = this.document.defaultView as any;
       // Adiciona o evento à Fila de Espera (dataLayer)
       const dataLayer = win?.dataLayer || [];
@@ -84,7 +86,7 @@ export class TrackingService {
 
   // 🎯 O GATILHO: Dispara quando o botão do Spotify for clicado
   trackSpotifyClick(albumName: string) {
-    if (isPlatformBrowser(this.platformId)) {
+    if (isPlatformBrowser(this.platformId) && this.consent.state() === 'ACCEPTED') {
       const win = this.document.defaultView as any;
       if (win && typeof win.fbq === 'function') {
         win.fbq('trackCustom', 'SpotifyClick', {
@@ -98,7 +100,7 @@ export class TrackingService {
 
   // 🎯 O GATILHO: Dispara quando o botão do SoundCloud for clicado
   trackSoundcloudClick(albumName: string) {
-    if (isPlatformBrowser(this.platformId)) {
+    if (isPlatformBrowser(this.platformId) && this.consent.state() === 'ACCEPTED') {
       const win = this.document.defaultView as any;
       if (win && typeof win.fbq === 'function') {
         win.fbq('trackCustom', 'SoundcloudClick', {

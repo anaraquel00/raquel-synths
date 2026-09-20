@@ -1,16 +1,20 @@
-import { Component, Inject, PLATFORM_ID, afterNextRender, signal } from '@angular/core';
+import { Component, Inject, PLATFORM_ID, afterNextRender, signal, inject, effect, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslationService } from '../../services/translation.service';
 import { ADS_DATA } from '../../data/app-data';
+import { Router } from '@angular/router';
+import { ConsentService } from '../../services/consent.service';
+import { MonetizationPolicyService } from '../../services/monetization-policy.service';
+import { AdSenseService } from '../../services/ad-sense.service';
 
 @Component({
   selector: 'app-ad-banner',
   standalone: true,
   imports: [CommonModule],
   template: `
-    @if (isBrowser()) {
+    @if (isBrowser() && eligible()) {
       <div class="ad-container">
-      <div class="ad-label">{{ t.label }}</div>
+      @if (eligible()) {<div class="ad-label">{{ t.label }}</div>
       @if (!isMobile()) {
         <ins class="adsbygoogle"
              style="display:inline-block;width:728px;height:90px"
@@ -22,7 +26,7 @@ import { ADS_DATA } from '../../data/app-data';
             data-ad-client="ca-pub-5619990751602183"
             data-ad-slot="8226577285"></ins>
       }
-      <div class="ad-standby-bg">[ SYSTEM_STABILIZED ]</div>
+      <div class="ad-standby-bg">[ SYSTEM_STABILIZED ]</div>}
       </div>
     }
   `,
@@ -38,6 +42,24 @@ import { ADS_DATA } from '../../data/app-data';
 export class AdBannerComponent {
   isBrowser = signal(false);
   isMobile = signal(false);
+  private router = inject(Router);
+  private consent = inject(ConsentService);
+  private policy = inject(MonetizationPolicyService);
+  private adSense = inject(AdSenseService);
+  private element = inject<ElementRef<HTMLElement>>(ElementRef);
+  private pushed = false;
+  eligible = () => this.consent.state() === 'ACCEPTED' && this.policy.currentBannerEligible();
+  private renderAdEffect = effect(() => {
+    const eligible = this.isBrowser() && this.eligible();
+    if (!eligible) { this.pushed = false; return; }
+    setTimeout(() => this.adSense.runWhenReady(() => {
+      const unit = this.element.nativeElement.querySelector('.adsbygoogle');
+      if (!this.pushed && unit && this.eligible()) {
+        this.pushed = true;
+        (window as any).adsbygoogle.push({});
+      }
+    }), 0);
+  });
 
   constructor(private translate: TranslationService, @Inject(PLATFORM_ID) private platformId: Object) {
     // 🛡️ MOTOR DE RENDERIZAÇÃO ANGULAR 17+: afterNextRender ancora-se nativamente
@@ -46,15 +68,6 @@ export class AdBannerComponent {
       this.isMobile.set(window.innerWidth <= 768); // Lê o layout de forma segura
       this.isBrowser.set(true); // Libera a renderização da tag
 
-      // 🛡️ TRAVA TÁTICA: Aguarda 100ms para que a tag <ins> exista fisicamente no DOM
-      setTimeout(() => {
-        try {
-          (window as any).adsbygoogle = (window as any).adsbygoogle || [];
-          (window as any).adsbygoogle.push({});
-        } catch (e) {
-          // 🛡️ Silenciado: Falso positivo do AdSense em SPAs ignorado pacificamente
-        }
-      }, 100);
     });
   }
 

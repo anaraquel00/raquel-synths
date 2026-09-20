@@ -9,7 +9,6 @@ import { provideServiceWorker } from '@angular/service-worker';
 // Importações do Firebase
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
-import { provideAnalytics, getAnalytics } from '@angular/fire/analytics';
 import { environment } from '../environments/environment';
 
 
@@ -30,7 +29,6 @@ export const appConfig: ApplicationConfig = {
    // Inicializando o Firebase
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideFirestore(() => getFirestore()),
-    provideAnalytics(() => getAnalytics()),
     // 2. 🛡️ INJEÇÃO DE AUTORIZAÇÃO DE DOMÍNIO (O Passaporte do Firebase)
     {
       provide: IMAGE_CONFIG,
