@@ -18,7 +18,7 @@
 
               <div [innerHTML]="chunk | safeHtml"></div>
 
-              @if (!$last) {
+              @if (!$last && !isSystemArchive()) {
                 <div class="ad-module" style="margin: 30px 0;">
                   @defer (on viewport) {
                     <app-ad-article ngSkipHydration></app-ad-article>

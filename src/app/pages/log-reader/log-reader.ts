@@ -16,6 +16,7 @@ import {
   DOCUMENT
 } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Meta } from '@angular/platform-browser';
 import { HttpClient } from '@angular/common/http';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { SafeHtmlPipe } from "../../components/pipes/safe-html.pipe";
@@ -44,6 +45,7 @@ export class LogReaderComponent implements OnInit, OnDestroy {
   private injector = inject(Injector);
   private router = inject(Router);
   private http = inject(HttpClient);
+  private meta = inject(Meta);
 
   // 🛡️ Injeção opcional para evitar quebras em ambientes Client-Side (CSR) e compilação de rotas (SSG)
   private responseInit = inject(RESPONSE_INIT, { optional: true });
@@ -54,6 +56,7 @@ export class LogReaderComponent implements OnInit, OnDestroy {
   loadComplete = signal(false);
   loadFailed = signal(false);
   isJonahMode = signal<boolean>(false);
+  isSystemArchive = signal(false);
   private themeObserver: MutationObserver | null = null;
   private ssrFetchFailed = false;
 
@@ -87,6 +90,7 @@ export class LogReaderComponent implements OnInit, OnDestroy {
     switchMap(([id, isPt]) => {
       this.loadComplete.set(false);
       this.loadFailed.set(false);
+      this.applySystemArchivePolicy(id);
 
       if (!id) {
         this.setSsrStatus(404);
@@ -232,6 +236,16 @@ export class LogReaderComponent implements OnInit, OnDestroy {
     })
   );
 }
+
+  private applySystemArchivePolicy(id: string | null): void {
+    const isSystemArchive = id === 'system-archive';
+
+    this.isSystemArchive.set(isSystemArchive);
+    this.meta.updateTag({
+      name: 'robots',
+      content: isSystemArchive ? 'noindex, follow' : 'index, follow'
+    });
+  }
 
   /**
    * Realiza a consulta ao Firestore utilizando REST API puro para impedir o travamento de ciclo do Node.js
