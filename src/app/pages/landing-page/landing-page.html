@@ -20,9 +20,7 @@
       <div class="signal-feature-copy">
         <div class="section-heading">
           <p class="section-kicker">{{ translate.isPt() ? 'ÚLTIMO SINAL' : 'LATEST SIGNAL' }}</p>
-          <span class="preview-badge">{{ translate.isPt() ? 'SYSTEM_LOG' : 'SYSTEM_LOG' }}</span>
         </div>
-        <p class="signal-origin">{{ translate.isPt() ? 'ORIGEM // SYSTEM_LOGS' : 'SOURCE // SYSTEM_LOGS' }}</p>
         <h2 id="latest-signal-title">{{ content?.title }}</h2>
         <p class="section-summary">{{ content?.description }}</p>
         @if (signal.date) {

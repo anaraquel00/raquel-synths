@@ -24,15 +24,18 @@
         <span class="cookie-icon">🍪</span>
         <p>
           {{ translate.isPt()
-             ? 'Utilizamos cookies do Google e Stripe para melhorar sua experiência e segurança.'
-             : 'We use Google and Stripe cookies to enhance your experience and security.' }}
+             ? 'Usamos cookies e tecnologias semelhantes para análise, publicidade e funcionamento do site. Você pode aceitar ou recusar tecnologias não essenciais.'
+             : 'We use cookies and similar technologies for analytics, advertising, and site functionality. You can accept or reject non-essential technologies.' }}
           <a [routerLink]="['/compliance']" class="cookie-link">
-            {{ translate.isPt() ? 'Ler Protocolos' : 'Read Protocols' }}
+            {{ translate.isPt() ? 'Ler Política de Privacidade' : 'Read Privacy Policy' }}
           </a>
         </p>
       </div>
 
-      <div class="cookie-actions"><button (click)="acceptCookies()" class="btn-accept">{{ translate.isPt() ? 'ACEITAR' : 'ACCEPT' }}</button><button (click)="rejectCookies()" class="btn-reject">{{ translate.isPt() ? 'RECUSAR' : 'REJECT' }}</button></div>
+      <div class="cookie-actions">
+        <button (click)="acceptCookies()" class="btn-accept">{{ translate.isPt() ? 'ACEITAR' : 'ACCEPT' }}</button>
+        <button (click)="rejectCookies()" class="btn-reject">{{ translate.isPt() ? 'RECUSAR' : 'REJECT' }}</button>
+      </div>
     </div>
   }
 }
