@@ -7,13 +7,12 @@ import { filter, map, mergeMap } from 'rxjs/operators';
 import { Header } from "./components/header/header";
 import { Footer } from "./components/footer/footer";
 import { AdBannerComponent } from "./components/ad-banner/ad-banner";
-import { injectSpeedInsights } from '@vercel/speed-insights';
 import { TranslationService } from './services/translation.service';
 import { SeoService } from './services/seo.service';
 import { AdSenseService } from './services/ad-sense.service';
-import { TrackingService } from './services/tracking.service';
 import { ConsentService } from './services/consent.service';
 import { MonetizationPolicyService } from './services/monetization-policy.service';
+import { OptionalServicesService } from './services/optional-services.service';
 
 @Component({
   selector: 'app-root',
@@ -32,6 +31,7 @@ export class App implements OnInit {
   private activatedRoute = inject(ActivatedRoute);
   private consent = inject(ConsentService);
   private monetizationPolicy = inject(MonetizationPolicyService);
+  private optionalServices = inject(OptionalServicesService);
 
   private document = inject(DOCUMENT);
   private renderer = inject(Renderer2);
@@ -46,8 +46,7 @@ export class App implements OnInit {
   private initialLoad = true;
 
   constructor(
-    private adSenseService: AdSenseService,
-    private trackingService: TrackingService
+    private adSenseService: AdSenseService
   ) {
 
     effect(() => {
@@ -149,8 +148,17 @@ export class App implements OnInit {
       }
 
       // 5. AdSense e Tracking Injetados em Segurança
-      this.initializeConsentServices();
+      this.optionalServices.initializeForRoute(this.currentBrowserUrl(this.router.url));
       });
+  }
+
+  private currentBrowserUrl(fallback: string): string {
+    if (!isPlatformBrowser(this.platformId)) return fallback;
+
+    const location = this.document.defaultView?.location;
+    return location
+      ? location.pathname + location.search + location.hash
+      : fallback;
   }
 
   private getRouteMode(url: string): 'broklin' | 'jonah' | null {
@@ -172,9 +180,6 @@ export class App implements OnInit {
   }
 
 ngOnInit() {
-  // Inicializa o Ahrefs apenas no navegador de forma limpa
-    if (this.consent.state() === 'ACCEPTED') this.seoService.initAhrefs();
-
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
       map(() => this.activatedRoute),
@@ -186,7 +191,7 @@ ngOnInit() {
       mergeMap(route => route.data)
     ).subscribe(data => {
 
-      const currentPath = this.router.url.split('?')[0];
+      const currentPath = this.currentBrowserUrl(this.router.url).split('?')[0];
       const isHome = currentPath === '/' || currentPath === '';
       this.monetizationPolicy.updateCurrent(currentPath);
       this.applyRouteTheme(currentPath);
@@ -197,6 +202,8 @@ ngOnInit() {
         path: currentPath,
         seoData: data['seo'] || null
       });
+
+      this.optionalServices.initializeForRoute(currentPath);
 
       if (this.consent.state() === 'ACCEPTED') {
         this.adSenseService.initLazyLoad('ca-pub-5619990751602183');
@@ -243,15 +250,8 @@ ngOnInit() {
     }
   }
 
-  acceptCookies() { this.consent.accept(); this.cookiesAccepted.set(true); this.initializeConsentServices(); this.adSenseService.initLazyLoad('ca-pub-5619990751602183'); }
+  acceptCookies() { this.consent.accept(); this.cookiesAccepted.set(true); this.optionalServices.initializeForRoute(this.currentBrowserUrl(this.router.url)); this.adSenseService.initLazyLoad('ca-pub-5619990751602183'); }
 
   rejectCookies() { this.consent.reject(); this.cookiesAccepted.set(true); }
-
-  private initializeConsentServices() {
-    if (this.consent.state() !== 'ACCEPTED') return;
-    injectSpeedInsights();
-    this.trackingService.initLazyTracking('GTM-P3KFK5T5');
-    this.seoService.initAhrefs();
-  }
 
 }
