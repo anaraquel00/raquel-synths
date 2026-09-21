@@ -9,7 +9,7 @@ export default async function handler(req, res) {
 
   res.setHeader(
     'Cache-Control',
-    'public, max-age=3600, s-maxage=86400, stale-while-revalidate=3600'
+    'public, max-age=300, s-maxage=3600, stale-while-revalidate=300'
   );
 
   const siteUrl = 'https://raquelsynths.com';
@@ -82,11 +82,13 @@ export default async function handler(req, res) {
   const staticRoutes = [
     {
       path: '',
+      lastmod: '2026-09-19',
       priority: '1.0'
     },
 
     {
       path: '/compliance',
+      lastmod: '2026-09-19',
       priority: '0.7'
     },
 
@@ -141,6 +143,7 @@ export default async function handler(req, res) {
   for (const route of staticRoutes) {
     appendUrl({
       path: route.path,
+      lastmod: route.lastmod,
       changefreq: 'weekly',
       priority: route.priority
     });
