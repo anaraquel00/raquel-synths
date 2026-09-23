@@ -1,0 +1,126 @@
+<main class="social-admin">
+  <a class="back-link" routerLink="/admin">← Painel Admin</a>
+  <header>
+    <p class="eyebrow">RQS ADMIN / DISTRIBUIÇÃO</p>
+    <h1>Social Publishing</h1>
+    <p>Crie packages a partir de conteúdos já publicados no site. Esta fase salva drafts e aprovações; não envia posts.</p>
+  </header>
+
+  @if (!checked()) {
+    <p aria-live="polite">Validando sessão administrativa…</p>
+  } @else {
+    <section class="panel" aria-labelledby="create-title">
+      <h2 id="create-title">Create Social Package</h2>
+      <div class="field-grid">
+        <label>Source Type
+          <select [ngModel]="sourceType" (ngModelChange)="sourceType = $event; changeSourceType()" [disabled]="busy()">
+            <option value="system_log">System Log</option>
+            <option value="saga_episode">Saga</option>
+            <option value="music_release">Discography</option>
+          </select>
+        </label>
+        <label>Language
+          <select [ngModel]="language" (ngModelChange)="language = $event; changeSourceType()" [disabled]="busy()">
+            <option value="pt-BR">Português</option>
+            <option value="en-US">English</option>
+          </select>
+        </label>
+        <label>Existing Source
+          <select [(ngModel)]="sourceId" (ngModelChange)="selectSource()" [disabled]="busy()">
+            <option value="">Selecione conteúdo publicado</option>
+            @for (source of sources(); track source.sourceId) {
+              <option [value]="source.sourceId">{{ source.title }} — {{ source.sourceId }}</option>
+            }
+          </select>
+        </label>
+      </div>
+
+      @if (selectedSource; as source) {
+        <div class="source-preview">
+          @if (source.primaryImage) {
+            <img [src]="source.primaryImage" [alt]="'Imagem de ' + source.title" loading="lazy">
+          }
+          <dl>
+            <div><dt>Title</dt><dd>{{ source.title }}</dd></div>
+            <div><dt>Source</dt><dd>{{ source.sourceId }}</dd></div>
+            <div><dt>Destination</dt><dd><a [href]="source.musicDeepLinkUrl || source.canonicalUrl" target="_blank" rel="noopener noreferrer">{{ source.musicDeepLinkUrl || source.canonicalUrl }}</a></dd></div>
+            <div><dt>Language</dt><dd>{{ source.language }}</dd></div>
+            <div><dt>Source revision</dt><dd><code>{{ source.sourceRevision }}</code></dd></div>
+          </dl>
+        </div>
+      }
+
+      @if (draft; as package) {
+        <div class="package-header">
+          <h3>Package {{ package.id || 'novo' }}</h3>
+          <span>{{ package.status || 'DRAFT' }}</span>
+          @if (package.sourceStale) { <span class="error">Fonte alterada — este package perdeu a validade. Cancele e crie outro a partir da fonte atual.</span> }
+          <button type="button" (click)="startAnother()" [disabled]="busy()">Novo package para esta fonte</button>
+        </div>
+        <div class="field-grid">
+          <label>Social asset URL (HTTPS)
+            <input type="url" [(ngModel)]="package.socialAssetUrl" (ngModelChange)="invalidateDryRun()" [disabled]="package.status === 'APPROVED' || package.status === 'CANCELED' || busy()" placeholder="https://...">
+          </label>
+          <label>Asset type
+            <select [(ngModel)]="package.socialAssetType" (ngModelChange)="invalidateDryRun()" [disabled]="package.status === 'APPROVED' || package.status === 'CANCELED' || busy()">
+              <option value="IMAGE">Image</option><option value="VIDEO">Video</option>
+              <option value="REEL">Reel</option><option value="CAROUSEL">Carousel</option><option value="STORY">Story</option>
+            </select>
+          </label>
+          <label>Instagram caption
+            <textarea rows="4" [(ngModel)]="package.instagramCaption" (ngModelChange)="invalidateDryRun()" [disabled]="package.status === 'APPROVED' || package.status === 'CANCELED' || busy()"></textarea>
+          </label>
+          <label>Facebook caption
+            <textarea rows="4" [(ngModel)]="package.facebookCaption" (ngModelChange)="invalidateDryRun()" [disabled]="package.status === 'APPROVED' || package.status === 'CANCELED' || busy()"></textarea>
+          </label>
+          <label>CTA
+            <input [(ngModel)]="package.cta" (ngModelChange)="invalidateDryRun()" [disabled]="package.status === 'APPROVED' || package.status === 'CANCELED' || busy()">
+          </label>
+          <label>Destination URL
+            <input type="url" [(ngModel)]="package.destinationUrl" (ngModelChange)="invalidateDryRun()" [disabled]="package.status === 'APPROVED' || package.status === 'CANCELED' || busy()">
+          </label>
+          <label>UTM campaign
+            <input [(ngModel)]="package.utmCampaign" (ngModelChange)="invalidateDryRun()" [disabled]="package.status === 'APPROVED' || package.status === 'CANCELED' || busy()">
+          </label>
+          <label>UTM content
+            <input [(ngModel)]="package.utmContent" (ngModelChange)="invalidateDryRun()" [disabled]="package.status === 'APPROVED' || package.status === 'CANCELED' || busy()">
+          </label>
+        </div>
+        <fieldset [disabled]="package.status === 'APPROVED' || package.status === 'CANCELED' || busy()">
+          <legend>Destinations</legend>
+          <label><input type="checkbox" [checked]="package.destinations.includes('instagram')" (change)="toggleDestination('instagram', $any($event.target).checked)"> Instagram</label>
+          <label><input type="checkbox" [checked]="package.destinations.includes('facebook')" (change)="toggleDestination('facebook', $any($event.target).checked)"> Facebook</label>
+        </fieldset>
+        <div class="actions">
+          <button type="button" (click)="saveDraft()" [disabled]="package.status === 'APPROVED' || package.status === 'CANCELED' || busy()">Save Draft</button>
+          <button type="button" (click)="dryRun()" [disabled]="busy()">Dry Run</button>
+          <button type="button" (click)="approve()" [disabled]="!package.id || package.status !== 'DRAFT' || !dryRunToken() || busy()">Approve</button>
+          <button type="button" (click)="cancel()" [disabled]="!package.id || package.status === 'CANCELED' || busy()">Cancel</button>
+        </div>
+      }
+    </section>
+
+    @if (diagnostics(); as result) {
+      <section class="panel" aria-labelledby="diagnostics-title">
+        <h2 id="diagnostics-title">Dry Run: {{ result.status }}</h2>
+        <ul>
+          @for (check of result.checks; track check.code) {
+            <li [class.failed]="check.status === 'FAIL'">{{ check.status }} — {{ check.code }}: {{ check.message }}</li>
+          }
+        </ul>
+      </section>
+    }
+
+    <section class="panel" aria-labelledby="packages-title">
+      <h2 id="packages-title">Packages salvos</h2>
+      @if (packages().length === 0) { <p>Nenhum package salvo.</p> }
+      <ul class="saved-list">
+        @for (item of packages(); track item.id) {
+          <li><button type="button" (click)="openPackage(item)">{{ item.sourceId }} · {{ item.status }} @if (item.sourceStale) { · FONTE ALTERADA }</button></li>
+        }
+      </ul>
+    </section>
+  }
+  @if (message()) { <p class="message" aria-live="polite">{{ message() }}</p> }
+  @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
+</main>

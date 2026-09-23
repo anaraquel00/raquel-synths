@@ -1,0 +1,29 @@
+:host { display: block; min-height: 100vh; color: #edf7fa; background: #070b10; }
+.social-admin { width: min(100% - 2rem, 1100px); margin: auto; padding: 3rem 0 5rem; font: 1rem/1.5 system-ui, sans-serif; }
+.back-link, a { color: #62deed; overflow-wrap: anywhere; }
+.eyebrow { color: #62deed; font-size: .75rem; letter-spacing: .16em; }
+h1 { font-size: clamp(2rem, 5vw, 3.5rem); margin: .5rem 0; }
+.panel { margin-top: 1.5rem; padding: clamp(1rem, 3vw, 2rem); border: 1px solid #36525e; border-radius: 12px; background: #101923; }
+.field-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr)); gap: 1rem; }
+label { display: grid; gap: .35rem; color: #c5d8de; }
+input, select, textarea, button { font: inherit; border: 1px solid #44616d; border-radius: 6px; padding: .65rem; color: #edf7fa; background: #091117; }
+input, select, textarea { box-sizing: border-box; width: 100%; }
+button { cursor: pointer; }
+button:disabled { cursor: not-allowed; opacity: .55; }
+:is(button, input, select, textarea, a):focus-visible { outline: 3px solid #62deed; outline-offset: 2px; }
+.source-preview { display: flex; flex-wrap: wrap; gap: 1rem; margin: 1.5rem 0; padding: 1rem; border: 1px solid #36525e; border-radius: 8px; }
+.source-preview img { width: 160px; max-width: 100%; height: 160px; object-fit: cover; }
+dl { min-width: 0; flex: 1; margin: 0; }
+dl > div { margin-bottom: .45rem; }
+dt { color: #9fb2bc; font-size: .8rem; }
+dd { margin: 0; overflow-wrap: anywhere; }
+code { overflow-wrap: anywhere; font-size: .75rem; }
+.package-header, .actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; margin: 1.25rem 0; }
+.package-header h3 { margin: 0; overflow-wrap: anywhere; }
+fieldset { display: flex; flex-wrap: wrap; gap: 1.5rem; margin: 1.25rem 0; border: 1px solid #36525e; }
+fieldset label { display: flex; align-items: center; }
+fieldset input { width: auto; }
+.failed, .error { color: #ff9e9e; }
+.message { color: #a7f2cb; }
+.saved-list { padding-left: 1.25rem; }
+.saved-list li { margin: .4rem 0; }
