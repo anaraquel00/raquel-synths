@@ -16,7 +16,7 @@
           <p class="section-label">FLUXO EDITORIAL</p>
           <h2 id="create-title">Criar pacote social</h2>
         </div>
-        <p class="section-note">Nenhuma publicação externa é enviada nesta fase.</p>
+        <p class="section-note">Publicações externas exigem aprovação e confirmação explícita.</p>
       </div>
 
       <div class="source-controls">
@@ -121,15 +121,25 @@
           <p class="inline-warning">A fonte foi alterada. Cancele este pacote e crie outro a partir da versão atual.</p>
         }
 
+        @if (package.instagramDelivery?.status === 'PUBLISHED') {
+          <div class="publication-result" role="status">
+            <strong>Publicado no Instagram</strong>
+            <span>ID remoto: {{ package.instagramDelivery?.remotePostId }}</span>
+            @if (package.instagramDelivery?.publishedAt) {
+              <span>{{ package.instagramDelivery?.publishedAt | date:'dd/MM/yyyy, HH:mm:ss' }}</span>
+            }
+          </div>
+        }
+
         <div class="field-grid package-fields">
           <label>
             Mídia social (URL HTTPS)
-            <input type="url" [(ngModel)]="package.socialAssetUrl" (ngModelChange)="invalidateDryRun()" [disabled]="package.status === 'APPROVED' || package.status === 'CANCELED' || busy()" placeholder="https://...">
+            <input type="url" [(ngModel)]="package.socialAssetUrl" (ngModelChange)="invalidateDryRun()" [disabled]="package.status !== 'DRAFT' || busy()" placeholder="https://...">
           </label>
 
           <label>
             Formato da mídia
-            <select [(ngModel)]="package.socialAssetType" (ngModelChange)="invalidateDryRun()" [disabled]="package.status === 'APPROVED' || package.status === 'CANCELED' || busy()">
+            <select [(ngModel)]="package.socialAssetType" (ngModelChange)="invalidateDryRun()" [disabled]="package.status !== 'DRAFT' || busy()">
               <option value="IMAGE">Imagem</option>
               <option value="VIDEO">Vídeo</option>
               <option value="REEL">Reel</option>
@@ -140,46 +150,49 @@
 
           <label class="field-wide">
             Legenda do Instagram
-            <textarea rows="5" [(ngModel)]="package.instagramCaption" (ngModelChange)="invalidateDryRun()" [disabled]="package.status === 'APPROVED' || package.status === 'CANCELED' || busy()"></textarea>
+            <textarea rows="5" [(ngModel)]="package.instagramCaption" (ngModelChange)="invalidateDryRun()" [disabled]="package.status !== 'DRAFT' || busy()"></textarea>
           </label>
 
           <label class="field-wide">
             Legenda do Facebook
-            <textarea rows="5" [(ngModel)]="package.facebookCaption" (ngModelChange)="invalidateDryRun()" [disabled]="package.status === 'APPROVED' || package.status === 'CANCELED' || busy()"></textarea>
+            <textarea rows="5" [(ngModel)]="package.facebookCaption" (ngModelChange)="invalidateDryRun()" [disabled]="package.status !== 'DRAFT' || busy()"></textarea>
           </label>
 
           <label>
             CTA
-            <input [(ngModel)]="package.cta" (ngModelChange)="invalidateDryRun()" [disabled]="package.status === 'APPROVED' || package.status === 'CANCELED' || busy()" placeholder="Ex.: Leia agora">
+            <input [(ngModel)]="package.cta" (ngModelChange)="invalidateDryRun()" [disabled]="package.status !== 'DRAFT' || busy()" placeholder="Ex.: Leia agora">
           </label>
 
           <label>
             URL de destino
-            <input type="url" [(ngModel)]="package.destinationUrl" (ngModelChange)="invalidateDryRun()" [disabled]="package.status === 'APPROVED' || package.status === 'CANCELED' || busy()">
+            <input type="url" [(ngModel)]="package.destinationUrl" (ngModelChange)="invalidateDryRun()" [disabled]="package.status !== 'DRAFT' || busy()">
           </label>
 
           <label>
             Campanha UTM
-            <input [(ngModel)]="package.utmCampaign" (ngModelChange)="invalidateDryRun()" [disabled]="package.status === 'APPROVED' || package.status === 'CANCELED' || busy()">
+            <input [(ngModel)]="package.utmCampaign" (ngModelChange)="invalidateDryRun()" [disabled]="package.status !== 'DRAFT' || busy()">
           </label>
 
           <label>
             Conteúdo UTM
-            <input [(ngModel)]="package.utmContent" (ngModelChange)="invalidateDryRun()" [disabled]="package.status === 'APPROVED' || package.status === 'CANCELED' || busy()">
+            <input [(ngModel)]="package.utmContent" (ngModelChange)="invalidateDryRun()" [disabled]="package.status !== 'DRAFT' || busy()">
           </label>
         </div>
 
-        <fieldset class="destinations" [disabled]="package.status === 'APPROVED' || package.status === 'CANCELED' || busy()">
+        <fieldset class="destinations" [disabled]="package.status !== 'DRAFT' || busy()">
           <legend>Destinos</legend>
           <label><input type="checkbox" [checked]="package.destinations.includes('instagram')" (change)="toggleDestination('instagram', $any($event.target).checked)"> Instagram</label>
           <label><input type="checkbox" [checked]="package.destinations.includes('facebook')" (change)="toggleDestination('facebook', $any($event.target).checked)"> Facebook</label>
         </fieldset>
 
         <div class="actions">
-          <button class="button-primary" type="button" (click)="saveDraft()" [disabled]="package.status === 'APPROVED' || package.status === 'CANCELED' || busy()">Salvar rascunho</button>
+          <button class="button-primary" type="button" (click)="saveDraft()" [disabled]="package.status !== 'DRAFT' || busy()">Salvar rascunho</button>
           <button class="button-secondary" type="button" (click)="dryRun()" [disabled]="busy()">Validar</button>
           <button class="button-secondary" type="button" (click)="approve()" [disabled]="!package.id || package.status !== 'DRAFT' || !dryRunToken() || busy()">Aprovar</button>
-          <button class="button-danger" type="button" (click)="cancel()" [disabled]="!package.id || package.status === 'CANCELED' || busy()">Cancelar</button>
+          @if (canPublishInstagram) {
+            <button class="button-publish" type="button" (click)="requestPublishInstagram()" [disabled]="busy()">Publicar agora</button>
+          }
+          <button class="button-danger" type="button" (click)="cancel()" [disabled]="!package.id || (package.status !== 'DRAFT' && package.status !== 'APPROVED') || busy()">Cancelar</button>
         </div>
       }
     </section>
@@ -261,7 +274,7 @@
         <details class="technical-details">
           <summary>Detalhes técnicos</summary>
           <div class="technical-content">
-            <p>Graph API {{ meta.graphApiVersion }} · publicação externa desabilitada nesta fase.</p>
+            <p>Graph API {{ meta.graphApiVersion }} · publicação automática permanece desabilitada.</p>
 
             <div class="technical-grid">
               <article>
@@ -294,4 +307,18 @@
 
   @if (message()) { <p class="message" aria-live="polite">{{ message() }}</p> }
   @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
+
+  @if (publishConfirmationOpen()) {
+    <div class="dialog-backdrop" role="presentation">
+      <section class="publish-dialog" role="dialog" aria-modal="true" aria-labelledby="publish-dialog-title" aria-describedby="publish-dialog-description" (keydown.escape)="closePublishConfirmation()">
+        <p class="section-label">CONFIRMAÇÃO</p>
+        <h2 id="publish-dialog-title">Publicar agora</h2>
+        <p id="publish-dialog-description">Publicar este pacote agora no Instagram?<br>Esta ação criará uma publicação real em &#64;rqs_synths.</p>
+        <div class="dialog-actions">
+          <button class="button-quiet" type="button" autofocus (click)="closePublishConfirmation()" [disabled]="busy()">Cancelar</button>
+          <button class="button-publish" type="button" (click)="publishInstagramNow()" [disabled]="busy()">Publicar no Instagram</button>
+        </div>
+      </section>
+    </div>
+  }
 </main>

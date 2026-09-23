@@ -453,6 +453,73 @@ button:disabled {
   color: #ffb0b0 !important;
 }
 
+.button-publish {
+  border-color: #59e6be;
+  color: #03130f;
+  font-weight: 700;
+  background: #59e6be;
+}
+
+.button-publish:hover:not(:disabled) {
+  background: #7cf1d1;
+}
+
+.publication-result {
+  display: grid;
+  gap: .2rem;
+  margin-bottom: 1rem;
+  padding: .85rem 1rem;
+  border: 1px solid #316e63;
+  border-radius: 8px;
+  color: #c9f7e8;
+  background: #0a211c;
+  overflow-wrap: anywhere;
+}
+
+.publication-result span {
+  font-size: .88rem;
+  color: #a6d9ca;
+}
+
+.dialog-backdrop {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgb(1 5 8 / 82%);
+}
+
+.publish-dialog {
+  width: min(100%, 520px);
+  max-height: calc(100vh - 2rem);
+  overflow: auto;
+  box-sizing: border-box;
+  padding: clamp(1.15rem, 4vw, 1.75rem);
+  border: 1px solid #3b626f;
+  border-radius: 12px;
+  background: #101923;
+  box-shadow: 0 24px 80px rgb(0 0 0 / 55%);
+}
+
+.publish-dialog h2 {
+  margin: .25rem 0 .75rem;
+}
+
+.publish-dialog p:not(.section-label) {
+  margin: 0;
+  color: #c5d8de;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: .75rem;
+  margin-top: 1.25rem;
+}
+
 .meta-panel {
   margin-top: 1.25rem;
 }
@@ -634,6 +701,14 @@ button:disabled {
   .actions button,
   .integration-heading button,
   .package-header-actions button {
+    width: 100%;
+  }
+
+  .dialog-actions {
+    flex-direction: column;
+  }
+
+  .dialog-actions button {
     width: 100%;
   }
 

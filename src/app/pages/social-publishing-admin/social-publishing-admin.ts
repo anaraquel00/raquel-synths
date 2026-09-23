@@ -24,6 +24,7 @@ export class SocialPublishingAdminComponent implements OnInit {
   readonly dryRunToken = signal<string | null>(null);
   readonly metaDiagnostics = signal<MetaConnectionDiagnostics | null>(null);
   readonly packageSources = signal<Record<string, NormalizedSource>>({});
+  readonly publishConfirmationOpen = signal(false);
 
   @ViewChildren('sourceOption') private readonly sourceOptions?: QueryList<ElementRef<HTMLButtonElement>>;
 
@@ -57,6 +58,31 @@ export class SocialPublishingAdminComponent implements OnInit {
     return list
       .filter(source => this.normalizeSearch(`${this.sourceLabel(source)} ${source.sourceId}`).includes(query))
       .slice(0, 40);
+  }
+
+  get canPublishInstagram(): boolean {
+    const packageValue = this.draft;
+    const meta = this.metaDiagnostics();
+    const delivery = packageValue?.instagramDelivery;
+    if (!packageValue || !meta) return false;
+    let assetValid = false;
+    try { assetValid = new URL(packageValue.socialAssetUrl).protocol === 'https:'; }
+    catch { assetValid = false; }
+    return packageValue.sourceType === 'music_release' &&
+      packageValue.sourceId === 'discography/ep-the-blueprint-sessions-v022' &&
+      packageValue.status === 'APPROVED' &&
+      packageValue.destinations.length === 1 &&
+      packageValue.destinations[0] === 'instagram' &&
+      packageValue.socialAssetType === 'IMAGE' &&
+      assetValid &&
+      Boolean(packageValue.instagramCaption) &&
+      packageValue.sourceStale !== true &&
+      meta.token.valid &&
+      meta.token.appIdMatches &&
+      meta.instagram.status === 'READY' &&
+      meta.instagram.capabilities.feed &&
+      meta.relationship.status === 'MATCH' &&
+      !delivery;
   }
 
   async changeSourceType(): Promise<void> {
@@ -295,6 +321,27 @@ export class SocialPublishingAdminComponent implements OnInit {
     });
   }
 
+  requestPublishInstagram(): void {
+    if (this.canPublishInstagram && !this.busy()) this.publishConfirmationOpen.set(true);
+  }
+
+  closePublishConfirmation(): void {
+    if (!this.busy()) this.publishConfirmationOpen.set(false);
+  }
+
+  async publishInstagramNow(): Promise<void> {
+    if (!this.draft?.id || !this.canPublishInstagram) return;
+    this.publishConfirmationOpen.set(false);
+    await this.run(async () => {
+      const result = await this.call<{ package: SocialPackageDraft }>({
+        action: 'publish-instagram-now', id: this.draft?.id
+      });
+      this.draft = result.package;
+      this.message.set('Publicado no Instagram. O ID remoto e o horário foram registrados.');
+      await this.loadPackages();
+    });
+  }
+
   async refreshMetaDiagnostics(): Promise<void> {
     await this.run(async () => {
       await this.loadMetaDiagnostics();
@@ -311,6 +358,7 @@ export class SocialPublishingAdminComponent implements OnInit {
     this.sourcePickerOpen = false;
     this.diagnostics.set(null);
     this.dryRunToken.set(null);
+    this.publishConfirmationOpen.set(false);
 
     void this.loadSources()
       .then(() => {

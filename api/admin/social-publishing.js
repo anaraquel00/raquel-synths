@@ -2,6 +2,7 @@ import { body, requireCsrf, requireOrigin, requireSession, secret } from './syst
 import { listSources } from '../../lib/social/source-adapters.js';
 import { approvePackage, cancelPackage, dryRun, listPackages, saveDraft } from '../../lib/social/packages.js';
 import { diagnoseMetaConnection } from '../../lib/social/meta-client.js';
+import { publishInstagramPilot } from '../../lib/social/publish-instagram.js';
 
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
@@ -23,10 +24,19 @@ export default async function handler(req, res) {
       return res.status(result.package ? 200 : 409).json(result);
     }
     if (input.action === 'cancel') return res.status(200).json({ package: await cancelPackage(input.id) });
+    if (input.action === 'publish-instagram-now') {
+      const result = await publishInstagramPilot(input.id);
+      return res.status(200).json(result);
+    }
     return res.status(400).json({ message: 'Ação inválida.' });
   } catch (error) {
-    const status = error.status === 409 || error.status === 401 || error.status === 403 || error.status === 404 || error.status === 400 ? error.status : 500;
+    const status = [400, 401, 403, 404, 409, 502].includes(error.status) ? error.status : 500;
     if (status === 500) console.error('[RQS SOCIAL PUBLISHING]', error.message);
-    return res.status(status).json({ message: status === 500 ? 'Falha interna no Social Publishing.' : error.message });
+    return res.status(status).json({
+      message: status === 500 ? 'Falha interna no Social Publishing.' : error.message,
+      ...(error.code ? { code: error.code } : {}),
+      ...(error.diagnostics ? { diagnostics: error.diagnostics } : {}),
+      ...(error.metaDiagnostic ? { metaDiagnostic: error.metaDiagnostic } : {})
+    });
   }
 }

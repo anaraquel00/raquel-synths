@@ -46,9 +46,11 @@ export interface SocialPackageDraft {
   destinations: SocialDestination[];
   createdAt?: string;
   approvedAt?: string | null;
+  publishedAt?: string | null;
   status?: SocialPackageStatus;
   sourceStale?: boolean;
   approvalValid?: boolean;
+  instagramDelivery?: SocialDelivery | null;
 }
 
 export interface DryRunCheck {
@@ -70,7 +72,7 @@ export interface MetaPlatformDiagnostics {
   missingConfiguration: string[];
   requiredPermissions: string[];
   missingPermissions: string[];
-  identity?: { name?: string; username?: string; accountType?: string };
+  identity?: { id?: string; name?: string; username?: string; accountType?: string };
   capabilities: { feed: boolean; reels: boolean; stories: boolean };
   checks: DryRunCheck[];
 }
@@ -85,7 +87,8 @@ export interface MetaConnectionDiagnostics {
   token: { valid: boolean; appIdMatches: boolean; expiresAt: string | null; dataAccessExpiresAt: string | null };
 }
 
-export type SocialDeliveryStatus = 'NOT_STARTED' | 'PUBLISHING' | 'PUBLISHED' | 'FAILED';
+export type SocialDeliveryStatus = 'NOT_STARTED' | 'PENDING' | 'CONTAINER_CREATED' |
+  'PUBLISHING' | 'PUBLISHED' | 'FAILED';
 
 export interface SocialDelivery {
   status: SocialDeliveryStatus;
