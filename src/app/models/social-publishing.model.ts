@@ -80,7 +80,13 @@ export interface MetaPlatformDiagnostics {
 export interface MetaConnectionDiagnostics {
   graphApiVersion: string;
   checkedAt: string;
-  publishingEnabled: false;
+  publishingEnabled: boolean;
+  writeGate: {
+    flagEnabled: boolean;
+    previewEnvironment: boolean;
+    branchMatch: boolean;
+    enabled: boolean;
+  };
   facebook: MetaPlatformDiagnostics;
   instagram: MetaPlatformDiagnostics;
   relationship: { status: 'NOT_CHECKED' | 'MATCH' | 'MISMATCH' | 'MISSING' };

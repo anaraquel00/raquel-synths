@@ -5,7 +5,8 @@ import { normalizeSource } from '../lib/social/source-adapters.js';
 import { canCancel, diagnose, draftFromInput, isSourceCurrent, makeDryRunToken, verifyDryRunToken } from '../lib/social/packages.js';
 import { assertDeliveryCanStart, createDeliveryFoundation, deliveryDecision, deliveryDocumentPath, deliveryIdempotencyKey } from '../lib/social/deliveries.js';
 import { diagnoseMetaConnection, META_GRAPH_API_VERSION } from '../lib/social/meta-client.js';
-import { evaluateInstagramPilot, instagramPilotWriteGate, publishInstagramPilot } from '../lib/social/publish-instagram.js';
+import { evaluateInstagramPilot, publishInstagramPilot } from '../lib/social/publish-instagram.js';
+import { instagramPilotWriteGate, instagramPilotWriteGateDiagnostics } from '../lib/social/write-gates.js';
 import socialHandler from '../api/admin/social-publishing.js';
 
 const now = Date.parse('2026-09-23T12:00:00Z');
@@ -152,6 +153,9 @@ assert.equal(unconfigured.graphApiVersion, 'v26.0');
 assert.equal(unconfigured.facebook.status, 'NOT_CONFIGURED');
 assert.equal(unconfigured.instagram.status, 'NOT_CONFIGURED');
 assert.equal(unconfigured.publishingEnabled, false);
+assert.deepEqual(unconfigured.writeGate, {
+  flagEnabled: false, previewEnvironment: false, branchMatch: false, enabled: false
+});
 assert.equal(unconfiguredCalls, 0);
 
 const metaEnv = {
@@ -195,6 +199,27 @@ assert.equal(metaCalls[1].url.includes('/me/accounts'), false);
 assert.equal(metaCalls[1].url.includes('tasks'), false);
 assert.ok(metaCalls[2].url.includes('fields=id%2Cusername'));
 assert.equal(metaCalls[2].url.includes('account_type'), false);
+
+const enabledWriteEnv = {
+  ...metaEnv,
+  SOCIAL_PUBLISHING_WRITES_ENABLED: 'true',
+  VERCEL_ENV: 'preview',
+  VERCEL_GIT_COMMIT_REF: 'feat/social-publishing-phase-1d-instagram-pilot'
+};
+let gateMetaCalls = 0;
+const connectedWithWriteGate = await diagnoseMetaConnection({
+  env: enabledWriteEnv,
+  fetchImpl: async (...args) => {
+    gateMetaCalls += 1;
+    return fakeMetaFetch(...args);
+  }
+});
+assert.equal(connectedWithWriteGate.publishingEnabled, true);
+assert.deepEqual(connectedWithWriteGate.writeGate, {
+  flagEnabled: true, previewEnvironment: true, branchMatch: true, enabled: true
+});
+assert.equal(gateMetaCalls, 3);
+assert.equal(JSON.stringify(connectedWithWriteGate.writeGate).includes(enabledWriteEnv.VERCEL_GIT_COMMIT_REF), false);
 
 const failed = await diagnoseMetaConnection({
   env: metaEnv,
@@ -286,12 +311,7 @@ const pilotPackage = {
   updateTime: '2026-09-23T11:00:00.000000Z'
 };
 const readyMeta = connected;
-const pilotEnv = {
-  ...metaEnv,
-  SOCIAL_PUBLISHING_WRITES_ENABLED: 'true',
-  VERCEL_ENV: 'preview',
-  VERCEL_GIT_COMMIT_REF: 'feat/social-publishing-phase-1d-instagram-pilot'
-};
+const pilotEnv = enabledWriteEnv;
 
 function failedPilotChecks(packageValue, source = pilotSource, meta = readyMeta, delivery = null) {
   return evaluateInstagramPilot(packageValue, source, meta, delivery).checks
@@ -317,6 +337,7 @@ assert.equal(instagramPilotWriteGate({ ...pilotEnv, SOCIAL_PUBLISHING_WRITES_ENA
 assert.equal(instagramPilotWriteGate({ ...pilotEnv, VERCEL_ENV: 'production' }), false);
 assert.equal(instagramPilotWriteGate({ ...pilotEnv, VERCEL_GIT_COMMIT_REF: 'master' }), false);
 assert.equal(instagramPilotWriteGate(pilotEnv), true);
+assert.deepEqual(instagramPilotWriteGateDiagnostics(pilotEnv), connectedWithWriteGate.writeGate);
 console.log('INSTAGRAM_PILOT_ELIGIBILITY = PASS');
 
 function makePilotRepository({ packageValue = pilotPackage, source = pilotSource, delivery = null } = {}) {
@@ -477,6 +498,7 @@ const metaClientSource = readFileSync(new URL('../lib/social/meta-client.js', im
 const deliverySource = readFileSync(new URL('../lib/social/deliveries.js', import.meta.url), 'utf8');
 const instagramPublisherSource = readFileSync(new URL('../lib/social/instagram-publisher.js', import.meta.url), 'utf8');
 const instagramPilotSource = readFileSync(new URL('../lib/social/publish-instagram.js', import.meta.url), 'utf8');
+const writeGateSource = readFileSync(new URL('../lib/social/write-gates.js', import.meta.url), 'utf8');
 const frontendSource = [
   '../src/app/models/social-publishing.model.ts',
   '../src/app/pages/social-publishing-admin/social-publishing-admin.ts',
@@ -490,9 +512,12 @@ assert.ok(instagramPublisherSource.includes('/media_publish'));
 assert.ok(instagramPublisherSource.includes("graphPost('CREATE_IMAGE_CONTAINER'"));
 assert.equal(instagramPublisherSource.includes('access_token'), false);
 assert.equal(instagramPublisherSource.includes('console.'), false);
-assert.ok(instagramPilotSource.includes("SOCIAL_PUBLISHING_WRITES_ENABLED === 'true'"));
-assert.ok(instagramPilotSource.includes("VERCEL_ENV === 'preview'"));
-assert.ok(instagramPilotSource.includes("VERCEL_GIT_COMMIT_REF === PILOT_BRANCH"));
+assert.ok(writeGateSource.includes("SOCIAL_PUBLISHING_WRITES_ENABLED === 'true'"));
+assert.ok(writeGateSource.includes("VERCEL_ENV === 'preview'"));
+assert.ok(writeGateSource.includes('VERCEL_GIT_COMMIT_REF === INSTAGRAM_PILOT_BRANCH'));
+assert.ok(instagramPilotSource.includes("from './write-gates.js'"));
+assert.ok(metaClientSource.includes("from './write-gates.js'"));
+assert.equal(instagramPilotSource.includes('SOCIAL_PUBLISHING_WRITES_ENABLED'), false);
 assert.equal(instagramPilotSource.includes('setTimeout'), false);
 assert.equal(frontendSource.includes('process.env'), false);
 assert.equal(deliverySource.includes('fetch('), false);
