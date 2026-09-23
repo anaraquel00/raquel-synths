@@ -170,10 +170,10 @@ const fakeMetaFetch = async (url, options) => {
   metaCalls.push({ url: String(url), method: options.method, authorization: options.headers.Authorization });
   let payload;
   if (url.pathname.endsWith('/debug_token')) payload = { data: { is_valid: true, app_id: metaEnv.META_APP_ID, scopes: expectedScopes } };
-  else if (url.pathname.endsWith('/me/accounts')) payload = { data: [{
-    id: metaEnv.META_FACEBOOK_PAGE_ID, name: 'RQS Page', tasks: ['CREATE_CONTENT', 'MANAGE'],
+  else if (url.pathname.endsWith(`/${metaEnv.META_FACEBOOK_PAGE_ID}`)) payload = {
+    id: metaEnv.META_FACEBOOK_PAGE_ID, name: 'RQS Page',
     instagram_business_account: { id: metaEnv.META_IG_USER_ID }
-  }] };
+  };
   else payload = { id: metaEnv.META_IG_USER_ID, username: 'rqs_synths' };
   return { ok: true, status: 200, json: async () => payload };
 };
@@ -182,12 +182,17 @@ assert.equal(META_GRAPH_API_VERSION, 'v26.0');
 assert.equal(connected.facebook.status, 'READY');
 assert.equal(connected.instagram.status, 'READY');
 assert.equal(connected.relationship.status, 'MATCH');
+assert.equal(connected.facebook.identity.id, metaEnv.META_FACEBOOK_PAGE_ID);
+assert.equal(connected.instagram.identity.id, metaEnv.META_IG_USER_ID);
+assert.equal(connected.instagram.identity.username, 'rqs_synths');
 assert.equal(connected.instagram.capabilities.stories, false);
 assert.equal(connected.publishingEnabled, false);
 assert.equal(metaCalls.length, 3);
 assert.ok(metaCalls.every(call => call.method === 'GET'));
-assert.ok(metaCalls[1].url.includes('/me/accounts'));
-assert.ok(metaCalls[1].url.includes('fields=id%2Cname%2Ctasks%2Cinstagram_business_account'));
+assert.ok(metaCalls[1].url.includes(`/${metaEnv.META_FACEBOOK_PAGE_ID}`));
+assert.ok(metaCalls[1].url.includes('fields=id%2Cname%2Cinstagram_business_account'));
+assert.equal(metaCalls[1].url.includes('/me/accounts'), false);
+assert.equal(metaCalls[1].url.includes('tasks'), false);
 assert.ok(metaCalls[2].url.includes('fields=id%2Cusername'));
 assert.equal(metaCalls[2].url.includes('account_type'), false);
 
@@ -214,25 +219,25 @@ assert.equal(failed.instagram.checks.at(-1).diagnostic.category, 'INVALID_REQUES
 assert.equal(JSON.stringify(failed).includes(metaEnv.META_FACEBOOK_PAGE_ACCESS_TOKEN), false);
 assert.equal(JSON.stringify(failed).includes('Never expose'), false);
 
-const failedPageDiscovery = await diagnoseMetaConnection({
+const failedPageIdentity = await diagnoseMetaConnection({
   env: metaEnv,
   fetchImpl: async (url, options) => {
-    if (!url.pathname.endsWith('/me/accounts')) return fakeMetaFetch(url, options);
+    if (!url.pathname.endsWith(`/${metaEnv.META_FACEBOOK_PAGE_ID}`)) return fakeMetaFetch(url, options);
     return {
       ok: false, status: 403,
       json: async () => ({ error: { code: 200, error_subcode: 2994021, message: 'Never expose raw Graph messages' } })
     };
   }
 });
-for (const platform of [failedPageDiscovery.facebook, failedPageDiscovery.instagram]) {
+for (const platform of [failedPageIdentity.facebook, failedPageIdentity.instagram]) {
   assert.equal(platform.status, 'ERROR');
-  assert.equal(platform.checks.at(-1).diagnostic.requestPurpose, 'PAGE_DISCOVERY');
+  assert.equal(platform.checks.at(-1).diagnostic.requestPurpose, 'PAGE_IDENTITY');
   assert.equal(platform.checks.at(-1).diagnostic.httpStatus, 403);
   assert.equal(platform.checks.at(-1).diagnostic.graphErrorCode, 200);
   assert.equal(platform.checks.at(-1).diagnostic.graphErrorSubcode, 2994021);
   assert.equal(platform.checks.at(-1).diagnostic.category, 'PERMISSION');
 }
-assert.equal(JSON.stringify(failedPageDiscovery).includes('Never expose raw Graph messages'), false);
+assert.equal(JSON.stringify(failedPageIdentity).includes('Never expose raw Graph messages'), false);
 console.log('META_CLIENT_DIAGNOSTICS = PASS');
 console.log('META_SECRET_REDACTION = PASS');
 
