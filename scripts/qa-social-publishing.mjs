@@ -161,8 +161,7 @@ const metaEnv = {
   META_IG_USER_ID: '3333333333'
 };
 const expectedScopes = [
-  'pages_show_list', 'pages_manage_engagement', 'pages_manage_posts',
-  'pages_read_engagement', 'pages_read_user_engagement', 'publish_video',
+  'pages_show_list', 'pages_read_engagement', 'pages_manage_posts', 'publish_video',
   'instagram_basic', 'instagram_content_publish'
 ];
 const metaCalls = [];
