@@ -1,4 +1,4 @@
-import { RenderMode, ServerRoute, PrerenderFallback } from '@angular/ssr';
+import { RenderMode, ServerRoute } from '@angular/ssr';
 
 export const serverRoutes: ServerRoute[] = [
   // --- ROTAS ESTÁTICAS E SUMÁRIOS ---
@@ -24,75 +24,7 @@ export const serverRoutes: ServerRoute[] = [
   { path: 'hybrid-saga', renderMode: RenderMode.Prerender },
   { path: 'bio', renderMode: RenderMode.Server },
 
-  // --- 🚀 PRERENDER ESTÁTICO PARA AS SAGAS CONCLUÍDAS (Broklin & Jonah) ---
-  {
-  path: 'lore/:mode/:id',
-  renderMode: RenderMode.Prerender,
-  fallback: PrerenderFallback.Server,
-
-  async getPrerenderParams() {
-    const broklinIds = [
-      's1-e1',
-      's1-e2',
-      's1-e3',
-      's1-e4',
-      's1-e5',
-      's1-e6',
-      's1-e7',
-      's1-e8',
-      's1-e9',
-      's1-e10',
-
-      's2-e1',
-      's2-e2',
-      's2-e3',
-      's2-e4',
-      's2-e5',
-      's2-e6',
-      's2-e7',
-      's2-e8',
-      's2-e9',
-      's2-e10'
-    ];
-
-    const jonahIds = [
-      's1-e1',
-      's1-e2',
-      's1-e3',
-      's1-e4',
-      's1-e5',
-      's1-e6',
-      's1-e7',
-      's1-e8',
-      's1-e9',
-      's1-e10',
-
-      's2-e1',
-      's2-e2',
-      's2-e3',
-      's2-e4',
-      's2-e5',
-      's2-e6',
-      's2-e7',
-      's2-e8',
-      's2-e9',
-      's2-e10',
-      's2-e11'
-    ];
-
-    return [
-      ...broklinIds.map(id => ({
-        mode: 'broklin',
-        id
-      })),
-
-      ...jonahIds.map(id => ({
-        mode: 'jonah',
-        id
-      }))
-    ];
-  }
-},
+  { path: 'lore/:mode/:id', renderMode: RenderMode.Server },
 
   // Leitores dinâmicos e áreas administrativas rodando direto no servidor SSR
   { path: 'hybrid-reader/:id', renderMode: RenderMode.Server },
