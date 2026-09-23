@@ -61,3 +61,38 @@ export interface DryRunDiagnostics {
   status: 'PASS' | 'FAIL';
   checks: DryRunCheck[];
 }
+
+export type MetaConnectionStatus = 'NOT_CONFIGURED' | 'READY' | 'ERROR';
+
+export interface MetaPlatformDiagnostics {
+  platform: SocialDestination;
+  status: MetaConnectionStatus;
+  missingConfiguration: string[];
+  requiredPermissions: string[];
+  missingPermissions: string[];
+  identity?: { name?: string; username?: string; accountType?: string };
+  capabilities: { feed: boolean; reels: boolean; stories: boolean };
+  checks: DryRunCheck[];
+}
+
+export interface MetaConnectionDiagnostics {
+  graphApiVersion: string;
+  checkedAt: string;
+  publishingEnabled: false;
+  facebook: MetaPlatformDiagnostics;
+  instagram: MetaPlatformDiagnostics;
+  relationship: { status: 'NOT_CHECKED' | 'MATCH' | 'MISMATCH' | 'MISSING' };
+  token: { valid: boolean; appIdMatches: boolean; expiresAt: string | null; dataAccessExpiresAt: string | null };
+}
+
+export type SocialDeliveryStatus = 'NOT_STARTED' | 'PUBLISHING' | 'PUBLISHED' | 'FAILED';
+
+export interface SocialDelivery {
+  status: SocialDeliveryStatus;
+  idempotencyKey: string;
+  remoteContainerId: string | null;
+  remotePostId: string | null;
+  attemptCount: number;
+  lastError: string | null;
+  publishedAt: string | null;
+}

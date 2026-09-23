@@ -3,6 +3,8 @@ import { createHmac } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { normalizeSource } from '../lib/social/source-adapters.js';
 import { canCancel, diagnose, draftFromInput, isSourceCurrent, makeDryRunToken, verifyDryRunToken } from '../lib/social/packages.js';
+import { assertDeliveryCanStart, createDeliveryFoundation, deliveryDecision, deliveryDocumentPath, deliveryIdempotencyKey } from '../lib/social/deliveries.js';
+import { diagnoseMetaConnection, META_GRAPH_API_VERSION } from '../lib/social/meta-client.js';
 import socialHandler from '../api/admin/social-publishing.js';
 
 const now = Date.parse('2026-09-23T12:00:00Z');
@@ -125,3 +127,105 @@ await socialHandler({ ...baseRequest, headers: {
 } }, withoutCsrf);
 assert.equal(withoutCsrf.statusCode, 403);
 console.log('EXISTING_AUTH_REUSED = PASS');
+
+const badOrigin = fakeResponse();
+await socialHandler({
+  ...baseRequest,
+  headers: {
+    ...baseRequest.headers,
+    origin: 'https://invalid.example',
+    'sec-fetch-site': 'cross-site',
+    cookie: `__Host-rqs_admin_session=${sessionPayload}.${signature}`,
+    'x-rqs-csrf': 'qa-csrf'
+  },
+  body: { action: 'meta-diagnostics' }
+}, badOrigin);
+assert.equal(badOrigin.statusCode, 403);
+console.log('META_DIAGNOSTICS_AUTH_CSRF_ORIGIN = PASS');
+
+let unconfiguredCalls = 0;
+const unconfigured = await diagnoseMetaConnection({
+  env: {}, fetchImpl: async () => { unconfiguredCalls += 1; throw new Error('UNEXPECTED_META_CALL'); }
+});
+assert.equal(unconfigured.graphApiVersion, 'v26.0');
+assert.equal(unconfigured.facebook.status, 'NOT_CONFIGURED');
+assert.equal(unconfigured.instagram.status, 'NOT_CONFIGURED');
+assert.equal(unconfigured.publishingEnabled, false);
+assert.equal(unconfiguredCalls, 0);
+
+const metaEnv = {
+  META_APP_ID: '1234567890',
+  META_APP_SECRET: 'qa-meta-app-secret-never-log',
+  META_FACEBOOK_PAGE_ID: '2222222222',
+  META_FACEBOOK_PAGE_ACCESS_TOKEN: 'qa-page-token-never-log',
+  META_IG_USER_ID: '3333333333'
+};
+const expectedScopes = [
+  'pages_show_list', 'pages_manage_engagement', 'pages_manage_posts',
+  'pages_read_engagement', 'pages_read_user_engagement', 'publish_video',
+  'instagram_basic', 'instagram_content_publish'
+];
+const metaCalls = [];
+const fakeMetaFetch = async (url, options) => {
+  metaCalls.push({ url: String(url), method: options.method, authorization: options.headers.Authorization });
+  let payload;
+  if (url.pathname.endsWith('/debug_token')) payload = { data: { is_valid: true, app_id: metaEnv.META_APP_ID, scopes: expectedScopes } };
+  else if (url.pathname.endsWith(`/${metaEnv.META_FACEBOOK_PAGE_ID}`)) payload = {
+    id: metaEnv.META_FACEBOOK_PAGE_ID, name: 'RQS Page', tasks: ['CREATE_CONTENT', 'MANAGE', 'MODERATE'],
+    instagram_business_account: { id: metaEnv.META_IG_USER_ID, username: 'rqs_synths' }
+  };
+  else payload = { id: metaEnv.META_IG_USER_ID, username: 'rqs_synths', account_type: 'BUSINESS' };
+  return { ok: true, status: 200, json: async () => payload };
+};
+const connected = await diagnoseMetaConnection({ env: metaEnv, fetchImpl: fakeMetaFetch });
+assert.equal(META_GRAPH_API_VERSION, 'v26.0');
+assert.equal(connected.facebook.status, 'READY');
+assert.equal(connected.instagram.status, 'READY');
+assert.equal(connected.relationship.status, 'MATCH');
+assert.equal(connected.instagram.capabilities.stories, false);
+assert.equal(connected.publishingEnabled, false);
+assert.equal(metaCalls.length, 3);
+assert.ok(metaCalls.every(call => call.method === 'GET'));
+
+const failed = await diagnoseMetaConnection({
+  env: metaEnv,
+  fetchImpl: async () => ({
+    ok: false, status: 400,
+    json: async () => ({ error: { code: 190, message: `Never expose ${metaEnv.META_FACEBOOK_PAGE_ACCESS_TOKEN}` } })
+  })
+});
+assert.equal(failed.facebook.status, 'ERROR');
+assert.equal(JSON.stringify(failed).includes(metaEnv.META_FACEBOOK_PAGE_ACCESS_TOKEN), false);
+assert.equal(JSON.stringify(failed).includes('Never expose'), false);
+console.log('META_CLIENT_DIAGNOSTICS = PASS');
+console.log('META_SECRET_REDACTION = PASS');
+
+const deliveryInstagram = createDeliveryFoundation('package-123', 'instagram');
+const deliveryFacebook = createDeliveryFoundation('package-123', 'facebook');
+assert.equal(deliveryDocumentPath('package-123', 'instagram'), 'social-packages/package-123/deliveries/instagram');
+assert.notEqual(deliveryInstagram.idempotencyKey, deliveryFacebook.idempotencyKey);
+assert.equal(deliveryInstagram.idempotencyKey, deliveryIdempotencyKey('package-123', 'instagram'));
+assert.equal(deliveryDecision(deliveryInstagram), 'READY');
+assert.equal(assertDeliveryCanStart(deliveryInstagram), true);
+assert.equal(deliveryDecision({ ...deliveryInstagram, remotePostId: 'remote-post' }), 'ALREADY_PUBLISHED');
+assert.throws(() => assertDeliveryCanStart({ ...deliveryInstagram, remotePostId: 'remote-post' }), /DELIVERY_ALREADY_PUBLISHED/);
+assert.equal(deliveryDecision({ ...deliveryInstagram, remoteContainerId: 'remote-container' }), 'RECONCILE_REQUIRED');
+assert.equal(deliveryDecision({ ...deliveryInstagram, status: 'FAILED', attemptCount: 1 }), 'MANUAL_REVIEW_REQUIRED');
+assert.equal(JSON.stringify(createDeliveryFoundation('package-123', 'instagram')).includes('qa-page-token'), false);
+console.log('DELIVERY_IDEMPOTENCY_FOUNDATION = PASS');
+
+const metaClientSource = readFileSync(new URL('../lib/social/meta-client.js', import.meta.url), 'utf8');
+const deliverySource = readFileSync(new URL('../lib/social/deliveries.js', import.meta.url), 'utf8');
+const frontendSource = [
+  '../src/app/models/social-publishing.model.ts',
+  '../src/app/pages/social-publishing-admin/social-publishing-admin.ts',
+  '../src/app/pages/social-publishing-admin/social-publishing-admin.html'
+].map(path => readFileSync(new URL(path, import.meta.url), 'utf8')).join('\n');
+assert.equal(metaClientSource.includes("method: 'POST'"), false);
+assert.equal(metaClientSource.includes('media_publish'), false);
+assert.equal(metaClientSource.includes('video_reels'), false);
+assert.equal(frontendSource.includes('process.env'), false);
+assert.equal(deliverySource.includes('fetch('), false);
+console.log('NO_META_PUBLISHING_SURFACE = PASS');
+console.log('CLIENT_SECRET_EXPOSURE = PASS');
+console.log('FIRESTORE_SECRET_EXPOSURE = PASS');

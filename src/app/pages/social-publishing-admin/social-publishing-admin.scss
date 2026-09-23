@@ -4,6 +4,13 @@
 .eyebrow { color: #62deed; font-size: .75rem; letter-spacing: .16em; }
 h1 { font-size: clamp(2rem, 5vw, 3.5rem); margin: .5rem 0; }
 .panel { margin-top: 1.5rem; padding: clamp(1rem, 3vw, 2rem); border: 1px solid #36525e; border-radius: 12px; background: #101923; }
+.integration-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; }
+.integration-heading h2, .integration-heading p { margin: 0; }
+.section-label { color: #9fb2bc; font-size: .75rem; letter-spacing: .12em; }
+.connection-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 1rem; }
+.connection-grid article { padding: 1rem; border: 1px solid #36525e; border-radius: 8px; background: #091117; }
+.connection-grid span { color: #ffbf75; font-size: .78rem; }
+.connection-grid span.ready { color: #a7f2cb; }
 .field-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr)); gap: 1rem; }
 label { display: grid; gap: .35rem; color: #c5d8de; }
 input, select, textarea, button { font: inherit; border: 1px solid #44616d; border-radius: 6px; padding: .65rem; color: #edf7fa; background: #091117; }

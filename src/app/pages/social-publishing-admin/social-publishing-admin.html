@@ -9,6 +9,38 @@
   @if (!checked()) {
     <p aria-live="polite">Validando sessão administrativa…</p>
   } @else {
+    <section class="panel" aria-labelledby="meta-title">
+      <div class="integration-heading">
+        <div>
+          <p class="section-label">INTEGRAÇÃO OFICIAL</p>
+          <h2 id="meta-title">Meta Connection</h2>
+        </div>
+        <button type="button" (click)="refreshMetaDiagnostics()" [disabled]="busy()">Atualizar diagnóstico</button>
+      </div>
+      @if (metaDiagnostics(); as meta) {
+        <p>Graph API {{ meta.graphApiVersion }} · publicação desabilitada nesta fase.</p>
+        <div class="connection-grid">
+          <article>
+            <h3>Instagram <span [class.ready]="meta.instagram.status === 'READY'">{{ meta.instagram.status }}</span></h3>
+            @if (meta.instagram.identity?.username) { <p>Conta: &#64;{{ meta.instagram.identity?.username }} · {{ meta.instagram.identity?.accountType }}</p> }
+            @if (meta.instagram.missingConfiguration.length) { <p>Configuração pendente: {{ meta.instagram.missingConfiguration.join(', ') }}</p> }
+            @if (meta.instagram.missingPermissions.length) { <p>Permissões pendentes: {{ meta.instagram.missingPermissions.join(', ') }}</p> }
+            <p>Feed: {{ meta.instagram.capabilities.feed ? 'READY' : 'DISABLED' }} · Reels: {{ meta.instagram.capabilities.reels ? 'READY' : 'DISABLED' }} · Stories: DISABLED</p>
+          </article>
+          <article>
+            <h3>Facebook <span [class.ready]="meta.facebook.status === 'READY'">{{ meta.facebook.status }}</span></h3>
+            @if (meta.facebook.identity?.name) { <p>Page: {{ meta.facebook.identity?.name }}</p> }
+            @if (meta.facebook.missingConfiguration.length) { <p>Configuração pendente: {{ meta.facebook.missingConfiguration.join(', ') }}</p> }
+            @if (meta.facebook.missingPermissions.length) { <p>Permissões pendentes: {{ meta.facebook.missingPermissions.join(', ') }}</p> }
+            <p>Posts: {{ meta.facebook.capabilities.feed ? 'READY' : 'DISABLED' }} · Reels: {{ meta.facebook.capabilities.reels ? 'READY' : 'DISABLED' }}</p>
+          </article>
+        </div>
+        <p>Vínculo Page/Instagram: {{ meta.relationship.status }}</p>
+      } @else {
+        <p>Carregando diagnóstico seguro…</p>
+      }
+    </section>
+
     <section class="panel" aria-labelledby="create-title">
       <h2 id="create-title">Create Social Package</h2>
       <div class="field-grid">

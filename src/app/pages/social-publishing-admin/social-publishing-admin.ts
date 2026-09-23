@@ -2,7 +2,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Component, Inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { DryRunDiagnostics, NormalizedSource, SocialDestination, SocialPackageDraft, SocialSourceType } from '../../models/social-publishing.model';
+import { DryRunDiagnostics, MetaConnectionDiagnostics, NormalizedSource, SocialDestination, SocialPackageDraft, SocialSourceType } from '../../models/social-publishing.model';
 
 interface SessionResult { authenticated: boolean; csrfToken?: string; }
 
@@ -22,6 +22,7 @@ export class SocialPublishingAdminComponent implements OnInit {
   readonly error = signal('');
   readonly message = signal('');
   readonly dryRunToken = signal<string | null>(null);
+  readonly metaDiagnostics = signal<MetaConnectionDiagnostics | null>(null);
   sourceType: SocialSourceType = 'system_log';
   language: 'pt-BR' | 'en-US' = 'pt-BR';
   sourceId = '';
@@ -134,6 +135,13 @@ export class SocialPublishingAdminComponent implements OnInit {
     });
   }
 
+  async refreshMetaDiagnostics(): Promise<void> {
+    await this.run(async () => {
+      await this.loadMetaDiagnostics();
+      this.message.set('Diagnóstico Meta atualizado. Nenhum conteúdo foi enviado.');
+    });
+  }
+
   openPackage(item: SocialPackageDraft): void {
     this.sourceType = item.sourceType;
     this.language = item.language;
@@ -164,7 +172,7 @@ export class SocialPublishingAdminComponent implements OnInit {
       this.checked.set(true);
     }
     if (this.csrf) {
-      try { await Promise.all([this.loadSources(), this.loadPackages()]); }
+      try { await Promise.all([this.loadSources(), this.loadPackages(), this.loadMetaDiagnostics()]); }
       catch (error) { this.error.set(error instanceof Error ? error.message : 'Falha ao carregar o módulo.'); }
     }
   }
@@ -179,6 +187,10 @@ export class SocialPublishingAdminComponent implements OnInit {
   private async loadPackages(): Promise<void> {
     const result = await this.call<{ packages: SocialPackageDraft[] }>({ action: 'list-packages' });
     this.packages.set(result.packages);
+  }
+
+  private async loadMetaDiagnostics(): Promise<void> {
+    this.metaDiagnostics.set(await this.call<MetaConnectionDiagnostics>({ action: 'meta-diagnostics' }));
   }
 
   private async call<T>(body: object): Promise<T> {

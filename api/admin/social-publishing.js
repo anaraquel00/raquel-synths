@@ -1,6 +1,7 @@
 import { body, requireCsrf, requireOrigin, requireSession, secret } from './system-logs.js';
 import { listSources } from '../../lib/social/source-adapters.js';
 import { approvePackage, cancelPackage, dryRun, listPackages, saveDraft } from '../../lib/social/packages.js';
+import { diagnoseMetaConnection } from '../../lib/social/meta-client.js';
 
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
@@ -14,6 +15,7 @@ export default async function handler(req, res) {
     const input = body(req);
     if (input.action === 'list-sources') return res.status(200).json({ sources: await listSources(input.sourceType, input.language || 'pt-BR') });
     if (input.action === 'list-packages') return res.status(200).json({ packages: await listPackages() });
+    if (input.action === 'meta-diagnostics') return res.status(200).json(await diagnoseMetaConnection());
     if (input.action === 'save-draft') return res.status(200).json({ package: await saveDraft(input.package || {}) });
     if (input.action === 'dry-run') return res.status(200).json(await dryRun(input.package || {}));
     if (input.action === 'approve') {
