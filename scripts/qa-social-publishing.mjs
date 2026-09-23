@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { normalizeSource } from '../lib/social/source-adapters.js';
-import { canCancel, diagnose, draftFromInput, isSourceCurrent, makeDryRunToken, verifyDryRunToken } from '../lib/social/packages.js';
+import { canCancel, diagnose, draftFromInput, isPackageVisibleInAdmin, isSourceCurrent, makeDryRunToken, verifyDryRunToken } from '../lib/social/packages.js';
 import { assertDeliveryCanStart, createDeliveryFoundation, deliveryDecision, deliveryDocumentPath, deliveryIdempotencyKey } from '../lib/social/deliveries.js';
 import { diagnoseMetaConnection, META_GRAPH_API_VERSION } from '../lib/social/meta-client.js';
 import { evaluateInstagramPilot, publishInstagramPilot } from '../lib/social/publish-instagram.js';
@@ -86,9 +86,14 @@ assert.equal(verifyDryRunToken(`${token}tampered`, first), false);
 assert.equal(canCancel('DRAFT'), true);
 assert.equal(canCancel('APPROVED'), true);
 assert.equal(canCancel('CANCELED'), false);
+assert.equal(isPackageVisibleInAdmin({ status: 'CANCELED' }), false);
+for (const status of ['PUBLISHED', 'APPROVED', 'DRAFT', 'FAILED', 'PUBLISHING']) {
+  assert.equal(isPackageVisibleInAdmin({ status }), true);
+}
 console.log('MULTIPLE_PACKAGES_PER_SOURCE = PASS');
 console.log('SOURCE_REVISION_INVALIDATION = PASS');
 console.log('DRY_RUN_DIAGNOSTICS = PASS');
+console.log('CANCELED_PACKAGES_HIDDEN = PASS');
 
 const routes = readFileSync(new URL('../src/app/app.routes.ts', import.meta.url), 'utf8');
 const admin = readFileSync(new URL('../src/app/pages/admin-shell/admin-shell.html', import.meta.url), 'utf8');
