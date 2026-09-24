@@ -3,7 +3,7 @@ import { RenderMode, ServerRoute } from '@angular/ssr';
 export const serverRoutes: ServerRoute[] = [
   // --- ROTAS ESTÁTICAS E SUMÁRIOS ---
   { path: '', renderMode: RenderMode.Server },
-  { path: 'compliance', renderMode: RenderMode.Prerender },
+  { path: 'compliance', renderMode: RenderMode.Server },
   { path: 'dossier', renderMode: RenderMode.Prerender },
   { path: 'creator', renderMode: RenderMode.Prerender },
   { path: 'contato', renderMode: RenderMode.Prerender },
