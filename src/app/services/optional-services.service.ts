@@ -32,6 +32,7 @@ export class OptionalServicesService {
     this.initialized = true;
     this.initializeSpeedInsights();
     this.tracking.initLazyTracking('GTM-P3KFK5T5');
+    this.tracking.initMetaPixel('1317873437179152');
     this.seo.initAhrefs();
     return true;
   }

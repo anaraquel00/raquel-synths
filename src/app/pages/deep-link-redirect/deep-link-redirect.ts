@@ -5,6 +5,7 @@ import { MusicalLinksService, MusicalLinkData } from '../../services/musical-lin
 import { TranslationService } from '../../services/translation.service'; // 🛰️ INJEÇÃO DO REDIRECT BILINGUE
 import { first } from 'rxjs/operators';
 import { Meta } from '@angular/platform-browser';
+import { ConsentService } from '../../services/consent.service';
 
 @Component({
   selector: 'app-deep-link-redirect',
@@ -49,6 +50,7 @@ export class DeepLinkRedirectComponent implements OnInit {
   private linkService = inject(MusicalLinksService);
   private platformId = inject(PLATFORM_ID);
   private meta = inject(Meta);
+  private consent = inject(ConsentService);
   // Mudado para protected para o template HTML herdar o escopo do serviço
   protected translate = inject(TranslationService);
 
@@ -101,18 +103,6 @@ ngOnInit(): void {
     'ID isolado por queryParamMap:',
     this.route.snapshot.queryParamMap.get('id')
   );
-
-
-  // =================================================
-  // META RADAR
-  // =================================================
-
-  if (
-    (window as any).acionarRadarMeta
-  ) {
-
-    (window as any).acionarRadarMeta();
-  }
 
 
   // =================================================
@@ -194,7 +184,8 @@ private executeDeepLinkProtocol(
     this.route.snapshot.paramMap.get('id');
 
   if (
-    typeof (window as any).fbq !== 'undefined'
+    this.consent.state() === 'ACCEPTED' &&
+    typeof (window as any).fbq === 'function'
   ) {
     (window as any).fbq(
       'track',
@@ -628,7 +619,8 @@ private executeProfileDeepLinkProtocol(
 
 
   if (
-    typeof (window as any).fbq !== 'undefined'
+    this.consent.state() === 'ACCEPTED' &&
+    typeof (window as any).fbq === 'function'
   ) {
 
     (window as any).fbq(

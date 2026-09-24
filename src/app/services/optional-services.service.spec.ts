@@ -24,7 +24,10 @@ describe('OptionalServicesService privacy policy route hardening', () => {
   beforeEach(() => {
     consentState = signal<ConsentState>('UNKNOWN');
     speedInsights = jasmine.createSpy('injectSpeedInsights');
-    tracking = jasmine.createSpyObj<TrackingService>('TrackingService', ['initLazyTracking']);
+    tracking = jasmine.createSpyObj<TrackingService>('TrackingService', [
+      'initLazyTracking',
+      'initMetaPixel'
+    ]);
     seo = jasmine.createSpyObj<SeoService>('SeoService', ['initAhrefs']);
 
     TestBed.configureTestingModule({
@@ -50,13 +53,23 @@ describe('OptionalServicesService privacy policy route hardening', () => {
     document.head
       .querySelectorAll('script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]')
       .forEach(script => script.remove());
-    delete (window as any).acionarRadarMeta;
   });
 
   function expectNoOptionalInitialization(): void {
     expect(speedInsights).not.toHaveBeenCalled();
     expect(tracking.initLazyTracking).not.toHaveBeenCalled();
+    expect(tracking.initMetaPixel).not.toHaveBeenCalled();
     expect(seo.initAhrefs).not.toHaveBeenCalled();
+  }
+
+  for (const state of ['UNKNOWN', 'REJECTED'] as ConsentState[]) {
+    it(`does not initialize Meta on an allowed route with ${state} consent`, () => {
+      consentState.set(state);
+
+      expect(service.initializeForRoute('/discografia')).toBeFalse();
+
+      expectNoOptionalInitialization();
+    });
   }
 
   for (const state of ['UNKNOWN', 'ACCEPTED', 'REJECTED'] as ConsentState[]) {
@@ -70,15 +83,6 @@ describe('OptionalServicesService privacy policy route hardening', () => {
     });
   }
 
-  it('keeps the Meta helper inactive on direct /compliance', () => {
-    consentState.set('ACCEPTED');
-    (window as any).acionarRadarMeta = jasmine.createSpy('acionarRadarMeta');
-
-    service.initializeForRoute('/compliance');
-
-    expect((window as any).acionarRadarMeta).not.toHaveBeenCalled();
-  });
-
   it('preserves normal optional-service initialization with accepted consent', () => {
     consentState.set('ACCEPTED');
 
@@ -86,6 +90,7 @@ describe('OptionalServicesService privacy policy route hardening', () => {
 
     expect(speedInsights).toHaveBeenCalledTimes(1);
     expect(tracking.initLazyTracking).toHaveBeenCalledOnceWith('GTM-P3KFK5T5');
+    expect(tracking.initMetaPixel).toHaveBeenCalledOnceWith('1317873437179152');
     expect(seo.initAhrefs).toHaveBeenCalledTimes(1);
   });
 
@@ -98,6 +103,7 @@ describe('OptionalServicesService privacy policy route hardening', () => {
 
     expect(speedInsights).toHaveBeenCalledTimes(1);
     expect(tracking.initLazyTracking).toHaveBeenCalledTimes(1);
+    expect(tracking.initMetaPixel).toHaveBeenCalledTimes(1);
     expect(seo.initAhrefs).toHaveBeenCalledTimes(1);
   });
 
@@ -109,6 +115,7 @@ describe('OptionalServicesService privacy policy route hardening', () => {
 
     expect(speedInsights).toHaveBeenCalledTimes(1);
     expect(tracking.initLazyTracking).toHaveBeenCalledTimes(1);
+    expect(tracking.initMetaPixel).toHaveBeenCalledTimes(1);
     expect(seo.initAhrefs).toHaveBeenCalledTimes(1);
   });
 

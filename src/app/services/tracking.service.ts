@@ -2,6 +2,34 @@ import { Injectable, PLATFORM_ID, inject, afterNextRender, Injector } from '@ang
 import { isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { ConsentService } from './consent.service';
 
+type MetaPixelFunction = ((...args: unknown[]) => void) & {
+  callMethod?: (...args: unknown[]) => void;
+  loaded?: boolean;
+  push?: MetaPixelFunction;
+  queue?: IArguments[];
+  version?: string;
+};
+
+type MetaPixelWindow = Window & {
+  _fbq?: MetaPixelFunction;
+  fbq?: MetaPixelFunction;
+  __rqsMetaPixelIds?: Record<string, boolean>;
+};
+
+const META_PIXEL_SCRIPT_ID = 'rqs-meta-pixel';
+
+export function isMetaTelemetryAllowed(hostname: string, developerMode: boolean): boolean {
+  const normalizedHostname = hostname.toLowerCase();
+  const isLocalhost = normalizedHostname === 'localhost' ||
+    normalizedHostname === '127.0.0.1' ||
+    normalizedHostname === '::1';
+  const isVercelPreview = normalizedHostname.endsWith('.vercel.app');
+  const isProduction = normalizedHostname === 'raquelsynths.com' ||
+    normalizedHostname === 'www.raquelsynths.com';
+
+  return !isLocalhost && !isVercelPreview && !(isProduction && developerMode);
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -11,7 +39,61 @@ export class TrackingService {
   private document = inject(DOCUMENT);
   private injector = inject(Injector);
   private scriptsLoaded = false;
+  private metaPixelInitialized = false;
   private consent = inject(ConsentService);
+
+  public initMetaPixel(pixelId: string): boolean {
+    if (
+      !isPlatformBrowser(this.platformId) ||
+      this.metaPixelInitialized ||
+      this.consent.state() !== 'ACCEPTED'
+    ) {
+      return false;
+    }
+
+    const win = this.document.defaultView as MetaPixelWindow | null;
+    if (!win) return false;
+
+    const developerMode = win.localStorage?.getItem('RQS_DEV_MODE') === 'true';
+    if (!isMetaTelemetryAllowed(win.location.hostname, developerMode)) return false;
+
+    const initializedIds = win.__rqsMetaPixelIds ??= {};
+    if (initializedIds[pixelId]) {
+      this.metaPixelInitialized = true;
+      return false;
+    }
+
+    let fbq = win.fbq;
+    if (typeof fbq !== 'function') {
+      fbq = function(this: MetaPixelFunction, ...args: unknown[]): void {
+        if (fbq?.callMethod) {
+          fbq.callMethod(...args);
+          return;
+        }
+        fbq?.queue?.push(arguments);
+      } as MetaPixelFunction;
+      fbq.push = fbq;
+      fbq.loaded = true;
+      fbq.version = '2.0';
+      fbq.queue = [];
+      win.fbq = fbq;
+      win._fbq ??= fbq;
+    }
+
+    if (!this.document.getElementById(META_PIXEL_SCRIPT_ID)) {
+      const script = this.document.createElement('script');
+      script.id = META_PIXEL_SCRIPT_ID;
+      script.async = true;
+      script.src = 'https://connect.facebook.net/en_US/fbevents.js';
+      this.document.head.appendChild(script);
+    }
+
+    fbq('init', pixelId);
+    fbq('track', 'PageView');
+    initializedIds[pixelId] = true;
+    this.metaPixelInitialized = true;
+    return true;
+  }
 
   trackAffiliateClick(productName: string, platform: string) {
     if (isPlatformBrowser(this.platformId) && this.consent.state() === 'ACCEPTED') {
