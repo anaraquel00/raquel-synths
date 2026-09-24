@@ -94,9 +94,39 @@
    } @else {
       <div style="padding: 100px; text-align: center; font-family: 'Courier New', monospace;"
            [style.color]="currentMode() === 'jonah' ? '#ff0000' : '#00e5ff'">
-        <p class="glitch-text" style="animation: pulse 1.5s infinite;">
-          {{ translate.isPt() ? '[ 🔄 AGUARDANDO SINAL DA MATRIX... ]' : '[ 🔄 WAITING FOR MATRIX SIGNAL... ]' }}
-        </p>
+        @switch (readerState()) {
+          @case ('LOADING') {
+            <p class="glitch-text" style="animation: pulse 1.5s infinite;" role="status">
+              {{ translate.isPt() ? '[ 🔄 AGUARDANDO SINAL DA MATRIX... ]' : '[ 🔄 WAITING FOR MATRIX SIGNAL... ]' }}
+            </p>
+          }
+          @case ('NOT_FOUND') {
+            <div role="alert">
+              <p class="glitch-text">
+                {{ translate.isPt() ? '[ ARQUIVO NÃO ENCONTRADO ]' : '[ FILE NOT FOUND ]' }}
+              </p>
+              <p>
+                {{ translate.isPt()
+                    ? 'Este episódio não existe ou não está disponível.'
+                    : 'This episode does not exist or is not available.'
+                }}
+              </p>
+            </div>
+          }
+          @case ('ERROR') {
+            <div role="alert">
+              <p class="glitch-text">
+                {{ translate.isPt() ? '[ FALHA TEMPORÁRIA DE CONEXÃO ]' : '[ TEMPORARY CONNECTION FAILURE ]' }}
+              </p>
+              <p>
+                {{ translate.isPt()
+                    ? 'Não foi possível carregar este episódio agora. Tente novamente em instantes.'
+                    : 'This episode could not be loaded right now. Please try again shortly.'
+                }}
+              </p>
+            </div>
+          }
+        }
       </div>
     }
 

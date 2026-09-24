@@ -60,6 +60,7 @@ export class ContentService {
   public currentMode: 'broklin' | 'jonah' = 'broklin';
 
   private episodesCache: { [mode: string]: LoreEpisode[] } = {};
+  private episodeCache = new Map<string, LoreEpisode | null>();
   private globalSagasCache: LoreEpisode[] | null = null;
   private homeContentCache = new Map<string, any[]>();
 
@@ -237,58 +238,89 @@ export class ContentService {
     );
   }
 
- getEpisodeById(
-  mode: 'broklin' | 'jonah',
-  id: string
-): Observable<LoreEpisode | null> {
+  getEpisodeById(
+    mode: 'broklin' | 'jonah',
+    id: string
+  ): Observable<LoreEpisode | null> {
+    return this.readEpisodeById(mode, id).pipe(
+      catchError(err => {
+        console.warn(
+          `⚠️ Erro ao buscar episódio ${id} no Firestore:`,
+          err
+        );
 
-  if (!id) {
-    return of(null);
+        return of(null);
+      })
+    );
   }
 
-  if (this.episodesCache[mode]) {
-    const found = this.episodesCache[mode].find(ep => ep.id === id);
-
-    if (found) {
-      return of(found);
-    }
+  getEpisodeByIdStrict(
+    mode: 'broklin' | 'jonah',
+    id: string
+  ): Observable<LoreEpisode | null> {
+    return this.readEpisodeById(mode, id);
   }
 
-  const collectionName =
-    mode === 'jonah' ? 'lore-jonah' : 'lore';
-
-  // SSR / PRERENDER
-  if (isPlatformServer(this.platformId)) {
-    return this.getEpisodeByIdServer(collectionName, id);
-  }
-
-  // BROWSER
-  const docRef = doc(
-    this.firestore,
-    `${collectionName}/${id}`
-  );
-
-  return from(getDoc(docRef)).pipe(
-    map(snapshot => {
-      if (!snapshot.exists()) {
-        return null;
-      }
-
-      return {
-        id: snapshot.id,
-        ...snapshot.data()
-      } as LoreEpisode;
-    }),
-    catchError(err => {
-      console.warn(
-        `⚠️ Erro ao buscar episódio ${id} no Firestore:`,
-        err
-      );
-
+  private readEpisodeById(
+    mode: 'broklin' | 'jonah',
+    id: string
+  ): Observable<LoreEpisode | null> {
+    if (!id) {
       return of(null);
-    })
-  );
-}
+    }
+
+    const cacheKey = `${mode}:${id}`;
+    const transferKey = makeStateKey<LoreEpisode | null>(
+      `rqs-lore-episode:${cacheKey}`
+    );
+
+    if (this.episodeCache.has(cacheKey)) {
+      return of(this.episodeCache.get(cacheKey) ?? null);
+    }
+
+    if (this.transferState.hasKey(transferKey)) {
+      const transferredEpisode = this.transferState.get(transferKey, null);
+      this.transferState.remove(transferKey);
+      this.episodeCache.set(cacheKey, transferredEpisode);
+      return of(transferredEpisode);
+    }
+
+    if (this.episodesCache[mode]) {
+      const found = this.episodesCache[mode].find(ep => ep.id === id);
+
+      if (found) {
+        this.episodeCache.set(cacheKey, found);
+        return of(found);
+      }
+    }
+
+    const collectionName = mode === 'jonah' ? 'lore-jonah' : 'lore';
+
+    if (isPlatformServer(this.platformId)) {
+      return this.getEpisodeByIdServer(collectionName, id).pipe(
+        tap(episode => {
+          this.episodeCache.set(cacheKey, episode);
+          this.transferState.set(transferKey, episode);
+        })
+      );
+    }
+
+    const docRef = doc(this.firestore, `${collectionName}/${id}`);
+
+    return from(getDoc(docRef)).pipe(
+      map(snapshot => {
+        if (!snapshot.exists()) {
+          return null;
+        }
+
+        return {
+          id: snapshot.id,
+          ...snapshot.data()
+        } as LoreEpisode;
+      }),
+      tap(episode => this.episodeCache.set(cacheKey, episode))
+    );
+  }
 
 private getEpisodeByIdServer(
   collectionName: string,
@@ -324,7 +356,7 @@ private getEpisodeByIdServer(
         err
       );
 
-      return of(null);
+      throw err;
     })
   );
 }

@@ -27,13 +27,12 @@ import { TranslationService } from '../../services/translation.service';
 import { ContentService } from '../../services/content.service';
 import { SeoService } from '../../services/seo.service';
 
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import {
   switchMap,
   tap,
   take,
-  catchError,
-  map
+  catchError
 } from 'rxjs/operators';
 
 import { SplitContentPipe } from '../../components/pipes/content-splitter.pipe';
@@ -41,6 +40,8 @@ import { LoreEpisode } from '../../data/lore-data';
 import { AdArticleComponent } from '../../components/ad-article/ad-article';
 import { NgOptimizedImage } from '@angular/common';
 import { AuthorSignatureComponent } from '../../components/author-signature/author-signature';
+
+type LoreReaderState = 'LOADING' | 'LOADED' | 'NOT_FOUND' | 'ERROR';
 
 @Component({
   selector: 'app-lore-reader',
@@ -89,6 +90,9 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
   activeEpisode = signal<LoreEpisode | null>(null);
   previousEpisode = signal<LoreEpisode | null>(null);
   nextEpisode = signal<LoreEpisode | null>(null);
+  readonly readerState = signal<LoreReaderState>('LOADING');
+
+  private adjacentEpisodesSubscription: Subscription | null = null;
 
   constructor() {
 
@@ -255,6 +259,8 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
 
       switchMap(params => {
 
+        this.beginEpisodeLoad();
+
         const id = params.get('id');
 
         const rawMode = params.get('mode');
@@ -269,8 +275,7 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
           rawMode !== 'jonah'
         ) {
           this.activeEpisode.set(null);
-          this.previousEpisode.set(null);
-          this.nextEpisode.set(null);
+          this.readerState.set('NOT_FOUND');
           this.setSsrStatus(404);
 
           return of(null);
@@ -290,8 +295,7 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
 
         if (!id) {
           this.activeEpisode.set(null);
-          this.previousEpisode.set(null);
-          this.nextEpisode.set(null);
+          this.readerState.set('NOT_FOUND');
           this.setSsrStatus(404);
 
           return of(null);
@@ -312,29 +316,27 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
          * consulta SOMENTE collection "lore-jonah".
          */
         return contentService
-          .getEpisodeById(mode, id)
+          .getEpisodeByIdStrict(mode, id)
           .pipe(
 
             take(1),
 
-            switchMap(ep =>
-              contentService.getEpisodes(mode).pipe(
-                take(1),
-                map(episodes => ({ ep, episodes }))
-              )
-            ),
-
-            tap(({ ep, episodes }) => {
+            tap(ep => {
 
               if (!ep) {
+                this.activeEpisode.set(null);
+                this.readerState.set('NOT_FOUND');
                 this.setSsrStatus(404);
+                return;
               }
 
               this.activeEpisode.set(ep);
-              this.setAdjacentEpisodes(id, episodes);
-            }),
+              this.readerState.set('LOADED');
 
-            map(({ ep }) => ep),
+              if (this.isBrowser) {
+                this.loadAdjacentEpisodes(contentService, mode, id);
+              }
+            }),
 
             catchError(err => {
 
@@ -344,10 +346,9 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
               );
 
               this.activeEpisode.set(null);
-              this.previousEpisode.set(null);
-              this.nextEpisode.set(null);
+              this.readerState.set('ERROR');
 
-              this.setSsrStatus(404);
+              this.setSsrStatus(503);
 
               return of(null);
             })
@@ -368,12 +369,40 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
    * URL inexistente → HTTP 404
    */
   private setSsrStatus(statusCode: number): void {
-  const isServer = isPlatformServer(this.platformId);
+    const isServer = isPlatformServer(this.platformId);
 
-  if (isServer && this.responseInit) {
-    this.responseInit.status = statusCode;
+    if (isServer && this.responseInit) {
+      this.responseInit.status = statusCode;
+    }
   }
-}
+
+  private beginEpisodeLoad(): void {
+    this.adjacentEpisodesSubscription?.unsubscribe();
+    this.adjacentEpisodesSubscription = null;
+    this.previousEpisode.set(null);
+    this.nextEpisode.set(null);
+    this.readerState.set('LOADING');
+  }
+
+  private loadAdjacentEpisodes(
+    contentService: ContentService,
+    mode: 'broklin' | 'jonah',
+    id: string
+  ): void {
+    this.adjacentEpisodesSubscription = contentService
+      .getEpisodes(mode)
+      .pipe(take(1))
+      .subscribe(episodes => {
+        if (
+          this.currentMode() !== mode ||
+          this.activeEpisode()?.id !== id
+        ) {
+          return;
+        }
+
+        this.setAdjacentEpisodes(id, episodes);
+      });
+  }
 
   private getEpisodeStructure(
     id: string | undefined
@@ -435,7 +464,9 @@ export class LoreReaderComponent implements OnInit, OnDestroy {
     );
   }
 
-    ngOnDestroy(): void {
+  ngOnDestroy(): void {
+    this.adjacentEpisodesSubscription?.unsubscribe();
+
     /**
      * Não existe mais MutationObserver neste componente.
      *
