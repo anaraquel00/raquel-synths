@@ -19,13 +19,16 @@ describe('DiscographyComponent conversion boundary', () => {
   });
 
   const albums = [
+    album('b8', 'broklin', 8),
     album('b6', 'broklin', 6),
     album('b5', 'broklin', 5),
     album('h4', 'hybrid', 4),
     album('b3', 'broklin', 3),
     album('b2', 'broklin', 2),
     album('b1', 'broklin', 1),
-    album('j7', 'jonah', 7)
+    album('j9', 'jonah', 9),
+    album('j7', 'jonah', 7),
+    album('j6', 'jonah', 6)
   ];
 
   function createComponent(url: string, isPt = true): any {
@@ -33,42 +36,39 @@ describe('DiscographyComponent conversion boundary', () => {
     component.router = { url };
     component.translate = { isPt: () => isPt };
     component.allAlbums = [...albums];
-    component._limitToHome = 5;
-    component.dedicatedReleaseLimit = 3;
+    component._limitToHome = 3;
+    component.dedicatedReleaseLimit = 4;
     component._modeSignal = () => 'broklin';
-    component.trackingService = jasmine.createSpyObj('TrackingService', [
-      'trackCustomEvent',
-      'trackSpotifyClick',
-      'trackSoundcloudClick'
-    ]);
+    component.trackingService = jasmine.createSpyObj('TrackingService', ['trackCustomEvent']);
     component.seoService = jasmine.createSpyObj('SeoService', ['setJsonLdGraph']);
     return component;
   }
 
-  it('keeps five current releases on Home and limits dedicated discography to three', () => {
+  it('keeps three current releases on Home and limits dedicated discography to four', () => {
     const home = createComponent('/');
     const dedicated = createComponent('/discografia');
 
-    expect(home.featuredBroklin.length).toBe(5);
-    expect(dedicated.featuredBroklin.map((item: Album) => item.id)).toEqual(['b6', 'b5', 'h4']);
+    expect(home.featuredBroklin.map((item: Album) => item.id)).toEqual(['b8', 'b6', 'b5']);
+    expect(dedicated.featuredBroklin.map((item: Album) => item.id)).toEqual(['b8', 'b6', 'b5', 'h4']);
   });
 
   it('keeps hybrid releases in each relevant faction selection', () => {
     const component = createComponent('/discografia');
     component._modeSignal = () => 'jonah';
 
-    expect(component.featuredJonah.map((item: Album) => item.id)).toEqual(['j7', 'h4']);
+    expect(component.featuredJonah.map((item: Album) => item.id)).toEqual(['j9', 'j7', 'j6', 'h4']);
   });
 
-  it('builds /discografia schema from only the three visible releases', () => {
+  it('builds /discografia schema from only the four visible releases', () => {
     const component = createComponent('/discografia');
 
     component.updateDiscographySchema();
 
     const graph = component.seoService.setJsonLdGraph.calls.mostRecent().args[0];
     const collection = graph.find((item: any) => item['@type'] === 'CollectionPage');
-    expect(collection.mainEntity.numberOfItems).toBe(3);
+    expect(collection.mainEntity.numberOfItems).toBe(4);
     expect(collection.mainEntity.itemListElement.map((item: any) => item.item.name)).toEqual([
+      'Release b8',
       'Release b6',
       'Release b5',
       'Release h4'
@@ -78,7 +78,7 @@ describe('DiscographyComponent conversion boundary', () => {
 
   it('tracks every dedicated conversion action through trackCustomEvent', () => {
     const component = createComponent('/discografia');
-    const release = albums[0];
+    const release = albums[1];
 
     component.trackSpotifyProfileClick();
     component.trackRadioClick();
@@ -113,14 +113,45 @@ describe('DiscographyComponent conversion boundary', () => {
     );
   });
 
-  it('preserves the existing Home-specific streaming tracking', () => {
+  it('tracks Home acquisition and release actions through the existing custom-event layer', () => {
     const component = createComponent('/');
 
-    component.trackAlbumClick(albums[0]);
-    component.trackSoundcloudClick(albums[0]);
+    component.trackSpotifyProfileClick();
+    component.trackRadioClick();
+    component.trackAlbumClick(albums[1]);
+    component.trackSoundcloudClick(albums[1]);
 
-    expect(component.trackingService.trackSpotifyClick).toHaveBeenCalledWith('Release b6');
-    expect(component.trackingService.trackSoundcloudClick).toHaveBeenCalledWith('Release b6');
-    expect(component.trackingService.trackCustomEvent).not.toHaveBeenCalled();
+    expect(component.trackingService.trackCustomEvent).toHaveBeenCalledWith(
+      'HOME_SPOTIFY_PROFILE_CLICK',
+      { location: 'homepage', target: 'rqs-mainframe' }
+    );
+    expect(component.trackingService.trackCustomEvent).toHaveBeenCalledWith(
+      'HOME_RADIO_CLICK',
+      { location: 'homepage', target: 'rqs-cyberpunk-radio' }
+    );
+    expect(component.trackingService.trackCustomEvent).toHaveBeenCalledWith(
+      'HOME_RELEASE_CLICK',
+      jasmine.objectContaining({
+        location: 'homepage',
+        release_id: 'b6',
+        service: 'spotify'
+      })
+    );
+    expect(component.trackingService.trackCustomEvent).toHaveBeenCalledWith(
+      'HOME_RELEASE_CLICK',
+      jasmine.objectContaining({
+        location: 'homepage',
+        release_id: 'b6',
+        service: 'soundcloud'
+      })
+    );
+  });
+
+  it('does not emit discography structured data from the Home teaser', () => {
+    const component = createComponent('/');
+
+    component.updateDiscographySchema();
+
+    expect(component.seoService.setJsonLdGraph).not.toHaveBeenCalled();
   });
 });

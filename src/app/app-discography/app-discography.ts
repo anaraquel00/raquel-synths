@@ -1,49 +1,37 @@
-import { ChangeDetectorRef, Component, computed, HostListener, inject, Input, OnInit, signal, afterNextRender } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { DOCUMENT } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { ChangeDetectorRef, Component, HostListener, inject, Input, OnInit, signal, afterNextRender } from '@angular/core';
+import { CommonModule, DOCUMENT, isPlatformBrowser, NgOptimizedImage } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 
 // Services & Models
 import { TranslationService } from '../services/translation.service';
 import { ContentService } from '../services/content.service';
 import { Album } from '../models/album.model';
-import { AdBannerComponent } from "../components/ad-banner/ad-banner";
-import { NgOptimizedImage } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
 import { TrackingService } from '../services/tracking.service';
 import { SeoService } from '../services/seo.service';
 import { take } from 'rxjs/operators';
-import { SpotifyPlaylistComponent } from "../components/spotify-playlist/spotify-playlist";
 
 @Component({
   selector: 'app-discography',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule, RouterModule, AdBannerComponent,NgOptimizedImage, SpotifyPlaylistComponent],
+  imports: [CommonModule, RouterModule, NgOptimizedImage],
   templateUrl:'./app-discography.html',
   styleUrl: './app-discography.scss'
 })
 export class DiscographyComponent implements OnInit {
   private router = inject(Router);
   public translate = inject(TranslationService);
-  private sanitizer = inject(DomSanitizer);
   private platformId = inject(PLATFORM_ID);
   private contentService = inject(ContentService);
   private cdr = inject(ChangeDetectorRef);
   private seoService = inject(SeoService);
   private document = inject(DOCUMENT);
 
-  private _limitToHome: number = 5; // 🛡️ Valor de fábrica blindado (default)
-  private readonly dedicatedReleaseLimit = 3;
-  currentMode: any;
+  private _limitToHome = 3;
+  private readonly dedicatedReleaseLimit = 4;
 
 @Input() set limitToHome(value: any) {
-  // Se o roteador injetar 'undefined' ou 'null', a trava mantém o 5.
-  // Se vier um valor real (como o 5 da Landing Page), ele aceita.
+  // Se o roteador injetar 'undefined' ou 'null', a Home mantém o teaser de 3 itens.
   if (value !== undefined && value !== null) {
     this._limitToHome = Number(value);
   }
@@ -53,10 +41,13 @@ get limitToHome(): number {
   return this._limitToHome;
 }
 
+get currentLang(): 'pt' | 'en' {
+  return this.translate.isPt() ? 'pt' : 'en';
+}
+
   // O Banco de Dados Completo
   allAlbums: Album[] = [];
   isLoading = true;
-  last: any;
   private homeAlbumsByMode: Partial<Record<'broklin' | 'jonah', Album[]>> = {};
   private homeLoadingModes = new Set<'broklin' | 'jonah'>();
 
@@ -106,8 +97,8 @@ ngOnInit() {
       this.seoService.updateMetaTags({
         title: isPt ? 'Discografia' : 'Discography',
         description: isPt
-          ? 'Siga a RaQuel Synths no Spotify, ouça a Cyberpunk Radio 24/7 e descubra os três lançamentos mais recentes.'
-          : 'Follow RaQuel Synths on Spotify, listen to Cyberpunk Radio 24/7, and discover the three latest releases.',
+          ? 'Siga a RaQuel Synths no Spotify, ouça a Cyberpunk Radio 24/7 e descubra os quatro lançamentos mais recentes.'
+          : 'Follow RaQuel Synths on Spotify, listen to Cyberpunk Radio 24/7, and discover the four latest releases.',
         type: 'website'
       });
     }
@@ -198,7 +189,7 @@ private loadHomeDiscography(mode: 'broklin' | 'jonah') {
     releaseDate.getFullYear() === today.getFullYear();
   }
 
-// ✅ BROKLIN: Home mantém 5; /discografia mostra somente os 3 sinais mais recentes.
+// ✅ BROKLIN: Home mantém 3; /discografia mostra somente os 4 sinais mais recentes.
 get featuredBroklin(): Album[] {
     const filtered = this.allAlbums
       .filter(a => a.faction === 'broklin' || a.faction === 'hybrid')
@@ -212,7 +203,7 @@ get featuredBroklin(): Album[] {
     return filtered.slice(0, limit);
 }
 
-// ✅ JONAH: Home mantém 5; /discografia mostra somente os 3 sinais mais recentes.
+// ✅ JONAH: Home mantém 3; /discografia mostra somente os 4 sinais mais recentes.
 get featuredJonah(): Album[] {
     const filtered = this.allAlbums
       .filter(a => a.faction === 'jonah' || a.faction === 'hybrid')
@@ -289,67 +280,38 @@ get featuredJonah(): Album[] {
     ]);
   }
 
-  // --- FUNÇÕES DO HTML ---
-
-  getSafeUrl(url: string | undefined): SafeResourceUrl {
-    if (!url) return '';
-    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
-  }
-
-  openLink(url: string | undefined) {
-    if (url) window.open(url, '_blank');
-  }
-
-  // Função que o seu HTML pediu no final
-  GoHome() {
-    // Se isso for a Landing Page, talvez você queira ir para o Arquivo
-    // Se for o Arquivo, volta pra Home.
-    // Como está "Back to Home", vou mandar pra raiz:
-    this.router.navigate(['/']);
-  }
-
-  // Caso queira o botão de arquivo separado
-  navigateFullArchive() {
-    this.router.navigate(['/musical-archives']);
-  }
-
-  // Injeção do nosso serviço de espionagem
   private trackingService = inject(TrackingService);
 
-  // Radar passivo que não interfere na abertura da aba
   trackAlbumClick(album: Album) {
     if (!album?.title) return;
-
-    if (this.isHomeView) {
-      this.trackingService.trackSpotifyClick(album.title);
-      return;
-    }
-
     this.trackReleaseClick(album, 'spotify');
   }
 
-// Radar passivo exclusivo para o SoundCloud
   trackSoundcloudClick(album: Album) {
     if (!album?.title) return;
-
-    if (this.isHomeView) {
-      this.trackingService.trackSoundcloudClick(album.title);
-      return;
-    }
-
     this.trackReleaseClick(album, 'soundcloud');
   }
 
   trackSpotifyProfileClick(): void {
-    this.trackingService.trackCustomEvent('DISCOGRAPHY_SPOTIFY_PROFILE_CLICK', {
-      target: 'rqs-mainframe'
-    });
+    const eventName = this.isHomeView
+      ? 'HOME_SPOTIFY_PROFILE_CLICK'
+      : 'DISCOGRAPHY_SPOTIFY_PROFILE_CLICK';
+    const eventParams = this.isHomeView
+      ? { location: 'homepage', target: 'rqs-mainframe' }
+      : { target: 'rqs-mainframe' };
+
+    this.trackingService.trackCustomEvent(eventName, eventParams);
   }
 
   trackRadioClick(): void {
-    this.trackingService.trackCustomEvent('DISCOGRAPHY_RADIO_CLICK', {
-      target: 'rqs-cyberpunk-radio'
-    });
+    const eventName = this.isHomeView
+      ? 'HOME_RADIO_CLICK'
+      : 'DISCOGRAPHY_RADIO_CLICK';
+    const eventParams = this.isHomeView
+      ? { location: 'homepage', target: 'rqs-cyberpunk-radio' }
+      : { target: 'rqs-cyberpunk-radio' };
+
+    this.trackingService.trackCustomEvent(eventName, eventParams);
   }
 
   trackArchiveClick(): void {
@@ -359,7 +321,12 @@ get featuredJonah(): Album[] {
   }
 
   private trackReleaseClick(album: Album, service: 'spotify' | 'soundcloud'): void {
-    this.trackingService.trackCustomEvent('DISCOGRAPHY_RELEASE_CLICK', {
+    const eventName = this.isHomeView
+      ? 'HOME_RELEASE_CLICK'
+      : 'DISCOGRAPHY_RELEASE_CLICK';
+
+    this.trackingService.trackCustomEvent(eventName, {
+      ...(this.isHomeView ? { location: 'homepage' } : {}),
       release_id: album.id,
       release_title: album.title,
       service,

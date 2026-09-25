@@ -1,14 +1,14 @@
 <app-home id="inicio"></app-home>
 
 <section id="current-music" class="journey-section current-music-section" [attr.aria-label]="translate.isPt() ? 'Música atual' : 'Current music'">
-  <app-discography [limitToHome]="5"></app-discography>
+  <app-discography [limitToHome]="3"></app-discography>
   <div class="section-cta-row">
     <a
       class="journey-cta journey-cta-primary"
       routerLink="/discografia"
       (click)="trackHomeAction('HOME_LISTEN_CLICK', 'discografia')"
     >
-      {{ translate.isPt() ? 'VER MÚSICA ATUAL' : 'VIEW CURRENT MUSIC' }}
+      {{ translate.isPt() ? 'VER MÚSICA ATUAL →' : 'EXPLORE CURRENT MUSIC →' }}
     </a>
   </div>
 </section>
