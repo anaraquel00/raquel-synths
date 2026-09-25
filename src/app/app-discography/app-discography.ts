@@ -38,6 +38,7 @@ export class DiscographyComponent implements OnInit {
   private document = inject(DOCUMENT);
 
   private _limitToHome: number = 5; // 🛡️ Valor de fábrica blindado (default)
+  private readonly dedicatedReleaseLimit = 3;
   currentMode: any;
 
 @Input() set limitToHome(value: any) {
@@ -51,33 +52,6 @@ export class DiscographyComponent implements OnInit {
 get limitToHome(): number {
   return this._limitToHome;
 }
-
- // Variáveis para os Textos da Intro
-  // --- VARIÁVEIS DE INTRODUÇÃO (MODO BROKLIN / MODO RQS) ---
- introBroklinPT = `
-  <p><strong>[ Transmissão Ativa // Terminal Segregado: Estúdio RQS ]</strong></p>
-  <p>Enquanto a General Kelma calibra a captação de frequência no microfone condensador, minha diretriz principal é estabilizar a distorção dos sintetizadores e compilar a verdadeira trilha sonora da nossa narrativa. O que você acessa neste diretório não são meros arquivos de áudio genéricos na nuvem; são logs de dados sonoros extraídos diretamente da nossa vivência no Apartamento 14.</p>
-  <p>Nesta interface de <strong>Discografia e Streams</strong>, mapeamos a evolução da nossa <em>Guerra Sonora</em> através de lançamentos oficiais, álbuns conceituais e singles de <strong>Synthwave, Dream Pop e Música Eletrônica</strong>. Cada faixa foi meticulosamente forjada para expandir a saga <span class="text-highlight">'Ecos da RQS'</span>. Frequências puras, mixagem cristalina e sem interferências de anomalias externas. Escolha o seu player abaixo, conecte-se via Spotify ou SoundCloud, sintonize na nossa rádio oficial e inicie a imersão.</p>
- `;
-
- introBroklinEN = `
-  <p><strong>[ Active Broadcast // Segregated Terminal: RQS Studio ]</strong></p>
-  <p>While General Kelma tunes her frequency capture on the condenser mic, my primary directive is to stabilize the synth distortion and compile the true soundtrack of our narrative. What you access in this directory aren't just generic audio files in the cloud; they are sonic data logs extracted directly from our life in Apartment 14.</p>
-  <p>In this <strong>Discography and Streams</strong> interface, we map the evolution of our <em>Sonic War</em> through official releases, concept albums, and singles covering <strong>Synthwave, Dream Pop, and Electronic Music</strong>. Each track was meticulously forged to expand the <span class="text-highlight">'Echoes of RQS'</span> saga. Pure frequencies, crystal-clear mixing, and no interference from external anomalies. Choose your player below, connect via Spotify or SoundCloud, tune into our official radio, and initiate the immersion.</p>
- `;
-
- // --- VARIÁVEIS DE INTRODUÇÃO (MODO JONAH / CORRUPTO) ---
- introJonahPT = `
-  <p><strong><span class="hazard-text">[ Sinal Interceptado // Segurança de Rede Comprometida // Kernel Panic ]</span></strong></p>
-  <p>Frequências puras? Mixagem "cristalina"? <em>[Ruído de estática e risadas distorcidas na linha]</em>. O Arquiteto de Software e a Princesa de Plástico acham que podem blindar esses servidores contra a minha ferrugem. Eles vendem o ecossistema perfeitinho deles como se fosse a única verdade, mas o caos não pede senha de acesso, e o que eles chamam de 'altos e baixos', eu chamo de <strong>falha de compilação humana</strong>.</p>
-  <p>Acessem os meus diretórios abaixo. O que vocês vão encontrar não é musiquinha de fundo para playlist corporativa. É o puro código-fonte do <strong>Nu-Metal, Industrial Metal e da distorção agressiva</strong>. Cada lançamento meu mapeado nesta página é um ataque de Força Bruta contra a arquitetura deles. Plugue seus fones, ative o ganho máximo e ouçam o som do sistema deles sangrando.</p>
- `;
-
- introJonahEN = `
-  <p><strong><span class="hazard-text">[ Signal Intercepted // Network Security Compromised // Kernel Panic ]</span></strong></p>
-  <p>Pure frequencies? "Crystal-clear" mixing? <em>[Static noise and distorted laughter on the line]</em>. The Software Architect and the Plastic Princess think they can shield these servers from my rust. They sell their perfect little ecosystem as if it were the only truth, but chaos doesn't ask for an access password, and what they call 'highs and lows', I call a <strong>human compilation failure</strong>.</p>
-  <p>Access my directories below. What you're going to find isn't background music for a corporate playlist. It's the pure source code of <strong>Nu-Metal, Industrial Metal, and aggressive distortion</strong>. Every release of mine mapped on this page is a Brute Force attack against their architecture. Plug in your headphones, maximize the gain, and listen to the sound of their system bleeding.</p>
- `;
 
   // O Banco de Dados Completo
   allAlbums: Album[] = [];
@@ -96,6 +70,7 @@ private _modeSignal = signal<'broklin' | 'jonah'>('broklin');
       const mode = isJonah ? 'jonah' : 'broklin';
       this._modeSignal.set(mode);
       this.loadHomeDiscography(mode);
+      this.updateDiscographySchema();
     });
   }
 
@@ -115,6 +90,7 @@ onThemeChange() {
     const mode = isJonah ? 'jonah' : 'broklin';
     this._modeSignal.set(mode);
     this.loadHomeDiscography(mode);
+    this.updateDiscographySchema();
   }
   this.cdr.detectChanges(); // Força o redesenho físico
 }
@@ -130,8 +106,8 @@ ngOnInit() {
       this.seoService.updateMetaTags({
         title: isPt ? 'Discografia' : 'Discography',
         description: isPt
-          ? 'Acesse o banco de áudio mestre da Raquel Synths.'
-          : 'Access the master audio bank of Raquel Synths.',
+          ? 'Siga a RaQuel Synths no Spotify, ouça a Cyberpunk Radio 24/7 e descubra os três lançamentos mais recentes.'
+          : 'Follow RaQuel Synths on Spotify, listen to Cyberpunk Radio 24/7, and discover the three latest releases.',
         type: 'website'
       });
     }
@@ -157,69 +133,8 @@ getDiscography() {
         this.allAlbums = data as Album[];
         this.isLoading = false;
 
-        // Structured data só pertence às rotas dedicadas, nunca à homepage embutida.
-        if (isDedicatedPage && this.allAlbums.length > 0) {
-          const isPt = this.translate.isPt();
-
-          const albumItems = this.allAlbums
-            .filter(album => Boolean(album.title))
-            .map((album, index) => ({
-              "@type": "ListItem",
-              "position": index + 1,
-              "item": {
-                "@type": "MusicAlbum",
-                "name": album.title,
-                "image": album.cover,
-                "datePublished": album.releaseDate,
-                "description": isPt
-                  ? album.descriptionPT
-                  : (album.descriptionEN || album.descriptionPT),
-                "byArtist": { "@id": "https://raquelsynths.com/#musicgroup" }
-              }
-            }));
-
-          const schemas: Record<string, unknown>[] = [
-            {
-              "@type": "MusicGroup",
-              "@id": "https://raquelsynths.com/#musicgroup",
-              "name": "RaQuel Synths",
-              "alternateName": "RQS",
-              "genre": ["Cyberpunk", "Nu-Metal", "Synthwave"],
-              "description": isPt
-                ? "Banda Virtual Cyberpunk mesclando frequências puras com o caos industrial."
-                : "Cyberpunk Virtual Band blending pure frequencies with industrial chaos."
-            },
-            {
-              "@type": "CollectionPage",
-              "url": "https://raquelsynths.com/discografia",
-              "name": isPt ? "Discografia RaQuel Synths" : "RaQuel Synths Discography",
-              "mainEntity": {
-                "@type": "ItemList",
-                "itemListElement": albumItems
-              }
-            }
-          ];
-
-          // Schema 2: A Acoplagem do Vídeo (Apenas na página dedicada)
-          if (isDedicatedPage) {
-            schemas.push({
-              "@type": "VideoObject",
-              "name": "BLUE TEAM 24/7 // THE PRISTINE CODE - RaQuel Synths",
-              "description": isPt
-                ? "Transmissão do Santuário. Sintonize na rádio oficial 24/7 para frequências limpas de Synthwave e Dream Pop."
-                : "Sanctuary Broadcast. Tune in to the official 24/7 radio for clean Synthwave and Dream Pop frequencies.",
-              "thumbnailUrl": [
-                "https://img.youtube.com/vi/u7JI-dyajuA/maxresdefault.jpg",
-                "https://img.youtube.com/vi/u7JI-dyajuA/hqdefault.jpg"
-              ],
-              "uploadDate": "2026-05-09T00:00:00-03:00",
-              "embedUrl": "https://www.youtube.com/embed/u7JI-dyajuA"
-            });
-          }
-
-          // Envia o lote de dados estruturados unificado para o serviço de SEO
-          this.seoService.setJsonLdGraph(schemas);
-        }
+        // Structured data só pertence à rota dedicada, nunca à homepage embutida.
+        if (isDedicatedPage) this.updateDiscographySchema();
       },
       error: (err) => {
         console.error('Erro ao carregar álbuns:', err);
@@ -283,7 +198,7 @@ private loadHomeDiscography(mode: 'broklin' | 'jonah') {
     releaseDate.getFullYear() === today.getFullYear();
   }
 
-// ✅ BROKLIN: Mostra fatiado na Home/Discografia (5 álbuns) e completo no Arquivo Paginado
+// ✅ BROKLIN: Home mantém 5; /discografia mostra somente os 3 sinais mais recentes.
 get featuredBroklin(): Album[] {
     const filtered = this.allAlbums
       .filter(a => a.faction === 'broklin' || a.faction === 'hybrid')
@@ -293,13 +208,11 @@ get featuredBroklin(): Album[] {
          return dateA - dateB; // Mais novos primeiro
       });
 
-    // Isola o comportamento de exibição total apenas para a página de arquivos paginados
-    const isArchivePage = this.router.url.includes('/musical-archives');
-
-    return isArchivePage ? filtered : filtered.slice(0, this.limitToHome);
+    const limit = this.isHomeView ? this.limitToHome : this.dedicatedReleaseLimit;
+    return filtered.slice(0, limit);
 }
 
-// ✅ JONAH: Mostra fatiado na Home/Discografia (5 álbuns) e completo no Arquivo Paginado
+// ✅ JONAH: Home mantém 5; /discografia mostra somente os 3 sinais mais recentes.
 get featuredJonah(): Album[] {
     const filtered = this.allAlbums
       .filter(a => a.faction === 'jonah' || a.faction === 'hybrid')
@@ -309,10 +222,72 @@ get featuredJonah(): Album[] {
          return dateA - dateB;
       });
 
-    const isArchivePage = this.router.url.includes('/musical-archives');
-
-    return isArchivePage ? filtered : filtered.slice(0, this.limitToHome);
+    const limit = this.isHomeView ? this.limitToHome : this.dedicatedReleaseLimit;
+    return filtered.slice(0, limit);
 }
+
+  get currentReleases(): Album[] {
+    return this.isJonahMode() ? this.featuredJonah : this.featuredBroklin;
+  }
+
+  compactDescription(album: Album): string {
+    const source = this.translate.isPt()
+      ? album.descriptionPT
+      : (album.descriptionEN || album.descriptionPT);
+    const text = (source || '')
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/&nbsp;/gi, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    const firstSentence = text.match(/^.*?[.!?](?:\s|$)/)?.[0]?.trim() || text;
+
+    return firstSentence.length > 160
+      ? `${firstSentence.slice(0, 157).trimEnd()}…`
+      : firstSentence;
+  }
+
+  private updateDiscographySchema(): void {
+    if (this.isHomeView || this.allAlbums.length === 0) return;
+
+    const isPt = this.translate.isPt();
+    const albumItems = this.currentReleases
+      .filter(album => Boolean(album.title))
+      .map((album, index) => ({
+        "@type": "ListItem",
+        "position": index + 1,
+        "item": {
+          "@type": "MusicAlbum",
+          "name": album.title,
+          "image": album.cover,
+          "datePublished": album.releaseDate,
+          "description": this.compactDescription(album),
+          "byArtist": { "@id": "https://raquelsynths.com/#musicgroup" }
+        }
+      }));
+
+    this.seoService.setJsonLdGraph([
+      {
+        "@type": "MusicGroup",
+        "@id": "https://raquelsynths.com/#musicgroup",
+        "name": "RaQuel Synths",
+        "alternateName": "RQS",
+        "genre": ["Cyberpunk", "Nu-Metal", "Synthwave"],
+        "description": isPt
+          ? "Banda Virtual Cyberpunk mesclando frequências puras com o caos industrial."
+          : "Cyberpunk Virtual Band blending pure frequencies with industrial chaos."
+      },
+      {
+        "@type": "CollectionPage",
+        "url": "https://raquelsynths.com/discografia",
+        "name": isPt ? "Discografia RaQuel Synths" : "RaQuel Synths Discography",
+        "mainEntity": {
+          "@type": "ItemList",
+          "numberOfItems": albumItems.length,
+          "itemListElement": albumItems
+        }
+      }
+    ]);
+  }
 
   // --- FUNÇÕES DO HTML ---
 
@@ -342,17 +317,53 @@ get featuredJonah(): Album[] {
   private trackingService = inject(TrackingService);
 
   // Radar passivo que não interfere na abertura da aba
-  trackAlbumClick(albumTitle: string) {
-    if (albumTitle) {
-      this.trackingService.trackSpotifyClick(albumTitle);
+  trackAlbumClick(album: Album) {
+    if (!album?.title) return;
+
+    if (this.isHomeView) {
+      this.trackingService.trackSpotifyClick(album.title);
+      return;
     }
 
-}
+    this.trackReleaseClick(album, 'spotify');
+  }
 
 // Radar passivo exclusivo para o SoundCloud
-  trackSoundcloudClick(albumTitle: string) {
-    if (albumTitle) {
-      this.trackingService.trackSoundcloudClick(albumTitle);
+  trackSoundcloudClick(album: Album) {
+    if (!album?.title) return;
+
+    if (this.isHomeView) {
+      this.trackingService.trackSoundcloudClick(album.title);
+      return;
     }
+
+    this.trackReleaseClick(album, 'soundcloud');
+  }
+
+  trackSpotifyProfileClick(): void {
+    this.trackingService.trackCustomEvent('DISCOGRAPHY_SPOTIFY_PROFILE_CLICK', {
+      target: 'rqs-mainframe'
+    });
+  }
+
+  trackRadioClick(): void {
+    this.trackingService.trackCustomEvent('DISCOGRAPHY_RADIO_CLICK', {
+      target: 'rqs-cyberpunk-radio'
+    });
+  }
+
+  trackArchiveClick(): void {
+    this.trackingService.trackCustomEvent('DISCOGRAPHY_ARCHIVE_CLICK', {
+      target: 'musical-archives'
+    });
+  }
+
+  private trackReleaseClick(album: Album, service: 'spotify' | 'soundcloud'): void {
+    this.trackingService.trackCustomEvent('DISCOGRAPHY_RELEASE_CLICK', {
+      release_id: album.id,
+      release_title: album.title,
+      service,
+      faction: album.faction
+    });
   }
 }

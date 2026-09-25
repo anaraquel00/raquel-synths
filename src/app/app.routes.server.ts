@@ -20,7 +20,7 @@ export const serverRoutes: ServerRoute[] = [
       ];
     }
 },
-  { path: 'discografia', renderMode: RenderMode.Prerender },
+  { path: 'discografia', renderMode: RenderMode.Server },
   { path: 'hybrid-saga', renderMode: RenderMode.Prerender },
   { path: 'bio', renderMode: RenderMode.Server },
 

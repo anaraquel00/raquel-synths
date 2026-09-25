@@ -91,13 +91,10 @@ getArchives() {
         const broklinFull = sortedData.filter(album => album.faction === 'broklin' || album.faction === 'hybrid');
         const jonahFull = sortedData.filter(album => album.faction === 'jonah' || album.faction === 'hybrid');
 
-        // 🛡️ 3. O GOLPE DE MISERICÓRDIA: .slice(5)
-        // Isso diz ao Angular: "Pule os 5 primeiros (que já estão na Home) e me dê todo o resto!"
-        this.featuredBroklin = broklinFull.slice(5);
-        this.featuredJonah = jonahFull.slice(5);
-
-        // Se você usar a variável legacyReleases globalmente, aplique o corte nela também:
-        this.legacyReleases = sortedData.slice(5);
+        // 3. O arquivo é a fonte histórica completa; nada é removido por aparecer na Home.
+        this.featuredBroklin = broklinFull;
+        this.featuredJonah = jonahFull;
+        this.legacyReleases = sortedData;
      // 🛡️ MOTOR DE AUTORIDADE: Meta Tags da Discografia Completa
       this.seoService.updateMetaTags({
         title: this.translate.isPt() ? 'Arquivos Musicais' : 'Musical Archives',
