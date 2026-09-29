@@ -406,8 +406,7 @@ function htmlBlocks(html) {
       blocks.push({
         tag: match[1].toLowerCase(),
         text,
-        html: match[2],
-        outerHtml: match[0]
+        html: match[2]
       });
     }
     const nestedImages = match[2].match(/<img\b[^>]*>/gi) || [];
@@ -468,6 +467,7 @@ function slugify(value) {
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
+    .replace(/['’]/g, '')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
     .slice(0, 100);
@@ -524,7 +524,7 @@ function logicalBlocks(inputBlocks) {
         tag: sourceBlock?.tag || '',
         text: text.trim(),
         html: '',
-        contentHtml: text.trim(),
+        contentHtml: decodeEntities(text.trim()),
         hasHtml: false,
         separatorBefore: index ? '\n' : '',
         sourceIndex
@@ -533,7 +533,6 @@ function logicalBlocks(inputBlocks) {
 
     const lines = [];
     const html = sourceBlock.html;
-    const hasManualBreak = /<br\s*\/?>/i.test(html);
     const breakPattern = /<br\s*\/?>/gi;
     let cursor = 0;
     let separatorBefore = '';
@@ -544,12 +543,12 @@ function logicalBlocks(inputBlocks) {
         tag: sourceBlock.tag || '',
         text: htmlText(segment),
         html: segment,
-        contentHtml: segment,
+        contentHtml: decodeEntities(segment),
         hasHtml: true,
         separatorBefore,
         sourceIndex
       });
-      separatorBefore = match[0];
+      separatorBefore = '\n';
       cursor = match.index + match[0].length;
     }
     const segment = html.slice(cursor);
@@ -557,9 +556,7 @@ function logicalBlocks(inputBlocks) {
       tag: sourceBlock.tag || '',
       text: htmlText(segment),
       html: segment,
-      contentHtml: hasManualBreak
-        ? segment
-        : sourceBlock.outerHtml || segment,
+      contentHtml: decodeEntities(segment),
       hasHtml: true,
       separatorBefore,
       sourceIndex
@@ -602,9 +599,23 @@ function parseEditorialBlocks(inputBlocks, sourceName = '') {
   let lastContentSourceIndex = -1;
 
   const startEpisode = marker => {
+    const episodeId = marker.episodeId || '';
+    if (
+      current &&
+      episodeId &&
+      (current.episodeId || current.slug) === episodeId
+    ) {
+      current.number = marker.number;
+      current.episodeId = episodeId;
+      current.slug = episodeId;
+      current.season = marker.season || current.season;
+      if (!current.title && marker.title) current.title = marker.title;
+      pendingTitle = !current.title;
+      pendingField = '';
+      return;
+    }
     closeEpisode();
     if (!metadata.season && marker.season) metadata.season = marker.season;
-    const episodeId = marker.episodeId || '';
     current = {
       number: marker.number,
       episodeId,
@@ -639,7 +650,28 @@ function parseEditorialBlocks(inputBlocks, sourceName = '') {
     }
     delete current.contentBlocks;
     delete current.season;
-    episodes.push(current);
+    const existingIndex = episodes.findIndex(
+      episode => episode.slug === current.slug
+    );
+    if (existingIndex >= 0) {
+      const existing = episodes[existingIndex];
+      episodes[existingIndex] = {
+        ...existing,
+        ...current,
+        category: current.category || existing.category,
+        releaseDate: current.releaseDate || existing.releaseDate,
+        image: current.image || existing.image,
+        title: current.title || existing.title,
+        description: current.description || existing.description,
+        subtitle: current.subtitle || existing.subtitle,
+        blocks: current.blocks.length ? current.blocks : existing.blocks,
+        ...(current.content || existing.content
+          ? { content: current.content || existing.content }
+          : {})
+      };
+    } else {
+      episodes.push(current);
+    }
     current = null;
     pendingField = '';
     inContent = false;
@@ -782,7 +814,6 @@ function parseEditorialBlocks(inputBlocks, sourceName = '') {
     if (standaloneField) {
       const label = standaloneField[1].toUpperCase();
       if (label === 'EPISODE') {
-        closeEpisode();
         pendingField = 'episode';
       } else if (/^(CATEGORY|CATEGORIA)$/.test(label)) {
         pendingField = 'category';
@@ -836,6 +867,39 @@ function canonicalKey(value) {
   return saga && edition && season > 0
     ? `${saga}-s${season}-${edition}`
     : '';
+}
+
+function sourceIdentityFromName(name) {
+  const match = /^(.*?)[\s._-]+S(\d+)[\s._-]+(.+?)[\s._-]+(PT(?:[\s._-]*BR)?|EN(?:[\s._-]*US)?)\.docx$/i.exec(
+    String(name || '').trim()
+  );
+  if (!match) return null;
+  const identity = {
+    saga: match[1].replace(/[._-]+/g, ' ').trim(),
+    season: Number(match[2]),
+    edition: match[3].replace(/[._-]+/g, ' ').trim(),
+    language: normalizeLanguage(match[4])
+  };
+  return {
+    ...identity,
+    canonicalKey: canonicalKey(identity)
+  };
+}
+
+function sourcePairingStatus(canonical, documents) {
+  const pairing = { 'pt-BR': 'MISSING', 'en-US': 'MISSING' };
+  if (!canonical) return pairing;
+  for (const document of documents || []) {
+    if (document.support?.status !== 'SUPPORTED') continue;
+    const identity = sourceIdentityFromName(document.name);
+    if (
+      identity?.canonicalKey === canonical &&
+      Object.hasOwn(pairing, identity.language)
+    ) {
+      pairing[identity.language] = 'CONNECTED';
+    }
+  }
+  return pairing;
 }
 
 function validateParsed(parsed, confirmedLanguage, parserWarnings = []) {
@@ -1002,36 +1066,8 @@ async function firestoreToken() {
   return typeof value === 'string' ? value : value.token;
 }
 
-function firestoreDocumentUrl(documentId) {
-  return `https://firestore.googleapis.com/v1/projects/${encodeURIComponent(PROJECT_ID)}/databases/(default)/documents/${COLLECTION}/${encodeURIComponent(documentId)}`;
-}
-
-async function documentExists(documentId, token) {
-  const response = await fetch(firestoreDocumentUrl(documentId), {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  if (response.status === 404) return false;
-  if (!response.ok) {
-    throw new GlobalSagasError(
-      502,
-      'FIRESTORE_READ_FAILED',
-      'Não foi possível consultar o catálogo editorial privado.'
-    );
-  }
-  return true;
-}
-
 async function pairingStatus(canonical) {
-  if (!canonical) return { 'pt-BR': 'MISSING', 'en-US': 'MISSING' };
-  const token = await firestoreToken();
-  const [pt, en] = await Promise.all([
-    documentExists(importDocumentId(canonical, 'pt-BR'), token),
-    documentExists(importDocumentId(canonical, 'en-US'), token)
-  ]);
-  return {
-    'pt-BR': pt ? 'CONNECTED' : 'MISSING',
-    'en-US': en ? 'CONNECTED' : 'MISSING'
-  };
+  return sourcePairingStatus(canonical, await listDocuments());
 }
 
 async function createEditorialDraft(draft) {
@@ -1088,6 +1124,7 @@ export {
   importDocumentId,
   isLegacyDoc,
   parseEditorialBlocks,
+  sourcePairingStatus,
   supportFor,
   validateParsed
 };

@@ -8,6 +8,7 @@ import {
   editorialDraft,
   importDocumentId,
   parseEditorialBlocks,
+  sourcePairingStatus,
   supportFor,
   validateParsed
 } from '../api/admin/global-sagas.js';
@@ -54,10 +55,11 @@ async function canonicalContractDocx() {
     </Relationships>`);
   const episodes = Array.from({ length: 8 }, (_, index) => {
     const number = index + 1;
-    return `<w:p>
+    return `<w:p><w:r><w:t>EPISODE s2-e${number} - Episódio ${number}</w:t></w:r></w:p>
+    <w:p>
       <w:r><w:t>EPISODE</w:t><w:br/><w:t>s2-e${number}</w:t><w:br/><w:t>CATEGORY</w:t><w:br/><w:t>Temporada 2</w:t><w:br/><w:t>RELEASE DATE</w:t><w:br/><w:t>2027-01-${String(number + 9).padStart(2, '0')}</w:t><w:br/><w:t>IMAGE</w:t><w:br/><w:t>https://example.com/s2-e${number}.jpg</w:t><w:br/><w:t>TITLE</w:t><w:br/><w:t>Episódio ${number}</w:t><w:br/><w:t>DESCRIPTION</w:t><w:br/><w:t>Descrição ${number}</w:t><w:br/><w:t>CONTENT</w:t></w:r>
     </w:p>
-    <w:p><w:r><w:rPr><w:b/></w:rPr><w:t>Conteúdo original ${number}</w:t></w:r><w:r><w:t> preservado.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>&lt;p&gt;&lt;em&gt;Conteúdo original ${number}&lt;/em&gt;&lt;strong&gt; preservado.&lt;/strong&gt;&lt;/p&gt;&lt;pre class=&quot;system-log&quot;&gt;status ${number}&lt;/pre&gt;</w:t></w:r></w:p>
     <w:p><w:r><w:t>END EPISODE</w:t></w:r></w:p>`;
   }).join('');
   zip.folder('word')?.file('document.xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -96,7 +98,7 @@ test('parser preserva metadados, ordem, conteúdo e tipos editoriais', () => {
   assert.equal(parsed.season, 2);
   assert.equal(parsed.edition, "JONAH'S LEGACY");
   assert.equal(parsed.language, 'pt-BR');
-  assert.equal(parsed.canonicalKey, 'glitch-in-the-matrix-s2-jonah-s-legacy');
+  assert.equal(parsed.canonicalKey, 'glitch-in-the-matrix-s2-jonahs-legacy');
   assert.deepEqual(parsed.episodes.map(episode => episode.title), [
     'O Primeiro Ruído',
     'A Segunda Frequência'
@@ -137,6 +139,7 @@ test('contrato canônico reconhece cabeçalho, quebras manuais e oito episódios
   assert.equal(parsed.edition, "JONAH'S LEGACY");
   assert.equal(parsed.language, 'pt-BR');
   assert.equal(parsed.episodes.length, 8);
+  assert.equal(new Set(parsed.episodes.map(episode => episode.slug)).size, 8);
   assert.deepEqual(
     parsed.episodes.map(episode => episode.episodeId),
     Array.from({ length: 8 }, (_, index) => `s2-e${index + 1}`)
@@ -152,9 +155,12 @@ test('contrato canônico reconhece cabeçalho, quebras manuais e oito episódios
   assert.equal(parsed.episodes[0].description, 'Descrição 1');
   assert.equal(
     parsed.episodes[0].content,
-    '<p><strong>Conteúdo original 1</strong> preservado.</p>'
+    '<p><em>Conteúdo original 1</em><strong> preservado.</strong></p><pre class="system-log">status 1</pre>'
   );
   assert.doesNotMatch(parsed.episodes[0].content, /END EPISODE/);
+  assert.doesNotMatch(parsed.episodes[0].content, /&lt;(?:p|em|strong|pre)/);
+  assert.ok(parsed.episodes.every(episode => episode.content));
+  assert.ok(parsed.episodes.every(episode => episode.blocks.length > 0));
   assert.equal(validation.status, 'VALID');
 });
 
@@ -172,6 +178,51 @@ test('cabeçalho inline de episódio inicia bloco e preserva HTML após CONTENT'
   assert.equal(parsed.episodes[0].episodeId, 's2-e1');
   assert.equal(parsed.episodes[0].title, 'T-14 // AVISO DE EXPIRAÇÃO');
   assert.equal(parsed.episodes[0].content, '<em>Texto original.</em>');
+});
+
+test('cabeçalho inline e metadado EPISODE do mesmo slug formam um único episódio', () => {
+  const parsed = parseEditorialBlocks([
+    { tag: 'p', text: "GLITCH IN THE MATRIX - S2 // JONAH'S LEGACY" },
+    { tag: 'p', text: 'EPISODE s2-e1 - T-14 // AVISO DE EXPIRAÇÃO' },
+    { tag: 'p', text: 'EPISODE\ns2-e1\nCATEGORY\nTemporada 2\nCONTENT' },
+    {
+      tag: 'p',
+      text: '<p><em>Hellcife. Bunker da Red Team...</em></p>',
+      html: '&lt;p&gt;&lt;em&gt;Hellcife. Bunker da Red Team...&lt;/em&gt;&lt;/p&gt;'
+    },
+    { tag: 'p', text: 'END EPISODE' }
+  ], 'GLITCH_IN_THE_MATRIX_S2_JONAHS_LEGACY_PT.docx');
+
+  assert.equal(parsed.episodes.length, 1);
+  assert.equal(parsed.episodes[0].slug, 's2-e1');
+  assert.equal(
+    parsed.episodes[0].content,
+    '<p><em>Hellcife. Bunker da Red Team...</em></p>'
+  );
+});
+
+test('pairing reconhece fontes PT e EN do mesmo cânone sem unir conteúdo', () => {
+  const canonical = canonicalKey({
+    saga: 'GLITCH IN THE MATRIX',
+    season: 2,
+    edition: "JONAH'S LEGACY"
+  });
+  const pairing = sourcePairingStatus(canonical, [
+    {
+      name: 'GLITCH_IN_THE_MATRIX_S2_JONAHS_LEGACY_PT.docx',
+      support: { status: 'SUPPORTED' }
+    },
+    {
+      name: 'GLITCH_IN_THE_MATRIX_S2_JONAHS_LEGACY_EN.docx',
+      support: { status: 'SUPPORTED' }
+    }
+  ]);
+
+  assert.equal(canonical, 'glitch-in-the-matrix-s2-jonahs-legacy');
+  assert.deepEqual(pairing, {
+    'pt-BR': 'CONNECTED',
+    'en-US': 'CONNECTED'
+  });
 });
 
 test('validação bloqueia idioma divergente e slugs duplicados', () => {
