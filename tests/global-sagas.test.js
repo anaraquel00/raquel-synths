@@ -40,6 +40,37 @@ async function sampleDocx() {
   return zip.generateAsync({ type: 'nodebuffer' });
 }
 
+async function canonicalContractDocx() {
+  const zip = new JSZip();
+  zip.file('[Content_Types].xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+      <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+      <Default Extension="xml" ContentType="application/xml"/>
+      <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+    </Types>`);
+  zip.folder('_rels')?.file('.rels', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+      <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+    </Relationships>`);
+  const episodes = Array.from({ length: 8 }, (_, index) => {
+    const number = index + 1;
+    return `<w:p>
+      <w:r><w:t>EPISODE</w:t><w:br/><w:t>s2-e${number}</w:t><w:br/><w:t>CATEGORY</w:t><w:br/><w:t>Temporada 2</w:t><w:br/><w:t>RELEASE DATE</w:t><w:br/><w:t>2027-01-${String(number + 9).padStart(2, '0')}</w:t><w:br/><w:t>IMAGE</w:t><w:br/><w:t>https://example.com/s2-e${number}.jpg</w:t><w:br/><w:t>TITLE</w:t><w:br/><w:t>Episódio ${number}</w:t><w:br/><w:t>DESCRIPTION</w:t><w:br/><w:t>Descrição ${number}</w:t><w:br/><w:t>CONTENT</w:t></w:r>
+    </w:p>
+    <w:p><w:r><w:rPr><w:b/></w:rPr><w:t>Conteúdo original ${number}</w:t></w:r><w:r><w:t> preservado.</w:t></w:r></w:p>
+    <w:p><w:r><w:t>END EPISODE</w:t></w:r></w:p>`;
+  }).join('');
+  zip.folder('word')?.file('document.xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+      <w:body>
+        <w:p><w:r><w:t>GLITCH IN THE MATRIX - S2 // JONAH'S LEGACY</w:t></w:r></w:p>
+        ${episodes}
+        <w:sectPr/>
+      </w:body>
+    </w:document>`);
+  return zip.generateAsync({ type: 'nodebuffer' });
+}
+
 const sourceBlocks = [
   { tag: 'p', text: 'SAGA: GLITCH IN THE MATRIX' },
   { tag: 'p', text: 'SEASON: 2' },
@@ -91,6 +122,56 @@ test('arquivo DOCX real é convertido em blocos editoriais', async () => {
   assert.equal(parsed.episodes.length, 1);
   assert.equal(parsed.episodes[0].title, 'Signal');
   assert.equal(parsed.episodes[0].blocks[0].content, 'Original prose.');
+});
+
+test('contrato canônico reconhece cabeçalho, quebras manuais e oito episódios', async () => {
+  const converted = await docxBlocks(await canonicalContractDocx());
+  const parsed = parseEditorialBlocks(
+    converted.blocks,
+    'GLITCH_IN_THE_MATRIX_S2_JONAHS_LEGACY_PT.docx'
+  );
+  const validation = validateParsed(parsed, 'pt-BR', converted.parserWarnings);
+
+  assert.equal(parsed.saga, 'GLITCH IN THE MATRIX');
+  assert.equal(parsed.season, 2);
+  assert.equal(parsed.edition, "JONAH'S LEGACY");
+  assert.equal(parsed.language, 'pt-BR');
+  assert.equal(parsed.episodes.length, 8);
+  assert.deepEqual(
+    parsed.episodes.map(episode => episode.episodeId),
+    Array.from({ length: 8 }, (_, index) => `s2-e${index + 1}`)
+  );
+  assert.deepEqual(
+    parsed.episodes.map(episode => episode.slug),
+    Array.from({ length: 8 }, (_, index) => `s2-e${index + 1}`)
+  );
+  assert.equal(parsed.episodes[0].category, 'Temporada 2');
+  assert.equal(parsed.episodes[0].releaseDate, '2027-01-10');
+  assert.equal(parsed.episodes[0].image, 'https://example.com/s2-e1.jpg');
+  assert.equal(parsed.episodes[0].title, 'Episódio 1');
+  assert.equal(parsed.episodes[0].description, 'Descrição 1');
+  assert.equal(
+    parsed.episodes[0].content,
+    '<p><strong>Conteúdo original 1</strong> preservado.</p>'
+  );
+  assert.doesNotMatch(parsed.episodes[0].content, /END EPISODE/);
+  assert.equal(validation.status, 'VALID');
+});
+
+test('cabeçalho inline de episódio inicia bloco e preserva HTML após CONTENT', () => {
+  const parsed = parseEditorialBlocks([
+    { tag: 'p', text: "GLITCH IN THE MATRIX - S2 // JONAH'S LEGACY" },
+    {
+      tag: 'p',
+      text: 'EPISODE s2-e1 - T-14 // AVISO DE EXPIRAÇÃO\nCATEGORY\nTemporada 2\nRELEASE DATE\n2027-01-10\nIMAGE\nhttps://example.com/e1.jpg\nTITLE\nT-14 // AVISO DE EXPIRAÇÃO\nDESCRIPTION\nSinal crítico.\nCONTENT\nTexto original.\nEND EPISODE',
+      html: 'EPISODE s2-e1 - T-14 // AVISO DE EXPIRAÇÃO<br>CATEGORY<br>Temporada 2<br>RELEASE DATE<br>2027-01-10<br>IMAGE<br>https://example.com/e1.jpg<br>TITLE<br>T-14 // AVISO DE EXPIRAÇÃO<br>DESCRIPTION<br>Sinal crítico.<br>CONTENT<br><em>Texto original.</em><br>END EPISODE'
+    }
+  ], 'GLITCH_IN_THE_MATRIX_S2_JONAHS_LEGACY_PT.docx');
+
+  assert.equal(parsed.episodes.length, 1);
+  assert.equal(parsed.episodes[0].episodeId, 's2-e1');
+  assert.equal(parsed.episodes[0].title, 'T-14 // AVISO DE EXPIRAÇÃO');
+  assert.equal(parsed.episodes[0].content, '<em>Texto original.</em>');
 });
 
 test('validação bloqueia idioma divergente e slugs duplicados', () => {

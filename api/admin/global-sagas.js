@@ -402,7 +402,14 @@ function htmlBlocks(html) {
       continue;
     }
     const text = htmlText(match[2]);
-    if (text) blocks.push({ tag: match[1].toLowerCase(), text });
+    if (text) {
+      blocks.push({
+        tag: match[1].toLowerCase(),
+        text,
+        html: match[2],
+        outerHtml: match[0]
+      });
+    }
     const nestedImages = match[2].match(/<img\b[^>]*>/gi) || [];
     for (const _image of nestedImages) {
       imageIndex += 1;
@@ -473,6 +480,15 @@ function field(line, names) {
 }
 
 function episodeMarker(line) {
+  const canonical = /^EPISODE\s+(s(\d+)-e(\d+))(?:\s*[-—]\s*(.+))?$/i.exec(line);
+  if (canonical) {
+    return {
+      number: Number(canonical[3]),
+      title: canonical[4]?.trim() || '',
+      season: Number(canonical[2]),
+      episodeId: canonical[1].toLowerCase()
+    };
+  }
   const standard = /^(?:EPIS[ÓO]DIO|EPISODE)\s*(?:#|N[º°O.]?\s*)?(\d+)(?:\s*[-—:|]\s*(.*))?$/i.exec(line);
   if (standard) {
     return { number: Number(standard[1]), title: standard[2]?.trim() || '' };
@@ -482,10 +498,74 @@ function episodeMarker(line) {
     return {
       number: Number(compact[2]),
       title: compact[3]?.trim() || '',
-      season: Number(compact[1])
+      season: Number(compact[1]),
+      episodeId: `s${Number(compact[1])}-e${Number(compact[2])}`
     };
   }
   return null;
+}
+
+function canonicalHeader(line) {
+  const match = /^(.+?)\s*-\s*S(\d+)\s*\/\/\s*(.+)$/i.exec(line);
+  return match
+    ? {
+      saga: match[1].trim(),
+      season: Number(match[2]),
+      edition: match[3].trim()
+    }
+    : null;
+}
+
+function logicalBlocks(inputBlocks) {
+  return inputBlocks.flatMap((sourceBlock, sourceIndex) => {
+    const rawText = String(sourceBlock?.text || '').replace(/\r\n?/g, '\n');
+    if (typeof sourceBlock?.html !== 'string') {
+      return rawText.split('\n').map((text, index) => ({
+        tag: sourceBlock?.tag || '',
+        text: text.trim(),
+        html: '',
+        contentHtml: text.trim(),
+        hasHtml: false,
+        separatorBefore: index ? '\n' : '',
+        sourceIndex
+      }));
+    }
+
+    const lines = [];
+    const html = sourceBlock.html;
+    const hasManualBreak = /<br\s*\/?>/i.test(html);
+    const breakPattern = /<br\s*\/?>/gi;
+    let cursor = 0;
+    let separatorBefore = '';
+    let match;
+    while ((match = breakPattern.exec(html))) {
+      const segment = html.slice(cursor, match.index);
+      lines.push({
+        tag: sourceBlock.tag || '',
+        text: htmlText(segment),
+        html: segment,
+        contentHtml: segment,
+        hasHtml: true,
+        separatorBefore,
+        sourceIndex
+      });
+      separatorBefore = match[0];
+      cursor = match.index + match[0].length;
+    }
+    const segment = html.slice(cursor);
+    lines.push({
+      tag: sourceBlock.tag || '',
+      text: htmlText(segment),
+      html: segment,
+      contentHtml: hasManualBreak
+        ? segment
+        : sourceBlock.outerHtml || segment,
+      hasHtml: true,
+      separatorBefore,
+      sourceIndex
+    });
+    return lines;
+  });
 }
 
 function blockType(line, activeType = 'body') {
@@ -517,22 +597,129 @@ function parseEditorialBlocks(inputBlocks, sourceName = '') {
   let current = null;
   let activeType = 'body';
   let pendingTitle = false;
+  let pendingField = '';
+  let inContent = false;
+  let lastContentSourceIndex = -1;
+
+  const startEpisode = marker => {
+    closeEpisode();
+    if (!metadata.season && marker.season) metadata.season = marker.season;
+    const episodeId = marker.episodeId || '';
+    current = {
+      number: marker.number,
+      episodeId,
+      slug: episodeId,
+      category: '',
+      releaseDate: '',
+      image: '',
+      title: marker.title,
+      description: '',
+      subtitle: '',
+      blocks: [],
+      season: marker.season || metadata.season,
+      contentBlocks: []
+    };
+    pendingTitle = !marker.title;
+    pendingField = '';
+    inContent = false;
+    lastContentSourceIndex = -1;
+    activeType = 'body';
+  };
 
   const closeEpisode = () => {
     if (!current) return;
     current.title = current.title.trim();
     current.subtitle = current.subtitle.trim();
     current.slug = current.slug || `s${metadata.season || current.season || 0}-e${String(current.number).padStart(2, '0')}`;
+    current.episodeId = current.episodeId || current.slug;
+    if (current.contentBlocks.length) {
+      current.content = current.contentBlocks
+        .map(block => block.content)
+        .join('');
+    }
+    delete current.contentBlocks;
     delete current.season;
     episodes.push(current);
     current = null;
+    pendingField = '';
+    inContent = false;
+    lastContentSourceIndex = -1;
   };
 
-  for (const sourceBlock of inputBlocks) {
-    const text = String(sourceBlock?.text || '').replace(/\r\n?/g, '\n').trim();
+  const setEpisodeField = (name, value) => {
+    if (!current) return;
+    if (name === 'episode') {
+      const marker = episodeMarker(value);
+      if (marker) {
+        current.number = marker.number;
+        current.episodeId = marker.episodeId || current.episodeId;
+        current.slug = marker.episodeId || current.slug;
+        if (!metadata.season && marker.season) metadata.season = marker.season;
+      }
+      return;
+    }
+    current[name] = value.trim();
+    if (name === 'title') pendingTitle = false;
+  };
+
+  const appendContent = sourceBlock => {
+    const value = sourceBlock.contentHtml;
+    if (
+      lastContentSourceIndex === sourceBlock.sourceIndex &&
+      current.contentBlocks.length
+    ) {
+      const block = current.contentBlocks[current.contentBlocks.length - 1];
+      block.content += `${sourceBlock.separatorBefore}${value}`;
+    } else {
+      const block = { type: 'body', content: value };
+      current.blocks.push(block);
+      current.contentBlocks.push(block);
+    }
+    lastContentSourceIndex = sourceBlock.sourceIndex;
+  };
+
+  for (const sourceBlock of logicalBlocks(inputBlocks)) {
+    const text = sourceBlock.text;
+
+    if (inContent) {
+      if (/^END EPISODE$/i.test(text)) {
+        closeEpisode();
+        continue;
+      }
+      appendContent(sourceBlock);
+      continue;
+    }
+
     if (!text) continue;
 
+    if (/^END EPISODE$/i.test(text)) {
+      closeEpisode();
+      continue;
+    }
+
+    if (pendingField) {
+      if (pendingField === 'episode') {
+        const marker = episodeMarker(text);
+        if (marker) {
+          startEpisode(marker);
+          continue;
+        }
+      } else if (current) {
+        setEpisodeField(pendingField, text);
+        pendingField = '';
+        continue;
+      }
+      pendingField = '';
+    }
+
     if (!current) {
+      const header = canonicalHeader(text);
+      if (header) {
+        metadata.saga = header.saga;
+        metadata.season = header.season;
+        metadata.edition = header.edition;
+        continue;
+      }
       const saga = field(text, ['SAGA']);
       const season = field(text, ['SEASON', 'TEMPORADA']);
       const edition = field(text, ['EDITION', 'EDIÇÃO', 'EDICAO']);
@@ -549,22 +736,15 @@ function parseEditorialBlocks(inputBlocks, sourceName = '') {
         if (!metadata.saga) { metadata.saga = text; continue; }
         if (!metadata.edition) { metadata.edition = text; continue; }
       }
+      if (/^EPISODE$/i.test(text)) {
+        pendingField = 'episode';
+        continue;
+      }
     }
 
     const marker = episodeMarker(text);
     if (marker) {
-      closeEpisode();
-      if (!metadata.season && marker.season) metadata.season = marker.season;
-      current = {
-        number: marker.number,
-        slug: '',
-        title: marker.title,
-        subtitle: '',
-        blocks: [],
-        season: marker.season || metadata.season
-      };
-      pendingTitle = !marker.title;
-      activeType = 'body';
+      startEpisode(marker);
       continue;
     }
 
@@ -576,8 +756,15 @@ function parseEditorialBlocks(inputBlocks, sourceName = '') {
     const slug = field(text, ['EPISODE ID', 'ID DO EPISÓDIO', 'ID DO EPISODIO', 'SLUG']);
     if (slug) {
       current.slug = slugify(slug);
+      current.episodeId = current.slug;
       continue;
     }
+    const category = field(text, ['CATEGORY', 'CATEGORIA']);
+    if (category) { current.category = category; continue; }
+    const releaseDate = field(text, ['RELEASE DATE', 'DATA DE LANÇAMENTO', 'DATA DE LANCAMENTO']);
+    if (releaseDate) { current.releaseDate = releaseDate; continue; }
+    const image = field(text, ['IMAGE', 'IMAGEM']);
+    if (image) { current.image = image; continue; }
     const title = field(text, ['TITLE', 'TÍTULO', 'TITULO']);
     if (title) {
       current.title = title;
@@ -587,6 +774,33 @@ function parseEditorialBlocks(inputBlocks, sourceName = '') {
     const subtitle = field(text, ['SUBTITLE', 'SUBTÍTULO', 'SUBTITULO']);
     if (subtitle) {
       current.subtitle = subtitle;
+      continue;
+    }
+    const description = field(text, ['DESCRIPTION', 'DESCRIÇÃO', 'DESCRICAO']);
+    if (description) { current.description = description; continue; }
+    const standaloneField = /^(EPISODE|CATEGORY|CATEGORIA|RELEASE DATE|DATA DE LAN[ÇC]AMENTO|IMAGE|IMAGEM|TITLE|T[ÍI]TULO|DESCRIPTION|DESCRI[ÇC][ÃA]O)$/i.exec(text);
+    if (standaloneField) {
+      const label = standaloneField[1].toUpperCase();
+      if (label === 'EPISODE') {
+        closeEpisode();
+        pendingField = 'episode';
+      } else if (/^(CATEGORY|CATEGORIA)$/.test(label)) {
+        pendingField = 'category';
+      } else if (/^(RELEASE DATE|DATA DE LAN[ÇC]AMENTO)$/.test(label)) {
+        pendingField = 'releaseDate';
+      } else if (/^(IMAGE|IMAGEM)$/.test(label)) {
+        pendingField = 'image';
+      } else if (/^(TITLE|T[ÍI]TULO)$/.test(label)) {
+        pendingField = 'title';
+      } else {
+        pendingField = 'description';
+      }
+      continue;
+    }
+    if (/^CONTENT\s*[:：]?\s*$/i.test(text)) {
+      inContent = true;
+      current.contentBlocks = [];
+      lastContentSourceIndex = -1;
       continue;
     }
     if (pendingTitle && /^h[1-6]$/.test(sourceBlock.tag || '')) {
@@ -647,7 +861,6 @@ function validateParsed(parsed, confirmedLanguage, parserWarnings = []) {
     if (!episode.blocks.length) blocked.push(`Episódio ${episode.number} sem corpo editorial.`);
     if (ids.has(episode.slug)) blocked.push(`Slug de episódio duplicado: ${episode.slug}.`);
     ids.add(episode.slug);
-    if (!episode.subtitle) warnings.push(`Episódio ${episode.number} sem subtítulo.`);
   }
   if (parsed.preamble.length) {
     warnings.push('Conteúdo editorial anterior ao primeiro episódio foi preservado como preâmbulo.');
