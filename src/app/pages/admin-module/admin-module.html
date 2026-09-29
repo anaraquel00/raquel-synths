@@ -46,26 +46,240 @@
       <div>
         <p class="eyebrow">RQS ADMIN / EDITORIAL</p>
         <h1>Sagas Globais</h1>
-        <p>Temporadas, episódios e futura organização PT/EN.</p>
+        <p>Ingestão privada e controlada de temporadas e episódios PT/EN.</p>
       </div>
-      <span class="state hold">EM ESPERA</span>
+      <span class="state ready">IMPORTADOR P0</span>
     </header>
 
-    <section class="hold-panel">
-      <p class="eyebrow">FONTE NO GOOGLE DRIVE</p>
-      <h2>RQS Editorial / Global Sagas</h2>
-      <dl>
-        <div><dt>TEMPORADAS</dt><dd>Estrutura da fonte preservada</dd></div>
-        <div><dt>EPISÓDIOS</dt><dd>Estrutura da fonte preservada</dd></div>
-        <div><dt>ORGANIZAÇÃO PT / EN</dt><dd>Etapa futura do importador</dd></div>
-      </dl>
-      <p class="notice">
-        Nenhum contrato de publicação ou importação foi ativado nesta Prévia.
-      </p>
+    <section class="import-status" aria-labelledby="import-status-title">
+      <div>
+        <p class="eyebrow">IMPORT STATUS</p>
+        <h2 id="import-status-title">
+          @if (catalogStatus()) {
+            CATALOG STATUS // {{ catalogStatus() }}
+          } @else if (selected()) {
+            SOURCE CONNECTED
+          } @else {
+            READY FOR SOURCE
+          }
+        </h2>
+        <p>
+          Leitura do Google Drive em modo somente leitura. Nenhuma publicação,
+          alteração ou movimentação do documento de origem será executada.
+        </p>
+      </div>
+      <button
+        type="button"
+        class="primary-action"
+        [disabled]="loading()"
+        (click)="openSourceSelector()"
+      >
+        ADICIONAR DOCUMENTO
+      </button>
     </section>
+
+    @if (sourceOpen()) {
+      <section class="source-panel" aria-labelledby="source-panel-title">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">FONTE NO GOOGLE DRIVE</p>
+            <h2 id="source-panel-title">RQS Editorial / Global Sagas</h2>
+          </div>
+          <button
+            type="button"
+            class="secondary-action"
+            [disabled]="loading()"
+            (click)="refreshDocuments()"
+          >
+            ATUALIZAR
+          </button>
+        </div>
+
+        @if (loading() && !documents().length) {
+          <p class="session-message" aria-live="polite">Conectando à fonte…</p>
+        } @else if (!documents().length) {
+          <p class="empty-state">Nenhum documento .docx disponível na pasta configurada.</p>
+        } @else {
+          <label class="source-select" for="saga-source-document">
+            Documento
+            <select
+              #sourceDocument
+              id="saga-source-document"
+              [disabled]="loading()"
+              (change)="selectDocument(sourceDocument.value)"
+            >
+              <option value="">Selecione um documento</option>
+              @for (document of documents(); track document.documentId) {
+                <option [value]="document.documentId">
+                  {{ document.name }}{{ document.support.status === 'BLOCKED' ? ' — BLOCKED' : '' }}
+                </option>
+              }
+            </select>
+          </label>
+        }
+      </section>
+    }
+
+    @if (selected(); as source) {
+      <section class="source-summary" aria-labelledby="source-summary-title">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">SOURCE CONNECTED</p>
+            <h2 id="source-summary-title">{{ source.name }}</h2>
+          </div>
+          <span class="validation-chip" [class.blocked]="source.support.status === 'BLOCKED'">
+            {{ source.support.status }}
+          </span>
+        </div>
+
+        <dl class="source-metadata">
+          <div><dt>FILENAME</dt><dd>{{ source.name }}</dd></div>
+          <div><dt>LANGUAGE</dt><dd>{{ parsedSaga()?.language || 'A CONFIRMAR' }}</dd></div>
+          <div><dt>SAGA</dt><dd>{{ parsedSaga()?.saga || 'NÃO DETECTADA' }}</dd></div>
+          <div><dt>SEASON</dt><dd>{{ parsedSaga()?.season || 'NÃO DETECTADA' }}</dd></div>
+          <div><dt>EPISODES</dt><dd>{{ parsedSaga()?.episodes?.length || 0 }}</dd></div>
+          <div><dt>SOURCE LOCATION</dt><dd>{{ source.sourceLocation }}</dd></div>
+          <div><dt>LAST MODIFIED</dt><dd>{{ source.modifiedTime ? (source.modifiedTime | date:'dd/MM/yyyy HH:mm') : 'INDISPONÍVEL' }}</dd></div>
+        </dl>
+
+        @if (source.support.status === 'BLOCKED') {
+          <p class="validation-message blocked" role="alert">{{ source.support.message }}</p>
+        } @else if (parsedSaga()) {
+          <div class="language-confirmation">
+            <label for="saga-language">CONFIRMAR IDIOMA</label>
+            <select
+              #sagaLanguage
+              id="saga-language"
+              [value]="confirmedLanguage()"
+              [disabled]="loading()"
+              (change)="confirmLanguage(sagaLanguage.value)"
+            >
+              <option value="pt-BR">PT-BR</option>
+              <option value="en-US">EN-US</option>
+            </select>
+          </div>
+
+          <div class="pairing" aria-label="Conexão editorial PT e EN">
+            <p><strong>PT-BR</strong><span [class.connected]="pairing()['pt-BR'] === 'CONNECTED'">{{ pairing()['pt-BR'] }}</span></p>
+            <p><strong>EN-US</strong><span [class.connected]="pairing()['en-US'] === 'CONNECTED'">{{ pairing()['en-US'] }}</span></p>
+          </div>
+
+          <button
+            type="button"
+            class="dry-run-action"
+            [disabled]="loading()"
+            (click)="runDryRun()"
+          >
+            {{ loading() ? 'PROCESSANDO…' : 'DRY RUN' }}
+          </button>
+        }
+      </section>
+    }
+
+    @if (dryRun(); as result) {
+      <section class="dry-run-panel" aria-labelledby="dry-run-title">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">VALIDATION</p>
+            <h2 id="dry-run-title">
+              {{ result.validation.status === 'VALID' ? 'PASS' : result.validation.status }}
+            </h2>
+          </div>
+          <span
+            class="validation-chip"
+            [class.warning]="result.validation.status === 'WARNING'"
+            [class.blocked]="result.validation.status === 'BLOCKED'"
+          >
+            {{ result.validation.status }}
+          </span>
+        </div>
+
+        @if (result.validation.blocked.length) {
+          <ul class="validation-list blocked">
+            @for (issue of result.validation.blocked; track issue) { <li>{{ issue }}</li> }
+          </ul>
+        }
+        @if (result.validation.warnings.length) {
+          <ul class="validation-list warning">
+            @for (warning of result.validation.warnings; track warning) { <li>{{ warning }}</li> }
+          </ul>
+        }
+
+        @if (result.parsed; as saga) {
+          <div class="saga-contract">
+            <p><span>SAGA</span><strong>{{ saga.saga }}</strong></p>
+            <p><span>SEASON</span><strong>{{ saga.season }}</strong></p>
+            <p><span>EDITION</span><strong>{{ saga.edition }}</strong></p>
+            <p><span>LANGUAGE</span><strong>{{ saga.language }}</strong></p>
+            <p><span>EPISODES</span><strong>{{ saga.episodes.length }}</strong></p>
+          </div>
+
+          @if (saga.preamble.length) {
+            <article class="preamble-card">
+              <p class="block-label">PREÂMBULO PRESERVADO</p>
+              @for (block of saga.preamble; track $index) { <p>{{ block.content }}</p> }
+            </article>
+          }
+
+          <div class="episode-list">
+            @for (episode of saga.episodes; track episode.slug) {
+              <article class="episode-card">
+                <header>
+                  <p class="episode-index">EPISODE {{ episode.number }} · {{ episode.slug }}</p>
+                  <h3>{{ episode.title }}</h3>
+                  @if (episode.subtitle) { <p class="episode-subtitle">{{ episode.subtitle }}</p> }
+                </header>
+                <div class="editorial-blocks">
+                  @for (block of episode.blocks; track $index) {
+                    <section class="editorial-block" [attr.data-block-type]="block.type">
+                      <p class="block-label">{{ blockLabel(block.type) }}</p>
+                      <p>{{ block.content }}</p>
+                    </section>
+                  }
+                </div>
+              </article>
+            }
+          </div>
+        }
+
+        <div class="safety-contract">
+          <p><strong>CATALOG</strong> {{ result.catalog }}</p>
+          <p><strong>PUBLICATION</strong> {{ result.publication }}</p>
+          <p><strong>SOURCE MUTATION</strong> NO</p>
+        </div>
+
+        @if (result.validation.status !== 'BLOCKED') {
+          <label class="owner-confirmation">
+            <input
+              #ownerConfirmation
+              type="checkbox"
+              [checked]="importConfirmed()"
+              (change)="setImportConfirmed(ownerConfirmation.checked)"
+            >
+            Confirmo a importação deste documento para o catálogo editorial privado
+            como rascunho, sem publicação.
+          </label>
+          <button
+            type="button"
+            class="import-action"
+            [disabled]="!importConfirmed() || loading()"
+            (click)="importDraft()"
+          >
+            IMPORTAR PARA O CATÁLOGO EDITORIAL
+          </button>
+        }
+      </section>
+    }
+
+    <p class="policy">
+      DRIVE READ ONLY · DRY RUN REQUIRED · CREATE ONLY · PRIVATE DRAFT · NO PUBLICATION
+    </p>
   }
 
   @if (error()) {
     <p class="error-message" role="alert">{{ error() }}</p>
+  }
+  @if (message()) {
+    <p class="success-message" role="status">{{ message() }}</p>
   }
 </main>

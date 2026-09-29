@@ -1,0 +1,1004 @@
+import {
+  createHash,
+  createHmac,
+  randomUUID,
+  timingSafeEqual
+} from 'node:crypto';
+import { google } from 'googleapis';
+import mammoth from 'mammoth';
+
+const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT || 'raquel-synths-platform';
+const COLLECTION = 'editorial-global-saga-imports';
+const SESSION_COOKIE = '__Host-rqs_admin_session';
+const SESSION_TTL = 20 * 60 * 1000;
+const DRY_RUN_TTL = 10 * 60 * 1000;
+const DRIVE_FOLDER_ID = process.env.RQS_GLOBAL_SAGAS_DRIVE_FOLDER_ID || '';
+const SOURCE_LOCATION = 'RQS Editorial / Global Sagas';
+const MAX_DOCUMENT_BYTES = 20 * 1024 * 1024;
+const DOCX_MIME = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+const DOC_MIME = 'application/msword';
+const GOOGLE_DOC_MIME = 'application/vnd.google-apps.document';
+const SUPPORTED_MIME_TYPES = new Set([DOCX_MIME, GOOGLE_DOC_MIME]);
+let resolvedDriveFolderId = '';
+
+class GlobalSagasError extends Error {
+  constructor(status, code, message, details) {
+    super(message);
+    this.status = status;
+    this.code = code;
+    this.details = details;
+  }
+}
+
+function safeEqual(a, b) {
+  const left = Buffer.from(String(a));
+  const right = Buffer.from(String(b));
+  return left.length === right.length && timingSafeEqual(left, right);
+}
+
+function secret() {
+  const value = process.env.RQS_ADMIN_TOKEN;
+  if (!value || Buffer.byteLength(value) < 32) {
+    throw new GlobalSagasError(
+      500,
+      'MISSING_ADMIN_CONFIGURATION',
+      'A credencial administrativa não está configurada com segurança.'
+    );
+  }
+  return value;
+}
+
+function origin(value) {
+  try {
+    return new URL(
+      /^[a-z][a-z0-9+.-]*:\/\//i.test(value) ? value : `https://${value}`
+    ).origin;
+  } catch {
+    return '';
+  }
+}
+
+function allowedOrigins() {
+  const values = new Set([
+    'https://raquelsynths.com',
+    'https://www.raquelsynths.com'
+  ]);
+  if (process.env.VERCEL_ENV === 'preview') {
+    for (const value of [process.env.VERCEL_URL, process.env.VERCEL_BRANCH_URL]) {
+      if (value) values.add(origin(value));
+    }
+  }
+  if (process.env.NODE_ENV !== 'production') {
+    values.add('http://localhost:4200');
+    values.add('http://127.0.0.1:4200');
+  }
+  return values;
+}
+
+function requireOrigin(req) {
+  if (
+    !allowedOrigins().has(origin(req.headers.origin || '')) ||
+    req.headers['sec-fetch-site'] === 'cross-site'
+  ) {
+    throw new GlobalSagasError(
+      403,
+      'ORIGIN_NOT_ALLOWED',
+      'A origem não está autorizada.'
+    );
+  }
+}
+
+function cookies(req) {
+  return Object.fromEntries(
+    String(req.headers.cookie || '')
+      .split(';')
+      .map(value => value.trim())
+      .filter(Boolean)
+      .map(value => {
+        const separator = value.indexOf('=');
+        return [value.slice(0, separator), value.slice(separator + 1)];
+      })
+  );
+}
+
+function signSession(payload, key) {
+  return createHmac('sha256', key)
+    .update(`admin-session:${payload}`)
+    .digest('base64url');
+}
+
+function readSession(req, key) {
+  const [payload, signature, ...extra] = String(
+    cookies(req)[SESSION_COOKIE] || ''
+  ).split('.');
+  if (
+    !payload ||
+    !signature ||
+    extra.length ||
+    !safeEqual(signature, signSession(payload, key))
+  ) {
+    return null;
+  }
+  try {
+    const value = JSON.parse(
+      Buffer.from(payload, 'base64url').toString('utf8')
+    );
+    return value.version === 1 &&
+      value.csrfToken &&
+      value.nonce &&
+      Number(value.issuedAt) <= Date.now() &&
+      Number(value.expiresAt) > Date.now() &&
+      Number(value.expiresAt) - Number(value.issuedAt) <= SESSION_TTL
+      ? value
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+function requireSession(req, key) {
+  const session = readSession(req, key);
+  if (!session) {
+    throw new GlobalSagasError(
+      401,
+      'ADMIN_SESSION_REQUIRED',
+      'A sessão administrativa expirou ou não existe.'
+    );
+  }
+  return session;
+}
+
+function requireCsrf(req, session) {
+  if (!safeEqual(req.headers['x-rqs-csrf'] || '', session.csrfToken)) {
+    throw new GlobalSagasError(
+      403,
+      'CSRF_VALIDATION_FAILED',
+      'A proteção CSRF recusou a operação.'
+    );
+  }
+}
+
+function requestBody(req) {
+  if (!req.body) return {};
+  if (typeof req.body === 'string') {
+    try {
+      return JSON.parse(req.body);
+    } catch {
+      throw new GlobalSagasError(400, 'INVALID_JSON', 'JSON inválido.');
+    }
+  }
+  return req.body;
+}
+
+function driveAuth() {
+  const raw = process.env.GOOGLE_DRIVE_SERVICE_ACCOUNT_JSON;
+  if (!raw) {
+    throw new GlobalSagasError(
+      500,
+      'MISSING_DRIVE_CONFIGURATION',
+      'Credencial Drive não configurada.'
+    );
+  }
+  let credentials;
+  try {
+    credentials = JSON.parse(raw);
+    if (credentials.private_key) {
+      credentials.private_key = credentials.private_key.replace(/\\n/g, '\n');
+    }
+  } catch {
+    throw new GlobalSagasError(
+      500,
+      'INVALID_DRIVE_CONFIGURATION',
+      'Credencial Google inválida.'
+    );
+  }
+  return new google.auth.GoogleAuth({
+    credentials,
+    projectId: credentials?.project_id || PROJECT_ID,
+    scopes: ['https://www.googleapis.com/auth/drive.readonly']
+  });
+}
+
+function firestoreAuth() {
+  const raw = process.env.FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON;
+  if (!raw) {
+    throw new GlobalSagasError(
+      500,
+      'MISSING_FIRESTORE_CONFIGURATION',
+      'Credencial Firestore não configurada.'
+    );
+  }
+  let credentials;
+  try {
+    credentials = JSON.parse(raw);
+    if (credentials.private_key) {
+      credentials.private_key = credentials.private_key.replace(/\\n/g, '\n');
+    }
+  } catch {
+    throw new GlobalSagasError(
+      500,
+      'INVALID_FIRESTORE_CONFIGURATION',
+      'Credencial Firestore inválida.'
+    );
+  }
+  return new google.auth.GoogleAuth({
+    credentials,
+    projectId: credentials.project_id || PROJECT_ID,
+    scopes: ['https://www.googleapis.com/auth/datastore']
+  });
+}
+
+async function driveClient() {
+  return google.drive({
+    version: 'v3',
+    auth: await driveAuth().getClient()
+  });
+}
+
+async function driveFolderId(drive) {
+  if (DRIVE_FOLDER_ID) return DRIVE_FOLDER_ID;
+  if (resolvedDriveFolderId) return resolvedDriveFolderId;
+
+  const folders = await drive.files.list({
+    q: "name = 'Global Sagas' and mimeType = 'application/vnd.google-apps.folder' and trashed = false",
+    fields: 'files(id,name,parents)',
+    pageSize: 20,
+    spaces: 'drive'
+  });
+  for (const folder of folders.data.files || []) {
+    for (const parentId of folder.parents || []) {
+      const parent = await drive.files.get({
+        fileId: parentId,
+        fields: 'id,name,mimeType,trashed'
+      });
+      if (
+        parent.data.name === 'RQS Editorial' &&
+        parent.data.mimeType === 'application/vnd.google-apps.folder' &&
+        parent.data.trashed !== true
+      ) {
+        resolvedDriveFolderId = folder.id;
+        return resolvedDriveFolderId;
+      }
+    }
+  }
+  throw new GlobalSagasError(
+    500,
+    'MISSING_DRIVE_FOLDER_CONFIGURATION',
+    'A pasta RQS Editorial / Global Sagas não foi encontrada. Configure RQS_GLOBAL_SAGAS_DRIVE_FOLDER_ID.'
+  );
+}
+
+function isLegacyDoc(file) {
+  return file.mimeType === DOC_MIME || /\.doc$/i.test(file.name || '');
+}
+
+function supportFor(file) {
+  if (isLegacyDoc(file)) {
+    return {
+      status: 'BLOCKED',
+      message: 'Formato .doc legado detectado. Converta para .docx antes da importação.'
+    };
+  }
+  if (!SUPPORTED_MIME_TYPES.has(file.mimeType)) {
+    return {
+      status: 'BLOCKED',
+      message: 'Formato não suportado. Use um documento .docx.'
+    };
+  }
+  return { status: 'SUPPORTED', message: '' };
+}
+
+function mapDriveFile(file) {
+  const support = supportFor(file);
+  return {
+    documentId: file.id,
+    name: file.name || 'Documento sem nome',
+    mimeType: file.mimeType || '',
+    modifiedTime: file.modifiedTime || '',
+    webViewLink: file.webViewLink || '',
+    sourceLocation: SOURCE_LOCATION,
+    support
+  };
+}
+
+async function listDocuments() {
+  const drive = await driveClient();
+  const folderId = await driveFolderId(drive);
+  const result = await drive.files.list({
+    q: `'${folderId}' in parents and trashed = false`,
+    fields: 'files(id,name,modifiedTime,mimeType,webViewLink,size)',
+    orderBy: 'modifiedTime desc',
+    pageSize: 100,
+    spaces: 'drive'
+  });
+  return (result.data.files || [])
+    .filter(file =>
+      SUPPORTED_MIME_TYPES.has(file.mimeType) ||
+      isLegacyDoc(file)
+    )
+    .map(mapDriveFile);
+}
+
+async function driveFile(documentId) {
+  if (!/^[a-zA-Z0-9_-]{10,200}$/.test(String(documentId || ''))) {
+    throw new GlobalSagasError(
+      400,
+      'INVALID_DOCUMENT_ID',
+      'Identificador do documento inválido.'
+    );
+  }
+  const drive = await driveClient();
+  const folderId = await driveFolderId(drive);
+  const metadataResult = await drive.files.get({
+    fileId: documentId,
+    fields: 'id,name,parents,mimeType,modifiedTime,webViewLink,size'
+  });
+  const metadata = metadataResult.data;
+  if (!(metadata.parents || []).includes(folderId)) {
+    throw new GlobalSagasError(
+      404,
+      'DOCUMENT_NOT_IN_GLOBAL_SAGAS_FOLDER',
+      'Documento não pertence à pasta Global Sagas.'
+    );
+  }
+  const source = mapDriveFile(metadata);
+  if (source.support.status === 'BLOCKED') {
+    return { source, buffer: null };
+  }
+  const result = metadata.mimeType === GOOGLE_DOC_MIME
+    ? await drive.files.export(
+      { fileId: documentId, mimeType: DOCX_MIME },
+      { responseType: 'arraybuffer' }
+    )
+    : await drive.files.get(
+      { fileId: documentId, alt: 'media' },
+      { responseType: 'arraybuffer' }
+    );
+  const buffer = Buffer.from(result.data);
+  if (buffer.byteLength > MAX_DOCUMENT_BYTES) {
+    throw new GlobalSagasError(
+      413,
+      'DOCUMENT_TOO_LARGE',
+      'O documento excede o limite seguro de 20 MB.'
+    );
+  }
+  return { source, buffer };
+}
+
+function decodeEntities(value) {
+  return String(value || '')
+    .replace(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)))
+    .replace(/&#x([\da-f]+);/gi, (_, code) =>
+      String.fromCodePoint(Number.parseInt(code, 16))
+    )
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'");
+}
+
+function htmlText(value) {
+  return decodeEntities(
+    String(value || '')
+      .replace(/<br\s*\/?>/gi, '\n')
+      .replace(/<[^>]+>/g, '')
+  ).trim();
+}
+
+function htmlBlocks(html) {
+  const blocks = [];
+  const pattern = /<(h[1-6]|p|li|blockquote)\b[^>]*>([\s\S]*?)<\/\1>|<img\b[^>]*>/gi;
+  let match;
+  let imageIndex = 0;
+  while ((match = pattern.exec(String(html || '')))) {
+    if (/^<img\b/i.test(match[0])) {
+      imageIndex += 1;
+      blocks.push({
+        tag: 'img',
+        text: `[IMAGEM INCORPORADA ${imageIndex}]`
+      });
+      continue;
+    }
+    const text = htmlText(match[2]);
+    if (text) blocks.push({ tag: match[1].toLowerCase(), text });
+    const nestedImages = match[2].match(/<img\b[^>]*>/gi) || [];
+    for (const _image of nestedImages) {
+      imageIndex += 1;
+      blocks.push({
+        tag: 'img',
+        text: `[IMAGEM INCORPORADA ${imageIndex}]`
+      });
+    }
+  }
+  return blocks;
+}
+
+async function docxBlocks(buffer) {
+  let embeddedImage = 0;
+  const result = await mammoth.convertToHtml(
+    { buffer },
+    {
+      includeDefaultStyleMap: true,
+      styleMap: [
+        "p[style-name='Episode'] => h2:fresh",
+        "p[style-name='Episódio'] => h2:fresh",
+        "p[style-name='Episode Title'] => h2:fresh",
+        "p[style-name='Título do Episódio'] => h2:fresh"
+      ],
+      convertImage: mammoth.images.imgElement(async () => {
+        embeddedImage += 1;
+        return {
+          src: `rqs-editorial-image://embedded-${embeddedImage}`,
+          alt: `Imagem incorporada ${embeddedImage}`
+        };
+      })
+    }
+  );
+  return {
+    blocks: htmlBlocks(result.value),
+    parserWarnings: (result.messages || []).map(message => message.message)
+  };
+}
+
+function normalizeLanguage(value) {
+  const normalized = String(value || '')
+    .trim()
+    .toLowerCase()
+    .replace('_', '-');
+  if (['pt', 'pt-br', 'portuguese', 'português', 'portugues'].includes(normalized)) {
+    return 'pt-BR';
+  }
+  if (['en', 'en-us', 'english', 'inglês', 'ingles'].includes(normalized)) {
+    return 'en-US';
+  }
+  return '';
+}
+
+function slugify(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 100);
+}
+
+function field(line, names) {
+  const joined = names.join('|');
+  const match = new RegExp(`^(?:${joined})\\s*[:：]\\s*(.+)$`, 'i').exec(line);
+  return match?.[1]?.trim() || '';
+}
+
+function episodeMarker(line) {
+  const standard = /^(?:EPIS[ÓO]DIO|EPISODE)\s*(?:#|N[º°O.]?\s*)?(\d+)(?:\s*[-—:|]\s*(.*))?$/i.exec(line);
+  if (standard) {
+    return { number: Number(standard[1]), title: standard[2]?.trim() || '' };
+  }
+  const compact = /^S(\d+)[-_ ]?E(?:P)?(\d+)(?:\s*[-—:|]\s*(.*))?$/i.exec(line);
+  if (compact) {
+    return {
+      number: Number(compact[2]),
+      title: compact[3]?.trim() || '',
+      season: Number(compact[1])
+    };
+  }
+  return null;
+}
+
+function blockType(line, activeType = 'body') {
+  if (/^(?:DI[ÁA]LOGO|DIALOGUE)(?:\s*[:：]|\s*$)/i.test(line)) return 'dialogue';
+  if (/^(?:SYSTEM[ -]?LOG|LOG DO SISTEMA|REGISTRO DO SISTEMA)(?:\s*[:：]|\s*$)/i.test(line)) return 'system-log';
+  if (/^(?:IMAGEM|IMAGE|PLACEHOLDER)(?:\s*[:：]|\s*$)|^\[IMAGEM INCORPORADA \d+\]$/i.test(line)) return 'image';
+  if (/^(?:CR[ÉE]DITOS|CREDITS)(?:\s*[:：]|\s*$)/i.test(line)) return 'credits';
+  return activeType;
+}
+
+function sectionType(line) {
+  if (/^(?:DI[ÁA]LOGO|DIALOGUE)\s*[:：]?\s*$/i.test(line)) return 'dialogue';
+  if (/^(?:SYSTEM[ -]?LOG|LOG DO SISTEMA|REGISTRO DO SISTEMA)\s*[:：]?\s*$/i.test(line)) return 'system-log';
+  if (/^(?:IMAGEM|IMAGE|PLACEHOLDER)\s*[:：]?\s*$/i.test(line)) return 'image';
+  if (/^(?:CR[ÉE]DITOS|CREDITS)\s*[:：]?\s*$/i.test(line)) return 'credits';
+  if (/^(?:CORPO|BODY)\s*[:：]?\s*$/i.test(line)) return 'body';
+  return '';
+}
+
+function parseEditorialBlocks(inputBlocks, sourceName = '') {
+  const metadata = {
+    saga: '',
+    season: 0,
+    edition: '',
+    language: ''
+  };
+  const preamble = [];
+  const episodes = [];
+  let current = null;
+  let activeType = 'body';
+  let pendingTitle = false;
+
+  const closeEpisode = () => {
+    if (!current) return;
+    current.title = current.title.trim();
+    current.subtitle = current.subtitle.trim();
+    current.slug = current.slug || `s${metadata.season || current.season || 0}-e${String(current.number).padStart(2, '0')}`;
+    delete current.season;
+    episodes.push(current);
+    current = null;
+  };
+
+  for (const sourceBlock of inputBlocks) {
+    const text = String(sourceBlock?.text || '').replace(/\r\n?/g, '\n').trim();
+    if (!text) continue;
+
+    if (!current) {
+      const saga = field(text, ['SAGA']);
+      const season = field(text, ['SEASON', 'TEMPORADA']);
+      const edition = field(text, ['EDITION', 'EDIÇÃO', 'EDICAO']);
+      const language = field(text, ['LANGUAGE', 'IDIOMA']);
+      if (saga) { metadata.saga = saga; continue; }
+      if (season && /^\d+$/.test(season)) { metadata.season = Number(season); continue; }
+      if (edition) { metadata.edition = edition; continue; }
+      if (language) { metadata.language = normalizeLanguage(language); continue; }
+      const looseSeason = /^(?:SEASON|TEMPORADA)\s+(\d+)$/i.exec(text);
+      if (looseSeason) { metadata.season = Number(looseSeason[1]); continue; }
+      const looseLanguage = normalizeLanguage(text);
+      if (looseLanguage) { metadata.language = looseLanguage; continue; }
+      if (/^h[1-2]$/.test(sourceBlock.tag || '')) {
+        if (!metadata.saga) { metadata.saga = text; continue; }
+        if (!metadata.edition) { metadata.edition = text; continue; }
+      }
+    }
+
+    const marker = episodeMarker(text);
+    if (marker) {
+      closeEpisode();
+      if (!metadata.season && marker.season) metadata.season = marker.season;
+      current = {
+        number: marker.number,
+        slug: '',
+        title: marker.title,
+        subtitle: '',
+        blocks: [],
+        season: marker.season || metadata.season
+      };
+      pendingTitle = !marker.title;
+      activeType = 'body';
+      continue;
+    }
+
+    if (!current) {
+      preamble.push({ type: 'body', content: text });
+      continue;
+    }
+
+    const slug = field(text, ['EPISODE ID', 'ID DO EPISÓDIO', 'ID DO EPISODIO', 'SLUG']);
+    if (slug) {
+      current.slug = slugify(slug);
+      continue;
+    }
+    const title = field(text, ['TITLE', 'TÍTULO', 'TITULO']);
+    if (title) {
+      current.title = title;
+      pendingTitle = false;
+      continue;
+    }
+    const subtitle = field(text, ['SUBTITLE', 'SUBTÍTULO', 'SUBTITULO']);
+    if (subtitle) {
+      current.subtitle = subtitle;
+      continue;
+    }
+    if (pendingTitle && /^h[1-6]$/.test(sourceBlock.tag || '')) {
+      current.title = text;
+      pendingTitle = false;
+      continue;
+    }
+
+    const section = sectionType(text);
+    if (section) activeType = section;
+    const type = blockType(text, activeType);
+    current.blocks.push({ type, content: text });
+  }
+  closeEpisode();
+
+  if (!metadata.language) {
+    const inferred = /(?:^|[\s._-])(pt(?:-br)?|en(?:-us)?)(?:[\s._-]|$)/i.exec(sourceName);
+    metadata.language = normalizeLanguage(inferred?.[1] || '');
+  }
+
+  return {
+    ...metadata,
+    canonicalKey: canonicalKey(metadata),
+    preamble,
+    episodes
+  };
+}
+
+function canonicalKey(value) {
+  const saga = slugify(value?.saga);
+  const edition = slugify(value?.edition);
+  const season = Number(value?.season || 0);
+  return saga && edition && season > 0
+    ? `${saga}-s${season}-${edition}`
+    : '';
+}
+
+function validateParsed(parsed, confirmedLanguage, parserWarnings = []) {
+  const blocked = [];
+  const warnings = [...parserWarnings];
+  if (!parsed.saga) blocked.push('SAGA não identificada.');
+  if (!Number.isInteger(parsed.season) || parsed.season < 1) {
+    blocked.push('SEASON/TEMPORADA não identificada.');
+  }
+  if (!parsed.edition) blocked.push('EDITION/EDIÇÃO não identificada.');
+  if (!parsed.episodes.length) blocked.push('Nenhum episódio foi identificado.');
+  if (!['pt-BR', 'en-US'].includes(confirmedLanguage)) {
+    blocked.push('Confirme o idioma PT-BR ou EN-US.');
+  }
+  if (parsed.language && parsed.language !== confirmedLanguage) {
+    blocked.push(
+      `O idioma detectado (${parsed.language}) diverge do idioma confirmado (${confirmedLanguage}).`
+    );
+  }
+  const ids = new Set();
+  for (const episode of parsed.episodes) {
+    if (!episode.title) blocked.push(`Episódio ${episode.number} sem título.`);
+    if (!episode.blocks.length) blocked.push(`Episódio ${episode.number} sem corpo editorial.`);
+    if (ids.has(episode.slug)) blocked.push(`Slug de episódio duplicado: ${episode.slug}.`);
+    ids.add(episode.slug);
+    if (!episode.subtitle) warnings.push(`Episódio ${episode.number} sem subtítulo.`);
+  }
+  if (parsed.preamble.length) {
+    warnings.push('Conteúdo editorial anterior ao primeiro episódio foi preservado como preâmbulo.');
+  }
+  return {
+    status: blocked.length ? 'BLOCKED' : warnings.length ? 'WARNING' : 'VALID',
+    blocked,
+    warnings
+  };
+}
+
+async function parseSource(documentId) {
+  const document = await driveFile(documentId);
+  if (!document.buffer) {
+    return {
+      source: document.source,
+      parsed: null,
+      parserWarnings: [],
+      validation: {
+        status: 'BLOCKED',
+        blocked: [document.source.support.message],
+        warnings: []
+      },
+      checksum: ''
+    };
+  }
+  const converted = await docxBlocks(document.buffer);
+  const parsed = parseEditorialBlocks(converted.blocks, document.source.name);
+  return {
+    source: document.source,
+    parsed,
+    parserWarnings: converted.parserWarnings,
+    validation: validateParsed(
+      parsed,
+      parsed.language,
+      converted.parserWarnings
+    ),
+    checksum: createHash('sha256').update(document.buffer).digest('base64url')
+  };
+}
+
+function importDocumentId(canonical, language) {
+  return `${canonical}--${language.toLowerCase()}`;
+}
+
+function firestoreValue(value) {
+  if (value === null || value === undefined) return { nullValue: null };
+  if (typeof value === 'boolean') return { booleanValue: value };
+  if (typeof value === 'number') {
+    return Number.isInteger(value)
+      ? { integerValue: String(value) }
+      : { doubleValue: value };
+  }
+  if (Array.isArray(value)) {
+    return { arrayValue: { values: value.map(firestoreValue) } };
+  }
+  if (typeof value === 'object') {
+    return {
+      mapValue: {
+        fields: Object.fromEntries(
+          Object.entries(value).map(([key, item]) => [key, firestoreValue(item)])
+        )
+      }
+    };
+  }
+  return { stringValue: String(value) };
+}
+
+function editorialDraft(parsed, language, source) {
+  return {
+    canonicalKey: parsed.canonicalKey,
+    saga: parsed.saga,
+    season: parsed.season,
+    edition: parsed.edition,
+    language,
+    status: 'draft',
+    published: false,
+    publication: 'NO',
+    source: {
+      provider: 'google-drive',
+      documentId: source.documentId,
+      filename: source.name,
+      sourceLocation: SOURCE_LOCATION,
+      modifiedTime: source.modifiedTime
+    },
+    preamble: parsed.preamble,
+    episodes: parsed.episodes,
+    importedAt: new Date().toISOString()
+  };
+}
+
+function dryRunDigest(value, key) {
+  return createHmac('sha256', key)
+    .update(JSON.stringify(value))
+    .digest('base64url');
+}
+
+function makeDryRunToken(value, key) {
+  const payload = Buffer.from(JSON.stringify({
+    digest: dryRunDigest(value, key),
+    expiresAt: Date.now() + DRY_RUN_TTL,
+    nonce: randomUUID()
+  })).toString('base64url');
+  const signature = createHmac('sha256', key)
+    .update(`global-sagas:${payload}`)
+    .digest('base64url');
+  return `${payload}.${signature}`;
+}
+
+function verifyDryRunToken(token, value, key) {
+  const [payload, signature, ...extra] = String(token || '').split('.');
+  if (
+    !payload ||
+    !signature ||
+    extra.length ||
+    !safeEqual(
+      signature,
+      createHmac('sha256', key)
+        .update(`global-sagas:${payload}`)
+        .digest('base64url')
+    )
+  ) {
+    return false;
+  }
+  try {
+    const valueFromToken = JSON.parse(
+      Buffer.from(payload, 'base64url').toString('utf8')
+    );
+    return Number(valueFromToken.expiresAt) > Date.now() &&
+      valueFromToken.digest === dryRunDigest(value, key);
+  } catch {
+    return false;
+  }
+}
+
+async function firestoreToken() {
+  const auth = await firestoreAuth().getClient();
+  const value = await auth.getAccessToken();
+  return typeof value === 'string' ? value : value.token;
+}
+
+function firestoreDocumentUrl(documentId) {
+  return `https://firestore.googleapis.com/v1/projects/${encodeURIComponent(PROJECT_ID)}/databases/(default)/documents/${COLLECTION}/${encodeURIComponent(documentId)}`;
+}
+
+async function documentExists(documentId, token) {
+  const response = await fetch(firestoreDocumentUrl(documentId), {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  if (response.status === 404) return false;
+  if (!response.ok) {
+    throw new GlobalSagasError(
+      502,
+      'FIRESTORE_READ_FAILED',
+      'Não foi possível consultar o catálogo editorial privado.'
+    );
+  }
+  return true;
+}
+
+async function pairingStatus(canonical) {
+  if (!canonical) return { 'pt-BR': 'MISSING', 'en-US': 'MISSING' };
+  const token = await firestoreToken();
+  const [pt, en] = await Promise.all([
+    documentExists(importDocumentId(canonical, 'pt-BR'), token),
+    documentExists(importDocumentId(canonical, 'en-US'), token)
+  ]);
+  return {
+    'pt-BR': pt ? 'CONNECTED' : 'MISSING',
+    'en-US': en ? 'CONNECTED' : 'MISSING'
+  };
+}
+
+async function createEditorialDraft(draft) {
+  const token = await firestoreToken();
+  const documentId = importDocumentId(draft.canonicalKey, draft.language);
+  const url = new URL(
+    `https://firestore.googleapis.com/v1/projects/${encodeURIComponent(PROJECT_ID)}/databases/(default)/documents/${COLLECTION}`
+  );
+  url.searchParams.set('documentId', documentId);
+  const fields = Object.fromEntries(
+    Object.entries(draft).map(([key, value]) => [key, firestoreValue(value)])
+  );
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ fields })
+  });
+  if (response.status === 409) {
+    throw new GlobalSagasError(
+      409,
+      'EDITORIAL_DRAFT_ALREADY_EXISTS',
+      'Esta edição/idioma já existe no catálogo editorial privado. Nenhum dado foi sobrescrito.'
+    );
+  }
+  if (!response.ok) {
+    throw new GlobalSagasError(
+      502,
+      'EDITORIAL_DRAFT_CREATE_FAILED',
+      'O Firestore recusou a criação do rascunho editorial privado.'
+    );
+  }
+  return documentId;
+}
+
+function dryRunIdentity(result, language) {
+  return {
+    documentId: result.source.documentId,
+    modifiedTime: result.source.modifiedTime,
+    checksum: result.checksum,
+    canonicalKey: result.parsed.canonicalKey,
+    language
+  };
+}
+
+export {
+  COLLECTION,
+  SOURCE_LOCATION,
+  canonicalKey,
+  docxBlocks,
+  editorialDraft,
+  importDocumentId,
+  isLegacyDoc,
+  parseEditorialBlocks,
+  supportFor,
+  validateParsed
+};
+
+export default async function handler(req, res) {
+  res.setHeader('Cache-Control', 'no-store');
+  res.setHeader('Vary', 'Origin, Sec-Fetch-Site');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  try {
+    if (req.method !== 'POST') {
+      throw new GlobalSagasError(405, 'METHOD_NOT_ALLOWED', 'Método não permitido.');
+    }
+    if (!String(req.headers['content-type'] || '').toLowerCase().startsWith('application/json')) {
+      throw new GlobalSagasError(415, 'UNSUPPORTED_MEDIA_TYPE', 'Use application/json.');
+    }
+    requireOrigin(req);
+    const input = requestBody(req);
+    const key = secret();
+    const session = requireSession(req, key);
+    requireCsrf(req, session);
+
+    if (input.action === 'list') {
+      return res.status(200).json({
+        documents: await listDocuments(),
+        sourceLocation: SOURCE_LOCATION
+      });
+    }
+
+    if (input.action === 'load') {
+      const result = await parseSource(input.documentId);
+      const pairing = result.parsed?.canonicalKey
+        ? await pairingStatus(result.parsed.canonicalKey)
+        : { 'pt-BR': 'MISSING', 'en-US': 'MISSING' };
+      return res.status(200).json({
+        source: result.source,
+        parsed: result.parsed,
+        validation: result.validation,
+        pairing
+      });
+    }
+
+    if (input.action === 'dry-run') {
+      const language = normalizeLanguage(input.language);
+      const result = await parseSource(input.documentId);
+      if (!result.parsed) {
+        return res.status(200).json({
+          source: result.source,
+          parsed: null,
+          validation: result.validation,
+          pairing: { 'pt-BR': 'MISSING', 'en-US': 'MISSING' },
+          dryRunToken: null,
+          catalog: 'BLOCKED',
+          publication: 'NO'
+        });
+      }
+      const validation = validateParsed(
+        result.parsed,
+        language,
+        result.parserWarnings
+      );
+      const identity = dryRunIdentity(result, language);
+      return res.status(200).json({
+        source: result.source,
+        parsed: { ...result.parsed, language },
+        validation,
+        pairing: await pairingStatus(result.parsed.canonicalKey),
+        dryRunToken: validation.status === 'BLOCKED'
+          ? null
+          : makeDryRunToken(identity, key),
+        catalog: validation.status === 'BLOCKED' ? 'BLOCKED' : 'WOULD CREATE PRIVATE DRAFT',
+        publication: 'NO'
+      });
+    }
+
+    if (input.action === 'import') {
+      const language = normalizeLanguage(input.language);
+      const result = await parseSource(input.documentId);
+      if (!result.parsed) {
+        throw new GlobalSagasError(
+          409,
+          'DRY_RUN_REQUIRED',
+          'Execute o DRY RUN novamente.'
+        );
+      }
+      const validation = validateParsed(
+        result.parsed,
+        language,
+        result.parserWarnings
+      );
+      const identity = dryRunIdentity(result, language);
+      if (
+        validation.status === 'BLOCKED' ||
+        !verifyDryRunToken(input.dryRunToken, identity, key)
+      ) {
+        throw new GlobalSagasError(
+          409,
+          'DRY_RUN_REQUIRED',
+          'O documento mudou ou o DRY RUN expirou. Execute o DRY RUN novamente.'
+        );
+      }
+      const draft = editorialDraft(result.parsed, language, result.source);
+      const documentId = await createEditorialDraft(draft);
+      return res.status(201).json({
+        documentId,
+        catalogStatus: 'DRAFT IMPORTED',
+        publication: 'NO',
+        sourceMutated: false,
+        pairing: await pairingStatus(result.parsed.canonicalKey)
+      });
+    }
+
+    throw new GlobalSagasError(400, 'INVALID_ACTION', 'Ação inválida.');
+  } catch (error) {
+    const failure = error instanceof GlobalSagasError
+      ? error
+      : new GlobalSagasError(
+        500,
+        'INTERNAL_ERROR',
+        'Falha interna no importador de Sagas Globais.'
+      );
+    return res.status(failure.status).json({
+      error: failure.code,
+      message: failure.message,
+      ...(failure.details || {})
+    });
+  }
+}
