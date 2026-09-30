@@ -96,9 +96,9 @@ export class SocialPublishingAdminComponent implements OnInit {
     try { destinationValid = new URL(packageValue.destinationUrl).protocol === 'https:'; }
     catch { destinationValid = false; }
     return gate.configurationEnabled &&
-      Boolean(gate.pilotSourceId) &&
+      Boolean(gate.authorizedSourceId) &&
       packageValue.sourceType === 'music_release' &&
-      packageValue.sourceId === gate.pilotSourceId &&
+      packageValue.sourceId === gate.authorizedSourceId &&
       packageValue.status === 'APPROVED' &&
       packageValue.destinations.length === 1 &&
       packageValue.destinations[0] === 'facebook' &&

@@ -27,14 +27,17 @@ describe('SocialPublishingAdminComponent / draft editability', () => {
     publishingEnabled: true,
     writeGate: { flagEnabled: false, previewEnvironment: true, branchMatch: false, enabled: false },
     facebookWriteGate: {
+      gateMode: 'PREVIEW_PILOT',
       flagEnabled: true,
       featureEnabled: true,
       previewEnvironment: true,
+      productionEnvironment: false,
       branchMatch: true,
       sourceConfigured: true,
       sourceMatch: null,
       destinationMatch: null,
       pilotSourceId: source.sourceId,
+      authorizedSourceId: source.sourceId,
       configurationEnabled: true,
       enabled: false
     },
@@ -181,6 +184,19 @@ describe('SocialPublishingAdminComponent / draft editability', () => {
     const result = (fixture.nativeElement as HTMLElement).querySelector('.publication-result');
     expect(result?.textContent).toContain('Publicado no Facebook');
     expect(result?.textContent).toContain('2222222222_9999999999');
+  });
+
+  it('reflete dinamicamente o estado efetivo do write gate na mensagem técnica', () => {
+    component.metaDiagnostics.set(facebookMeta);
+    fixture.detectChanges();
+
+    const technicalDetails = (fixture.nativeElement as HTMLElement).querySelector('.technical-details');
+    expect(technicalDetails?.textContent).toContain('publicação real habilitada somente para fluxos autorizados');
+    expect(technicalDetails?.textContent).not.toContain('publicação automática permanece desabilitada');
+
+    component.metaDiagnostics.set({ ...facebookMeta, publishingEnabled: false });
+    fixture.detectChanges();
+    expect(technicalDetails?.textContent).toContain('publicação automática permanece desabilitada');
   });
 
   function expectEditableForm(editable: boolean): void {

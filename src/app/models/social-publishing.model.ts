@@ -89,14 +89,17 @@ export interface MetaConnectionDiagnostics {
     enabled: boolean;
   };
   facebookWriteGate: {
+    gateMode: 'PREVIEW_PILOT' | 'PRODUCTION' | 'UNAVAILABLE';
     flagEnabled: boolean;
     featureEnabled: boolean;
     previewEnvironment: boolean;
-    branchMatch: boolean;
+    productionEnvironment: boolean;
+    branchMatch: boolean | null;
     sourceConfigured: boolean;
     sourceMatch: boolean | null;
     destinationMatch: boolean | null;
     pilotSourceId: string | null;
+    authorizedSourceId: string | null;
     configurationEnabled: boolean;
     enabled: boolean;
   };

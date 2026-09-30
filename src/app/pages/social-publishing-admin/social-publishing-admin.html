@@ -287,7 +287,11 @@
         <details class="technical-details">
           <summary>Detalhes técnicos</summary>
           <div class="technical-content">
-            <p>Graph API {{ meta.graphApiVersion }} · publicação automática permanece desabilitada.</p>
+            @if (meta.publishingEnabled) {
+              <p>Graph API {{ meta.graphApiVersion }} · publicação real habilitada somente para fluxos autorizados neste ambiente.</p>
+            } @else {
+              <p>Graph API {{ meta.graphApiVersion }} · publicação automática permanece desabilitada.</p>
+            }
 
             <div class="technical-grid">
               <article>
