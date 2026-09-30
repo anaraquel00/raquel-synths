@@ -25,6 +25,7 @@ export class SocialPublishingAdminComponent implements OnInit {
   readonly metaDiagnostics = signal<MetaConnectionDiagnostics | null>(null);
   readonly packageSources = signal<Record<string, NormalizedSource>>({});
   readonly publishConfirmationOpen = signal(false);
+  readonly publishTarget = signal<SocialDestination | null>(null);
 
   @ViewChildren('sourceOption') private readonly sourceOptions?: QueryList<ElementRef<HTMLButtonElement>>;
 
@@ -82,6 +83,33 @@ export class SocialPublishingAdminComponent implements OnInit {
       meta.instagram.status === 'READY' &&
       meta.instagram.capabilities.feed &&
       meta.relationship.status === 'MATCH' &&
+      !delivery;
+  }
+
+  get canPublishFacebook(): boolean {
+    const packageValue = this.draft;
+    const meta = this.metaDiagnostics();
+    const gate = meta?.facebookWriteGate;
+    const delivery = packageValue?.facebookDelivery;
+    if (!packageValue || !meta || !gate) return false;
+    let destinationValid = false;
+    try { destinationValid = new URL(packageValue.destinationUrl).protocol === 'https:'; }
+    catch { destinationValid = false; }
+    return gate.configurationEnabled &&
+      Boolean(gate.pilotSourceId) &&
+      packageValue.sourceType === 'music_release' &&
+      packageValue.sourceId === gate.pilotSourceId &&
+      packageValue.status === 'APPROVED' &&
+      packageValue.destinations.length === 1 &&
+      packageValue.destinations[0] === 'facebook' &&
+      Boolean(packageValue.facebookCaption) &&
+      destinationValid &&
+      packageValue.sourceStale !== true &&
+      meta.token.valid &&
+      meta.token.appIdMatches &&
+      meta.facebook.status === 'READY' &&
+      meta.facebook.capabilities.feed &&
+      Boolean(meta.facebook.identity?.id) &&
       !delivery;
   }
 
@@ -323,22 +351,50 @@ export class SocialPublishingAdminComponent implements OnInit {
   }
 
   requestPublishInstagram(): void {
-    if (this.canPublishInstagram && !this.busy()) this.publishConfirmationOpen.set(true);
+    if (this.canPublishInstagram && !this.busy()) {
+      this.publishTarget.set('instagram');
+      this.publishConfirmationOpen.set(true);
+    }
+  }
+
+  requestPublishFacebook(): void {
+    if (this.canPublishFacebook && !this.busy()) {
+      this.publishTarget.set('facebook');
+      this.publishConfirmationOpen.set(true);
+    }
   }
 
   closePublishConfirmation(): void {
-    if (!this.busy()) this.publishConfirmationOpen.set(false);
+    if (!this.busy()) {
+      this.publishConfirmationOpen.set(false);
+      this.publishTarget.set(null);
+    }
   }
 
   async publishInstagramNow(): Promise<void> {
     if (!this.draft?.id || !this.canPublishInstagram) return;
     this.publishConfirmationOpen.set(false);
+    this.publishTarget.set(null);
     await this.run(async () => {
       const result = await this.call<{ package: SocialPackageDraft }>({
         action: 'publish-instagram-now', id: this.draft?.id
       });
       this.draft = result.package;
       this.message.set('Publicado no Instagram. O ID remoto e o horário foram registrados.');
+      await this.loadPackages();
+    });
+  }
+
+  async publishFacebookNow(): Promise<void> {
+    if (!this.draft?.id || !this.canPublishFacebook || this.publishTarget() !== 'facebook') return;
+    this.publishConfirmationOpen.set(false);
+    this.publishTarget.set(null);
+    await this.run(async () => {
+      const result = await this.call<{ package: SocialPackageDraft }>({
+        action: 'publish-facebook-now', id: this.draft?.id, ownerConfirmation: true
+      });
+      this.draft = result.package;
+      this.message.set('Publicado no Facebook. O ID remoto e o horário foram registrados.');
       await this.loadPackages();
     });
   }
@@ -360,6 +416,7 @@ export class SocialPublishingAdminComponent implements OnInit {
     this.diagnostics.set(null);
     this.dryRunToken.set(null);
     this.publishConfirmationOpen.set(false);
+    this.publishTarget.set(null);
 
     void this.loadSources()
       .then(() => {

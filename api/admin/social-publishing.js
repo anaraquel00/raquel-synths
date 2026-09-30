@@ -2,6 +2,7 @@ import { body, requireCsrf, requireOrigin, requireSession, secret } from './syst
 import { listSources } from '../../lib/social/source-adapters.js';
 import { approvePackage, cancelPackage, dryRun, listPackages, saveDraft } from '../../lib/social/packages.js';
 import { diagnoseMetaConnection } from '../../lib/social/meta-client.js';
+import { publishFacebookPilot } from '../../lib/social/publish-facebook.js';
 import { publishInstagramPilot } from '../../lib/social/publish-instagram.js';
 
 export default async function handler(req, res) {
@@ -26,6 +27,10 @@ export default async function handler(req, res) {
     if (input.action === 'cancel') return res.status(200).json({ package: await cancelPackage(input.id) });
     if (input.action === 'publish-instagram-now') {
       const result = await publishInstagramPilot(input.id);
+      return res.status(200).json(result);
+    }
+    if (input.action === 'publish-facebook-now') {
+      const result = await publishFacebookPilot(input.id, input.ownerConfirmation === true);
       return res.status(200).json(result);
     }
     return res.status(400).json({ message: 'Ação inválida.' });

@@ -51,6 +51,7 @@ export interface SocialPackageDraft {
   sourceStale?: boolean;
   approvalValid?: boolean;
   instagramDelivery?: SocialDelivery | null;
+  facebookDelivery?: SocialDelivery | null;
 }
 
 export interface DryRunCheck {
@@ -85,6 +86,18 @@ export interface MetaConnectionDiagnostics {
     flagEnabled: boolean;
     previewEnvironment: boolean;
     branchMatch: boolean;
+    enabled: boolean;
+  };
+  facebookWriteGate: {
+    flagEnabled: boolean;
+    featureEnabled: boolean;
+    previewEnvironment: boolean;
+    branchMatch: boolean;
+    sourceConfigured: boolean;
+    sourceMatch: boolean | null;
+    destinationMatch: boolean | null;
+    pilotSourceId: string | null;
+    configurationEnabled: boolean;
     enabled: boolean;
   };
   facebook: MetaPlatformDiagnostics;

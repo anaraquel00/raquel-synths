@@ -5,8 +5,9 @@ import { normalizeSource } from '../lib/social/source-adapters.js';
 import { canCancel, diagnose, draftFromInput, isPackageVisibleInAdmin, isSourceCurrent, makeDryRunToken, verifyDryRunToken } from '../lib/social/packages.js';
 import { assertDeliveryCanStart, createDeliveryFoundation, deliveryDecision, deliveryDocumentPath, deliveryIdempotencyKey } from '../lib/social/deliveries.js';
 import { diagnoseMetaConnection, META_GRAPH_API_VERSION } from '../lib/social/meta-client.js';
+import { evaluateFacebookPilot, publishFacebookPilot } from '../lib/social/publish-facebook.js';
 import { evaluateInstagramPilot, publishInstagramPilot } from '../lib/social/publish-instagram.js';
-import { instagramPilotWriteGate, instagramPilotWriteGateDiagnostics } from '../lib/social/write-gates.js';
+import { facebookPilotWriteGate, facebookPilotWriteGateDiagnostics, instagramPilotWriteGate, instagramPilotWriteGateDiagnostics } from '../lib/social/write-gates.js';
 import socialHandler from '../api/admin/social-publishing.js';
 
 const now = Date.parse('2026-09-23T12:00:00Z');
@@ -161,6 +162,18 @@ assert.equal(unconfigured.publishingEnabled, false);
 assert.deepEqual(unconfigured.writeGate, {
   flagEnabled: false, previewEnvironment: false, branchMatch: false, enabled: false
 });
+assert.deepEqual(unconfigured.facebookWriteGate, {
+  flagEnabled: false,
+  featureEnabled: false,
+  previewEnvironment: false,
+  branchMatch: false,
+  sourceConfigured: false,
+  sourceMatch: null,
+  destinationMatch: null,
+  pilotSourceId: null,
+  configurationEnabled: false,
+  enabled: false
+});
 assert.equal(unconfiguredCalls, 0);
 
 const metaEnv = {
@@ -223,6 +236,8 @@ assert.equal(connectedWithWriteGate.publishingEnabled, true);
 assert.deepEqual(connectedWithWriteGate.writeGate, {
   flagEnabled: true, previewEnvironment: true, branchMatch: true, enabled: true
 });
+assert.equal(connectedWithWriteGate.facebookWriteGate.enabled, false);
+assert.equal(connectedWithWriteGate.facebookWriteGate.sourceConfigured, false);
 assert.equal(gateMetaCalls, 3);
 assert.equal(JSON.stringify(connectedWithWriteGate.writeGate).includes(enabledWriteEnv.VERCEL_GIT_COMMIT_REF), false);
 
@@ -345,6 +360,89 @@ assert.equal(instagramPilotWriteGate(pilotEnv), true);
 assert.deepEqual(instagramPilotWriteGateDiagnostics(pilotEnv), connectedWithWriteGate.writeGate);
 console.log('INSTAGRAM_PILOT_ELIGIBILITY = PASS');
 
+const facebookPilotPackage = {
+  ...pilotPackage,
+  id: 'pilot-blueprint-v022-facebook',
+  instagramCaption: '',
+  facebookCaption: 'THE BLUEPRINT SESSIONS Vol.022 no Facebook',
+  utmContent: 'facebook_feed',
+  destinations: ['facebook']
+};
+const facebookPilotEnv = {
+  ...metaEnv,
+  SOCIAL_PUBLISHING_WRITES_ENABLED: 'true',
+  SOCIAL_FACEBOOK_PILOT_ENABLED: 'true',
+  SOCIAL_FACEBOOK_PILOT_SOURCE_ID: pilotSource.sourceId,
+  VERCEL_ENV: 'preview',
+  VERCEL_GIT_COMMIT_REF: 'feat/social-publishing-phase-1e-facebook-pilot'
+};
+const connectedWithFacebookWriteGate = await diagnoseMetaConnection({
+  env: facebookPilotEnv,
+  fetchImpl: fakeMetaFetch
+});
+assert.equal(connectedWithFacebookWriteGate.publishingEnabled, true);
+assert.equal(connectedWithFacebookWriteGate.writeGate.enabled, false);
+assert.equal(connectedWithFacebookWriteGate.facebookWriteGate.configurationEnabled, true);
+assert.equal(connectedWithFacebookWriteGate.facebookWriteGate.enabled, false);
+assert.equal(connectedWithFacebookWriteGate.facebookWriteGate.pilotSourceId, pilotSource.sourceId);
+const facebookGate = facebookPilotWriteGateDiagnostics(facebookPilotEnv, {
+  sourceId: facebookPilotPackage.sourceId,
+  destination: 'facebook'
+});
+const facebookEvaluationOptions = {
+  authorizedSourceId: facebookGate.pilotSourceId,
+  expectedPageId: metaEnv.META_FACEBOOK_PAGE_ID,
+  writeGateEnabled: facebookGate.enabled,
+  ownerConfirmation: true
+};
+
+function failedFacebookChecks(packageValue, source = pilotSource, meta = readyMeta, delivery = null, options = facebookEvaluationOptions) {
+  return evaluateFacebookPilot(packageValue, source, meta, delivery, options).checks
+    .filter(item => item.status === 'FAIL')
+    .map(item => item.code);
+}
+
+assert.equal(evaluateFacebookPilot(
+  facebookPilotPackage, pilotSource, readyMeta, null, facebookEvaluationOptions
+).status, 'PASS');
+assert.ok(failedFacebookChecks({ ...facebookPilotPackage, destinations: ['instagram', 'facebook'] }).includes('FACEBOOK_ONLY'));
+assert.ok(failedFacebookChecks({ ...facebookPilotPackage, facebookCaption: '' }).includes('FACEBOOK_CAPTION'));
+assert.ok(failedFacebookChecks(facebookPilotPackage, pilotSource, {
+  ...readyMeta, token: { ...readyMeta.token, valid: false }
+}).includes('TOKEN_VALID'));
+assert.ok(failedFacebookChecks(facebookPilotPackage, pilotSource, {
+  ...readyMeta, token: { ...readyMeta.token, appIdMatches: false }
+}).includes('APP_ID_MATCH'));
+assert.ok(failedFacebookChecks(facebookPilotPackage, pilotSource, {
+  ...readyMeta,
+  facebook: { ...readyMeta.facebook, identity: { id: '9999999999', name: 'Wrong Page' } }
+}).includes('PAGE_IDENTITY'));
+assert.ok(failedFacebookChecks(facebookPilotPackage, pilotSource, readyMeta, {
+  ...createDeliveryFoundation(facebookPilotPackage.id, 'facebook'), remotePostId: '2222222222_4444444444'
+}).includes('DELIVERY_READY'));
+assert.ok(failedFacebookChecks(facebookPilotPackage, pilotSource, readyMeta, {
+  ...createDeliveryFoundation(facebookPilotPackage.id, 'facebook'), status: 'PUBLISHING'
+}).includes('DELIVERY_READY'));
+assert.ok(failedFacebookChecks(facebookPilotPackage, pilotSource, readyMeta, null, {
+  ...facebookEvaluationOptions, ownerConfirmation: false
+}).includes('OWNER_CONFIRMATION'));
+assert.equal(facebookPilotWriteGate(facebookPilotEnv, {
+  sourceId: facebookPilotPackage.sourceId, destination: 'facebook'
+}), true);
+assert.equal(facebookPilotWriteGate({ ...facebookPilotEnv, SOCIAL_FACEBOOK_PILOT_ENABLED: 'false' }, {
+  sourceId: facebookPilotPackage.sourceId, destination: 'facebook'
+}), false);
+assert.equal(facebookPilotWriteGate({ ...facebookPilotEnv, VERCEL_ENV: 'production' }, {
+  sourceId: facebookPilotPackage.sourceId, destination: 'facebook'
+}), false);
+assert.equal(facebookPilotWriteGate({ ...facebookPilotEnv, SOCIAL_FACEBOOK_PILOT_SOURCE_ID: '' }, {
+  sourceId: facebookPilotPackage.sourceId, destination: 'facebook'
+}), false);
+assert.equal(facebookPilotWriteGate(facebookPilotEnv, {
+  sourceId: facebookPilotPackage.sourceId, destination: 'instagram'
+}), false);
+console.log('FACEBOOK_PILOT_ELIGIBILITY = PASS');
+
 function makePilotRepository({ packageValue = pilotPackage, source = pilotSource, delivery = null } = {}) {
   let currentPackage = { ...packageValue };
   let currentDelivery = delivery ? { ...delivery } : null;
@@ -361,14 +459,14 @@ function makePilotRepository({ packageValue = pilotPackage, source = pilotSource
       currentPackage = { ...existing, ...fields, status, updateTime: `package-${++revision}` };
       return currentPackage;
     },
-    async claimDelivery(packageId, destination) {
+    async claimDelivery(packageId, destination, status = 'PENDING') {
       assert.equal(currentDelivery, null);
       currentDelivery = {
         ...createDeliveryFoundation(packageId, destination),
-        status: 'PENDING', attemptCount: 1, packageId, destination,
+        status, attemptCount: 1, packageId, destination,
         updateTime: `delivery-${++revision}`
       };
-      events.push({ type: 'delivery', to: 'PENDING' });
+      events.push({ type: 'delivery', to: status });
       return currentDelivery;
     },
     async updateDelivery(existing, fields) {
@@ -499,10 +597,182 @@ assert.equal(reconciliationRepository.snapshot().delivery.remotePostId, null);
 assert.equal(deliveryDecision(reconciliationRepository.snapshot().delivery), 'RECONCILE_REQUIRED');
 console.log('INSTAGRAM_PILOT_FAILURE_NO_RETRY = PASS');
 
+const ownerConfirmationRepository = makePilotRepository({ packageValue: facebookPilotPackage });
+await assert.rejects(
+  publishFacebookPilot(facebookPilotPackage.id, false, {
+    env: facebookPilotEnv,
+    repository: ownerConfirmationRepository,
+    diagnoseMeta: async () => readyMeta,
+    fetchImpl: async () => { throw new Error('UNEXPECTED_META_WRITE'); }
+  }),
+  error => error.code === 'OWNER_CONFIRMATION_REQUIRED' && error.status === 409
+);
+assert.equal(ownerConfirmationRepository.events.length, 0);
+
+const facebookGateRepository = makePilotRepository({ packageValue: facebookPilotPackage });
+await assert.rejects(
+  publishFacebookPilot(facebookPilotPackage.id, true, {
+    env: { ...facebookPilotEnv, SOCIAL_FACEBOOK_PILOT_ENABLED: 'false' },
+    repository: facebookGateRepository,
+    diagnoseMeta: async () => readyMeta,
+    fetchImpl: async () => { throw new Error('UNEXPECTED_META_WRITE'); }
+  }),
+  error => error.code === 'FACEBOOK_SOCIAL_WRITES_DISABLED' && error.status === 403
+);
+assert.equal(facebookGateRepository.events.length, 0);
+
+const previousFacebookFlag = process.env.SOCIAL_FACEBOOK_PILOT_ENABLED;
+process.env.SOCIAL_FACEBOOK_PILOT_ENABLED = 'false';
+const disabledFacebookResponse = fakeResponse();
+await socialHandler({
+  ...baseRequest,
+  headers: {
+    ...baseRequest.headers,
+    cookie: `__Host-rqs_admin_session=${sessionPayload}.${signature}`,
+    'x-rqs-csrf': 'qa-csrf'
+  },
+  body: { action: 'publish-facebook-now', id: facebookPilotPackage.id, ownerConfirmation: true }
+}, disabledFacebookResponse);
+if (previousFacebookFlag === undefined) delete process.env.SOCIAL_FACEBOOK_PILOT_ENABLED;
+else process.env.SOCIAL_FACEBOOK_PILOT_ENABLED = previousFacebookFlag;
+assert.equal(disabledFacebookResponse.statusCode, 403);
+assert.equal(disabledFacebookResponse.payload.code, 'FACEBOOK_SOCIAL_WRITES_DISABLED');
+
+const existingFacebookDeliveryRepository = makePilotRepository({
+  packageValue: facebookPilotPackage,
+  delivery: { ...createDeliveryFoundation(facebookPilotPackage.id, 'facebook'), remotePostId: '2222222222_4444444444' }
+});
+let duplicateFacebookCalls = 0;
+await assert.rejects(
+  publishFacebookPilot(facebookPilotPackage.id, true, {
+    env: facebookPilotEnv,
+    repository: existingFacebookDeliveryRepository,
+    diagnoseMeta: async () => readyMeta,
+    fetchImpl: async () => { duplicateFacebookCalls += 1; throw new Error('UNEXPECTED_META_WRITE'); }
+  }),
+  error => error.code === 'FACEBOOK_PILOT_NOT_ELIGIBLE' &&
+    error.diagnostics.checks.some(item => item.code === 'DELIVERY_READY' && item.status === 'FAIL')
+);
+assert.equal(duplicateFacebookCalls, 0);
+assert.equal(existingFacebookDeliveryRepository.events.length, 0);
+
+const ambiguousFacebookDeliveryRepository = makePilotRepository({
+  packageValue: facebookPilotPackage,
+  delivery: { ...createDeliveryFoundation(facebookPilotPackage.id, 'facebook'), status: 'PUBLISHING' }
+});
+await assert.rejects(
+  publishFacebookPilot(facebookPilotPackage.id, true, {
+    env: facebookPilotEnv,
+    repository: ambiguousFacebookDeliveryRepository,
+    diagnoseMeta: async () => readyMeta,
+    fetchImpl: async () => { throw new Error('UNEXPECTED_META_WRITE'); }
+  }),
+  error => error.code === 'FACEBOOK_PILOT_NOT_ELIGIBLE' &&
+    error.diagnostics.checks.find(item => item.code === 'DELIVERY_READY')?.message.includes('reconciliação manual')
+);
+assert.equal(ambiguousFacebookDeliveryRepository.events.length, 0);
+
+const successfulFacebookRepository = makePilotRepository({ packageValue: facebookPilotPackage });
+const facebookPublishCalls = [];
+const successfulFacebookPublish = await publishFacebookPilot(facebookPilotPackage.id, true, {
+  env: facebookPilotEnv,
+  repository: successfulFacebookRepository,
+  diagnoseMeta: async () => readyMeta,
+  now: () => new Date('2026-09-23T13:45:00.000Z'),
+  fetchImpl: async (url, options) => {
+    facebookPublishCalls.push({ url: String(url), options });
+    return { ok: true, status: 200, json: async () => ({ id: '2222222222_9999999999' }) };
+  }
+});
+assert.equal(facebookPublishCalls.length, 1);
+assert.ok(facebookPublishCalls[0].url.endsWith(`/${META_GRAPH_API_VERSION}/${metaEnv.META_FACEBOOK_PAGE_ID}/feed`));
+assert.equal(facebookPublishCalls[0].options.method, 'POST');
+assert.equal(facebookPublishCalls[0].options.headers.Authorization, `Bearer ${metaEnv.META_FACEBOOK_PAGE_ACCESS_TOKEN}`);
+assert.equal(facebookPublishCalls[0].url.includes(metaEnv.META_FACEBOOK_PAGE_ACCESS_TOKEN), false);
+assert.equal(facebookPublishCalls[0].options.body.get('message'), facebookPilotPackage.facebookCaption);
+assert.equal(facebookPublishCalls[0].options.body.get('link'), facebookPilotPackage.destinationUrl);
+assert.equal(successfulFacebookPublish.package.status, 'PUBLISHED');
+assert.equal(successfulFacebookPublish.delivery.status, 'PUBLISHED');
+assert.equal(successfulFacebookPublish.delivery.destination, 'facebook');
+assert.equal(successfulFacebookPublish.delivery.remotePostId, '2222222222_9999999999');
+assert.equal(successfulFacebookPublish.delivery.publishedAt, '2026-09-23T13:45:00.000Z');
+assert.deepEqual(successfulFacebookRepository.events.map(event => event.to), [
+  'PUBLISHING', 'PUBLISHING', 'PUBLISHED', 'PUBLISHED'
+]);
+console.log('FACEBOOK_PILOT_SUCCESS_PERSISTENCE = PASS');
+
+const facebookReconciliationRepository = makePilotRepository({ packageValue: facebookPilotPackage });
+const persistFacebookDelivery = facebookReconciliationRepository.updateDelivery.bind(facebookReconciliationRepository);
+facebookReconciliationRepository.updateDelivery = async (existing, fields) => {
+  if (fields.status === 'PUBLISHED') throw new Error('SIMULATED_DELIVERY_PERSISTENCE_FAILURE');
+  return persistFacebookDelivery(existing, fields);
+};
+let reconcileFacebookCalls = 0;
+await assert.rejects(
+  publishFacebookPilot(facebookPilotPackage.id, true, {
+    env: facebookPilotEnv,
+    repository: facebookReconciliationRepository,
+    diagnoseMeta: async () => readyMeta,
+    fetchImpl: async () => {
+      reconcileFacebookCalls += 1;
+      return { ok: true, status: 200, json: async () => ({ id: '2222222222_8888888888' }) };
+    }
+  }),
+  error => error.code === 'FACEBOOK_RECONCILE_REQUIRED' &&
+    error.metaDiagnostic.remotePostId === '2222222222_8888888888'
+);
+assert.equal(reconcileFacebookCalls, 1);
+assert.equal(facebookReconciliationRepository.snapshot().package.status, 'PUBLISHING');
+assert.equal(facebookReconciliationRepository.snapshot().delivery.status, 'PUBLISHING');
+assert.equal(deliveryDecision(facebookReconciliationRepository.snapshot().delivery), 'RECONCILE_REQUIRED');
+console.log('FACEBOOK_PILOT_RECONCILIATION = PASS');
+
+const failingFacebookRepository = makePilotRepository({ packageValue: facebookPilotPackage });
+let facebookWriteCalls = 0;
+let sanitizedFacebookError;
+try {
+  await publishFacebookPilot(facebookPilotPackage.id, true, {
+    env: facebookPilotEnv,
+    repository: failingFacebookRepository,
+    diagnoseMeta: async () => readyMeta,
+    fetchImpl: async () => {
+      facebookWriteCalls += 1;
+      return {
+        ok: false,
+        status: 400,
+        json: async () => ({ error: {
+          code: 100,
+          error_subcode: 2018001,
+          message: `Never expose ${metaEnv.META_FACEBOOK_PAGE_ACCESS_TOKEN}`
+        } })
+      };
+    }
+  });
+} catch (error) {
+  sanitizedFacebookError = error;
+}
+assert.equal(facebookWriteCalls, 1);
+assert.equal(sanitizedFacebookError.code, 'FACEBOOK_CREATE_PAGE_FEED_POST_INVALID_REQUEST');
+assert.equal(sanitizedFacebookError.metaDiagnostic.requestPurpose, 'CREATE_PAGE_FEED_POST');
+assert.equal(JSON.stringify(sanitizedFacebookError).includes(metaEnv.META_FACEBOOK_PAGE_ACCESS_TOKEN), false);
+assert.equal(JSON.stringify(sanitizedFacebookError).includes('Never expose'), false);
+assert.equal(failingFacebookRepository.snapshot().package.status, 'FAILED');
+assert.equal(failingFacebookRepository.snapshot().delivery.status, 'FAILED');
+assert.equal(failingFacebookRepository.snapshot().delivery.remotePostId, null);
+assert.equal(failingFacebookRepository.snapshot().delivery.attemptCount, 1);
+assert.deepEqual(failingFacebookRepository.events.map(event => event.to), [
+  'PUBLISHING', 'PUBLISHING', 'FAILED', 'FAILED'
+]);
+console.log('FACEBOOK_PILOT_FAILURE_NO_RETRY = PASS');
+
 const metaClientSource = readFileSync(new URL('../lib/social/meta-client.js', import.meta.url), 'utf8');
 const deliverySource = readFileSync(new URL('../lib/social/deliveries.js', import.meta.url), 'utf8');
+const facebookPublisherSource = readFileSync(new URL('../lib/social/facebook-publisher.js', import.meta.url), 'utf8');
+const facebookPilotSource = readFileSync(new URL('../lib/social/publish-facebook.js', import.meta.url), 'utf8');
 const instagramPublisherSource = readFileSync(new URL('../lib/social/instagram-publisher.js', import.meta.url), 'utf8');
 const instagramPilotSource = readFileSync(new URL('../lib/social/publish-instagram.js', import.meta.url), 'utf8');
+const packagesSource = readFileSync(new URL('../lib/social/packages.js', import.meta.url), 'utf8');
+const socialApiSource = readFileSync(new URL('../api/admin/social-publishing.js', import.meta.url), 'utf8');
 const writeGateSource = readFileSync(new URL('../lib/social/write-gates.js', import.meta.url), 'utf8');
 const frontendSource = [
   '../src/app/models/social-publishing.model.ts',
@@ -512,6 +782,10 @@ const frontendSource = [
 assert.equal(metaClientSource.includes("method: 'POST'"), false);
 assert.equal(metaClientSource.includes('media_publish'), false);
 assert.equal(metaClientSource.includes('video_reels'), false);
+assert.ok(facebookPublisherSource.includes("method: 'POST'"));
+assert.ok(facebookPublisherSource.includes('/feed'));
+assert.equal(facebookPublisherSource.includes('access_token'), false);
+assert.equal(facebookPublisherSource.includes('console.'), false);
 assert.ok(instagramPublisherSource.includes("method: 'POST'"));
 assert.ok(instagramPublisherSource.includes('/media_publish'));
 assert.ok(instagramPublisherSource.includes("graphPost('CREATE_IMAGE_CONTAINER'"));
@@ -520,14 +794,30 @@ assert.equal(instagramPublisherSource.includes('console.'), false);
 assert.ok(writeGateSource.includes("SOCIAL_PUBLISHING_WRITES_ENABLED === 'true'"));
 assert.ok(writeGateSource.includes("VERCEL_ENV === 'preview'"));
 assert.ok(writeGateSource.includes('VERCEL_GIT_COMMIT_REF === INSTAGRAM_PILOT_BRANCH'));
+assert.ok(writeGateSource.includes('VERCEL_GIT_COMMIT_REF === FACEBOOK_PILOT_BRANCH'));
+assert.ok(writeGateSource.includes("SOCIAL_FACEBOOK_PILOT_ENABLED === 'true'"));
+assert.ok(writeGateSource.includes('SOCIAL_FACEBOOK_PILOT_SOURCE_ID'));
+assert.ok(facebookPilotSource.includes("from './write-gates.js'"));
 assert.ok(instagramPilotSource.includes("from './write-gates.js'"));
 assert.ok(metaClientSource.includes("from './write-gates.js'"));
+assert.equal(facebookPilotSource.includes('SOCIAL_FACEBOOK_PILOT_ENABLED'), false);
+assert.equal(facebookPilotSource.includes('setTimeout'), false);
 assert.equal(instagramPilotSource.includes('SOCIAL_PUBLISHING_WRITES_ENABLED'), false);
 assert.equal(instagramPilotSource.includes('setTimeout'), false);
+assert.ok(packagesSource.includes('facebookDelivery'));
+assert.equal(packagesSource.includes('fetch('), false);
+assert.equal(packagesSource.includes('publishFacebookFeedPost'), false);
+assert.equal(packagesSource.includes('publishInstagramContainer'), false);
+assert.ok(socialApiSource.includes("input.action === 'publish-facebook-now'"));
 assert.equal(frontendSource.includes('process.env'), false);
 assert.equal(deliverySource.includes('fetch('), false);
 console.log('INSTAGRAM_PILOT_SCOPE_GUARD = PASS');
+console.log('FACEBOOK_PILOT_SCOPE_GUARD = PASS');
 console.log('CLIENT_SECRET_EXPOSURE = PASS');
 console.log('FIRESTORE_SECRET_EXPOSURE = PASS');
 console.log('META_WRITE_CALLS = 0');
+console.log('SAVE_DRAFT_META_WRITE_CALLS = 0');
+console.log('DRY_RUN_META_WRITE_CALLS = 0');
+console.log('APPROVAL_META_WRITE_CALLS = 0');
 console.log('INSTAGRAM_POSTS_CREATED = 0');
+console.log('FACEBOOK_POSTS_CREATED = 0');
