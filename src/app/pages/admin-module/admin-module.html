@@ -240,11 +240,31 @@
               </article>
             }
           </div>
+
+          <section class="write-plan" aria-labelledby="write-plan-title">
+            <p class="block-label" id="write-plan-title">FIRESTORE WRITE PLAN</p>
+            <ul>
+              @for (item of result.writePlan; track item.id) {
+                <li [class.blocked]="item.action === 'BLOCKED' || item.action === 'CONFLICT'">
+                  <strong>{{ item.id }}</strong>
+                  <span>{{ item.action }} {{ item.language }}</span>
+                  @if (item.fields.length) {
+                    <small>{{ item.fields.join(', ') }}</small>
+                  }
+                  @if (item.issues.length) {
+                    <small>{{ item.issues.join(' ') }}</small>
+                  }
+                </li>
+              }
+            </ul>
+          </section>
         }
 
         <div class="safety-contract">
           <p><strong>CATALOG</strong> {{ result.catalog }}</p>
           <p><strong>PUBLICATION</strong> {{ result.publication }}</p>
+          <p><strong>INITIAL PUBLIC STATE</strong> {{ result.initialPublicState }}</p>
+          <p><strong>DRY RUN FIRESTORE WRITES</strong> {{ result.firestoreWrites }}</p>
           <p><strong>SOURCE MUTATION</strong> NO</p>
         </div>
 
@@ -256,23 +276,22 @@
               [checked]="importConfirmed()"
               (change)="setImportConfirmed(ownerConfirmation.checked)"
             >
-            Confirmo a importação deste documento para o catálogo editorial privado
-            como rascunho, sem publicação.
+            Confirmo a importação destes episódios para global-sagas como não publicados.
           </label>
           <button
             type="button"
             class="import-action"
             [disabled]="!importConfirmed() || loading()"
-            (click)="importDraft()"
+            (click)="importEpisodes()"
           >
-            IMPORTAR PARA O CATÁLOGO EDITORIAL
+            IMPORTAR EPISÓDIOS PARA GLOBAL-SAGAS
           </button>
         }
       </section>
     }
 
     <p class="policy">
-      DRIVE READ ONLY · DRY RUN REQUIRED · CREATE ONLY · PRIVATE DRAFT · NO PUBLICATION
+      DRIVE READ ONLY · DRY RUN REQUIRED · GLOBAL-SAGAS · PUBLISHED = FALSE · NO PUBLICATION
     </p>
   }
 

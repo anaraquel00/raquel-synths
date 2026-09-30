@@ -12,6 +12,8 @@ interface SessionResult {
 
 type SagaLanguage = 'pt-BR' | 'en-US';
 type ValidationStatus = 'VALID' | 'WARNING' | 'BLOCKED';
+type WriteAction = 'CREATE' | 'MERGE_PT' | 'MERGE_EN' | 'UNCHANGED' |
+  'CONFLICT' | 'BLOCKED';
 
 interface DriveDocument {
   documentId: string;
@@ -66,8 +68,17 @@ interface SourceResult {
 
 interface DryRunResult extends SourceResult {
   dryRunToken: string | null;
-  catalog: 'BLOCKED' | 'WOULD CREATE PRIVATE DRAFT';
+  catalog: string;
   publication: 'NO';
+  initialPublicState: 'published = false';
+  firestoreWrites: 0;
+  writePlan: Array<{
+    id: string;
+    action: WriteAction;
+    language: SagaLanguage;
+    fields: string[];
+    issues: string[];
+  }>;
 }
 
 @Component({
@@ -209,7 +220,7 @@ export class AdminModuleComponent implements OnInit {
     this.importConfirmed.set(confirmed);
   }
 
-  async importDraft(): Promise<void> {
+  async importEpisodes(): Promise<void> {
     const source = this.selected();
     const dryRun = this.dryRun();
     if (
@@ -223,9 +234,12 @@ export class AdminModuleComponent implements OnInit {
     this.beginRequest();
     try {
       const result = await this.call<{
-        documentId: string;
+        documentIds: string[];
+        writtenDocumentIds: string[];
+        episodeCount: number;
         catalogStatus: string;
         publication: 'NO';
+        initialPublicState: 'published = false';
         sourceMutated: false;
         pairing: PairingStatus;
       }>({
@@ -237,7 +251,8 @@ export class AdminModuleComponent implements OnInit {
       this.pairing.set(result.pairing);
       this.catalogStatus.set(result.catalogStatus);
       this.message.set(
-        `Rascunho privado criado: ${result.documentId}. PUBLICATION = ${result.publication}.`
+        `${result.episodeCount} episódios importados em global-sagas. ` +
+        `PUBLICATION = ${result.publication}.`
       );
       this.importConfirmed.set(false);
       this.dryRun.set(null);

@@ -56,11 +56,11 @@ describe('AdminModuleComponent / Sagas Globais', () => {
       season: 2,
       edition: "JONAH'S LEGACY",
       language: 'pt-BR',
-      canonicalKey: 'glitch-in-the-matrix-s2-jonah-s-legacy',
+      canonicalKey: 'glitch-in-the-matrix-s2-jonahs-legacy',
       preamble: [],
       episodes: [{
         number: 1,
-        slug: 's2-e01',
+        slug: 's2-e1',
         title: 'O Primeiro Ruído',
         subtitle: 'Um eco na infraestrutura',
         blocks: [
@@ -76,8 +76,20 @@ describe('AdminModuleComponent / Sagas Globais', () => {
       validation: { status: 'VALID', blocked: [], warnings: [] },
       pairing: { 'pt-BR': 'MISSING', 'en-US': 'MISSING' },
       dryRunToken: 'signed-token',
-      catalog: 'WOULD CREATE PRIVATE DRAFT',
-      publication: 'NO'
+      catalog: 'WOULD WRITE 8 EPISODES TO global-sagas',
+      publication: 'NO',
+      initialPublicState: 'published = false',
+      firestoreWrites: 0,
+      writePlan: [{
+        id: 's2-e1',
+        action: 'CREATE',
+        language: 'pt-BR',
+        fields: [
+          'title', 'category', 'description', 'content',
+          'image', 'releaseDate', 'mode', 'published'
+        ],
+        issues: []
+      }]
     });
     fixture.detectChanges();
 
@@ -88,6 +100,13 @@ describe('AdminModuleComponent / Sagas Globais', () => {
     expect(text).toContain('CORPO EDITORIAL');
     expect(text).toContain('DIÁLOGO');
     expect(text).toContain('SYSTEM LOG');
+    expect(text).toContain('s2-e1');
+    expect(text).toContain('CREATE pt-BR');
+    expect(text).toContain('published = false');
+    expect(text).toContain('global-sagas');
+    expect(text).toContain('DRY RUN FIRESTORE WRITES 0');
     expect(text).toContain('PUBLICATION NO');
+    expect(text).not.toContain(['PRIVATE', 'DRAFT'].join(' '));
+    expect(text).not.toContain(['Rascunho', 'privado'].join(' '));
   });
 });

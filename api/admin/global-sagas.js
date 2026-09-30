@@ -8,7 +8,10 @@ import { google } from 'googleapis';
 import mammoth from 'mammoth';
 
 const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT || 'raquel-synths-platform';
-const COLLECTION = 'editorial-global-saga-imports';
+const COLLECTION = 'global-sagas';
+const DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.readonly';
+const TARGET_SEASON = 2;
+const TARGET_EPISODE_COUNT = 8;
 const SESSION_COOKIE = '__Host-rqs_admin_session';
 const SESSION_TTL = 20 * 60 * 1000;
 const DRY_RUN_TTL = 10 * 60 * 1000;
@@ -195,7 +198,7 @@ function driveAuth() {
   return new google.auth.GoogleAuth({
     credentials,
     projectId: credentials?.project_id || PROJECT_ID,
-    scopes: ['https://www.googleapis.com/auth/drive.readonly']
+    scopes: [DRIVE_SCOPE]
   });
 }
 
@@ -922,6 +925,10 @@ function validateParsed(parsed, confirmedLanguage, parserWarnings = []) {
   const ids = new Set();
   for (const episode of parsed.episodes) {
     if (!episode.title) blocked.push(`Episódio ${episode.number} sem título.`);
+    if (!episode.description) blocked.push(`Episódio ${episode.number} sem descrição.`);
+    if (!episode.category) blocked.push(`Episódio ${episode.number} sem categoria.`);
+    if (!episode.releaseDate) blocked.push(`Episódio ${episode.number} sem data de lançamento.`);
+    if (!episode.image) blocked.push(`Episódio ${episode.number} sem imagem.`);
     if (!episode.blocks.length) blocked.push(`Episódio ${episode.number} sem corpo editorial.`);
     if (ids.has(episode.slug)) blocked.push(`Slug de episódio duplicado: ${episode.slug}.`);
     ids.add(episode.slug);
@@ -966,10 +973,6 @@ async function parseSource(documentId) {
   };
 }
 
-function importDocumentId(canonical, language) {
-  return `${canonical}--${language.toLowerCase()}`;
-}
-
 function firestoreValue(value) {
   if (value === null || value === undefined) return { nullValue: null };
   if (typeof value === 'boolean') return { booleanValue: value };
@@ -993,27 +996,273 @@ function firestoreValue(value) {
   return { stringValue: String(value) };
 }
 
-function editorialDraft(parsed, language, source) {
-  return {
-    canonicalKey: parsed.canonicalKey,
-    saga: parsed.saga,
-    season: parsed.season,
-    edition: parsed.edition,
-    language,
-    status: 'draft',
-    published: false,
-    publication: 'NO',
-    source: {
-      provider: 'google-drive',
-      documentId: source.documentId,
-      filename: source.name,
-      sourceLocation: SOURCE_LOCATION,
-      modifiedTime: source.modifiedTime
-    },
-    preamble: parsed.preamble,
-    episodes: parsed.episodes,
-    importedAt: new Date().toISOString()
+function parseFirestoreValue(value = {}) {
+  if ('stringValue' in value) return value.stringValue;
+  if ('booleanValue' in value) return value.booleanValue;
+  if ('integerValue' in value) return Number(value.integerValue);
+  if ('doubleValue' in value) return value.doubleValue;
+  if ('timestampValue' in value) return value.timestampValue;
+  if ('nullValue' in value) return null;
+  if ('arrayValue' in value) {
+    return (value.arrayValue?.values || []).map(parseFirestoreValue);
+  }
+  if ('mapValue' in value) {
+    return Object.fromEntries(
+      Object.entries(value.mapValue?.fields || {})
+        .map(([key, item]) => [key, parseFirestoreValue(item)])
+    );
+  }
+  return undefined;
+}
+
+function expectedEpisodeIds() {
+  return Array.from(
+    { length: TARGET_EPISODE_COUNT },
+    (_, index) => `s${TARGET_SEASON}-e${index + 1}`
+  );
+}
+
+function episodeId(episode) {
+  return String(episode?.episodeId || episode?.slug || '').toLowerCase();
+}
+
+function targetSetIssues(parsed, language) {
+  const issues = [];
+  const ids = parsed.episodes.map(episodeId);
+  const expected = expectedEpisodeIds();
+  if (parsed.season !== TARGET_SEASON) {
+    issues.push(`Somente a Season ${TARGET_SEASON} está autorizada neste importador.`);
+  }
+  if (!['pt-BR', 'en-US'].includes(language)) {
+    issues.push('Idioma de importação inválido.');
+  }
+  if (
+    ids.length !== expected.length ||
+    new Set(ids).size !== expected.length ||
+    expected.some(id => !ids.includes(id))
+  ) {
+    issues.push(`Os documentos alvo devem ser exatamente ${expected.join(', ')}.`);
+  }
+  for (const episode of parsed.episodes) {
+    const expectedId = `s${parsed.season}-e${episode.number}`;
+    if (episodeId(episode) !== expectedId) {
+      issues.push(`ID incompatível com o episódio ${episode.number}: ${episodeId(episode) || 'ausente'}.`);
+    }
+    const required = {
+      title: episode.title,
+      category: episode.category,
+      description: episode.description,
+      content: typeof episode.content === 'string'
+        ? episode.content
+        : (episode.blocks || []).map(block => block.content).join('\n'),
+      image: episode.image,
+      releaseDate: episode.releaseDate
+    };
+    for (const [fieldName, value] of Object.entries(required)) {
+      if (!String(value || '').trim()) {
+        issues.push(`${episodeId(episode) || expectedId}: ${fieldName} está ausente.`);
+      }
+    }
+  }
+  return issues;
+}
+
+function editorialFields(episode, language) {
+  const content = typeof episode.content === 'string'
+    ? episode.content
+    : (episode.blocks || []).map(block => block.content).join('\n');
+  const fields = {
+    title: episode.title || '',
+    category: episode.category || '',
+    description: episode.description || '',
+    content
   };
+  if (language === 'pt-BR') return fields;
+  return Object.fromEntries(
+    Object.entries(fields).map(([key, value]) => [`${key}_en`, value])
+  );
+}
+
+function sharedFields(episode) {
+  return {
+    image: episode.image || '',
+    releaseDate: episode.releaseDate || ''
+  };
+}
+
+function materiallyEqual(left, right) {
+  return String(left ?? '').trim() === String(right ?? '').trim();
+}
+
+function createEpisodeWritePlan(
+  parsed,
+  language,
+  sourceChecksum,
+  existingDocuments = {}
+) {
+  const targetIssues = targetSetIssues(parsed, language);
+  if (!sourceChecksum) {
+    targetIssues.push('Checksum da fonte está ausente.');
+  }
+  const expected = expectedEpisodeIds();
+  if (targetIssues.length) {
+    return {
+      collection: COLLECTION,
+      season: parsed.season,
+      language,
+      sourceChecksum,
+      items: expected.map(id => ({
+        id,
+        action: 'BLOCKED',
+        language,
+        sourceChecksum,
+        writeFields: {},
+        issues: targetIssues
+      }))
+    };
+  }
+
+  const episodeById = new Map(
+    parsed.episodes.map(episode => [episodeId(episode), episode])
+  );
+  const items = expected.map(id => {
+    const episode = episodeById.get(id);
+    const incomingEditorial = editorialFields(episode, language);
+    const incomingShared = sharedFields(episode);
+    const existing = existingDocuments[id] || null;
+    if (!existing) {
+      return {
+        id,
+        action: 'CREATE',
+        language,
+        sourceChecksum,
+        writeFields: {
+          ...incomingEditorial,
+          ...incomingShared,
+          mode: 'hybrid',
+          published: false
+        },
+        issues: []
+      };
+    }
+
+    const issues = [];
+    const fields = existing.fields || {};
+    if (fields.mode !== 'hybrid') {
+      issues.push('mode existente diverge de hybrid.');
+    }
+    if (fields.published !== false) {
+      issues.push('published existente deve permanecer false durante a importação.');
+    }
+    for (const [fieldName, incomingValue] of Object.entries(incomingShared)) {
+      if (!Object.hasOwn(fields, fieldName)) {
+        issues.push(`${fieldName} compartilhado está ausente.`);
+      } else if (!materiallyEqual(fields[fieldName], incomingValue)) {
+        issues.push(`${fieldName} compartilhado diverge da fonte.`);
+      }
+    }
+
+    const writeFields = {};
+    for (const [fieldName, incomingValue] of Object.entries(incomingEditorial)) {
+      if (!Object.hasOwn(fields, fieldName)) {
+        writeFields[fieldName] = incomingValue;
+      } else if (fields[fieldName] !== incomingValue) {
+        issues.push(`${fieldName} existente diverge da fonte.`);
+      }
+    }
+    if (!existing.updateTime) {
+      issues.push('updateTime ausente para precondition segura.');
+    }
+
+    return {
+      id,
+      action: issues.length
+        ? 'CONFLICT'
+        : Object.keys(writeFields).length
+          ? language === 'pt-BR' ? 'MERGE_PT' : 'MERGE_EN'
+          : 'UNCHANGED',
+      language,
+      sourceChecksum,
+      updateTime: existing.updateTime || '',
+      writeFields: issues.length ? {} : writeFields,
+      issues
+    };
+  });
+
+  return {
+    collection: COLLECTION,
+    season: parsed.season,
+    language,
+    sourceChecksum,
+    items
+  };
+}
+
+function writePlanHasBlocking(plan) {
+  return plan.items.some(item =>
+    item.action === 'BLOCKED' || item.action === 'CONFLICT'
+  );
+}
+
+function writePlanCount(plan) {
+  return plan.items.filter(item =>
+    ['CREATE', 'MERGE_PT', 'MERGE_EN'].includes(item.action)
+  ).length;
+}
+
+function publicWritePlan(plan) {
+  return plan.items.map(item => ({
+    id: item.id,
+    action: item.action,
+    language: item.language,
+    fields: Object.keys(item.writeFields),
+    issues: item.issues
+  }));
+}
+
+function dryRunContract(plan, blocked = false) {
+  return {
+    catalog: blocked
+      ? 'BLOCKED'
+      : `WOULD WRITE ${writePlanCount(plan)} EPISODES TO ${COLLECTION}`,
+    initialPublicState: 'published = false',
+    firestoreWrites: 0,
+    writePlan: publicWritePlan(plan)
+  };
+}
+
+function firestoreDocumentName(id) {
+  return `projects/${PROJECT_ID}/databases/(default)/documents/${COLLECTION}/${id}`;
+}
+
+function firestoreWritesForPlan(plan) {
+  if (writePlanHasBlocking(plan)) {
+    throw new GlobalSagasError(
+      409,
+      'WRITE_PLAN_BLOCKED',
+      'O plano contém conflitos ou documentos bloqueados.'
+    );
+  }
+  return plan.items.flatMap(item => {
+    if (item.action === 'UNCHANGED') return [];
+    const fields = Object.fromEntries(
+      Object.entries(item.writeFields)
+        .map(([key, value]) => [key, firestoreValue(value)])
+    );
+    if (item.action === 'CREATE') {
+      return [{
+        update: { name: firestoreDocumentName(item.id), fields },
+        currentDocument: { exists: false }
+      }];
+    }
+    const fieldPaths = Object.keys(item.writeFields);
+    if (!fieldPaths.length) return [];
+    return [{
+      update: { name: firestoreDocumentName(item.id), fields },
+      updateMask: { fieldPaths },
+      currentDocument: { updateTime: item.updateTime }
+    }];
+  });
 }
 
 function dryRunDigest(value, key) {
@@ -1070,58 +1319,120 @@ async function pairingStatus(canonical) {
   return sourcePairingStatus(canonical, await listDocuments());
 }
 
-async function createEditorialDraft(draft) {
+async function readEpisodeDocuments(ids) {
   const token = await firestoreToken();
-  const documentId = importDocumentId(draft.canonicalKey, draft.language);
-  const url = new URL(
-    `https://firestore.googleapis.com/v1/projects/${encodeURIComponent(PROJECT_ID)}/databases/(default)/documents/${COLLECTION}`
-  );
-  url.searchParams.set('documentId', documentId);
-  const fields = Object.fromEntries(
-    Object.entries(draft).map(([key, value]) => [key, firestoreValue(value)])
-  );
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ fields })
-  });
-  if (response.status === 409) {
-    throw new GlobalSagasError(
-      409,
-      'EDITORIAL_DRAFT_ALREADY_EXISTS',
-      'Esta edição/idioma já existe no catálogo editorial privado. Nenhum dado foi sobrescrito.'
+  const entries = await Promise.all(ids.map(async id => {
+    const response = await fetch(
+      `https://firestore.googleapis.com/v1/${firestoreDocumentName(id)}`,
+      { headers: { Authorization: `Bearer ${token}` } }
     );
-  }
-  if (!response.ok) {
-    throw new GlobalSagasError(
-      502,
-      'EDITORIAL_DRAFT_CREATE_FAILED',
-      'O Firestore recusou a criação do rascunho editorial privado.'
-    );
-  }
-  return documentId;
+    if (response.status === 404) return [id, null];
+    if (!response.ok) {
+      throw new GlobalSagasError(
+        502,
+        'FIRESTORE_PREFLIGHT_FAILED',
+        `Não foi possível verificar ${COLLECTION}/${id}.`
+      );
+    }
+    const document = await response.json();
+    return [id, {
+      id,
+      updateTime: document.updateTime || '',
+      fields: Object.fromEntries(
+        Object.entries(document.fields || {})
+          .map(([key, value]) => [key, parseFirestoreValue(value)])
+      )
+    }];
+  }));
+  return Object.fromEntries(entries);
 }
 
-function dryRunIdentity(result, language) {
+async function preflightWritePlan(parsed, language, sourceChecksum) {
+  const initialPlan = createEpisodeWritePlan(
+    parsed,
+    language,
+    sourceChecksum,
+    {}
+  );
+  if (writePlanHasBlocking(initialPlan)) return initialPlan;
+  const existing = await readEpisodeDocuments(expectedEpisodeIds());
+  return createEpisodeWritePlan(parsed, language, sourceChecksum, existing);
+}
+
+function validationWithWritePlan(validation, plan) {
+  const planFailures = plan.items
+    .filter(item => item.action === 'BLOCKED' || item.action === 'CONFLICT')
+    .map(item => `${item.id}: ${item.action} — ${item.issues.join(' ')}`);
+  const blocked = [...validation.blocked, ...planFailures];
+  return {
+    status: blocked.length
+      ? 'BLOCKED'
+      : validation.warnings.length ? 'WARNING' : 'VALID',
+    blocked,
+    warnings: validation.warnings
+  };
+}
+
+function writePlanFingerprint(plan) {
+  return createHash('sha256')
+    .update(JSON.stringify(plan.items.map(item => ({
+      id: item.id,
+      action: item.action,
+      updateTime: item.updateTime || '',
+      writeFields: item.writeFields,
+      issues: item.issues
+    }))))
+    .digest('base64url');
+}
+
+async function commitEpisodeWrites(plan) {
+  const writes = firestoreWritesForPlan(plan);
+  if (!writes.length) return [];
+  const token = await firestoreToken();
+  const response = await fetch(
+    `https://firestore.googleapis.com/v1/projects/${encodeURIComponent(PROJECT_ID)}/databases/(default)/documents:commit`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ writes })
+    },
+  );
+  if (!response.ok) {
+    throw new GlobalSagasError(
+      response.status === 409 ? 409 : 502,
+      'EPISODE_COMMIT_FAILED',
+      'O Firestore recusou o commit atômico. Execute o DRY RUN novamente; nenhum plano deve ser reutilizado.'
+    );
+  }
+  return plan.items
+    .filter(item => ['CREATE', 'MERGE_PT', 'MERGE_EN'].includes(item.action))
+    .map(item => item.id);
+}
+
+function dryRunIdentity(result, language, plan) {
   return {
     documentId: result.source.documentId,
     modifiedTime: result.source.modifiedTime,
     checksum: result.checksum,
     canonicalKey: result.parsed.canonicalKey,
-    language
+    language,
+    writePlanFingerprint: writePlanFingerprint(plan)
   };
 }
 
 export {
   COLLECTION,
+  DRIVE_SCOPE,
   SOURCE_LOCATION,
   canonicalKey,
+  createEpisodeWritePlan,
   docxBlocks,
-  editorialDraft,
-  importDocumentId,
+  dryRunContract,
+  expectedEpisodeIds,
+  firestoreWritesForPlan,
   isLegacyDoc,
   parseEditorialBlocks,
   sourcePairingStatus,
@@ -1177,15 +1488,28 @@ export default async function handler(req, res) {
           pairing: { 'pt-BR': 'MISSING', 'en-US': 'MISSING' },
           dryRunToken: null,
           catalog: 'BLOCKED',
-          publication: 'NO'
+          publication: 'NO',
+          initialPublicState: 'published = false',
+          firestoreWrites: 0,
+          writePlan: []
         });
       }
-      const validation = validateParsed(
+      const baseValidation = validateParsed(
         result.parsed,
         language,
         result.parserWarnings
       );
-      const identity = dryRunIdentity(result, language);
+      const writePlan = await preflightWritePlan(
+        result.parsed,
+        language,
+        result.checksum
+      );
+      const validation = validationWithWritePlan(baseValidation, writePlan);
+      const identity = dryRunIdentity(result, language, writePlan);
+      const contract = dryRunContract(
+        writePlan,
+        validation.status === 'BLOCKED'
+      );
       return res.status(200).json({
         source: result.source,
         parsed: { ...result.parsed, language },
@@ -1194,7 +1518,7 @@ export default async function handler(req, res) {
         dryRunToken: validation.status === 'BLOCKED'
           ? null
           : makeDryRunToken(identity, key),
-        catalog: validation.status === 'BLOCKED' ? 'BLOCKED' : 'WOULD CREATE PRIVATE DRAFT',
+        ...contract,
         publication: 'NO'
       });
     }
@@ -1209,12 +1533,18 @@ export default async function handler(req, res) {
           'Execute o DRY RUN novamente.'
         );
       }
-      const validation = validateParsed(
+      const baseValidation = validateParsed(
         result.parsed,
         language,
         result.parserWarnings
       );
-      const identity = dryRunIdentity(result, language);
+      const writePlan = await preflightWritePlan(
+        result.parsed,
+        language,
+        result.checksum
+      );
+      const validation = validationWithWritePlan(baseValidation, writePlan);
+      const identity = dryRunIdentity(result, language, writePlan);
       if (
         validation.status === 'BLOCKED' ||
         !verifyDryRunToken(input.dryRunToken, identity, key)
@@ -1225,12 +1555,14 @@ export default async function handler(req, res) {
           'O documento mudou ou o DRY RUN expirou. Execute o DRY RUN novamente.'
         );
       }
-      const draft = editorialDraft(result.parsed, language, result.source);
-      const documentId = await createEditorialDraft(draft);
-      return res.status(201).json({
-        documentId,
-        catalogStatus: 'DRAFT IMPORTED',
+      const writtenDocumentIds = await commitEpisodeWrites(writePlan);
+      return res.status(writtenDocumentIds.length ? 201 : 200).json({
+        documentIds: expectedEpisodeIds(),
+        writtenDocumentIds,
+        episodeCount: writtenDocumentIds.length,
+        catalogStatus: `${writtenDocumentIds.length} EPISODES WRITTEN TO ${COLLECTION}`,
         publication: 'NO',
+        initialPublicState: 'published = false',
         sourceMutated: false,
         pairing: await pairingStatus(result.parsed.canonicalKey)
       });

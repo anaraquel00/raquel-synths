@@ -1,12 +1,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import JSZip from 'jszip';
 import {
   COLLECTION,
+  DRIVE_SCOPE,
   canonicalKey,
+  createEpisodeWritePlan,
   docxBlocks,
-  editorialDraft,
-  importDocumentId,
+  dryRunContract,
+  expectedEpisodeIds,
+  firestoreWritesForPlan,
   parseEditorialBlocks,
   sourcePairingStatus,
   supportFor,
@@ -90,6 +94,49 @@ const sourceBlocks = [
   { tag: 'p', text: 'SUBTÍTULO: Retorno de Jonah' },
   { tag: 'p', text: 'Outro corpo editorial sem reescrita.' }
 ];
+
+function seasonTwo(language = 'pt-BR') {
+  return {
+    saga: 'GLITCH IN THE MATRIX',
+    season: 2,
+    edition: "JONAH'S LEGACY",
+    language,
+    canonicalKey: 'glitch-in-the-matrix-s2-jonahs-legacy',
+    preamble: [],
+    episodes: expectedEpisodeIds().map((id, index) => ({
+      number: index + 1,
+      episodeId: id,
+      slug: id,
+      category: language === 'pt-BR' ? 'Temporada 2' : 'Season 2',
+      releaseDate: `2027-01-${String(index + 10).padStart(2, '0')}`,
+      image: `https://raquelsynths.com/${id}.jpg`,
+      title: `${language === 'pt-BR' ? 'Episódio' : 'Episode'} ${index + 1}`,
+      description: `${language === 'pt-BR' ? 'Descrição' : 'Description'} ${index + 1}`,
+      content: `<p>${language} content ${index + 1}</p>`,
+      subtitle: '',
+      blocks: [{ type: 'body', content: `${language} content ${index + 1}` }]
+    }))
+  };
+}
+
+function existingDocuments(parsed, language) {
+  return Object.fromEntries(parsed.episodes.map((episode, index) => {
+    const suffix = language === 'en-US' ? '_en' : '';
+    return [episode.episodeId, {
+      updateTime: `2026-09-${String(index + 1).padStart(2, '0')}T12:00:00.000Z`,
+      fields: {
+        [`title${suffix}`]: episode.title,
+        [`category${suffix}`]: episode.category,
+        [`description${suffix}`]: episode.description,
+        [`content${suffix}`]: episode.content,
+        image: episode.image,
+        releaseDate: episode.releaseDate,
+        mode: 'hybrid',
+        published: false
+      }
+    }];
+  }));
+}
 
 test('parser preserva metadados, ordem, conteúdo e tipos editoriais', () => {
   const parsed = parseEditorialBlocks(sourceBlocks, 'jonah-season-2-pt-BR.docx');
@@ -236,22 +283,112 @@ test('validação bloqueia idioma divergente e slugs duplicados', () => {
   assert.match(validation.blocked.join(' '), /duplicado/);
 });
 
-test('rascunho editorial é privado, não publicado e separado do catálogo público', () => {
-  const parsed = parseEditorialBlocks(sourceBlocks, 'source.docx');
-  const source = {
-    documentId: 'drive_document_123',
-    name: 'jonah-season-2-pt-BR.docx',
-    modifiedTime: '2026-09-29T10:00:00.000Z'
-  };
-  const draft = editorialDraft(parsed, 'pt-BR', source);
+test('PT cria exatamente oito documentos canônicos não publicados em global-sagas', () => {
+  const parsed = seasonTwo('pt-BR');
+  const plan = createEpisodeWritePlan(parsed, 'pt-BR', 'checksum-pt', {});
+  const writes = firestoreWritesForPlan(plan);
+  const contract = dryRunContract(plan);
 
-  assert.equal(COLLECTION, 'editorial-global-saga-imports');
-  assert.equal(draft.status, 'draft');
-  assert.equal(draft.published, false);
-  assert.equal(draft.publication, 'NO');
-  assert.equal(draft.source.provider, 'google-drive');
-  assert.equal(importDocumentId(parsed.canonicalKey, 'pt-BR'), `${parsed.canonicalKey}--pt-br`);
-  assert.equal(canonicalKey(parsed), parsed.canonicalKey);
+  assert.equal(COLLECTION, 'global-sagas');
+  assert.deepEqual(expectedEpisodeIds(), [
+    's2-e1', 's2-e2', 's2-e3', 's2-e4',
+    's2-e5', 's2-e6', 's2-e7', 's2-e8'
+  ]);
+  assert.deepEqual(plan.items.map(item => item.id), expectedEpisodeIds());
+  assert.ok(plan.items.every(item => item.action === 'CREATE'));
+  assert.ok(plan.items.every(item => item.sourceChecksum === 'checksum-pt'));
+  assert.equal(writes.length, 8);
+  assert.ok(writes.every(write => write.currentDocument.exists === false));
+  assert.ok(writes.every(write => /\/global-sagas\/s2-e[1-8]$/.test(write.update.name)));
+  assert.equal(writes[0].update.fields.title.stringValue, 'Episódio 1');
+  assert.equal(writes[0].update.fields.category.stringValue, 'Temporada 2');
+  assert.equal(writes[0].update.fields.description.stringValue, 'Descrição 1');
+  assert.equal(writes[0].update.fields.content.stringValue, '<p>pt-BR content 1</p>');
+  assert.equal(writes[0].update.fields.mode.stringValue, 'hybrid');
+  assert.equal(writes[0].update.fields.published.booleanValue, false);
+  assert.equal(contract.firestoreWrites, 0);
+  assert.equal(contract.catalog, 'WOULD WRITE 8 EPISODES TO global-sagas');
+  assert.equal(contract.initialPublicState, 'published = false');
+});
+
+test('EN usa campos _en e merge preserva todos os campos PT', () => {
+  const pt = seasonTwo('pt-BR');
+  const en = seasonTwo('en-US');
+  const existing = existingDocuments(pt, 'pt-BR');
+  const plan = createEpisodeWritePlan(en, 'en-US', 'checksum-en', existing);
+  const writes = firestoreWritesForPlan(plan);
+
+  assert.ok(plan.items.every(item => item.action === 'MERGE_EN'));
+  assert.deepEqual(Object.keys(plan.items[0].writeFields).sort(), [
+    'category_en', 'content_en', 'description_en', 'title_en'
+  ]);
+  assert.deepEqual(writes[0].updateMask.fieldPaths.sort(), [
+    'category_en', 'content_en', 'description_en', 'title_en'
+  ]);
+  assert.equal(Object.hasOwn(writes[0].update.fields, 'title'), false);
+  assert.equal(Object.hasOwn(writes[0].update.fields, 'content'), false);
+  assert.equal(writes[0].currentDocument.updateTime, existing['s2-e1'].updateTime);
+});
+
+test('PT merge preserva EN e não inclui campos _en no field mask', () => {
+  const pt = seasonTwo('pt-BR');
+  const en = seasonTwo('en-US');
+  const existing = existingDocuments(en, 'en-US');
+  const plan = createEpisodeWritePlan(pt, 'pt-BR', 'checksum-pt', existing);
+  const writes = firestoreWritesForPlan(plan);
+
+  assert.ok(plan.items.every(item => item.action === 'MERGE_PT'));
+  assert.deepEqual(writes[0].updateMask.fieldPaths.sort(), [
+    'category', 'content', 'description', 'title'
+  ]);
+  assert.equal(writes[0].updateMask.fieldPaths.some(field => field.endsWith('_en')), false);
+});
+
+test('reimport idêntico é UNCHANGED e divergência compartilhada vira CONFLICT', () => {
+  const pt = seasonTwo('pt-BR');
+  const existing = existingDocuments(pt, 'pt-BR');
+  const unchanged = createEpisodeWritePlan(pt, 'pt-BR', 'checksum-pt', existing);
+  assert.ok(unchanged.items.every(item => item.action === 'UNCHANGED'));
+  assert.deepEqual(firestoreWritesForPlan(unchanged), []);
+
+  existing['s2-e4'].fields.image = 'https://raquelsynths.com/divergent.jpg';
+  const conflict = createEpisodeWritePlan(pt, 'pt-BR', 'checksum-pt', existing);
+  assert.equal(conflict.items.find(item => item.id === 's2-e4').action, 'CONFLICT');
+  assert.throws(() => firestoreWritesForPlan(conflict), /plano contém conflitos/i);
+});
+
+test('Season 1 e documento agregado são bloqueados pelo plano', () => {
+  const parsed = seasonTwo('pt-BR');
+  parsed.season = 1;
+  parsed.episodes = parsed.episodes.map((episode, index) => ({
+    ...episode,
+    number: index + 1,
+    episodeId: `s1-e${index + 1}`,
+    slug: `s1-e${index + 1}`
+  }));
+  const plan = createEpisodeWritePlan(parsed, 'pt-BR', 'checksum', {});
+
+  assert.ok(plan.items.every(item => item.action === 'BLOCKED'));
+  assert.ok(plan.items.every(item => item.id.startsWith('s2-e')));
+  assert.equal(plan.items.some(item => item.id.includes('--pt')), false);
+});
+
+test('coleção antiga não é alvo e leitores públicos mantêm o contrato global-sagas', () => {
+  const importer = readFileSync(new URL('../api/admin/global-sagas.js', import.meta.url), 'utf8');
+  const contentService = readFileSync(new URL('../src/app/services/content.service.ts', import.meta.url), 'utf8');
+  const routes = readFileSync(new URL('../src/app/app.routes.ts', import.meta.url), 'utf8');
+  const sitemap = readFileSync(new URL('../api/sitemap.js', import.meta.url), 'utf8');
+  const retiredCollection = ['editorial', 'global', 'saga', 'imports'].join('-');
+
+  assert.equal(importer.includes(retiredCollection), false);
+  assert.equal(DRIVE_SCOPE, 'https://www.googleapis.com/auth/drive.readonly');
+  assert.ok(contentService.includes("'global-sagas'"));
+  assert.ok(contentService.includes('episode.published !== true'));
+  assert.ok(contentService.includes('releaseDate'));
+  assert.ok(routes.includes("path: 'hybrid-saga'"));
+  assert.ok(routes.includes("path: 'hybrid-reader/:id'"));
+  assert.ok(sitemap.includes("fetchCollection('global-sagas')"));
+  assert.ok(sitemap.includes('fields?.published?.booleanValue === true'));
 });
 
 test('formato .doc legado é explicitamente bloqueado', () => {
