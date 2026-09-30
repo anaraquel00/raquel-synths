@@ -186,7 +186,8 @@ export class SocialPublishingAdminComponent implements OnInit {
       destinationUrl: source.musicDeepLinkUrl || source.canonicalUrl,
       utmCampaign: '',
       utmContent: '',
-      destinations: []
+      destinations: [],
+      status: 'DRAFT'
     };
   }
 
