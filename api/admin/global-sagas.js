@@ -1140,7 +1140,7 @@ function createEpisodeWritePlan(
           ...incomingEditorial,
           ...incomingShared,
           mode: 'hybrid',
-          published: false
+          published: true
         },
         issues: []
       };
@@ -1151,8 +1151,8 @@ function createEpisodeWritePlan(
     if (fields.mode !== 'hybrid') {
       issues.push('mode existente diverge de hybrid.');
     }
-    if (fields.published !== false) {
-      issues.push('published existente deve permanecer false durante a importação.');
+    if (fields.published !== true) {
+      issues.push('published existente deve permanecer true durante a importação.');
     }
     for (const [fieldName, incomingValue] of Object.entries(incomingShared)) {
       if (!Object.hasOwn(fields, fieldName)) {
@@ -1225,7 +1225,9 @@ function dryRunContract(plan, blocked = false) {
     catalog: blocked
       ? 'BLOCKED'
       : `WOULD WRITE ${writePlanCount(plan)} EPISODES TO ${COLLECTION}`,
-    initialPublicState: 'published = false',
+    publicationApproved: true,
+    initialPublicState: 'published = true',
+    publicReleaseGate: 'releaseDate',
     firestoreWrites: 0,
     writePlan: publicWritePlan(plan)
   };
@@ -1488,8 +1490,9 @@ export default async function handler(req, res) {
           pairing: { 'pt-BR': 'MISSING', 'en-US': 'MISSING' },
           dryRunToken: null,
           catalog: 'BLOCKED',
-          publication: 'NO',
-          initialPublicState: 'published = false',
+          publicationApproved: true,
+          initialPublicState: 'published = true',
+          publicReleaseGate: 'releaseDate',
           firestoreWrites: 0,
           writePlan: []
         });
@@ -1518,8 +1521,7 @@ export default async function handler(req, res) {
         dryRunToken: validation.status === 'BLOCKED'
           ? null
           : makeDryRunToken(identity, key),
-        ...contract,
-        publication: 'NO'
+        ...contract
       });
     }
 
@@ -1561,8 +1563,9 @@ export default async function handler(req, res) {
         writtenDocumentIds,
         episodeCount: writtenDocumentIds.length,
         catalogStatus: `${writtenDocumentIds.length} EPISODES WRITTEN TO ${COLLECTION}`,
-        publication: 'NO',
-        initialPublicState: 'published = false',
+        publicationApproved: true,
+        initialPublicState: 'published = true',
+        publicReleaseGate: 'releaseDate',
         sourceMutated: false,
         pairing: await pairingStatus(result.parsed.canonicalKey)
       });

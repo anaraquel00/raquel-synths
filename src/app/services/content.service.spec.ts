@@ -157,3 +157,88 @@ describe('ContentService lore episode transfer state', () => {
     expect(consoleWarn).toHaveBeenCalled();
   });
 });
+
+describe('ContentService global saga publication gate', () => {
+  const collectionEndpoint =
+    'https://firestore.googleapis.com/v1/projects/' +
+    'raquel-synths-platform/databases/(default)/documents/global-sagas?pageSize=300';
+  const documentEndpoint = (id: string): string =>
+    'https://firestore.googleapis.com/v1/projects/' +
+    `raquel-synths-platform/databases/(default)/documents/global-sagas/${id}`;
+
+  const firestoreEpisode = (id: string, releaseDate: string) => ({
+    name:
+      'projects/raquel-synths-platform/databases/(default)/documents/' +
+      `global-sagas/${id}`,
+    fields: {
+      title: { stringValue: `Episode ${id}` },
+      category: { stringValue: 'Season 2' },
+      description: { stringValue: 'Canonical episode.' },
+      content: { stringValue: '<p>Canonical content.</p>' },
+      image: { stringValue: 'https://raquelsynths.com/episode.jpg' },
+      mode: { stringValue: 'hybrid' },
+      published: { booleanValue: true },
+      releaseDate: { stringValue: releaseDate }
+    }
+  });
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        ContentService,
+        TransferState,
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: PLATFORM_ID, useValue: 'server' },
+        { provide: Firestore, useValue: {} }
+      ]
+    });
+  });
+
+  afterEach(() => {
+    TestBed.inject(HttpTestingController).verify();
+    TestBed.resetTestingModule();
+  });
+
+  function fixPublicationClock(service: ContentService): void {
+    (service as unknown as { HYBRID_PREVIEW_NOW: string | null })
+      .HYBRID_PREVIEW_NOW = '2026-09-30T12:00:00-03:00';
+  }
+
+  it('bloqueia episódio futuro aprovado na listagem SSR e libera episódio lançado', () => {
+    const service = TestBed.inject(ContentService);
+    fixPublicationClock(service);
+    let result: LoreEpisode[] | undefined;
+
+    service.getGlobalSagas().subscribe(episodes => result = episodes);
+
+    TestBed.inject(HttpTestingController).expectOne(collectionEndpoint).flush({
+      documents: [
+        firestoreEpisode('s2-e1', '2027-01-10'),
+        firestoreEpisode('s1-e10', '2026-09-01')
+      ]
+    });
+
+    expect(result?.map(episode => episode.id)).toEqual(['s1-e10']);
+  });
+
+  it('bloqueia acesso direto SSR antes da releaseDate e libera após o gate', () => {
+    const service = TestBed.inject(ContentService);
+    fixPublicationClock(service);
+    let futureResult: LoreEpisode | null | undefined;
+    let releasedResult: LoreEpisode | null | undefined;
+
+    service.getGlobalSagaById('s2-e1').subscribe(episode => futureResult = episode);
+    TestBed.inject(HttpTestingController)
+      .expectOne(documentEndpoint('s2-e1'))
+      .flush(firestoreEpisode('s2-e1', '2027-01-10'));
+
+    service.getGlobalSagaById('s1-e10').subscribe(episode => releasedResult = episode);
+    TestBed.inject(HttpTestingController)
+      .expectOne(documentEndpoint('s1-e10'))
+      .flush(firestoreEpisode('s1-e10', '2026-09-01'));
+
+    expect(futureResult).toBeNull();
+    expect(releasedResult?.id).toBe('s1-e10');
+  });
+});

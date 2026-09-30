@@ -132,7 +132,7 @@ function existingDocuments(parsed, language) {
         image: episode.image,
         releaseDate: episode.releaseDate,
         mode: 'hybrid',
-        published: false
+        published: true
       }
     }];
   }));
@@ -283,7 +283,7 @@ test('validação bloqueia idioma divergente e slugs duplicados', () => {
   assert.match(validation.blocked.join(' '), /duplicado/);
 });
 
-test('PT cria exatamente oito documentos canônicos não publicados em global-sagas', () => {
+test('PT cria exatamente oito documentos canônicos aprovados com gate por releaseDate', () => {
   const parsed = seasonTwo('pt-BR');
   const plan = createEpisodeWritePlan(parsed, 'pt-BR', 'checksum-pt', {});
   const writes = firestoreWritesForPlan(plan);
@@ -305,10 +305,12 @@ test('PT cria exatamente oito documentos canônicos não publicados em global-sa
   assert.equal(writes[0].update.fields.description.stringValue, 'Descrição 1');
   assert.equal(writes[0].update.fields.content.stringValue, '<p>pt-BR content 1</p>');
   assert.equal(writes[0].update.fields.mode.stringValue, 'hybrid');
-  assert.equal(writes[0].update.fields.published.booleanValue, false);
+  assert.equal(writes[0].update.fields.published.booleanValue, true);
   assert.equal(contract.firestoreWrites, 0);
   assert.equal(contract.catalog, 'WOULD WRITE 8 EPISODES TO global-sagas');
-  assert.equal(contract.initialPublicState, 'published = false');
+  assert.equal(contract.publicationApproved, true);
+  assert.equal(contract.initialPublicState, 'published = true');
+  assert.equal(contract.publicReleaseGate, 'releaseDate');
 });
 
 test('EN usa campos _en e merge preserva todos os campos PT', () => {
@@ -327,6 +329,10 @@ test('EN usa campos _en e merge preserva todos os campos PT', () => {
   ]);
   assert.equal(Object.hasOwn(writes[0].update.fields, 'title'), false);
   assert.equal(Object.hasOwn(writes[0].update.fields, 'content'), false);
+  assert.equal(Object.hasOwn(writes[0].update.fields, 'releaseDate'), false);
+  assert.equal(Object.hasOwn(writes[0].update.fields, 'published'), false);
+  assert.equal(existing['s2-e1'].fields.published, true);
+  assert.equal(existing['s2-e1'].fields.releaseDate, pt.episodes[0].releaseDate);
   assert.equal(writes[0].currentDocument.updateTime, existing['s2-e1'].updateTime);
 });
 
@@ -342,6 +348,22 @@ test('PT merge preserva EN e não inclui campos _en no field mask', () => {
     'category', 'content', 'description', 'title'
   ]);
   assert.equal(writes[0].updateMask.fieldPaths.some(field => field.endsWith('_en')), false);
+  assert.equal(writes[0].updateMask.fieldPaths.includes('releaseDate'), false);
+  assert.equal(writes[0].updateMask.fieldPaths.includes('published'), false);
+  assert.equal(existing['s2-e1'].fields.published, true);
+  assert.equal(existing['s2-e1'].fields.releaseDate, en.episodes[0].releaseDate);
+});
+
+test('documento existente com published=false conflita com o contrato canônico aprovado', () => {
+  const pt = seasonTwo('pt-BR');
+  const existing = existingDocuments(pt, 'pt-BR');
+  existing['s2-e1'].fields.published = false;
+
+  const plan = createEpisodeWritePlan(pt, 'pt-BR', 'checksum-pt', existing);
+  const episode = plan.items.find(item => item.id === 's2-e1');
+
+  assert.equal(episode.action, 'CONFLICT');
+  assert.match(episode.issues.join(' '), /published existente deve permanecer true/);
 });
 
 test('reimport idêntico é UNCHANGED e divergência compartilhada vira CONFLICT', () => {
@@ -385,6 +407,8 @@ test('coleção antiga não é alvo e leitores públicos mantêm o contrato glob
   assert.ok(contentService.includes("'global-sagas'"));
   assert.ok(contentService.includes('episode.published !== true'));
   assert.ok(contentService.includes('releaseDate'));
+  assert.ok(contentService.includes("where('releaseDate', '<=', this.getHybridNowIso())"));
+  assert.ok(contentService.includes("where('published', '==', true)"));
   assert.ok(routes.includes("path: 'hybrid-saga'"));
   assert.ok(routes.includes("path: 'hybrid-reader/:id'"));
   assert.ok(sitemap.includes("fetchCollection('global-sagas')"));

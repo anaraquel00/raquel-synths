@@ -47,7 +47,13 @@ const collections = {
     }
   ],
   'lore-jonah': [publicEpisode('lore-jonah', 'jonah-publico', '2026-09-17T08:00:00Z')],
-  'global-sagas': [publicEpisode('global-sagas', 'hybrid-publico', '2026-09-16T09:00:00Z')],
+  'global-sagas': [
+    publicEpisode('global-sagas', 'hybrid-publico', '2026-09-16T09:00:00Z'),
+    {
+      ...publicEpisode('global-sagas', 'hybrid-futuro', '2026-09-16T09:00:00Z'),
+      fields: { published: { booleanValue: true }, releaseDate: { stringValue: '2999-01-01' } }
+    }
+  ],
   logs: [
     substantiveLog('log-publico', '2026-09-15T10:00:00Z'),
     substantiveLog('system-archive', '2026-09-20T10:00:00Z'),
@@ -102,7 +108,17 @@ test('gera XML válido, URLs únicas e exclui rotas/conteúdo não indexáveis',
   assert.ok(locs.every((loc) => !loc.includes('/admin') && !loc.includes('/diagnostic')));
   assert.ok(locs.every((loc) => !loc.includes('/log-reader/system-archive')));
   assert.ok(locs.every((loc) => !loc.includes('futuro') && !loc.includes('nao-publicado')));
+  assert.ok(locs.includes('https://raquelsynths.com/hybrid-reader/hybrid-publico'));
+  assert.equal(locs.includes('https://raquelsynths.com/hybrid-reader/hybrid-futuro'), false);
   assert.equal(headers.get('cache-control'), 'public, max-age=300, s-maxage=3600, stale-while-revalidate=300');
+});
+
+test('mantém global saga futura aprovada fora do sitemap até a releaseDate', async () => {
+  const { body } = await renderSitemap();
+  const locs = parseEntries(body).map(({ loc }) => loc);
+
+  assert.ok(locs.includes('https://raquelsynths.com/hybrid-reader/hybrid-publico'));
+  assert.equal(locs.includes('https://raquelsynths.com/hybrid-reader/hybrid-futuro'), false);
 });
 
 test('emite lastmod estático somente para mudanças comprovadas', async () => {

@@ -31,13 +31,13 @@ describe('AdminModuleComponent / Sagas Globais', () => {
     fixture.detectChanges();
   });
 
-  it('exibe o estado acionável sem contrato de publicação', () => {
+  it('exibe o estado acionável com releaseDate como gate público', () => {
     const text = fixture.nativeElement.textContent as string;
     const button = fixture.nativeElement.querySelector('.primary-action') as HTMLButtonElement;
 
     expect(text).toContain('READY FOR SOURCE');
-    expect(text).toContain('NO PUBLICATION');
-    expect(text).not.toContain('Published');
+    expect(text).toContain('RELEASEDATE GATE');
+    expect(text).toContain('PUBLISHED = TRUE');
     expect(button.textContent).toContain('ADICIONAR DOCUMENTO');
   });
 
@@ -87,8 +87,9 @@ describe('AdminModuleComponent / Sagas Globais', () => {
       pairing: { 'pt-BR': 'MISSING', 'en-US': 'MISSING' },
       dryRunToken: 'signed-token',
       catalog: 'WOULD WRITE 8 EPISODES TO global-sagas',
-      publication: 'NO',
-      initialPublicState: 'published = false',
+      publicationApproved: true,
+      initialPublicState: 'published = true',
+      publicReleaseGate: 'releaseDate',
       firestoreWrites: 0,
       writePlan: Array.from({ length: 8 }, (_, index) => ({
         id: `s2-e${index + 1}`,
@@ -170,13 +171,14 @@ describe('AdminModuleComponent / Sagas Globais', () => {
 
     expect(text).toContain('DESTINO global-sagas');
     expect(text).toContain('EPISÓDIOS 8');
-    expect(text).toContain('PUBLICAÇÃO NÃO');
-    expect(text).toContain('published = false');
+    expect(text).toContain('APROVADO PARA PUBLICAÇÃO SIM');
+    expect(text).toContain('published = true');
+    expect(text).toContain('LIBERAÇÃO PÚBLICA controlada por releaseDate');
     expect(text).toContain('releaseDate preservadas dos documentos');
     expect(text).toContain('DRY RUN FIRESTORE WRITES 0');
     expect(text).toContain('SOURCE MUTATION NO');
     expect(confirmation.textContent).toContain(
-      'Os episódios permanecerão não publicados até autorização.'
+      'Os episódios permanecerão indisponíveis publicamente até suas respectivas datas de lançamento.'
     );
     expect(button.textContent).toContain('IMPORTAR EPISÓDIOS PARA GLOBAL-SAGAS');
     expect(button.disabled).toBeTrue();

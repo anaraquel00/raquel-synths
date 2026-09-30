@@ -46,7 +46,7 @@
       <div>
         <p class="eyebrow">RQS ADMIN / EDITORIAL</p>
         <h1>Sagas Globais</h1>
-        <p>Ingestão privada e controlada de temporadas e episódios PT/EN.</p>
+        <p>Ingestão controlada de temporadas e episódios PT/EN.</p>
       </div>
       <span class="state ready">IMPORTADOR P0</span>
     </header>
@@ -64,8 +64,9 @@
           }
         </h2>
         <p>
-          Leitura do Google Drive em modo somente leitura. Nenhuma publicação,
-          alteração ou movimentação do documento de origem será executada.
+          Leitura do Google Drive em modo somente leitura. Nenhuma alteração ou
+          movimentação do documento de origem será executada. A liberação pública
+          permanece controlada pela releaseDate.
         </p>
       </div>
       <button
@@ -275,8 +276,9 @@
         <div class="import-summary" aria-label="Resumo da importação">
           <p><strong>DESTINO</strong> global-sagas</p>
           <p><strong>EPISÓDIOS</strong> {{ result.parsed?.episodes?.length || result.writePlan.length }}</p>
-          <p><strong>PUBLICAÇÃO</strong> NÃO</p>
+          <p><strong>APROVADO PARA PUBLICAÇÃO</strong> {{ result.publicationApproved ? 'SIM' : 'NÃO' }}</p>
           <p><strong>ESTADO INICIAL</strong> {{ result.initialPublicState }}</p>
+          <p><strong>LIBERAÇÃO PÚBLICA</strong> controlada por {{ result.publicReleaseGate }}</p>
           <p><strong>DATAS</strong> releaseDate preservadas dos documentos</p>
           <p><strong>DRY RUN FIRESTORE WRITES</strong> {{ result.firestoreWrites }}</p>
           <p><strong>SOURCE MUTATION</strong> NO</p>
@@ -290,9 +292,9 @@
               [checked]="importConfirmed()"
               (change)="setImportConfirmed(ownerConfirmation.checked)"
             >
-            Confirmo a importação destes episódios para global-sagas, preservando as datas
-            definidas nos respectivos documentos. Os episódios permanecerão não publicados
-            até autorização.
+            Confirmo a importação destes episódios para global-sagas, preservando as releaseDate
+            definidas nos respectivos documentos. Os episódios permanecerão indisponíveis
+            publicamente até suas respectivas datas de lançamento.
           </label>
           <button
             type="button"
@@ -307,7 +309,7 @@
     }
 
     <p class="policy">
-      DRIVE READ ONLY · DRY RUN REQUIRED · GLOBAL-SAGAS · PUBLISHED = FALSE · NO PUBLICATION
+      DRIVE READ ONLY · DRY RUN REQUIRED · GLOBAL-SAGAS · PUBLISHED = TRUE · RELEASEDATE GATE
     </p>
   }
 

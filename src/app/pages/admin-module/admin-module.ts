@@ -69,8 +69,9 @@ interface SourceResult {
 interface DryRunResult extends SourceResult {
   dryRunToken: string | null;
   catalog: string;
-  publication: 'NO';
-  initialPublicState: 'published = false';
+  publicationApproved: true;
+  initialPublicState: 'published = true';
+  publicReleaseGate: 'releaseDate';
   firestoreWrites: 0;
   writePlan: Array<{
     id: string;
@@ -238,8 +239,9 @@ export class AdminModuleComponent implements OnInit {
         writtenDocumentIds: string[];
         episodeCount: number;
         catalogStatus: string;
-        publication: 'NO';
-        initialPublicState: 'published = false';
+        publicationApproved: true;
+        initialPublicState: 'published = true';
+        publicReleaseGate: 'releaseDate';
         sourceMutated: false;
         pairing: PairingStatus;
       }>({
@@ -252,7 +254,8 @@ export class AdminModuleComponent implements OnInit {
       this.catalogStatus.set(result.catalogStatus);
       this.message.set(
         `${result.episodeCount} episódios importados em global-sagas. ` +
-        `PUBLICATION = ${result.publication}.`
+        `APROVADO PARA PUBLICAÇÃO = ${result.publicationApproved ? 'SIM' : 'NÃO'}. ` +
+        `LIBERAÇÃO PÚBLICA = ${result.publicReleaseGate}.`
       );
       this.importConfirmed.set(false);
       this.dryRun.set(null);
