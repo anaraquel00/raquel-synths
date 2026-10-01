@@ -39,24 +39,136 @@ The site is not a single-page marketing landing page. It contains multiple produ
 ```text
 RaQuel Synths Web Platform
 │
-├── Public landing experience
-├── Discography / musical archives
-├── Transmedia saga / visual novel
-├── Lore and log readers
-├── Creator / technical portfolio
-├── Bio / music-link hub
-├── Deep-link redirects
-├── Neon Store / affiliate catalogue
-├── Contact / uplink flow
-├── Compliance content
-├── Analytics / advertising integrations
+├── Public application
+│   ├── landing / creator / bio
+│   ├── discography / musical archives
+│   ├── transmedia saga / lore / logs
+│   ├── store / affiliate catalogue
+│   └── public contact / compliance flows
+│
+├── Private RQS Admin
+│   ├── System Logs
+│   ├── Lore preview
+│   ├── Global Sagas importer
+│   ├── Streaming Importer
+│   ├── Social Publishing
+│   └── Store Catalog Updater [planned]
+│
 └── Serverless API layer
-    ├── contact
-    ├── subscribe
-    └── dynamic sitemap
+    ├── public contact / subscribe / sitemap
+    └── protected admin operations
 ```
 
 The application uses lazy-loaded standalone route components for the main experiences.
+
+
+## RQS Admin — editorial, catalog and distribution operations
+
+The repository now includes a private administrative layer under `/admin` that is being developed as the internal operations surface for the RaQuel Synths ecosystem.
+
+Its purpose is not to replace the public application. Instead, it separates **content creation, ingestion, review, catalog management and external distribution** from the public-facing reading, discovery and commerce experiences.
+
+The current admin routes include:
+
+- `/admin` — control hub;
+- `/admin/system-logs` — editorial creation and management for System Logs / channel updates;
+- `/admin/lore` — preview shell for the separate Broklin and Jonah lore sources;
+- `/admin/global-sagas` — Google Drive to Firestore ingestion workflow for Global Sagas;
+- `/admin/stream-importer` — streaming-catalog importer for the public discography;
+- `/admin/social-publishing` — downstream social publishing workflow for content already owned by the RQS ecosystem.
+
+### Module boundaries
+
+The admin architecture deliberately keeps source ownership separated by domain:
+
+```text
+RQS Admin
+│
+├── 01. System Logs
+│   └── creates and manages technical/editorial updates and channel announcements
+│
+├── 02. Lore
+│   ├── Broklin source
+│   └── Jonah source
+│      status: preview / not yet released for import or publication
+│
+├── 03. Global Sagas
+│   └── Google Drive → validation/dry run → Firestore `global-sagas`
+│
+├── 04. Streaming Importer
+│   └── streaming source data → Firestore `discography` → public `/discografia`
+│
+└── 05. Social Publishing
+    └── eligible RQS content → draft → validation → approval → Instagram/Facebook
+```
+
+This separation avoids turning the social module into a second content source. Social Publishing is a **distribution layer**, while editorial and catalog modules remain responsible for canonical content.
+
+### Global Sagas ingestion workflow
+
+The implemented Global Sagas importer reads supported source documents from a configured Google Drive folder in read-only mode.
+
+The current flow includes:
+
+1. list available source documents;
+2. load and parse a selected document;
+3. detect and confirm language;
+4. validate saga, season and episode structure;
+5. perform a required dry run;
+6. generate a Firestore write plan;
+7. require explicit owner confirmation;
+8. import episodes into the `global-sagas` collection.
+
+The source document is not mutated by the importer. Public availability remains gated by each episode's `releaseDate`.
+
+The current code also supports PT-BR / EN-US pairing status and distinguishes blocking validation errors from non-blocking observations.
+
+### Social publishing workflow
+
+The Social Publishing module works on top of eligible existing RQS content instead of accepting arbitrary standalone social posts as its primary source model.
+
+The current source types are:
+
+- `system_log`;
+- `saga_episode`;
+- `music_release`.
+
+A social package can carry:
+
+- Instagram caption;
+- Facebook caption;
+- CTA;
+- destination URL;
+- UTM campaign and content values;
+- one or more destinations;
+- image/video/reel-related asset metadata.
+
+The package lifecycle is stateful and validated before publication. The codebase includes draft validation, dry-run requirements, approval checks, source-revision checks and per-destination delivery reconciliation.
+
+Supported social destinations in the current model are:
+
+- Instagram;
+- Facebook.
+
+A package is reconciled to `PUBLISHED` only when all selected destinations have recorded successful delivery with a remote post identifier.
+
+This is best described as a **content-operations and publishing workflow**, not as a generalized social-media management SaaS.
+
+### Admin authentication and safeguards
+
+The administrative flows restore a private session before allowing actions and use CSRF validation on protected server-side operations.
+
+The Global Sagas workflow also enforces read-only Google Drive access for source retrieval and requires a dry run before import.
+
+The repository should not be interpreted as proof of a fully audited enterprise authorization model; the admin layer is a private product-specific control surface and continues to evolve.
+
+### Planned Module 06 — affiliate store catalog operations
+
+A sixth admin module is planned for the affiliate `/store` experience.
+
+Its intended responsibility is to move store catalog maintenance out of the large static `store-data.ts` workflow and toward a dedicated internal catalog-update process for affiliate content.
+
+This module is **planned, not implemented**, and should therefore be treated as roadmap rather than current functionality.
 
 ## Routing and rendering strategy
 
@@ -439,7 +551,8 @@ This command expects the built server bundle at `dist/raquel-synths/server/serve
 - Core Web Vitals/Lighthouse measurements before publishing performance claims;
 - analytics event schema documentation;
 - dependency/security scanning in CI;
-- documented content publishing workflow.
+- documented content publishing workflow — now partially addressed by the RQS Admin architecture documented above;
+- expand automated tests around admin import/publishing state transitions and external-delivery failure handling.
 
 ## Relationship to RQS Studio
 
@@ -470,4 +583,4 @@ This README follows the same evidence-first documentation policy used across the
 
 RaQuel Synths is being maintained as a creative technology platform and public product ecosystem while RQS Studio grows into a more specialized audio-software/SaaS product.
 
-The strongest technical signals in this repository are the combination of Angular application architecture, hybrid SSR/prerender routing, Firestore-backed content, dynamic sitemap generation, custom SEO infrastructure, multilingual state, analytics/affiliate workflows and serverless public APIs.
+The strongest technical signals in this repository are the combination of Angular application architecture, hybrid SSR/prerender routing, Firestore-backed content, controlled Google Drive ingestion, internal admin workflows, social-publishing state management, dynamic sitemap generation, custom SEO infrastructure, multilingual state, analytics/affiliate workflows and serverless APIs.
