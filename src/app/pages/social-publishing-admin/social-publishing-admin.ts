@@ -328,6 +328,42 @@ export class SocialPublishingAdminComponent implements OnInit {
     });
   }
 
+  async preparePublication(): Promise<void> {
+    if (!this.draft || this.draft.status !== 'DRAFT') return;
+
+    await this.run(async () => {
+      this.diagnostics.set(null);
+      this.dryRunToken.set(null);
+
+      const saved = await this.call<{ package: SocialPackageDraft }>({
+        action: 'save-draft',
+        package: this.draft
+      });
+
+      const savedPackage = saved.package;
+      this.draft = savedPackage;
+
+      const validation = await this.call<{
+        diagnostics: DryRunDiagnostics;
+        dryRunToken: string | null;
+      }>({
+        action: 'dry-run',
+        package: savedPackage
+      });
+
+      this.diagnostics.set(validation.diagnostics);
+      this.dryRunToken.set(validation.dryRunToken);
+
+      this.message.set(
+        validation.diagnostics.status === 'PASS'
+          ? 'Publicação preparada. Revise e aprove o pacote.'
+          : 'Rascunho salvo, mas a preparação encontrou pendências.'
+      );
+
+      await this.loadPackages();
+    });
+  }
+
   async approve(): Promise<void> {
     if (!this.draft?.id || this.draft.status !== 'DRAFT' || !this.dryRunToken()) return;
     await this.run(async () => {
@@ -335,7 +371,7 @@ export class SocialPublishingAdminComponent implements OnInit {
       this.draft = result.package;
       this.dryRunToken.set(null);
       this.diagnostics.set(result.diagnostics);
-      this.message.set('Pacote aprovado. Nenhuma publicação foi enviada.');
+      this.message.set('Pacote aprovado. Pronto para publicar nos destinos selecionados.');
       await this.loadPackages();
     });
   }

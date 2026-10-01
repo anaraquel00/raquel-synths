@@ -124,6 +124,175 @@ describe('SocialPublishingAdminComponent / draft editability', () => {
     }
   });
 
+  it('prepara publicação salvando o draft antes de validar e usa o pacote persistido no dry-run', async () => {
+    component.selectSource();
+    component.draft!.instagramCaption = 'Legenda Instagram';
+    component.draft!.facebookCaption = 'Legenda Facebook';
+    component.draft!.destinations = ['instagram', 'facebook'];
+
+    const savedPackage = {
+      ...component.draft!,
+      id: 'prepared-package',
+      status: 'DRAFT' as const
+    };
+
+    const actions: string[] = [];
+    let dryRunPackage: unknown = null;
+
+    spyOn<any>(component, 'loadPackages').and.resolveTo();
+    spyOn<any>(component, 'call').and.callFake(async (body: any) => {
+      actions.push(body.action);
+
+      if (body.action === 'save-draft') {
+        return { package: savedPackage };
+      }
+
+      if (body.action === 'dry-run') {
+        dryRunPackage = body.package;
+        return {
+          diagnostics: { status: 'PASS', checks: [] },
+          dryRunToken: 'prepared-token'
+        };
+      }
+
+      throw new Error(`Ação inesperada no teste: ${body.action}`);
+    });
+
+    await component.preparePublication();
+
+    expect(actions).toEqual(['save-draft', 'dry-run']);
+    expect(dryRunPackage).toBe(savedPackage);
+    expect(component.draft).toBe(savedPackage);
+    expect(component.dryRunToken()).toBe('prepared-token');
+    expect(component.diagnostics()?.status).toBe('PASS');
+    expect(component.message()).toBe(
+      'Publicação preparada. Revise e aprove o pacote.'
+    );
+  });
+
+  it('mantém Aprovar bloqueado quando a preparação encontra pendências', async () => {
+    component.selectSource();
+    component.draft!.facebookCaption = '';
+    component.draft!.destinations = ['facebook'];
+
+    const savedPackage = {
+      ...component.draft!,
+      id: 'invalid-prepared-package',
+      status: 'DRAFT' as const
+    };
+
+    spyOn<any>(component, 'loadPackages').and.resolveTo();
+    spyOn<any>(component, 'call').and.callFake(async (body: any) => {
+      if (body.action === 'save-draft') {
+        return { package: savedPackage };
+      }
+
+      if (body.action === 'dry-run') {
+        return {
+          diagnostics: {
+            status: 'FAIL',
+            checks: [{
+              code: 'FACEBOOK_CAPTION',
+              status: 'FAIL',
+              message: 'Informe a legenda do Facebook.'
+            }]
+          },
+          dryRunToken: null
+        };
+      }
+
+      throw new Error(`Ação inesperada no teste: ${body.action}`);
+    });
+
+    await component.preparePublication();
+    fixture.detectChanges();
+
+    expect(component.dryRunToken()).toBeNull();
+    expect(component.diagnostics()?.status).toBe('FAIL');
+    expect(component.message()).toBe(
+      'Rascunho salvo, mas a preparação encontrou pendências.'
+    );
+
+    const buttons = Array.from(
+      (fixture.nativeElement as HTMLElement)
+        .querySelectorAll<HTMLButtonElement>('.actions button')
+    );
+
+    const approveButton = buttons.find(
+      button => button.textContent?.trim() === 'Aprovar pacote'
+    );
+
+    expect(approveButton).toBeTruthy();
+    expect(approveButton?.disabled).toBeTrue();
+  });
+
+  it('invalida preparação anterior quando o conteúdo do pacote é alterado', () => {
+    component.selectSource();
+
+    component.diagnostics.set({
+      status: 'PASS',
+      checks: []
+    });
+    component.dryRunToken.set('token-antigo');
+
+    component.toggleDestination('facebook', true);
+
+    expect(component.draft?.destinations).toContain('facebook');
+    expect(component.dryRunToken()).toBeNull();
+    expect(component.diagnostics()).toBeNull();
+  });
+
+  it('aprova o pacote preparado, limpa o token e informa que está pronto para publicar', async () => {
+    component.selectSource();
+
+    const draftPackage = {
+      ...component.draft!,
+      id: 'approved-package',
+      status: 'DRAFT' as const,
+      destinations: ['facebook' as const],
+      facebookCaption: 'Publicação preparada.'
+    };
+
+    const approvedPackage = {
+      ...draftPackage,
+      status: 'APPROVED' as const,
+      approvedAt: '2026-10-01T15:45:00.000Z'
+    };
+
+    component.draft = draftPackage;
+    component.dryRunToken.set('valid-dry-run-token');
+
+    spyOn<any>(component, 'loadPackages').and.resolveTo();
+
+    const callSpy = spyOn<any>(component, 'call').and.callFake(
+      async (body: any) => {
+        expect(body).toEqual({
+          action: 'approve',
+          id: 'approved-package',
+          dryRunToken: 'valid-dry-run-token'
+        });
+
+        return {
+          package: approvedPackage,
+          diagnostics: {
+            status: 'PASS',
+            checks: []
+          }
+        };
+      }
+    );
+
+    await component.approve();
+
+    expect(callSpy).toHaveBeenCalledTimes(1);
+    expect(component.draft?.status).toBe('APPROVED');
+    expect(component.dryRunToken()).toBeNull();
+    expect(component.diagnostics()?.status).toBe('PASS');
+    expect(component.message()).toBe(
+      'Pacote aprovado. Pronto para publicar nos destinos selecionados.'
+    );
+  });
+
   it('habilita o piloto Facebook apenas para pacote aprovado Facebook-only e fonte autorizada', () => {
     component.selectSource();
     component.metaDiagnostics.set(facebookMeta);

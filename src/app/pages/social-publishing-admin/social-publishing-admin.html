@@ -195,10 +195,35 @@
           <label><input type="checkbox" [checked]="package.destinations.includes('facebook')" (change)="toggleDestination('facebook', $any($event.target).checked)"> Facebook</label>
         </fieldset>
 
+        <div class="workflow-steps" aria-label="Fluxo de publicação">
+          <div class="workflow-step" [class.complete]="!!package.id">
+            <span>1</span>
+            <strong>Conteúdo</strong>
+          </div>
+          <div class="workflow-step" [class.complete]="package.status !== 'DRAFT' || dryRunToken() !== null">
+            <span>2</span>
+            <strong>Preparado</strong>
+          </div>
+          <div class="workflow-step" [class.complete]="package.status === 'APPROVED' || package.status === 'PUBLISHING' || package.status === 'PUBLISHED'">
+            <span>3</span>
+            <strong>Aprovado</strong>
+          </div>
+          <div class="workflow-step" [class.complete]="package.status === 'PUBLISHED'">
+            <span>4</span>
+            <strong>Publicado</strong>
+          </div>
+        </div>
+
+        @if (package.status === 'DRAFT' && package.id && dryRunToken() === null) {
+          <p class="workflow-hint">
+            Há um rascunho salvo. Use <strong>Preparar publicação</strong> para salvar a versão atual e validar antes da aprovação.
+          </p>
+        }
+
         <div class="actions">
-          <button class="button-primary" type="button" (click)="saveDraft()" [disabled]="package.status !== 'DRAFT' || busy()">Salvar rascunho</button>
-          <button class="button-secondary" type="button" (click)="dryRun()" [disabled]="busy()">Validar</button>
-          <button class="button-secondary" type="button" (click)="approve()" [disabled]="!package.id || package.status !== 'DRAFT' || !dryRunToken() || busy()">Aprovar</button>
+          <button class="button-secondary" type="button" (click)="saveDraft()" [disabled]="package.status !== 'DRAFT' || busy()">Salvar rascunho</button>
+          <button class="button-primary" type="button" (click)="preparePublication()" [disabled]="package.status !== 'DRAFT' || busy()">Preparar publicação</button>
+          <button class="button-secondary" type="button" (click)="approve()" [disabled]="!package.id || package.status !== 'DRAFT' || !dryRunToken() || busy()">Aprovar pacote</button>
           @if (canPublishInstagram) {
             <button class="button-publish" type="button" (click)="requestPublishInstagram()" [disabled]="busy()">Publicar no Instagram</button>
           }
