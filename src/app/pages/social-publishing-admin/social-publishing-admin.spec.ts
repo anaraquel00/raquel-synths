@@ -293,7 +293,7 @@ describe('SocialPublishingAdminComponent / draft editability', () => {
     );
   });
 
-  it('habilita o piloto Facebook apenas para pacote aprovado Facebook-only e fonte autorizada', () => {
+  it('habilita Facebook quando o destino está selecionado em pacote aprovado e fonte autorizada', () => {
     component.selectSource();
     component.metaDiagnostics.set(facebookMeta);
     component.draft = {
@@ -307,7 +307,262 @@ describe('SocialPublishingAdminComponent / draft editability', () => {
     expect(component.canPublishFacebook).toBeTrue();
 
     component.draft.destinations = ['facebook', 'instagram'];
+    expect(component.canPublishFacebook).toBeTrue();
+  });
+
+  it('mantém publicação multi-destino disponível quando uma rede já foi publicada', () => {
+    component.selectSource();
+
+    const multiMeta: MetaConnectionDiagnostics = {
+      ...facebookMeta,
+      instagramWriteGate: {
+        gateMode: 'PRODUCTION',
+        flagEnabled: true,
+        featureEnabled: true,
+        previewEnvironment: false,
+        productionEnvironment: true,
+        branchMatch: null,
+        sourceConfigured: true,
+        sourceMatch: null,
+        destinationMatch: null,
+        pilotSourceId: null,
+        authorizedSourceId: source.sourceId,
+        configurationEnabled: true,
+        enabled: false
+      },
+      facebookWriteGate: {
+        ...facebookMeta.facebookWriteGate,
+        gateMode: 'PRODUCTION',
+        previewEnvironment: false,
+        productionEnvironment: true,
+        branchMatch: null,
+        pilotSourceId: null,
+        authorizedSourceId: source.sourceId,
+        configurationEnabled: true
+      }
+    };
+
+    component.metaDiagnostics.set(multiMeta);
+
+    component.draft = {
+      ...component.draft!,
+      id: 'multi-package',
+      status: 'APPROVED',
+      instagramCaption: 'Instagram aprovado.',
+      facebookCaption: 'Facebook aprovado.',
+      destinations: ['instagram', 'facebook']
+    };
+
+    expect(component.canPublishInstagram).toBeTrue();
+    expect(component.canPublishFacebook).toBeTrue();
+    expect(component.pendingDestinations).toEqual([
+      'instagram',
+      'facebook'
+    ]);
+    expect(component.canPublishSelected).toBeTrue();
+
+    component.draft = {
+      ...component.draft,
+      facebookDelivery: {
+        status: 'PUBLISHED',
+        idempotencyKey: 'facebook-key',
+        remoteContainerId: null,
+        remotePostId: 'facebook-post',
+        attemptCount: 1,
+        lastError: null,
+        publishedAt: '2026-10-01T12:00:00.000Z'
+      }
+    };
+
     expect(component.canPublishFacebook).toBeFalse();
+    expect(component.canPublishInstagram).toBeTrue();
+    expect(component.pendingDestinations).toEqual([
+      'instagram'
+    ]);
+    expect(component.canPublishSelected).toBeTrue();
+  });
+
+  it('publica os destinos selecionados em sequência e preserva o resultado final', async () => {
+    component.selectSource();
+
+    component.metaDiagnostics.set({
+      ...facebookMeta,
+      instagramWriteGate: {
+        gateMode: 'PRODUCTION',
+        flagEnabled: true,
+        featureEnabled: true,
+        previewEnvironment: false,
+        productionEnvironment: true,
+        branchMatch: null,
+        sourceConfigured: true,
+        sourceMatch: null,
+        destinationMatch: null,
+        pilotSourceId: null,
+        authorizedSourceId: source.sourceId,
+        configurationEnabled: true,
+        enabled: false
+      },
+      facebookWriteGate: {
+        ...facebookMeta.facebookWriteGate,
+        gateMode: 'PRODUCTION',
+        previewEnvironment: false,
+        productionEnvironment: true,
+        branchMatch: null,
+        pilotSourceId: null,
+        authorizedSourceId: source.sourceId,
+        configurationEnabled: true
+      }
+    });
+
+    component.draft = {
+      ...component.draft!,
+      id: 'multi-package-sequence',
+      status: 'APPROVED',
+      instagramCaption: 'Instagram aprovado.',
+      facebookCaption: 'Facebook aprovado.',
+      destinations: ['instagram', 'facebook']
+    };
+
+    component.publishTarget.set('selected');
+
+    const actions: string[] = [];
+
+    spyOn<any>(component, 'loadPackages').and.resolveTo();
+
+    spyOn<any>(component, 'call').and.callFake(
+      async (body: any) => {
+        actions.push(body.action);
+
+        if (body.action === 'publish-instagram-now') {
+          return {
+            package: {
+              ...component.draft!,
+              status: 'APPROVED',
+              instagramDelivery: {
+                status: 'PUBLISHED',
+                idempotencyKey: 'instagram-key',
+                remoteContainerId: 'container',
+                remotePostId: 'instagram-post',
+                attemptCount: 1,
+                lastError: null,
+                publishedAt: '2026-10-01T12:10:00.000Z'
+              }
+            }
+          };
+        }
+
+        if (body.action === 'publish-facebook-now') {
+          return {
+            package: {
+              ...component.draft!,
+              status: 'PUBLISHED',
+              facebookDelivery: {
+                status: 'PUBLISHED',
+                idempotencyKey: 'facebook-key',
+                remoteContainerId: null,
+                remotePostId: 'facebook-post',
+                attemptCount: 1,
+                lastError: null,
+                publishedAt: '2026-10-01T12:11:00.000Z'
+              }
+            }
+          };
+        }
+
+        throw new Error(`Ação inesperada: ${body.action}`);
+      }
+    );
+
+    await component.publishSelectedNow();
+
+    expect(actions).toEqual([
+      'publish-instagram-now',
+      'publish-facebook-now'
+    ]);
+
+    expect(component.draft?.status).toBe('PUBLISHED');
+    expect(
+      component.draft?.instagramDelivery?.status
+    ).toBe('PUBLISHED');
+    expect(
+      component.draft?.facebookDelivery?.status
+    ).toBe('PUBLISHED');
+
+    expect(component.message()).toContain(
+      'Publicado nos destinos selecionados'
+    );
+  });
+
+  it('interrompe publicação multi-destino se a primeira rede falhar', async () => {
+    component.selectSource();
+
+    component.metaDiagnostics.set({
+      ...facebookMeta,
+      instagramWriteGate: {
+        gateMode: 'PRODUCTION',
+        flagEnabled: true,
+        featureEnabled: true,
+        previewEnvironment: false,
+        productionEnvironment: true,
+        branchMatch: null,
+        sourceConfigured: true,
+        sourceMatch: null,
+        destinationMatch: null,
+        pilotSourceId: null,
+        authorizedSourceId: source.sourceId,
+        configurationEnabled: true,
+        enabled: false
+      },
+      facebookWriteGate: {
+        ...facebookMeta.facebookWriteGate,
+        gateMode: 'PRODUCTION',
+        previewEnvironment: false,
+        productionEnvironment: true,
+        branchMatch: null,
+        pilotSourceId: null,
+        authorizedSourceId: source.sourceId,
+        configurationEnabled: true
+      }
+    });
+
+    component.draft = {
+      ...component.draft!,
+      id: 'multi-package-failure',
+      status: 'APPROVED',
+      instagramCaption: 'Instagram aprovado.',
+      facebookCaption: 'Facebook aprovado.',
+      destinations: ['instagram', 'facebook']
+    };
+
+    component.publishTarget.set('selected');
+
+    const actions: string[] = [];
+
+    spyOn<any>(component, 'loadPackages').and.resolveTo();
+
+    spyOn<any>(component, 'call').and.callFake(
+      async (body: any) => {
+        actions.push(body.action);
+
+        if (body.action === 'publish-instagram-now') {
+          throw new Error('Falha simulada no Instagram.');
+        }
+
+        throw new Error(
+          'Facebook não deveria ser chamado depois da falha.'
+        );
+      }
+    );
+
+    await component.publishSelectedNow();
+
+    expect(actions).toEqual([
+      'publish-instagram-now'
+    ]);
+
+    expect(component.error()).toContain(
+      'Falha simulada no Instagram.'
+    );
   });
 
   it('mostra confirmação explícita e específica antes do POST real no Facebook', () => {

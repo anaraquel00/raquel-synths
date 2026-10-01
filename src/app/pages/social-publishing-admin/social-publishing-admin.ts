@@ -25,7 +25,7 @@ export class SocialPublishingAdminComponent implements OnInit {
   readonly metaDiagnostics = signal<MetaConnectionDiagnostics | null>(null);
   readonly packageSources = signal<Record<string, NormalizedSource>>({});
   readonly publishConfirmationOpen = signal(false);
-  readonly publishTarget = signal<SocialDestination | null>(null);
+  readonly publishTarget = signal<SocialDestination | 'selected' | null>(null);
 
   @ViewChildren('sourceOption') private readonly sourceOptions?: QueryList<ElementRef<HTMLButtonElement>>;
 
@@ -64,16 +64,24 @@ export class SocialPublishingAdminComponent implements OnInit {
   get canPublishInstagram(): boolean {
     const packageValue = this.draft;
     const meta = this.metaDiagnostics();
+    const gate = meta?.instagramWriteGate;
     const delivery = packageValue?.instagramDelivery;
-    if (!packageValue || !meta) return false;
+
+    if (!packageValue || !meta || !gate) return false;
+
     let assetValid = false;
-    try { assetValid = new URL(packageValue.socialAssetUrl).protocol === 'https:'; }
-    catch { assetValid = false; }
-    return packageValue.sourceType === 'music_release' &&
-      packageValue.sourceId === 'discography/ep-the-blueprint-sessions-v022' &&
+    try {
+      assetValid = new URL(packageValue.socialAssetUrl).protocol === 'https:';
+    } catch {
+      assetValid = false;
+    }
+
+    return gate.configurationEnabled &&
+      Boolean(gate.authorizedSourceId) &&
+      packageValue.sourceType === 'music_release' &&
+      packageValue.sourceId === gate.authorizedSourceId &&
       packageValue.status === 'APPROVED' &&
-      packageValue.destinations.length === 1 &&
-      packageValue.destinations[0] === 'instagram' &&
+      packageValue.destinations.includes('instagram') &&
       packageValue.socialAssetType === 'IMAGE' &&
       assetValid &&
       Boolean(packageValue.instagramCaption) &&
@@ -91,17 +99,22 @@ export class SocialPublishingAdminComponent implements OnInit {
     const meta = this.metaDiagnostics();
     const gate = meta?.facebookWriteGate;
     const delivery = packageValue?.facebookDelivery;
+
     if (!packageValue || !meta || !gate) return false;
+
     let destinationValid = false;
-    try { destinationValid = new URL(packageValue.destinationUrl).protocol === 'https:'; }
-    catch { destinationValid = false; }
+    try {
+      destinationValid = new URL(packageValue.destinationUrl).protocol === 'https:';
+    } catch {
+      destinationValid = false;
+    }
+
     return gate.configurationEnabled &&
       Boolean(gate.authorizedSourceId) &&
       packageValue.sourceType === 'music_release' &&
       packageValue.sourceId === gate.authorizedSourceId &&
       packageValue.status === 'APPROVED' &&
-      packageValue.destinations.length === 1 &&
-      packageValue.destinations[0] === 'facebook' &&
+      packageValue.destinations.includes('facebook') &&
       Boolean(packageValue.facebookCaption) &&
       destinationValid &&
       packageValue.sourceStale !== true &&
@@ -111,6 +124,32 @@ export class SocialPublishingAdminComponent implements OnInit {
       meta.facebook.capabilities.feed &&
       Boolean(meta.facebook.identity?.id) &&
       !delivery;
+  }
+
+  get pendingDestinations(): SocialDestination[] {
+    const packageValue = this.draft;
+    if (!packageValue) return [];
+
+    return packageValue.destinations.filter(destination => {
+      const delivery = destination === 'instagram'
+        ? packageValue.instagramDelivery
+        : packageValue.facebookDelivery;
+
+      return delivery?.status !== 'PUBLISHED';
+    });
+  }
+
+  get canPublishSelected(): boolean {
+    if (!this.draft || this.draft.status !== 'APPROVED') return false;
+
+    const pending = this.pendingDestinations;
+    if (!pending.length) return false;
+
+    return pending.every(destination =>
+      destination === 'instagram'
+        ? this.canPublishInstagram
+        : this.canPublishFacebook
+    );
   }
 
   async changeSourceType(): Promise<void> {
@@ -400,6 +439,13 @@ export class SocialPublishingAdminComponent implements OnInit {
     }
   }
 
+  requestPublishSelected(): void {
+    if (this.canPublishSelected && !this.busy()) {
+      this.publishTarget.set('selected');
+      this.publishConfirmationOpen.set(true);
+    }
+  }
+
   closePublishConfirmation(): void {
     if (!this.busy()) {
       this.publishConfirmationOpen.set(false);
@@ -413,7 +459,9 @@ export class SocialPublishingAdminComponent implements OnInit {
     this.publishTarget.set(null);
     await this.run(async () => {
       const result = await this.call<{ package: SocialPackageDraft }>({
-        action: 'publish-instagram-now', id: this.draft?.id
+        action: 'publish-instagram-now',
+        id: this.draft?.id,
+        ownerConfirmation: true
       });
       this.draft = result.package;
       this.message.set('Publicado no Instagram. O ID remoto e o horário foram registrados.');
@@ -432,6 +480,53 @@ export class SocialPublishingAdminComponent implements OnInit {
       this.draft = result.package;
       this.message.set('Publicado no Facebook. O ID remoto e o horário foram registrados.');
       await this.loadPackages();
+    });
+  }
+
+  async publishSelectedNow(): Promise<void> {
+    if (
+      !this.draft?.id ||
+      !this.canPublishSelected ||
+      this.publishTarget() !== 'selected'
+    ) return;
+
+    const packageId = this.draft.id;
+    const destinations = [...this.pendingDestinations];
+
+    this.publishConfirmationOpen.set(false);
+    this.publishTarget.set(null);
+
+    await this.run(async () => {
+      try {
+        for (const destination of destinations) {
+          if (destination === 'instagram') {
+            const result = await this.call<{ package: SocialPackageDraft }>({
+              action: 'publish-instagram-now',
+              id: packageId,
+              ownerConfirmation: true
+            });
+            this.draft = result.package;
+          } else {
+            const result = await this.call<{ package: SocialPackageDraft }>({
+              action: 'publish-facebook-now',
+              id: packageId,
+              ownerConfirmation: true
+            });
+            this.draft = result.package;
+          }
+        }
+
+        this.message.set(
+          destinations.length > 1
+            ? 'Publicado nos destinos selecionados. Os IDs remotos foram registrados.'
+            : 'Destino pendente publicado. O ID remoto foi registrado.'
+        );
+
+        await this.loadPackages();
+      } catch (error) {
+        await this.loadPackages().catch(() => {});
+        throw error;
+      }
     });
   }
 

@@ -26,7 +26,10 @@ export default async function handler(req, res) {
     }
     if (input.action === 'cancel') return res.status(200).json({ package: await cancelPackage(input.id) });
     if (input.action === 'publish-instagram-now') {
-      const result = await publishInstagramPilot(input.id);
+      const result = await publishInstagramPilot(
+        input.id,
+        input.ownerConfirmation === true
+      );
       return res.status(200).json(result);
     }
     if (input.action === 'publish-facebook-now') {

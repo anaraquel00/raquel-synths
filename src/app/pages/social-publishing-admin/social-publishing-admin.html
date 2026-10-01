@@ -224,11 +224,15 @@
           <button class="button-secondary" type="button" (click)="saveDraft()" [disabled]="package.status !== 'DRAFT' || busy()">Salvar rascunho</button>
           <button class="button-primary" type="button" (click)="preparePublication()" [disabled]="package.status !== 'DRAFT' || busy()">Preparar publicação</button>
           <button class="button-secondary" type="button" (click)="approve()" [disabled]="!package.id || package.status !== 'DRAFT' || !dryRunToken() || busy()">Aprovar pacote</button>
-          @if (canPublishInstagram) {
-            <button class="button-publish" type="button" (click)="requestPublishInstagram()" [disabled]="busy()">Publicar no Instagram</button>
-          }
-          @if (canPublishFacebook) {
-            <button class="button-publish" type="button" (click)="requestPublishFacebook()" [disabled]="busy()">Publicar no Facebook</button>
+          @if (package.destinations.length > 1 && canPublishSelected) {
+            <button class="button-publish" type="button" (click)="requestPublishSelected()" [disabled]="busy()">Publicar nos destinos</button>
+          } @else {
+            @if (canPublishInstagram) {
+              <button class="button-publish" type="button" (click)="requestPublishInstagram()" [disabled]="busy()">Publicar no Instagram</button>
+            }
+            @if (canPublishFacebook) {
+              <button class="button-publish" type="button" (click)="requestPublishFacebook()" [disabled]="busy()">Publicar no Facebook</button>
+            }
           }
           <button class="button-danger" type="button" (click)="cancel()" [disabled]="!package.id || (package.status !== 'DRAFT' && package.status !== 'APPROVED') || busy()">Cancelar</button>
         </div>
@@ -355,14 +359,18 @@
       <section class="publish-dialog" role="dialog" aria-modal="true" aria-labelledby="publish-dialog-title" aria-describedby="publish-dialog-description" (keydown.escape)="closePublishConfirmation()">
         <p class="section-label">CONFIRMAÇÃO</p>
         <h2 id="publish-dialog-title">Publicar agora</h2>
-        @if (publishTarget() === 'facebook') {
+        @if (publishTarget() === 'selected') {
+          <p id="publish-dialog-description">Publicar agora nos destinos selecionados?<br>Cada rede terá sua própria entrega e proteção contra duplicidade.</p>
+        } @else if (publishTarget() === 'facebook') {
           <p id="publish-dialog-description">Publicar este pacote agora no Facebook?<br>Esta ação criará uma publicação real na Facebook Page configurada.</p>
         } @else {
           <p id="publish-dialog-description">Publicar este pacote agora no Instagram?<br>Esta ação criará uma publicação real em &#64;rqs_synths.</p>
         }
         <div class="dialog-actions">
           <button class="button-quiet" type="button" autofocus (click)="closePublishConfirmation()" [disabled]="busy()">Cancelar</button>
-          @if (publishTarget() === 'facebook') {
+          @if (publishTarget() === 'selected') {
+            <button class="button-publish" type="button" (click)="publishSelectedNow()" [disabled]="busy()">Publicar nos destinos</button>
+          } @else if (publishTarget() === 'facebook') {
             <button class="button-publish" type="button" (click)="publishFacebookNow()" [disabled]="busy()">Publicar no Facebook</button>
           } @else {
             <button class="button-publish" type="button" (click)="publishInstagramNow()" [disabled]="busy()">Publicar no Instagram</button>
