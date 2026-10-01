@@ -62,10 +62,7 @@ const env = {
   SOCIAL_PUBLISHING_WRITES_ENABLED: 'true',
 
   SOCIAL_FACEBOOK_PRODUCTION_ENABLED: 'true',
-  SOCIAL_FACEBOOK_PRODUCTION_SOURCE_ID: SOURCE_ID,
-
   SOCIAL_INSTAGRAM_PRODUCTION_ENABLED: 'true',
-  SOCIAL_INSTAGRAM_PRODUCTION_SOURCE_ID: SOURCE_ID,
 
   VERCEL_ENV: 'production',
   VERCEL_TARGET_ENV: 'production',
@@ -128,6 +125,7 @@ const readyMeta = {
 
 function makeRepository({
   packageValue = basePackage,
+  sourceValue = source,
   initialDeliveries = {}
 } = {}) {
   let currentPackage = { ...packageValue };
@@ -179,7 +177,7 @@ function makeRepository({
     },
 
     async resolveSource() {
-      return source;
+      return sourceValue;
     },
 
     async getDelivery(_packageId, destination) {
@@ -337,7 +335,8 @@ const instagramGate =
 assert.equal(instagramGate.configurationEnabled, true);
 assert.equal(instagramGate.enabled, true);
 assert.equal(instagramGate.productionEnvironment, true);
-assert.equal(instagramGate.authorizedSourceId, SOURCE_ID);
+assert.equal(instagramGate.authorizedSourceId, null);
+assert.equal(instagramGate.sourceConfigured, true);
 
 assert.equal(
   instagramWriteGateDiagnostics(env, {
@@ -365,11 +364,11 @@ assert.equal(
   instagramProductionWriteGate(
     env,
     {
-      sourceId: 'discography/not-authorized',
+      sourceId: 'discography/another-approved-release',
       destination: 'instagram'
     }
   ),
-  false
+  true
 );
 
 assert.equal(
@@ -396,6 +395,15 @@ const fbGate = facebookWriteGateDiagnostics(env, {
 
 assert.equal(fbGate.configurationEnabled, true);
 assert.equal(fbGate.enabled, true);
+assert.equal(fbGate.authorizedSourceId, null);
+
+assert.equal(
+  facebookWriteGateDiagnostics(env, {
+    sourceId: 'discography/another-approved-release',
+    destination: 'facebook'
+  }).enabled,
+  true
+);
 
 const facebookEligibility = evaluateFacebookPilot(
   basePackage,
@@ -403,7 +411,7 @@ const facebookEligibility = evaluateFacebookPilot(
   readyMeta,
   null,
   {
-    authorizedSourceId: SOURCE_ID,
+    sourceGatePassed: true,
     expectedPageId: env.META_FACEBOOK_PAGE_ID,
     writeGateEnabled: true,
     ownerConfirmation: true
@@ -424,7 +432,7 @@ const instagramEligibility = evaluateInstagramPilot(
   readyMeta,
   null,
   {
-    authorizedSourceId: SOURCE_ID,
+    sourceGatePassed: true,
     writeGateEnabled: true,
     ownerConfirmation: true
   }
@@ -691,45 +699,85 @@ console.log('FACEBOOK_DUPLICATE_BLOCKED = PASS');
 console.log('INSTAGRAM_GATE_OFF_ZERO_WRITE = PASS');
 
 /* -------------------------------------------------------
- * Instagram source não autorizada = zero write
+ * Novo release aprovado NÃO exige alterar env/source gate
  * ----------------------------------------------------- */
 
 {
-  const unauthorizedPackage = {
+  const alternateSource = {
+    ...source,
+    sourceId: 'discography/ep-the-bloodprint-sessions-v008-corrupted',
+    sourceUrl:
+      'firestore://discography/ep-the-bloodprint-sessions-v008-corrupted',
+    sourceRevision: 'qa-v008-current-revision',
+    title: 'THE BLOODPRINT SESSIONS Vol.008 Corrupted Files',
+    musicDeepLinkUrl:
+      'https://raquelsynths.com/play/ep-the-bloodprint-sessions-v008-corrupted'
+  };
+
+  const alternatePackage = {
     ...basePackage,
-    sourceId: 'discography/not-authorized'
+    id: 'qa-multidestination-v008',
+    sourceId: alternateSource.sourceId,
+    sourceUrl: alternateSource.sourceUrl,
+    sourceRevision: alternateSource.sourceRevision,
+    destinationUrl: alternateSource.musicDeepLinkUrl,
+    status: 'APPROVED'
   };
 
   const repository = makeRepository({
-    packageValue: unauthorizedPackage
+    packageValue: alternatePackage,
+    sourceValue: alternateSource
   });
 
-  let metaWriteCalls = 0;
+  const calls = [];
 
-  await assert.rejects(
-    publishInstagramPilot(
-      unauthorizedPackage.id,
-      true,
-      {
-        env,
-        repository,
-        diagnoseMeta: async () => readyMeta,
-        fetchImpl: async () => {
-          metaWriteCalls += 1;
-          throw new Error('UNEXPECTED_META_WRITE');
-        }
-      }
-    ),
-    error =>
-      error.code === 'INSTAGRAM_SOCIAL_WRITES_DISABLED' &&
-      error.status === 403
+  const instagramResult = await publishInstagramPilot(
+    alternatePackage.id,
+    true,
+    productionOptions(
+      repository,
+      calls,
+      '2026-10-01T12:40:00.000Z'
+    )
   );
 
-  assert.equal(metaWriteCalls, 0);
-  assert.equal(repository.events.length, 0);
+  assert.equal(
+    instagramResult.package.status,
+    'APPROVED'
+  );
+
+  const facebookResult = await publishFacebookPilot(
+    alternatePackage.id,
+    true,
+    productionOptions(
+      repository,
+      calls,
+      '2026-10-01T12:41:00.000Z'
+    )
+  );
+
+  assert.equal(
+    facebookResult.package.status,
+    'PUBLISHED'
+  );
+
+  assert.equal(
+    calls.filter(call => call.url.endsWith('/feed')).length,
+    1
+  );
+
+  assert.equal(
+    calls.filter(call => call.url.endsWith('/media')).length,
+    1
+  );
+
+  assert.equal(
+    calls.filter(call => call.url.endsWith('/media_publish')).length,
+    1
+  );
 }
 
-console.log('INSTAGRAM_UNAUTHORIZED_SOURCE_ZERO_WRITE = PASS');
+console.log('PRODUCTION_APPROVED_SOURCE_NO_ENV_UPDATE = PASS');
 
 /* -------------------------------------------------------
  * Owner confirmation obrigatória

@@ -310,6 +310,53 @@ describe('SocialPublishingAdminComponent / draft editability', () => {
     expect(component.canPublishFacebook).toBeTrue();
   });
 
+  it('Production aceita pacote aprovado de outro release sem sourceId configurado em env', () => {
+    component.selectSource();
+
+    component.metaDiagnostics.set({
+      ...facebookMeta,
+      instagramWriteGate: {
+        gateMode: 'PRODUCTION',
+        flagEnabled: true,
+        featureEnabled: true,
+        previewEnvironment: false,
+        productionEnvironment: true,
+        branchMatch: null,
+        sourceConfigured: true,
+        sourceMatch: null,
+        destinationMatch: null,
+        pilotSourceId: null,
+        authorizedSourceId: null,
+        configurationEnabled: true,
+        enabled: false
+      },
+      facebookWriteGate: {
+        ...facebookMeta.facebookWriteGate,
+        gateMode: 'PRODUCTION',
+        previewEnvironment: false,
+        productionEnvironment: true,
+        branchMatch: null,
+        pilotSourceId: null,
+        authorizedSourceId: null,
+        configurationEnabled: true
+      }
+    });
+
+    component.draft = {
+      ...component.draft!,
+      id: 'production-package-another-release',
+      sourceId: 'discography/ep-the-bloodprint-sessions-v008-corrupted',
+      status: 'APPROVED',
+      instagramCaption: 'Instagram aprovado.',
+      facebookCaption: 'Facebook aprovado.',
+      destinations: ['instagram', 'facebook']
+    };
+
+    expect(component.canPublishInstagram).toBeTrue();
+    expect(component.canPublishFacebook).toBeTrue();
+    expect(component.canPublishSelected).toBeTrue();
+  });
+
   it('mantém publicação multi-destino disponível quando uma rede já foi publicada', () => {
     component.selectSource();
 
@@ -326,7 +373,7 @@ describe('SocialPublishingAdminComponent / draft editability', () => {
         sourceMatch: null,
         destinationMatch: null,
         pilotSourceId: null,
-        authorizedSourceId: source.sourceId,
+        authorizedSourceId: null,
         configurationEnabled: true,
         enabled: false
       },
@@ -337,7 +384,7 @@ describe('SocialPublishingAdminComponent / draft editability', () => {
         productionEnvironment: true,
         branchMatch: null,
         pilotSourceId: null,
-        authorizedSourceId: source.sourceId,
+        authorizedSourceId: null,
         configurationEnabled: true
       }
     };
@@ -398,7 +445,7 @@ describe('SocialPublishingAdminComponent / draft editability', () => {
         sourceMatch: null,
         destinationMatch: null,
         pilotSourceId: null,
-        authorizedSourceId: source.sourceId,
+        authorizedSourceId: null,
         configurationEnabled: true,
         enabled: false
       },
@@ -409,7 +456,7 @@ describe('SocialPublishingAdminComponent / draft editability', () => {
         productionEnvironment: true,
         branchMatch: null,
         pilotSourceId: null,
-        authorizedSourceId: source.sourceId,
+        authorizedSourceId: null,
         configurationEnabled: true
       }
     });
@@ -509,7 +556,7 @@ describe('SocialPublishingAdminComponent / draft editability', () => {
         sourceMatch: null,
         destinationMatch: null,
         pilotSourceId: null,
-        authorizedSourceId: source.sourceId,
+        authorizedSourceId: null,
         configurationEnabled: true,
         enabled: false
       },
@@ -520,7 +567,7 @@ describe('SocialPublishingAdminComponent / draft editability', () => {
         productionEnvironment: true,
         branchMatch: null,
         pilotSourceId: null,
-        authorizedSourceId: source.sourceId,
+        authorizedSourceId: null,
         configurationEnabled: true
       }
     });

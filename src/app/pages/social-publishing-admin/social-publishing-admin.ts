@@ -76,10 +76,14 @@ export class SocialPublishingAdminComponent implements OnInit {
       assetValid = false;
     }
 
+    const sourceAllowed = gate.gateMode === 'PRODUCTION'
+      ? Boolean(packageValue.sourceId)
+      : Boolean(gate.authorizedSourceId) &&
+        packageValue.sourceId === gate.authorizedSourceId;
+
     return gate.configurationEnabled &&
-      Boolean(gate.authorizedSourceId) &&
+      sourceAllowed &&
       packageValue.sourceType === 'music_release' &&
-      packageValue.sourceId === gate.authorizedSourceId &&
       packageValue.status === 'APPROVED' &&
       packageValue.destinations.includes('instagram') &&
       packageValue.socialAssetType === 'IMAGE' &&
@@ -109,10 +113,14 @@ export class SocialPublishingAdminComponent implements OnInit {
       destinationValid = false;
     }
 
+    const sourceAllowed = gate.gateMode === 'PRODUCTION'
+      ? Boolean(packageValue.sourceId)
+      : Boolean(gate.authorizedSourceId) &&
+        packageValue.sourceId === gate.authorizedSourceId;
+
     return gate.configurationEnabled &&
-      Boolean(gate.authorizedSourceId) &&
+      sourceAllowed &&
       packageValue.sourceType === 'music_release' &&
-      packageValue.sourceId === gate.authorizedSourceId &&
       packageValue.status === 'APPROVED' &&
       packageValue.destinations.includes('facebook') &&
       Boolean(packageValue.facebookCaption) &&
