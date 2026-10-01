@@ -13,6 +13,14 @@ import { StoreDepartmentsComponent } from './store-departments/store-departments
 import { SeoService } from '../../services/seo.service';
 import { TrackingService } from '../../services/tracking.service';
 import { DEPARTMENTS_DATA } from '../../data/store-data';
+import {
+  adaptStoreProduct,
+  getStoreMerchantCta,
+  getStoreMerchantLabel,
+  isVisibleAffiliateProduct,
+  resolveStoreMerchant,
+  StoreMerchant
+} from './store-commerce';
 
 @Component({
   selector: 'app-store',
@@ -96,30 +104,70 @@ private updateSeoAndLang(isPt: boolean) {
   // 🏗️ MATRIZ DE METADADOS (Mantida conforme o seu original)
   const seoMap: Record<string, any> = {
     'tech-lead': {
-      pt: { title: 'Arquitetura de Hardware & Código | Tech Lead', desc: 'Suprimentos de nível sênior. Componentes, periféricos e ferramentas para arquitetos de software e engenheiros de hardware.' },
-      en: { title: 'Hardware Architecture & Code | Tech Lead', desc: 'Senior-level supplies. Components, peripherals, and tools for software architects and hardware engineers.' }
+      pt: {
+        title: 'Tecnologia & Acessórios Cyberpunk | Neon Store | RaQuel Synths',
+        desc: 'Descubra tecnologia, acessórios e gear selecionados pela RaQuel Synths em lojas parceiras como Mercado Livre, Amazon, SHEIN e AliExpress.'
+      },
+      en: {
+        title: 'Tech Gear & Cyberpunk Accessories | Neon Store | RaQuel Synths',
+        desc: 'Explore RQS-curated technology, accessories and gear from partner stores including Mercado Livre, Amazon, SHEIN and AliExpress.'
+      }
     },
+
     'synth-general': {
-      pt: { title: 'Comando Central & Artefatos | General Kelma', desc: 'A linha de frente da RaQuel Synths. Vestuário oficial e itens táticos selecionados pela liderança da Horda.' },
-      en: { title: 'Central Command & Artifacts | General Kelma', desc: 'The front line of RaQuel Synths. Official apparel and tactical items selected by the Horde leadership.' }
+      pt: {
+        title: 'Moda Cyberpunk & Estilo Futurista | RaQuel’s Echo | Neon Store',
+        desc: 'Curadoria de moda cyberpunk, roupas, acessórios e estética futurista selecionada pela RaQuel Synths em lojas parceiras.'
+      },
+      en: {
+        title: 'Cyberpunk Fashion & Futuristic Style | RaQuel’s Echo | Neon Store',
+        desc: 'Explore RQS-curated cyberpunk fashion, clothing, accessories and futuristic style from selected partner stores.'
+      }
     },
+
     'sonic-arsenal': {
-      pt: { title: 'Armamento Sonoro & Samples | Sonic Arsenal', desc: 'Engenharia de áudio agressiva. Samples, presets e equipamentos para produtores de Industrial Metal e Aggrotech.' },
-      en: { title: 'Sonic Weaponry & Samples | Sonic Arsenal', desc: 'Aggressive audio engineering. Samples, presets, and gear for Industrial Metal and Aggrotech producers.' }
+      pt: {
+        title: 'Equipamentos de Áudio, Instrumentos & Studio Gear | Neon Store',
+        desc: 'Equipamentos de áudio, instrumentos, acessórios e studio gear selecionados pela RaQuel Synths para músicos, produtores e criadores.'
+      },
+      en: {
+        title: 'Audio Gear, Instruments & Studio Equipment | Neon Store',
+        desc: 'Explore audio gear, instruments, accessories and studio equipment curated by RaQuel Synths for musicians, producers and creators.'
+      }
     },
+
     'rust-riot': {
-      pt: { title: 'Guerrilha Industrial | Rust Riot (Jonah)', desc: 'Equipamento pesado e estética de ferrugem. Onde o Metal encontra o caos do Red Team. Proibido para o Blue Team.' },
-      en: { title: 'Industrial Guerrilla | Rust Riot (Jonah)', desc: 'Heavy gear and rust aesthetics. Where Metal meets Red Team chaos. Forbidden for the Blue Team.' }
+      pt: {
+        title: 'Moda Industrial & Alternativa | Rust & Riot | Neon Store',
+        desc: 'Curadoria RQS de moda industrial, alternativa e cyberpunk com roupas e acessórios selecionados em lojas parceiras.'
+      },
+      en: {
+        title: 'Industrial & Alternative Fashion | Rust & Riot | Neon Store',
+        desc: 'Explore RQS-curated industrial, alternative and cyberpunk fashion with clothing and accessories from selected partner stores.'
+      }
     },
+
     'neon-witch': {
-      pt: { title: 'Grimórios Digitais & Stealth | Neon Witch (Nyx)', desc: 'Ferramentas de ocultação e estética Dark Synth. O kit de sobrevivência da Bruxa Operativa para infiltração no Mainframe.' },
-      en: { title: 'Digital Grimoires & Stealth | Neon Witch (Nyx)', desc: 'Cloaking tools and Dark Synth aesthetics. The Operative Witch survival kit for Mainframe infiltration.' }
+      pt: {
+        title: 'Moda Gótica & Cyberpunk | Neon Witch | Neon Store',
+        desc: 'Descubra moda gótica, cyberpunk, dark fashion e acessórios selecionados pela RaQuel Synths em lojas parceiras.'
+      },
+      en: {
+        title: 'Goth & Cyberpunk Fashion | Neon Witch | Neon Store',
+        desc: 'Explore goth fashion, cyberpunk clothing, dark style and accessories curated by RaQuel Synths from selected partner stores.'
+      }
     }
   };
 
   const defaultSeo = {
-    pt: { title: 'Suprimentos da Horda | Neon Store', desc: 'Faça o upgrade do seu hardware humano. Vestuário industrial e suprimentos táticos da RaQuel Synths.' },
-    en: { title: 'Horde Supplies | Neon Store', desc: 'Upgrade your human hardware. Industrial apparel and tactical supplies from RaQuel Synths.' }
+    pt: {
+      title: 'Neon Store | Moda Cyberpunk, Gótica, Tech & Áudio | RaQuel Synths',
+      desc: 'Curadoria RQS de moda cyberpunk e gótica, acessórios, tecnologia e equipamentos de áudio da SHEIN, Mercado Livre, Amazon e AliExpress.'
+    },
+    en: {
+      title: 'Neon Store | Cyberpunk Fashion, Tech & Audio Gear | RaQuel Synths',
+      desc: 'Explore RQS-curated cyberpunk and goth fashion, accessories, technology and audio gear from SHEIN, Mercado Livre, Amazon and AliExpress.'
+    }
   };
 
   const currentSeo = (dept && seoMap[dept]) ? seoMap[dept] : defaultSeo;
@@ -148,14 +196,73 @@ private updateSeoAndLang(isPt: boolean) {
 
   // --- FILTROS ---
   selectedDepartmentId = signal<string | null>(null);
+  selectedMerchant = signal<'all' | StoreMerchant>('all');
   filteredProducts: any[] = [];
+
+  readonly merchantFilters: StoreMerchant[] = [
+    'shein',
+    'mercado-livre',
+    'amazon',
+    'aliexpress'
+  ];
+
+  readonly affiliate1010Url =
+    'https://www.mercadolivre.com.br/social/anaraquel00/lists/aac28926-6453-4775-8dd7-d8d5ce54359c#tracking_id=08e73e47-a945-48da-8ac4-8c48026e854c';
+
+  get catalogCount(): number {
+    return this.allProducts.length;
+  }
+
+  get sheinProducts(): any[] {
+    return this.allProducts.filter(item => item.merchant === 'shein');
+  }
+
+  get rqsPicks(): any[] {
+    const picks: any[] = [];
+    const seenIds = new Set<string>();
+
+    for (const merchant of this.merchantFilters) {
+      const item = this.allProducts.find(product => product.merchant === merchant);
+      if (item && !seenIds.has(String(item.id))) {
+        picks.push(item);
+        seenIds.add(String(item.id));
+      }
+    }
+
+    for (const item of this.allProducts) {
+      if (picks.length >= 5) break;
+
+      const id = String(item.id);
+      if (!seenIds.has(id)) {
+        picks.push(item);
+        seenIds.add(id);
+      }
+    }
+
+    return picks.slice(0, 5);
+  }
+
+  get departmentProductCounts(): Record<string, number> {
+    return this.allProducts.reduce((counts: Record<string, number>, item: any) => {
+      const faction = item?.faction;
+      if (faction) counts[faction] = (counts[faction] || 0) + 1;
+      return counts;
+    }, {});
+  }
 
   // Getter inteligente para o Lobby (Filtra por Dono)
   get visibleDepartments() {
-    return this.allDepartments.filter(dept => {
-       // Se não tiver 'owners' no banco, mostra pra todos.
-       // Se tiver, só mostra se o activeMode (broklin/jonah) estiver na lista.
-       return !dept.owners || dept.owners.includes(this.activeMode());
+    const mode = this.activeMode();
+
+    return [...this.allDepartments].sort((a, b) => {
+      const score = (dept: any) => {
+        if (!dept?.owners?.length) return 1;
+        if (dept.owners.includes(mode)) return 0;
+        if (dept.owners.length > 1) return 1;
+        return 2;
+      };
+
+      return score(a) - score(b);
     });
   }
 
@@ -169,13 +276,23 @@ ngOnInit(): void {
     // 🚀 INJEÇÃO COMERCIAL (JSON-LD): Avisa ao Google que isso é um E-commerce
     this.seoService.setJsonLd({
       "@context": "https://schema.org",
-      "@type": "Store",
-      "name": "Neon Store | RaQuel Synths",
-      "description": isPt ? "Loja oficial de merchandising e artefatos da RaQuel Synths." : "Official merchandising and artifacts store for RaQuel Synths.",
+      "@type": "CollectionPage",
+      "name": isPt
+        ? "Neon Store | Moda Cyberpunk, Gótica, Tech & Áudio"
+        : "Neon Store | Cyberpunk Fashion, Tech & Audio Gear",
+      "description": isPt
+        ? "Curadoria da RaQuel Synths de moda cyberpunk e gótica, acessórios, tecnologia e equipamentos de áudio em lojas parceiras."
+        : "RaQuel Synths curated discovery for cyberpunk and goth fashion, accessories, technology and audio gear from partner stores.",
       "url": "https://raquelsynths.com/store",
-      "parentOrganization": {
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "RaQuel Synths",
+        "url": "https://raquelsynths.com"
+      },
+      "publisher": {
         "@type": "Organization",
-        "name": "RaQuel Synths"
+        "name": "RaQuel Synths",
+        "url": "https://raquelsynths.com"
       }
     });
     this.loadData();
@@ -197,7 +314,7 @@ ngOnInit(): void {
 
         // Se o Firebase JÁ carregou os produtos (ex: navegou de volta), filtra agora:
         if (this.allProducts.length > 0) {
-          this.filteredProducts = this.allProducts.filter(item => item.faction === dept);
+          this.applyCatalogFilters();
         }
       } else {
         // Se não tem departamento na URL, mostra o Lobby normal
@@ -240,13 +357,12 @@ ngOnInit(): void {
       next: (data) => {
         console.log('📦 Estoque recebido:', data);
 
-        this.allProducts = data.products;
+        this.allProducts = data.products
+          .map((product: any) => adaptStoreProduct(product))
+          .filter(isVisibleAffiliateProduct);
         this.allDepartments = data.departments;
 
-        // Se o usuário entrou por link direto, filtra os produtos
-        if (this.selectedDepartmentId()) {
-           this.filteredProducts = this.allProducts.filter(item => item.faction === this.selectedDepartmentId());
-        }
+        this.applyCatalogFilters();
 
         // Força o Angular a pintar a tela
         this.cdr.detectChanges();
@@ -291,29 +407,36 @@ checkCurrentMode() {
 
 // --- NAVEGAÇÃO E BOOST DE SEO ---
   onDepartmentSelected(deptId: string) {
-  const deptData = DEPARTMENTS_DATA.find(d => d.id === deptId) || null;
-  this.selectedDepartmentId.set(deptId); // Atualiza o Signal
-  this.router.navigate([], { queryParams: { dept: deptId }, queryParamsHandling: 'merge' });
-  this.selectedDepartmentData = deptData;
-  this.filteredProducts = this.allProducts.filter(item => item.faction === deptId);
-  this.currentView = 'MINI_STORE';
+    const deptData = DEPARTMENTS_DATA.find(d => d.id === deptId) || null;
 
-  if (this.isBrowser) window.scrollTo({ top: 0, behavior: 'smooth' });
+    this.selectedDepartmentId.set(deptId);
+    this.selectedDepartmentData = deptData;
+    this.applyCatalogFilters();
 
-    // 🚀 MOTOR 2 (O BOOST JSON-LD): Permanece intacto para catalogar os produtos no Google
+    void this.router.navigate([], {
+      queryParams: { dept: deptId },
+      queryParamsHandling: 'merge'
+    }).then(() => {
+      this.scrollToCatalog();
+    });
+
     if (deptData && this.filteredProducts.length > 0) {
       const lang = this.currentLang();
       const seoTitle = deptData.title || deptId.toUpperCase();
-      const seoDesc = deptData.loreDescription ? deptData.loreDescription[lang] : (deptData.description ? deptData.description[lang] : 'RQS Protocol');
+      const seoDesc = deptData.loreDescription
+        ? deptData.loreDescription[lang]
+        : (deptData.description ? deptData.description[lang] : 'RQS Protocol');
       const imgPath = deptData.image || 'assets/images/banner-seo-global.jpg';
-      const seoImage = imgPath.startsWith('http') ? imgPath : `https://raquelsynths.com/${imgPath}`;
+      const seoImage = imgPath.startsWith('http')
+        ? imgPath
+        : `https://raquelsynths.com/${imgPath}`;
+
       this.seoService.updateCanonical('/store');
-      // O JSON-LD aceita textos mais longos e formatação diferente, não afeta a Meta Tag suja
       this.seoService.setJsonLd({
         "@context": "https://schema.org",
         "@type": "ItemList",
         "name": seoTitle,
-        "description": seoDesc, // Aqui não tem problema ser a Lore inteira
+        "description": seoDesc,
         "url": "https://raquelsynths.com/store",
         "itemListElement": this.filteredProducts.map((product, index) => {
           const content = product.content?.[lang];
@@ -334,22 +457,112 @@ checkCurrentMode() {
     }
   }
 
+  setMerchantFilter(merchant: 'all' | StoreMerchant): void {
+    this.selectedMerchant.set(merchant);
+    this.applyCatalogFilters();
+
+    this.trackingService.trackCustomEvent('store_merchant_filter', {
+      merchant,
+      sector: this.selectedDepartmentId() || 'all',
+      language: this.currentLang(),
+      mode: this.activeMode()
+    });
+  }
+
+  clearSectorFilter(): void {
+    this.selectedDepartmentId.set(null);
+    this.selectedDepartmentData = null;
+    this.router.navigate([], {
+      queryParams: { dept: null },
+      queryParamsHandling: 'merge'
+    });
+    this.applyCatalogFilters();
+  }
+
+  private applyCatalogFilters(): void {
+    const sector = this.selectedDepartmentId();
+    const merchant = this.selectedMerchant();
+
+    this.filteredProducts = this.allProducts.filter(item => {
+      const sectorMatch = !sector || item.faction === sector;
+      const merchantMatch = merchant === 'all' || item.merchant === merchant;
+
+      return sectorMatch && merchantMatch;
+    });
+  }
+
+  getMerchantCta(item: any): string {
+    return getStoreMerchantCta(item?.merchant, this.currentLang());
+  }
+
+  showMerchant(merchant: StoreMerchant): void {
+    this.setMerchantFilter(merchant);
+    this.scrollToCatalog();
+  }
+
+  trackAffiliate1010(): void {
+    this.trackingService.trackCustomEvent('store_promotion_click', {
+      campaign: 'affiliate_1010',
+      merchant: 'mercado-livre',
+      destination: 'curated-list',
+      placement: 'hero-signal',
+      language: this.currentLang(),
+      mode: this.activeMode()
+    });
+  }
+
+  getDepartmentTitle(faction: string | null | undefined): string {
+    if (!faction) return '';
+    return DEPARTMENTS_DATA.find(dept => dept.id === faction)?.title || faction;
+  }
+
+  getShortDescription(item: any): string {
+    const html = item?.content?.[this.currentLang()]?.description || '';
+    const text = String(html)
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/&amp;/g, '&')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    return text.length > 150 ? `${text.slice(0, 147).trim()}…` : text;
+  }
+
+  private scrollToCatalog(): void {
+    if (!this.isBrowser) return;
+
+    requestAnimationFrame(() => {
+      this.document
+        .getElementById('store-catalog')
+        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+
   backToLobby() {
-  this.selectedDepartmentId.set(null); // Reseta o Signal
+  this.selectedDepartmentId.set(null);
+  this.selectedDepartmentData = null;
   this.router.navigate([], { queryParams: { dept: null } });
   this.currentView = 'LOBBY';
-  this.selectedDepartmentId.set(null);
-  this.filteredProducts = [];
+  this.applyCatalogFilters();
 
   this.updateSeoAndLang(this.translate.isPt());
 
     // 🚀 RETORNA O JSON-LD PARA A HOME DA LOJA
     this.seoService.setJsonLd({
       "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "RQS Neon Store",
+      "@type": "CollectionPage",
+      "name": this.translate.isPt()
+        ? "Neon Store | Moda Cyberpunk, Gótica, Tech & Áudio"
+        : "Neon Store | Cyberpunk Fashion, Tech & Audio Gear",
       "url": "https://raquelsynths.com/store",
-      "description": this.translate.isPt() ? "Mercadoria oficial da RaQuel Synths." : "Official Merchandise from RaQuel Synths virtual band."
+      "description": this.translate.isPt()
+        ? "Curadoria RQS de moda cyberpunk e gótica, acessórios, tecnologia e equipamentos de áudio em lojas parceiras."
+        : "RQS-curated cyberpunk and goth fashion, accessories, technology and audio gear from partner stores.",
+      "publisher": {
+        "@type": "Organization",
+        "name": "RaQuel Synths",
+        "url": "https://raquelsynths.com"
+      }
     });
   }
 
@@ -389,7 +602,7 @@ checkCurrentMode() {
  // --- 💸 MONETIZAÇÃO BLINDADA V2.0 (AGORA COM TELEMETRIA) ---
 
   handleShopClick(item: any) { // 👈 AGORA RECEBE O ITEM COMPLETO
-    const productUrl = item.stripeUrl || item.link || item.url; // 👈 Extrai a URL original aqui, mais robusto
+    const productUrl = item.destinationUrl || item.stripeUrl || item.link || item.url;
 
     if (!productUrl) {
       console.warn('🚫 Link vazio detectado.');
@@ -429,12 +642,7 @@ checkCurrentMode() {
 
   // 🔍 FUNÇÃO AUXILIAR: Lê a URL e traduz para a Meta
   private detectPlatformForPixel(url: string): string {
-    const lower = url.toLowerCase();
-    if (lower.includes('amazon')) return 'Amazon';
-    if (lower.includes('shein')) return 'Shein';
-    if (lower.includes('aliexpress')) return 'AliExpress';
-    if (lower.includes('stripe') || lower.includes('checkout')) return 'Stripe Official';
-    return 'Partner Store';
+    return getStoreMerchantLabel(resolveStoreMerchant(url));
   }
 
  private openSheinCouponModal(url: string) {

@@ -1,237 +1,205 @@
-// ============================================
-// 🎨 VARIÁVEIS DO TEMA (PALETA)
-// ============================================
-$color-broklin-primary: #00f3ff; // Cyan Neon
-$color-broklin-bg: rgba(255, 255, 255, 0.05);
-$color-jonah-primary: #ff3300;   // Laranja Industrial
-$color-jonah-bg: #0f0000;
-
-// ============================================
-// 🏗️ ESTRUTURA GERAL
-// ============================================
-
 :host {
   display: block;
   width: 100%;
 }
 
 .department-sector {
-  padding: 0rem 1rem;
-  max-width: 1400px;
-  margin: 0 auto;
-
-}
-
-.sector-title {
-  text-align: center;
-  font-size: 2rem;
-  font-weight: 300;
-  letter-spacing: 4px;
-  margin-bottom: 3rem;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.8);
-
-  // Linha decorativa embaixo do título
-  &::after {
-    content: '';
-    display: block;
-    width: 60px;
-    height: 3px;
-    background: var(--accent-color, #fff);
-    margin: 15px auto 0;
-  }
+  width: 100%;
 }
 
 .cards-grid {
   display: grid;
-  // Grid responsivo mágico (se adapta a qualquer tela)
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2.5rem;
-  padding: 1rem;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1rem;
 }
-
-// ============================================
-// 💠 O CARD (BASE) - DESIGN HÍBRIDO
-// ============================================
 
 .dept-card {
   position: relative;
-  height: 450px; // Altura imponente
-  border-radius: 16px; // Curva suave (Broklin style)
+  min-height: 310px;
   overflow: hidden;
-  cursor: pointer;
-  background: #000; // Fundo de segurança
-  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(0, 243, 255, 0.18);
+  border-radius: 14px;
+  background: #05090d;
+  isolation: isolate;
+}
 
-  // --- IMAGEM DE FUNDO ---
-  .card-image {
-    position: absolute;
-    top: 0;
-    left: 0;
+.card-image {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+
+  img {
     width: 100%;
     height: 100%;
-    z-index: 0;
+    object-fit: cover;
+    filter: saturate(0.78) brightness(0.62);
+    transition: transform 0.35s ease, filter 0.35s ease;
+  }
 
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.6s ease;
-      filter: grayscale(30%) brightness(0.7); // Um pouco dark
-    }
-
-    // Degradê para o texto ficar legível
-    .overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(
         to top,
-        rgba(0, 0, 0, 0.9) 0%,
-        rgba(0, 0, 0, 0.4) 50%,
-        transparent 100%
+        rgba(2, 6, 10, 0.98) 5%,
+        rgba(2, 6, 10, 0.72) 45%,
+        rgba(2, 6, 10, 0.12) 100%
       );
-      transition: opacity 0.3s ease;
-    }
-  }
-
-  // --- CONTEÚDO (TEXTOS) ---
-  .card-content {
-    position: relative;
-    z-index: 2; // Fica acima da imagem
-    height: 100%;
-    display: flex;
-    box-sizing: border-box;
-    flex-direction: column;
-    justify-content: flex-end; // Joga tudo pro rodapé
-    padding: 2rem;
-    color: #fff;
-    //transform: translateY(20px); // Leve deslocamento inicial
-    transition: transform 0.4s ease;
-
-    h3 {
-      font-size: 1.8rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      margin: 0;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
-
-      // O detalhe colorido no título
-      border-left: 4px solid $color-broklin-primary;
-      padding-left: 15px;
-    }
-
-    p {
-      font-size: 1rem;
-      color: rgba(255, 255, 255, 0.7);
-      margin-top: 10px;
-      margin-bottom: 25px;
-      line-height: 1.5;
-      max-width: 90%;
-    }
-
-    .shop-btn {
-      align-self: flex-start;
-      background: rgba(255, 255, 255, 0.1); // Vidro
-      backdrop-filter: blur(5px);
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      color: #fff;
-      padding: 12px 24px;
-      font-size: 0.9rem;
-      font-weight: bold;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-
-      &:hover {
-        background: $color-broklin-primary;
-        color: #000;
-        border-color: $color-broklin-primary;
-        box-shadow: 0 0 20px rgba(0, 243, 255, 0.6);
-      }
-    }
-  }
-
-  // --- EFEITO HOVER NO CARD (GERAL) ---
-  &:hover {
-    transform: translateY(-10px); // Levita
-    box-shadow: 0 20px 40px rgba(0, 243, 255, 0.15);
-    border-color: $color-broklin-primary;
-
-    .card-image img {
-      transform: scale(1.1); // Zoom na imagem
-      filter: grayscale(0%) brightness(1); // Fica colorida e viva
-    }
-
-    .card-content {
-      transform: translateY(0); // Sobe suave
-    }
   }
 }
 
-// ============================================
-// 💀 MODO JONAH (A TRANSFORMAÇÃO INDUSTRIAL)
-// ============================================
-// O SCSS detecta se o BODY tem a classe .mode-jonah
+.card-content {
+  min-height: 310px;
+  padding: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  text-align: left;
+}
 
-:host-context(.mode-jonah) {
+.sector-meta {
+  margin-bottom: 0.55rem;
 
-  .sector-title {
-    font-family: 'Courier New', monospace;
-    font-weight: bold;
-    color: $color-jonah-primary;
-    text-shadow: 2px 2px 0px #000;
+  span {
+    font-size: 0.68rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: #7debf0;
+  }
+}
 
-    &::after { background: $color-jonah-primary; }
+h3 {
+  margin: 0;
+  color: #fff;
+  font-size: 1.12rem;
+  line-height: 1.15;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+p {
+  margin: 0.5rem 0 1rem;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 0.83rem;
+  line-height: 1.4;
+}
+
+.shop-btn {
+  min-height: 42px;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid rgba(0, 243, 255, 0.65);
+  border-radius: 5px;
+  background: rgba(0, 243, 255, 0.08);
+  color: #aafaff;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-visible {
+    outline: none;
+    background: #00e8f4;
+    border-color: #00e8f4;
+    color: #021013;
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 3px rgba(0, 232, 244, 0.22);
+  }
+}
+
+.dept-card:hover,
+.dept-card:focus-within {
+  border-color: rgba(0, 243, 255, 0.72);
+
+  .card-image img {
+    transform: scale(1.035);
+    filter: saturate(0.95) brightness(0.72);
+  }
+}
+
+:host-context(body.mode-jonah) {
+  .dept-card {
+    border-color: rgba(255, 68, 24, 0.22);
+    border-radius: 3px;
+    background: #0b0302;
+  }
+
+  .card-image {
+    img {
+      filter: saturate(0.72) brightness(0.56) sepia(0.18);
+    }
+
+    .overlay {
+      background:
+        linear-gradient(
+          to top,
+          rgba(15, 2, 1, 0.99) 5%,
+          rgba(15, 2, 1, 0.72) 45%,
+          rgba(15, 2, 1, 0.14) 100%
+        );
+    }
+  }
+
+  .sector-meta span {
+    color: #ff8b68;
+  }
+
+  .shop-btn {
+    border-color: rgba(255, 67, 24, 0.72);
+    background: rgba(255, 67, 24, 0.07);
+    color: #ff8b68;
+
+    &:hover,
+    &:focus-visible {
+      background: #ff4318;
+      border-color: #ff4318;
+      color: #100200;
+    }
+
+    &:focus-visible {
+      box-shadow: 0 0 0 3px rgba(255, 67, 24, 0.22);
+    }
+  }
+
+  .dept-card:hover,
+  .dept-card:focus-within {
+    border-color: #ff4318;
+  }
+}
+
+@media (max-width: 1050px) {
+  .cards-grid {
+    grid-template-columns: repeat(3, minmax(220px, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .cards-grid {
+    display: flex;
+    gap: 0.85rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 0.65rem;
+    scrollbar-width: thin;
   }
 
   .dept-card {
-    border-radius: 0 !important; // Canto quadrado agressivo
-    border: 2px solid #330000;
-    background: #000;
+    flex: 0 0 min(78vw, 285px);
+    min-height: 260px;
+    scroll-snap-align: start;
+  }
 
-    // Tira a saturação e deixa vermelho
-    .card-image img {
-      filter: sepia(100%) hue-rotate(-50deg) contrast(1.2) !important;
-    }
+  .card-content {
+    min-height: 260px;
+  }
+}
 
-    // Título muda pra fonte 'bruta'
-    .card-content h3 {
-      font-family: 'Courier New', monospace;
-      border-left-color: $color-jonah-primary;
-      color: $color-jonah-primary;
-    }
-
-    .card-content .shop-btn {
-      border: 1px dashed $color-jonah-primary;
-      color: $color-jonah-primary;
-      background: transparent;
-
-      &:hover {
-        background: $color-jonah-primary;
-        color: #000;
-        box-shadow: 0 0 25px $color-jonah-primary;
-        // Efeito de tremor no botão
-        transform: skewX(-10deg);
-      }
-    }
-
-    // --- HOVER AGRESSIVO DO MODO JONAH ---
-    &:hover {
-      transform: translate(-4px, -4px); // Movimento seco
-      border-color: $color-jonah-primary;
-      box-shadow: 5px 5px 0px $color-jonah-primary; // Sombra dura (estilo HQ/Punk)
-
-      .card-image img {
-        // Fica super contrastado no hover
-        filter: contrast(1.5) brightness(1.2) !important;
-      }
-    }
+@media (prefers-reduced-motion: reduce) {
+  .dept-card,
+  .dept-card * {
+    transition-duration: 0.01ms !important;
   }
 }

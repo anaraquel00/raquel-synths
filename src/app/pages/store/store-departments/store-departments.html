@@ -1,34 +1,36 @@
 <section class="department-sector" ngSkipHydration>
-
-  <h2 class="sector-title">
-    {{ currentLang === 'pt' ? 'ESCOLHA SEU ESTILO' : 'CHOOSE YOUR STYLE' }}
-  </h2>
-
   <div class="cards-grid">
+    @for (item of departments; track item.id) {
+      <article class="dept-card" [ngClass]="item.id">
+        <div class="card-image">
+          <img
+            [src]="item.image"
+            [alt]="item.title"
+            loading="lazy">
+          <div class="overlay"></div>
+        </div>
 
-  @for (item of departments; track item.id) {
-  <article
-    class="dept-card"
-    [ngClass]="item.id"
-    (click)="onCardClick(item.id)"> <div class="card-image">
-      <img [src]="item.image" [alt]="item.title">
-      <div class="overlay"></div>
-    </div>
+        <div class="card-content">
+          <div class="sector-meta">
+            <span>
+              {{ productCounts[item.id] || 0 }}
+              {{ currentLang === 'pt' ? 'produtos' : 'products' }}
+            </span>
+          </div>
 
-    <div class="card-content">
-      <h3>{{ item.title }}</h3>
+          <h3>{{ item.title }}</h3>
 
-      <p>{{ item.description[currentLang] }}</p>
+          <p>{{ item.description[currentLang] }}</p>
 
-      <button class="shop-btn" (click)="onCardClick(item.id, $event)">
-        {{ item.buttonText[currentLang] }}
-      </button>
-
-    </div>
-
-  </article>
-  }
-
- </div>
-
+          <button
+            type="button"
+            class="shop-btn"
+            (click)="onCardClick(item.id, $event)"
+            [attr.aria-label]="(currentLang === 'pt' ? 'Explorar ' : 'Explore ') + item.title">
+            {{ currentLang === 'pt' ? 'EXPLORAR' : 'EXPLORE' }}
+          </button>
+        </div>
+      </article>
+    }
+  </div>
 </section>

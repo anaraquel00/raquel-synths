@@ -18,6 +18,8 @@ export class StoreDepartmentsComponent {
   // 🚪 PORTA DE ENTRADA 2: Recebe a língua atual ('pt' ou 'en')
   @Input() currentLang: 'pt' | 'en' = 'pt';
 
+  @Input() productCounts: Record<string, number> = {};
+
   // 📢 MEGAFONE DE SAÍDA: Avisa ao pai qual setor foi clicado
   @Output() selectDept = new EventEmitter<string>();
 

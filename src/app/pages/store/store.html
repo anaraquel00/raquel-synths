@@ -1,188 +1,308 @@
 <section class="store-container">
 
-  <div class="store-header">
-    <button class="back-btn" (click)="goBackHome()">
-      &larr; {{ currentLang() === 'pt' ? 'VOLTAR À BASE' : 'BACK TO BASE' }}
+  <header class="store-topbar">
+    <button type="button" class="back-btn" (click)="goBackHome()">
+      ← {{ currentLang() === 'pt' ? 'VOLTAR À BASE' : 'BACK TO BASE' }}
     </button>
 
-    <div class="mode-alert-banner">
-      @if (activeMode() === 'broklin') {
-        <div class="alert-content broklin-msg fade-in">
-          <span>{{ currentLang() === 'pt' ? '⚠️ Procurando a butique do Rust & Lord?' : '⚠️ Looking for the Rust & Lord boutique?' }}</span>
-          <strong>{{ currentLang() === 'pt' ? 'ATIVE O MODO JONAH! 💀' : 'TURN ON JONAH MODE! 💀' }}</strong>
-        </div>
-      } @else {
-        <div class="alert-content jonah-msg fade-in">
-          <span>{{ currentLang() === 'pt' ? '🛡️ Muito pesado pra você?' : '🛡️ Too heavy for you?' }}</span>
-          <strong>{{ currentLang() === 'pt' ? 'VOLTE PARA A SEGURANÇA! 💠' : 'RETURN TO SAFETY! 💠' }}</strong>
-        </div>
-      }
+    <div class="mode-indicator" [class.jonah]="activeMode() === 'jonah'">
+      <span class="mode-dot" aria-hidden="true"></span>
+      <span>
+        {{ activeMode() === 'jonah'
+          ? (currentLang() === 'pt' ? 'JONAH MODE' : 'JONAH MODE')
+          : (currentLang() === 'pt' ? 'BROKLIN MODE' : 'BROKLIN MODE') }}
+      </span>
+    </div>
+  </header>
+
+  <section class="store-hero" aria-labelledby="store-title">
+    <div class="hero-copy">
+      <p class="eyebrow">RQS // CURATED COMMERCE</p>
+
+      <h1 id="store-title">NEON STORE</h1>
+
+      <p class="hero-subtitle">
+        {{ currentLang() === 'pt'
+          ? 'Cyberpunk Fashion, Gear & Tech'
+          : 'Cyberpunk Fashion, Gear & Tech' }}
+      </p>
+
+      <p class="hero-description">
+        {{ currentLang() === 'pt'
+          ? 'Curadoria de moda cyberpunk e gótica, acessórios, tecnologia e equipamentos de áudio selecionados pela RaQuel Synths em lojas parceiras.'
+          : 'RQS-curated cyberpunk and goth fashion, accessories, technology and audio gear selected from partner stores.' }}
+      </p>
+
+      <div class="commerce-badges" aria-label="Store information">
+        <span>CURATED BY RQS</span>
+        <span>EXTERNAL MERCHANTS</span>
+        <span>{{ catalogCount }} ACTIVE PICKS</span>
+      </div>
     </div>
 
-    <h1 class="glitch-title" data-text="NEON STORE">NEON STORE</h1>
-    <p class="subtitle">Official Merch // Print-on-Demand Protocol</p>
-  </div>
+    <a
+      class="hero-signal hero-affiliate"
+      [href]="affiliate1010Url"
+      target="_blank"
+      rel="noopener noreferrer"
+      (click)="trackAffiliate1010()"
+      [attr.aria-label]="currentLang() === 'pt'
+        ? 'Abrir curadoria afiliada da RaQuel Synths no Mercado Livre'
+        : 'Open the RaQuel Synths affiliate curation on Mercado Livre'">
+      <strong>AFFILIATE</strong>
+      <span>SIGNAL</span>
+      <em>MERCADO LIVRE</em>
+      <small>CURATED BY RQS</small>
+    </a>
+  </section>
 
-  @if (currentView === 'LOBBY') {
-    <div class="store-lore-container">
-      @if (activeMode() === 'broklin') {
-        <div class="lore-broklin fade-in" [innerHTML]="currentLang() === 'pt' ? introBroklinPT : introBroklinEN"></div>
-      } @else {
-        <div class="lore-jonah fade-in" [innerHTML]="currentLang() === 'pt' ? introJonahPT : introJonahEN"></div>
+  @if (sheinProducts[0]; as signalProduct) {
+    <section class="current-signal" aria-labelledby="current-signal-title">
+      <div class="current-signal-image">
+        <img
+          [src]="signalProduct.image"
+          [alt]="signalProduct.content?.[currentLang()]?.name || 'Current Signal'">
+      </div>
+
+      <div class="current-signal-content">
+        <p class="section-kicker">CURRENT SIGNAL // SHEIN</p>
+
+        <h2 id="current-signal-title">
+          {{ currentLang() === 'pt'
+            ? 'Cyber / Goth Picks selecionados pela RQS'
+            : 'Cyber / Goth Picks selected by RQS' }}
+        </h2>
+
+        <p>
+          {{ currentLang() === 'pt'
+            ? 'Uma seleção visual da maior fonte atual do catálogo Neon Store.'
+            : 'A visual selection from the Neon Store’s largest current catalog source.' }}
+        </p>
+
+        <button type="button" class="primary-cta" (click)="showMerchant('shein')">
+          {{ currentLang() === 'pt' ? 'VER SELEÇÃO ↗' : 'VIEW SELECTION ↗' }}
+        </button>
+      </div>
+    </section>
+  }
+
+  <section class="store-section picks-section" aria-labelledby="rqs-picks-title">
+    <div class="section-heading">
+      <div>
+        <p class="section-kicker">CURATED DISCOVERY</p>
+        <h2 id="rqs-picks-title">RQS PICKS</h2>
+      </div>
+
+      <p>
+        {{ currentLang() === 'pt'
+          ? 'Sinais selecionados do catálogo atual.'
+          : 'Selected signals from the current catalog.' }}
+      </p>
+    </div>
+
+    <div class="picks-rail">
+      @for (item of rqsPicks; track item.id) {
+        <article class="pick-card">
+          <div class="pick-image">
+            <img
+              [src]="item.image"
+              [alt]="item.content?.[currentLang()]?.name || 'RQS Pick'"
+              loading="lazy">
+          </div>
+
+          <div class="pick-content">
+            <div class="badge-row">
+              <span class="affiliate-badge">AFFILIATE PICK</span>
+              <span class="merchant-badge">{{ item.merchantLabel }}</span>
+            </div>
+
+            <p class="sector-tag">{{ getDepartmentTitle(item.faction) }}</p>
+
+            <h3>{{ item.content?.[currentLang()]?.name }}</h3>
+
+            <button
+              type="button"
+              class="compact-cta"
+              (click)="handleShopClick(item)"
+              [disabled]="item.status === 'sold_out'">
+              @if (item.status === 'sold_out') {
+                {{ currentLang() === 'pt' ? 'ESGOTADO' : 'SOLD OUT' }}
+              } @else {
+                {{ getMerchantCta(item) }}
+              }
+            </button>
+          </div>
+        </article>
       }
+    </div>
+  </section>
+
+  <section class="store-section sectors-section" aria-labelledby="shop-sector-title">
+    <div class="section-heading">
+      <div>
+        <p class="section-kicker">SIGNAL MAP</p>
+        <h2 id="shop-sector-title">
+          {{ currentLang() === 'pt' ? 'SHOP BY SECTOR' : 'SHOP BY SECTOR' }}
+        </h2>
+      </div>
+
+      <p>
+        {{ currentLang() === 'pt'
+          ? 'A mesma Neon Store, diferentes frequências.'
+          : 'The same Neon Store, different frequencies.' }}
+      </p>
     </div>
 
     <app-store-departments
       [departments]="visibleDepartments"
       [currentLang]="currentLang()"
+      [productCounts]="departmentProductCounts"
       (selectDept)="onDepartmentSelected($event)">
     </app-store-departments>
-  }
+  </section>
 
-  @if (currentView === 'MINI_STORE') {
+  <section id="store-catalog" class="store-section catalog-section" aria-labelledby="catalog-title">
+    <div class="section-heading catalog-heading">
+      <div>
+        <p class="section-kicker">AFFILIATE CATALOG</p>
+        <h2 id="catalog-title">
+          {{ selectedDepartmentData?.title || (currentLang() === 'pt' ? 'TODOS OS PRODUTOS' : 'ALL PRODUCTS') }}
+        </h2>
+      </div>
 
-    <div class="mini-store-container">
+      <p>
+        {{ filteredProducts.length }}
+        {{ currentLang() === 'pt' ? 'itens visíveis' : 'visible items' }}
+      </p>
+    </div>
 
-      <div class="sub-nav">
-  <button class="back-to-dept-btn" (click)="backToLobby()">
-    &larr; {{ currentLang() === 'pt' ? 'ESCOLHER OUTRO SETOR' : 'CHOOSE ANOTHER SECTOR' }}
-  </button>
+    <div class="catalog-controls" aria-label="Catalog filters">
+      <button
+        type="button"
+        class="filter-chip"
+        [class.active]="selectedDepartmentId() === null"
+        (click)="clearSectorFilter()">
+        {{ currentLang() === 'pt' ? 'TODOS OS SETORES' : 'ALL SECTORS' }}
+      </button>
 
-  <div class="sector-header" [class.jonah-mode]="isJonahSector(selectedDepartmentId())">
+      <button
+        type="button"
+        class="filter-chip"
+        [class.active]="selectedMerchant() === 'all'"
+        (click)="setMerchantFilter('all')">
+        ALL
+      </button>
 
-    <div class="hazard-stripe"></div>
+      @for (merchant of merchantFilters; track merchant) {
+        <button
+          type="button"
+          class="filter-chip"
+          [class.active]="selectedMerchant() === merchant"
+          (click)="setMerchantFilter(merchant)">
+          {{ merchant === 'mercado-livre'
+            ? 'MERCADO LIVRE'
+            : merchant | uppercase }}
+        </button>
+      }
+    </div>
 
-    <h2 class="sector-label">
-       <span class="folder-icon">📂</span> {{ selectedDepartmentId() | uppercase }}
-    </h2>
+    <div class="product-grid">
+      @for (item of filteredProducts; track item.id) {
+        <article class="product-card" [class.sold-out]="item.status === 'sold_out'">
 
-  @if (selectedDepartmentData?.loreDescription) {
-     <div class="sector-description" [innerHTML]="selectedDepartmentData.loreDescription?.[currentLang()]"></div>
-  }
+          <div class="product-image">
+            <img
+              [src]="item.image"
+              [alt]="item.content?.[currentLang()]?.name || 'RQS product'"
+              loading="lazy">
 
-    <div class="hazard-stripe bottom"></div>
-  </div>
- </div>
-
-      <div class="product-grid">
-
-        @for (item of filteredProducts; track item.id) {
-        <div class="product-card fade-in-up" [class]="item.faction">
-          <div class="image-wrapper">
-            <img [src]="item.image" [alt]="item.content?.[currentLang()]?.name || 'Produto RQS'">
-            <div class="overlay"></div>
+            <div class="product-badges">
+              <span class="affiliate-badge">AFFILIATE PICK</span>
+              <span class="merchant-badge">{{ item.merchantLabel }}</span>
+            </div>
           </div>
 
-          <div class="info">
+          <div class="product-info">
+            <p class="sector-tag">{{ getDepartmentTitle(item.faction) }}</p>
+
             <h3>{{ item.content?.[currentLang()]?.name }}</h3>
 
-            <div class="desc" [innerHTML]="item.content?.[currentLang()]?.description"></div>
-
-            <div class="price-row">
-              <span class="price">{{ item.content?.[currentLang()]?.price }}</span>
-
-              <button
- (click)="handleShopClick(item)"
-  class="btn-neon"
-  [disabled]="item.status === 'sold_out'"
-  [class.sold-out-mode]="item.status === 'sold_out'">
-
-  @if (item.status === 'sold_out') {
-     {{ currentLang() === 'pt' ? 'ESGOTADO 🚫' : 'SOLD OUT 🚫' }}
-  } @else {
-     {{ currentLang() === 'pt' ? 'DECODIFICAR ACESSO 🔓' : 'DECODE ACCESS 🔓' }}
-     <i class="ph-tag"></i>
-  }
-
-             </button>
-            </div>
-          </div>
-        </div>
-        } @empty {
-        <div class="empty-state">
-          <p>⚠️ {{ currentLang() === 'pt' ? 'Nenhum item encontrado neste setor.' : 'No items found in this sector.' }}</p>
-        </div>
-        }
-
-
-        @if (selectedDepartmentId() === 'sonic-arsenal') {
-        <article class="product-card studio-easter-egg fade-in-up" aria-labelledby="rqs-studio-title">
-          <div class="image-wrapper studio-image-wrapper">
-            <div
-              class="studio-visual"
-              role="img"
-              [attr.aria-label]="currentLang() === 'pt'
-                ? 'Interface classificada do RQS Studio, módulo de software do Sonic Arsenal'
-                : 'Classified RQS Studio interface, Sonic Arsenal software module'">
-              <div class="studio-terminal-bar">
-                <span>RQS_CORE://SLOT_06</span>
-                <span class="studio-terminal-led" aria-hidden="true"></span>
-              </div>
-
-              <div class="studio-visual-core" aria-hidden="true">
-                <span class="studio-core-label">RQS // STUDIO</span>
-                <div class="studio-module-grid">
-                  <span>MASTERING</span>
-                  <span>STEMS</span>
-                  <span>SETLIST</span>
-                  <span>UPLINK</span>
-                </div>
-              </div>
-
-              <div class="studio-scanline" aria-hidden="true"></div>
-            </div>
-          </div>
-
-          <div class="info studio-info">
-            <div class="studio-status-line">
-              <span class="studio-kicker">SLOT_06 // CLASSIFIED</span>
-              <span class="studio-status studio-status-locked">SOFTWARE WEAPON DETECTED</span>
-              <span class="studio-status studio-status-unlocked">SIGNAL DECRYPTED // MODULE UNLOCKED</span>
-            </div>
-
-            <h3 id="rqs-studio-title">RQS STUDIO</h3>
-            <p class="studio-type">SOFTWARE ARSENAL // PUBLIC BETA</p>
-
-            @if (currentLang() === 'pt') {
-              <p class="studio-copy">Nem toda arma ocupa espaço físico.</p>
-              <p class="studio-copy">O RQS Studio é o módulo de software construído dentro da RaQuel Synths para preparar a munição sonora antes da missão.</p>
-            } @else {
-              <p class="studio-copy">Not every weapon takes physical space.</p>
-              <p class="studio-copy">RQS Studio is the software module built inside RaQuel Synths to prepare the sonic ammunition before deployment.</p>
-            }
-
-            <p class="studio-features">MASTERING // STEMS // SETLIST // UPLINK</p>
-            <p class="studio-note">
-              {{ currentLang() === 'pt'
-                ? 'Não é merchandise. É o sistema por trás do som.'
-                : 'Not merchandise. The system behind the sound.' }}
+            <p class="product-description">
+              {{ getShortDescription(item) }}
             </p>
 
-            <button
-              type="button"
-              class="studio-cta"
-              (click)="openRqsStudio()"
-              [attr.aria-label]="currentLang() === 'pt'
-                ? 'Inicializar RQS Studio em uma nova aba'
-                : 'Initialize RQS Studio in a new tab'">
-              {{ currentLang() === 'pt' ? 'INICIALIZAR RQS STUDIO ⏻' : 'INITIALIZE RQS STUDIO ⏻' }}
-            </button>
+            <div class="product-actions">
+              <button
+                type="button"
+                class="product-cta"
+                (click)="handleShopClick(item)"
+                [disabled]="item.status === 'sold_out'"
+                [attr.aria-label]="item.status === 'sold_out'
+                  ? (currentLang() === 'pt' ? 'Produto esgotado' : 'Product sold out')
+                  : getMerchantCta(item)">
+                @if (item.status === 'sold_out') {
+                  {{ currentLang() === 'pt' ? 'ESGOTADO' : 'SOLD OUT' }}
+                } @else {
+                  {{ getMerchantCta(item) }}
+                }
+              </button>
+            </div>
           </div>
         </article>
-        }
-      </div>
+      } @empty {
+        <div class="empty-state">
+          <p>
+            {{ currentLang() === 'pt'
+              ? 'Nenhum sinal corresponde aos filtros atuais.'
+              : 'No signals match the current filters.' }}
+          </p>
+
+          <button type="button" class="secondary-cta" (click)="setMerchantFilter('all')">
+            {{ currentLang() === 'pt' ? 'LIMPAR MERCHANT' : 'CLEAR MERCHANT' }}
+          </button>
+        </div>
+      }
     </div>
+  </section>
+
+  @if (selectedDepartmentData?.loreDescription) {
+    <section class="store-section dossier-section">
+      <details>
+        <summary>
+          <span>
+            <small>SECTOR DOSSIER</small>
+            <strong>{{ selectedDepartmentData.title }}</strong>
+          </span>
+
+          <span class="dossier-action">
+            {{ currentLang() === 'pt' ? 'ABRIR ↓' : 'OPEN ↓' }}
+          </span>
+        </summary>
+
+        <div
+          class="dossier-content"
+          [innerHTML]="selectedDepartmentData.loreDescription?.[currentLang()]">
+        </div>
+      </details>
+    </section>
   }
- <div class="legal-footer">
-    <small>
+
+  <footer class="affiliate-transparency">
+    <div>
+      <p class="section-kicker">AFFILIATE TRANSPARENCY</p>
+
+      <p>
+        {{ currentLang() === 'pt'
+          ? 'A Neon Store é uma curadoria afiliada da RaQuel Synths. Alguns links externos podem gerar comissão para a RQS sem custo adicional para você.'
+          : 'Neon Store is a curated affiliate storefront by RaQuel Synths. Some outbound links may generate a commission for RQS at no additional cost to you.' }}
+      </p>
+    </div>
+
+    <a [routerLink]="['/compliance']" class="compliance-link">
       {{ currentLang() === 'pt'
-         ? '* Nota de Transparência: Loja Híbrida. Alguns itens são links afiliados e outros são Merch Oficial (Stripe/PoD). Ao comprar, você apoia o projeto RaQuel Synths sem custo extra.'
-         : '* Transparency Note: Hybrid Store. Some items are affiliate links, others are Official Merch (Stripe/PoD). By purchasing, you support the RaQuel Synths project at no extra cost.'
-      }}
-      <br>
-      <a [routerLink]="['/compliance']" class="compliance-link">
-        {{ currentLang() === 'pt' ? '>> VER PROTOCOLOS DE COMPLIANCE' : '>> VIEW COMPLIANCE PROTOCOLS' }}
-      </a>
-    </small>
-  </div>
+        ? 'COMPLIANCE / TRANSPARÊNCIA ↗'
+        : 'COMPLIANCE / TRANSPARENCY ↗' }}
+    </a>
+  </footer>
+
 </section>
