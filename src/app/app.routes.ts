@@ -251,6 +251,13 @@ export const routes: Routes = [
     title: 'RQS Admin // Importador de Streaming'
   },
   {
+    path: 'admin/social-publishing',
+    loadComponent: () =>
+      import('./pages/social-publishing-admin/social-publishing-admin')
+        .then(m => m.SocialPublishingAdminComponent),
+    title: 'RQS Admin // Social Publishing'
+  },
+  {
     path: 'admin/soundcloud-importer',
     redirectTo: 'stream-importer',
     pathMatch: 'full'

@@ -396,7 +396,7 @@ async function firestoreCreate(payload) {
   }
 }
 
-export { parseSystemLogDocument, releaseDate, docId, firestoreFields, validateTechContent };
+export { parseSystemLogDocument, releaseDate, docId, firestoreFields, validateTechContent, secret, requireOrigin, requireSession, requireCsrf, body };
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store'); res.setHeader('Vary', 'Origin, Sec-Fetch-Site'); res.setHeader('X-Content-Type-Options', 'nosniff');
   try {
