@@ -1,0 +1,378 @@
+<section class="campaign-panel">
+  <div class="campaign-heading">
+    <div>
+      <p class="section-label">CAMPAIGNS</p>
+      <h2>Commerce Signals</h2>
+      <p>
+        Campanhas afiliadas com placement, prioridade,
+        agendamento e expiração automática.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="primary-action"
+      (click)="startCreate()"
+      [disabled]="loading()"
+    >
+      + NOVA CAMPANHA
+    </button>
+  </div>
+
+  @if (!checked()) {
+    <p>Validando sessão…</p>
+  } @else {
+    @if (editorMode(); as mode) {
+      <section class="campaign-editor">
+        <div class="editor-heading">
+          <strong>
+            {{ mode === 'create' ? 'NEW CAMPAIGN' : 'EDIT CAMPAIGN' }}
+          </strong>
+
+          <button
+            type="button"
+            (click)="closeEditor()"
+          >
+            FECHAR
+          </button>
+        </div>
+
+        <div class="form-grid">
+          <label>
+            CAMPAIGN ID
+            <div class="inline">
+              <input
+                [(ngModel)]="draft.id"
+                name="campaignId"
+                [readonly]="mode === 'edit'"
+                (ngModelChange)="invalidateDryRun()"
+              >
+
+              @if (mode === 'create') {
+                <button
+                  type="button"
+                  (click)="generateCampaignId()"
+                >
+                  GERAR
+                </button>
+              }
+            </div>
+          </label>
+
+          <label>
+            STATUS
+            <select
+              [(ngModel)]="draft.status"
+              name="campaignStatus"
+              (ngModelChange)="invalidateDryRun()"
+            >
+              @for (status of statuses; track status) {
+                <option [value]="status">
+                  {{ status }}
+                </option>
+              }
+            </select>
+          </label>
+
+          <label>
+            MERCHANT
+            <select
+              [(ngModel)]="draft.merchant"
+              name="campaignMerchant"
+              (ngModelChange)="invalidateDryRun()"
+            >
+              @for (merchant of merchants; track merchant) {
+                <option [value]="merchant">
+                  {{ merchant }}
+                </option>
+              }
+            </select>
+          </label>
+
+          <label>
+            PLACEMENT
+            <select
+              [(ngModel)]="draft.placement"
+              name="campaignPlacement"
+              (ngModelChange)="invalidateDryRun()"
+            >
+              @for (placement of placements; track placement) {
+                <option [value]="placement">
+                  {{ placement }}
+                </option>
+              }
+            </select>
+          </label>
+
+          <label>
+            PRIORITY
+            <input
+              type="number"
+              min="0"
+              max="9999"
+              [(ngModel)]="draft.priority"
+              name="campaignPriority"
+              (ngModelChange)="invalidateDryRun()"
+            >
+          </label>
+
+          <label class="wide">
+            DESTINATION URL
+            <input
+              type="url"
+              [(ngModel)]="draft.destinationUrl"
+              name="campaignUrl"
+              (ngModelChange)="invalidateDryRun()"
+            >
+          </label>
+
+          <label class="wide">
+            IMAGE
+            <input
+              [(ngModel)]="draft.image"
+              name="campaignImage"
+              placeholder="Obrigatória para current-signal"
+              (ngModelChange)="invalidateDryRun()"
+            >
+          </label>
+
+          <label>
+            START
+            <input
+              type="datetime-local"
+              [(ngModel)]="startLocal"
+              name="campaignStart"
+              (ngModelChange)="invalidateDryRun()"
+            >
+          </label>
+
+          <label>
+            END
+            <input
+              type="datetime-local"
+              [(ngModel)]="endLocal"
+              name="campaignEnd"
+              (ngModelChange)="invalidateDryRun()"
+            >
+          </label>
+
+          <label class="wide">
+            LINKED PRODUCT IDS
+            <input
+              [(ngModel)]="linkedProductsText"
+              name="campaignProducts"
+              placeholder="product-one, product-two"
+              (ngModelChange)="invalidateDryRun()"
+            >
+          </label>
+        </div>
+
+        <div class="language-grid">
+          <section>
+            <strong>PT-BR</strong>
+
+            <label>
+              KICKER
+              <input
+                [(ngModel)]="draft.content.pt.kicker"
+                name="campaignPtKicker"
+                (ngModelChange)="invalidateDryRun()"
+              >
+            </label>
+
+            <label>
+              TITLE
+              <input
+                [(ngModel)]="draft.content.pt.title"
+                name="campaignPtTitle"
+                (ngModelChange)="invalidateDryRun()"
+              >
+            </label>
+
+            <label>
+              OFFER LABEL
+              <input
+                [(ngModel)]="draft.content.pt.offerLabel"
+                name="campaignPtOffer"
+                (ngModelChange)="invalidateDryRun()"
+              >
+            </label>
+
+            <label>
+              SUPPORTING TEXT
+              <textarea
+                rows="4"
+                [(ngModel)]="draft.content.pt.supportingText"
+                name="campaignPtText"
+                (ngModelChange)="invalidateDryRun()"
+              ></textarea>
+            </label>
+
+            <label>
+              CTA
+              <input
+                [(ngModel)]="draft.content.pt.ctaLabel"
+                name="campaignPtCta"
+                (ngModelChange)="invalidateDryRun()"
+              >
+            </label>
+          </section>
+
+          <section>
+            <strong>EN-US</strong>
+
+            <label>
+              KICKER
+              <input
+                [(ngModel)]="draft.content.en.kicker"
+                name="campaignEnKicker"
+                (ngModelChange)="invalidateDryRun()"
+              >
+            </label>
+
+            <label>
+              TITLE
+              <input
+                [(ngModel)]="draft.content.en.title"
+                name="campaignEnTitle"
+                (ngModelChange)="invalidateDryRun()"
+              >
+            </label>
+
+            <label>
+              OFFER LABEL
+              <input
+                [(ngModel)]="draft.content.en.offerLabel"
+                name="campaignEnOffer"
+                (ngModelChange)="invalidateDryRun()"
+              >
+            </label>
+
+            <label>
+              SUPPORTING TEXT
+              <textarea
+                rows="4"
+                [(ngModel)]="draft.content.en.supportingText"
+                name="campaignEnText"
+                (ngModelChange)="invalidateDryRun()"
+              ></textarea>
+            </label>
+
+            <label>
+              CTA
+              <input
+                [(ngModel)]="draft.content.en.ctaLabel"
+                name="campaignEnCta"
+                (ngModelChange)="invalidateDryRun()"
+              >
+            </label>
+          </section>
+        </div>
+
+        <div class="editor-actions">
+          <button
+            type="button"
+            class="primary-action"
+            (click)="runDryRun()"
+            [disabled]="loading()"
+          >
+            DRY RUN // {{ mode === 'create' ? 'CREATE' : 'UPDATE' }}
+          </button>
+        </div>
+
+        @if (dryRun(); as result) {
+          <section
+            class="dry-run"
+            [class.blocked]="result.status === 'BLOCKED'"
+          >
+            <strong>
+              {{ result.status }}
+            </strong>
+
+            <p>
+              FIRESTORE WRITES =
+              {{ result.firestoreWrites }}
+            </p>
+
+            <p>
+              {{ result.documentPath }}
+            </p>
+
+            @if (result.blocked.length) {
+              <ul>
+                @for (issue of result.blocked; track issue) {
+                  <li>{{ issue }}</li>
+                }
+              </ul>
+            }
+
+            @if (result.status === 'PASS' && result.dryRunToken) {
+              <label class="owner-confirmation">
+                <input
+                  #confirmation
+                  type="checkbox"
+                  [checked]="ownerConfirmed()"
+                  (change)="setOwnerConfirmed(confirmation.checked)"
+                >
+
+                Confirmo explicitamente esta operação.
+              </label>
+
+              <button
+                type="button"
+                class="commit-action"
+                [disabled]="!ownerConfirmed() || loading()"
+                (click)="applyCampaign()"
+              >
+                {{ mode === 'create' ? 'CRIAR CAMPANHA' : 'ATUALIZAR CAMPANHA' }}
+              </button>
+            }
+          </section>
+        }
+      </section>
+    }
+
+    <div class="campaign-list">
+      @for (campaign of campaigns(); track campaign.id) {
+        <article>
+          <div>
+            <span>{{ campaign.placement }}</span>
+            <span>{{ campaign.merchantLabel }}</span>
+            <span [class.active]="campaign.effectiveStatus === 'active'">
+              {{ effectiveLabel(campaign) }}
+            </span>
+          </div>
+
+          <h3>
+            {{ campaign.content.pt.title || campaign.id }}
+          </h3>
+
+          <p>
+            {{ campaign.id }}
+            · priority {{ campaign.priority }}
+          </p>
+
+          <button
+            type="button"
+            (click)="startEdit(campaign)"
+          >
+            EDITAR
+          </button>
+        </article>
+      } @empty {
+        <p class="empty">
+          Nenhuma campanha cadastrada.
+          O Affiliate Signal permanente continua como fallback.
+        </p>
+      }
+    </div>
+  }
+
+  @if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  }
+
+  @if (message()) {
+    <p class="success" role="status">{{ message() }}</p>
+  }
+</section>

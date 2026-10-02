@@ -33,6 +33,10 @@ import {
   StoreAdminProductStatus
 } from '../../models/store-admin.model';
 
+import {
+  StoreCampaignsPanelComponent
+} from './store-campaigns-panel';
+
 interface SessionResult {
   authenticated: boolean;
   csrfToken?: string;
@@ -57,7 +61,8 @@ type EditorMode =
   imports: [
     CommonModule,
     FormsModule,
-    RouterLink
+    RouterLink,
+    StoreCampaignsPanelComponent
   ],
   templateUrl: './store-admin.html',
   styleUrl: './store-admin.scss'

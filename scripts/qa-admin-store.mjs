@@ -643,6 +643,33 @@ console.log(
   'ADMIN_STORE_DELETE_DISABLED = PASS'
 );
 
+const deleteCampaign =
+  fakeResponse();
+
+await storeAdminHandler(
+  {
+    ...baseRequest,
+
+    headers:
+      authHeaders,
+
+    body: {
+      action:
+        'delete-campaign'
+    }
+  },
+  deleteCampaign
+);
+
+assert.equal(
+  deleteCampaign.statusCode,
+  400
+);
+
+console.log(
+  'ADMIN_STORE_CAMPAIGN_DELETE_DISABLED = PASS'
+);
+
 console.log(
   'FIRESTORE_WRITES_DURING_QA = 0'
 );

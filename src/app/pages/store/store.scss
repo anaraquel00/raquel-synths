@@ -926,3 +926,44 @@ a {
   line-clamp: 3;
   min-height: 4.65em;
 }
+
+
+/* PATCH 6C — dynamic affiliate campaign signals */
+
+.campaign-signal {
+  padding: 1.25rem;
+  text-align: center;
+
+  strong,
+  em,
+  small {
+    position: relative;
+    z-index: 2;
+    display: block;
+  }
+
+  strong {
+    color: var(--store-accent);
+    font-size: .68rem;
+    letter-spacing: .14em;
+  }
+
+  em {
+    color: #fff;
+    font-style: normal;
+    font-weight: 850;
+  }
+
+  small {
+    color: rgba(255, 255, 255, .58);
+    font-size: .62rem;
+    letter-spacing: .07em;
+  }
+}
+
+.campaign-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}

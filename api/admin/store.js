@@ -14,6 +14,13 @@ import {
   secret
 } from './system-logs.js';
 
+import {
+  createStoreCampaign,
+  dryRunStoreCampaign,
+  listStoreCampaigns,
+  updateStoreCampaign
+} from '../../lib/store/campaigns.js';
+
 const PROJECT_ID =
   process.env.GOOGLE_CLOUD_PROJECT ||
   'raquel-synths-platform';
@@ -2031,6 +2038,76 @@ export default async function handler(
         .json(
           await archiveProduct(
             input
+          )
+        );
+    }
+
+    if (
+      input.action ===
+      'list-campaigns'
+    ) {
+      return res
+        .status(200)
+        .json({
+          campaigns:
+            await listStoreCampaigns()
+        });
+    }
+
+    if (
+      input.action ===
+      'dry-run-campaign'
+    ) {
+      return res
+        .status(200)
+        .json(
+          await dryRunStoreCampaign(
+            input,
+            secret()
+          )
+        );
+    }
+
+    if (
+      input.action ===
+      'create-campaign'
+    ) {
+      requireOwnerConfirmation(
+        input
+      );
+
+      requireDryRunToken(
+        input
+      );
+
+      return res
+        .status(201)
+        .json(
+          await createStoreCampaign(
+            input,
+            secret()
+          )
+        );
+    }
+
+    if (
+      input.action ===
+      'update-campaign'
+    ) {
+      requireOwnerConfirmation(
+        input
+      );
+
+      requireDryRunToken(
+        input
+      );
+
+      return res
+        .status(200)
+        .json(
+          await updateStoreCampaign(
+            input,
+            secret()
           )
         );
     }

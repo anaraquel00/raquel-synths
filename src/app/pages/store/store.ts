@@ -22,6 +22,37 @@ import {
   StoreMerchant
 } from './store-commerce';
 
+interface PublicStoreCampaignContent {
+  kicker: string;
+  title: string;
+  offerLabel: string;
+  supportingText: string;
+  ctaLabel: string;
+}
+
+interface PublicStoreCampaign {
+  id: string;
+  merchant: StoreMerchant;
+  merchantLabel: string;
+  placement:
+    | 'hero-signal'
+    | 'current-signal';
+  priority: number;
+  destinationUrl: string;
+  image: string;
+  content: {
+    pt: PublicStoreCampaignContent;
+    en: PublicStoreCampaignContent;
+  };
+}
+
+interface PublicStoreCampaignResponse {
+  heroSignal:
+    PublicStoreCampaign | null;
+  currentSignal:
+    PublicStoreCampaign | null;
+}
+
 @Component({
   selector: 'app-store',
   standalone: true,
@@ -206,8 +237,14 @@ private updateSeoAndLang(isPt: boolean) {
     'aliexpress'
   ];
 
-  readonly affiliate1010Url =
+  readonly mercadoLivreAffiliateUrl =
     'https://www.mercadolivre.com.br/social/anaraquel00/lists/aac28926-6453-4775-8dd7-d8d5ce54359c#tracking_id=08e73e47-a945-48da-8ac4-8c48026e854c';
+
+  readonly heroCampaign =
+    signal<PublicStoreCampaign | null>(null);
+
+  readonly currentCampaign =
+    signal<PublicStoreCampaign | null>(null);
 
   get catalogCount(): number {
     return this.allProducts.length;
@@ -296,6 +333,7 @@ ngOnInit(): void {
       }
     });
     this.loadData();
+    this.loadCampaigns();
 
     // 👇 OUVINTE DE URL (A Mágica do Deep Link com Query Params)
     this.querySub = this.route.queryParams.subscribe(params => { // Atribuir a querySub
@@ -374,6 +412,85 @@ ngOnInit(): void {
         }
       }
     });
+  }
+
+  private async loadCampaigns(): Promise<void> {
+    if (!this.isBrowser) return;
+
+    try {
+      const response =
+        await fetch('/api/store-campaign', {
+          method: 'GET',
+          cache: 'no-store',
+          credentials: 'same-origin'
+        });
+
+      if (!response.ok) return;
+
+      const result =
+        (await response.json()) as PublicStoreCampaignResponse;
+
+      this.heroCampaign.set(
+        result.heroSignal || null
+      );
+
+      this.currentCampaign.set(
+        result.currentSignal || null
+      );
+    } catch {
+      this.heroCampaign.set(null);
+      this.currentCampaign.set(null);
+    }
+  }
+
+  campaignContent(
+    campaign: PublicStoreCampaign
+  ): PublicStoreCampaignContent {
+    return campaign.content?.[
+      this.currentLang()
+    ] || campaign.content.pt;
+  }
+
+  trackStoreCampaign(
+    campaign: PublicStoreCampaign
+  ): void {
+    this.trackingService
+      .trackCustomEvent(
+        'store_campaign_click',
+        {
+          campaign:
+            campaign.id,
+          merchant:
+            campaign.merchant,
+          placement:
+            campaign.placement,
+          language:
+            this.currentLang(),
+          mode:
+            this.activeMode()
+        }
+      );
+  }
+
+  trackAffiliateSignal(): void {
+    this.trackingService
+      .trackCustomEvent(
+        'store_promotion_click',
+        {
+          campaign:
+            'mercado_livre_affiliate_signal',
+          merchant:
+            'mercado-livre',
+          destination:
+            'curated-list',
+          placement:
+            'hero-signal',
+          language:
+            this.currentLang(),
+          mode:
+            this.activeMode()
+        }
+      );
   }
 
   // --- LÓGICA DE TEMA ---
@@ -498,17 +615,6 @@ checkCurrentMode() {
   showMerchant(merchant: StoreMerchant): void {
     this.setMerchantFilter(merchant);
     this.scrollToCatalog();
-  }
-
-  trackAffiliate1010(): void {
-    this.trackingService.trackCustomEvent('store_promotion_click', {
-      campaign: 'affiliate_1010',
-      merchant: 'mercado-livre',
-      destination: 'curated-list',
-      placement: 'hero-signal',
-      language: this.currentLang(),
-      mode: this.activeMode()
-    });
   }
 
   getDepartmentTitle(faction: string | null | undefined): string {

@@ -11,11 +11,12 @@
   </header>
 
   <section class="policy-banner" aria-label="Política do módulo">
-    <strong>PATCH 6B // PRODUCT OPERATIONS</strong>
+    <strong>MODULE 06 // COMMERCE CONTROL</strong>
+    <span>PRODUCT OPERATIONS = ACTIVE</span>
+    <span>CAMPAIGN ENGINE = ACTIVE</span>
     <span>DRY RUN REQUIRED</span>
     <span>OWNER CONFIRMATION REQUIRED</span>
     <span>DELETE = DISABLED</span>
-    <span>CAMPAIGNS = HOLD</span>
   </section>
 
   @if (!checked()) {
@@ -550,25 +551,13 @@
         </div>
       </section>
 
-      <section class="panel future-panel">
-        <div>
-          <p class="section-label">CAMPAIGNS</p>
-          <h2>Campaign Engine reservado</h2>
-
-          <p>
-            A coleção <code>store-campaigns</code> continua fora do escopo
-            deste patch e será implementada no Patch 6C.
-          </p>
-        </div>
-
-        <span class="future-status">PATCH 6C</span>
-      </section>
+      <app-store-campaigns-panel></app-store-campaigns-panel>
 
       <p class="policy">
-        COLLECTION = {{ data.collection }}
+        COLLECTIONS = products + store-campaigns
         · DRY RUN REQUIRED
         · DELETE = DISABLED
-        · CAMPAIGNS = HOLD
+        · CAMPAIGNS = ACTIVE
       </p>
     }
   }

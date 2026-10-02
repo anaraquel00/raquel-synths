@@ -40,23 +40,80 @@
       </div>
     </div>
 
-    <a
-      class="hero-signal hero-affiliate"
-      [href]="affiliate1010Url"
-      target="_blank"
-      rel="noopener noreferrer"
-      (click)="trackAffiliate1010()"
-      [attr.aria-label]="currentLang() === 'pt'
-        ? 'Abrir curadoria afiliada da RaQuel Synths no Mercado Livre'
-        : 'Open the RaQuel Synths affiliate curation on Mercado Livre'">
-      <strong>AFFILIATE</strong>
-      <span>SIGNAL</span>
-      <em>MERCADO LIVRE</em>
-      <small>CURATED BY RQS</small>
-    </a>
+    @if (heroCampaign(); as campaign) {
+      <a
+        class="hero-signal hero-affiliate campaign-signal"
+        [href]="campaign.destinationUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+        (click)="trackStoreCampaign(campaign)"
+        [attr.aria-label]="campaignContent(campaign).ctaLabel">
+        <strong>
+          {{ campaignContent(campaign).kicker || 'AFFILIATE' }}
+        </strong>
+
+        <span>
+          {{ campaignContent(campaign).title }}
+        </span>
+
+        <em>
+          {{ campaignContent(campaign).offerLabel || campaign.merchantLabel }}
+        </em>
+
+        <small>
+          {{ campaignContent(campaign).ctaLabel }}
+        </small>
+      </a>
+    } @else {
+      <a
+        class="hero-signal hero-affiliate"
+        [href]="mercadoLivreAffiliateUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+        (click)="trackAffiliateSignal()"
+        [attr.aria-label]="currentLang() === 'pt'
+          ? 'Abrir curadoria afiliada da RaQuel Synths no Mercado Livre'
+          : 'Open the RaQuel Synths affiliate curation on Mercado Livre'">
+        <strong>AFFILIATE</strong>
+        <span>SIGNAL</span>
+        <em>MERCADO LIVRE</em>
+        <small>CURATED BY RQS</small>
+      </a>
+    }
   </section>
 
-  @if (sheinProducts[0]; as signalProduct) {
+  @if (currentCampaign(); as campaign) {
+    <section class="current-signal" aria-labelledby="current-signal-title">
+      <div class="current-signal-image">
+        <img
+          [src]="campaign.image"
+          [alt]="campaignContent(campaign).title || 'Current Signal'">
+      </div>
+
+      <div class="current-signal-content">
+        <p class="section-kicker">
+          {{ campaignContent(campaign).kicker || ('CURRENT SIGNAL // ' + campaign.merchantLabel) }}
+        </p>
+
+        <h2 id="current-signal-title">
+          {{ campaignContent(campaign).title }}
+        </h2>
+
+        <p>
+          {{ campaignContent(campaign).supportingText }}
+        </p>
+
+        <a
+          class="primary-cta campaign-cta"
+          [href]="campaign.destinationUrl"
+          target="_blank"
+          rel="noopener noreferrer"
+          (click)="trackStoreCampaign(campaign)">
+          {{ campaignContent(campaign).ctaLabel }}
+        </a>
+      </div>
+    </section>
+  } @else if (sheinProducts[0]; as signalProduct) {
     <section class="current-signal" aria-labelledby="current-signal-title">
       <div class="current-signal-image">
         <img

@@ -163,20 +163,88 @@ export interface StoreAdminCampaignContent {
 
 export interface StoreAdminCampaign {
   id: string;
-  status: StoreCampaignStatus;
-  merchant: Exclude<
-    StoreAdminMerchant,
-    'stripe' | 'partner' | 'unknown'
-  >;
-  placement: StoreCampaignPlacement;
+
+  status:
+    StoreCampaignStatus;
+
+  merchant:
+    'mercado-livre'
+    | 'shein'
+    | 'amazon'
+    | 'aliexpress';
+
+  placement:
+    StoreCampaignPlacement;
+
   priority: number;
+
   destinationUrl: string;
   image: string;
+
   startAt: string | null;
   endAt: string | null;
+
   linkedProductIds: string[];
+
   content: {
-    pt: StoreAdminCampaignContent;
-    en: StoreAdminCampaignContent;
+    pt:
+      StoreAdminCampaignContent;
+
+    en:
+      StoreAdminCampaignContent;
   };
+}
+
+export interface StoreAdminCampaignRecord
+extends StoreAdminCampaign {
+  merchantLabel: string;
+
+  effectiveStatus:
+    StoreCampaignStatus;
+
+  updateTime:
+    string | null;
+
+  warnings: string[];
+}
+
+export interface StoreAdminCampaignDryRun {
+  operation:
+    'create'
+    | 'update';
+
+  status:
+    'PASS'
+    | 'BLOCKED';
+
+  blocked: string[];
+  warnings: string[];
+
+  documentId: string;
+  documentPath: string;
+
+  sourceUpdateTime:
+    string | null;
+
+  firestoreWrites: 0;
+
+  dryRunToken:
+    string | null;
+
+  writePlan: {
+    operation:
+      'CREATE'
+      | 'UPDATE';
+
+    fields: string[];
+  };
+
+  preview:
+    | (
+        StoreAdminCampaign & {
+          effectiveStatus?:
+            StoreCampaignStatus;
+        }
+      )
+    | null;
 }
