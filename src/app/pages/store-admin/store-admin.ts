@@ -227,17 +227,33 @@ implements OnInit, OnDestroy {
         type:
           product.origin.type,
 
-        title:
-          product.origin.title,
-
-        featuredIn:
-          product.origin.featuredIn,
-
         sourceCollection:
           product.origin.sourceCollection,
 
         sourceId:
-          product.origin.sourceId
+          product.origin.sourceId,
+
+        content: {
+          pt: {
+            title:
+              product.origin.content.pt
+                .title,
+
+            featuredIn:
+              product.origin.content.pt
+                .featuredIn
+          },
+
+          en: {
+            title:
+              product.origin.content.en
+                .title,
+
+            featuredIn:
+              product.origin.content.en
+                .featuredIn
+          }
+        }
       },
 
       content: {
@@ -662,14 +678,28 @@ implements OnInit, OnDestroy {
       this.draft.origin.type !==
       'discography'
     ) {
-      this.draft.origin.featuredIn = '';
+      this.draft.origin.content.pt
+        .featuredIn = '';
+
+      this.draft.origin.content.en
+        .featuredIn = '';
     }
 
     if (
       this.draft.origin.type ===
       'none'
     ) {
-      this.draft.origin.title = '';
+      this.draft.origin.content.pt
+        .title = '';
+
+      this.draft.origin.content.en
+        .title = '';
+
+      this.draft.origin.content.pt
+        .featuredIn = '';
+
+      this.draft.origin.content.en
+        .featuredIn = '';
     }
 
     this.invalidateDryRun();
@@ -703,10 +733,22 @@ implements OnInit, OnDestroy {
 
       origin: {
         type: 'none',
-        title: '',
-        featuredIn: '',
+
         sourceCollection: '',
-        sourceId: ''
+
+        sourceId: '',
+
+        content: {
+          pt: {
+            title: '',
+            featuredIn: ''
+          },
+
+          en: {
+            title: '',
+            featuredIn: ''
+          }
+        }
       },
 
       content: {

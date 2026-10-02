@@ -291,19 +291,35 @@
             @if (getProductOrigin(item); as origin) {
               <section
                 class="product-origin"
-                [attr.aria-label]="'RQS Origin: ' + origin.title">
+                [attr.aria-label]="
+                  (currentLang() === 'pt'
+                    ? 'Origem RQS: '
+                    : 'RQS Origin: ') +
+                  getProductOriginTitle(origin)
+                ">
 
                 <p class="origin-kicker">
-                  ORIGIN // {{ getProductOriginLabel(origin) }}
+                  {{
+                    currentLang() === 'pt'
+                      ? 'ORIGEM'
+                      : 'ORIGIN'
+                  }}
+                  //
+                  {{ getProductOriginLabel(origin) }}
                 </p>
 
                 <strong class="origin-title">
-                  {{ origin.title }}
+                  {{ getProductOriginTitle(origin) }}
                 </strong>
 
-                @if (origin.featuredIn) {
+                @if (getProductOriginFeaturedIn(origin); as featuredIn) {
                   <span class="origin-featured">
-                    FEATURED IN // {{ origin.featuredIn }}
+                    {{
+                      currentLang() === 'pt'
+                        ? 'PRESENTE EM'
+                        : 'FEATURED IN'
+                    }}
+                    // {{ featuredIn }}
                   </span>
                 }
 

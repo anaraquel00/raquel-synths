@@ -646,7 +646,34 @@ checkCurrentMode() {
     origin: StoreProductOrigin
   ): string {
     return getStoreOriginTypeLabel(
-      origin.type
+      origin.type,
+      this.currentLang()
+    );
+  }
+
+  getProductOriginTitle(
+    origin: StoreProductOrigin
+  ): string {
+    const lang =
+      this.currentLang();
+
+    return (
+      origin.content?.[lang]?.title ||
+      origin.content.pt.title ||
+      origin.content.en.title
+    );
+  }
+
+  getProductOriginFeaturedIn(
+    origin: StoreProductOrigin
+  ): string {
+    const lang =
+      this.currentLang();
+
+    return (
+      origin.content?.[lang]
+        ?.featuredIn ||
+      ''
     );
   }
 
@@ -654,7 +681,8 @@ checkCurrentMode() {
     origin: StoreProductOrigin
   ): string {
     return getStoreOriginCta(
-      origin.type
+      origin.type,
+      this.currentLang()
     );
   }
 

@@ -304,19 +304,40 @@
                   <span>
                     {{
                       draft.origin.type === 'discography'
-                        ? 'RELEASE'
+                        ? 'RELEASE // PT-BR'
                         : draft.origin.type === 'system-log'
-                          ? 'LOG TITLE'
-                          : 'SAGA TITLE'
+                          ? 'LOG TITLE // PT-BR'
+                          : 'SAGA TITLE // PT-BR'
                     }}
                   </span>
 
                   <input
                     type="text"
-                    [(ngModel)]="draft.origin.title"
-                    name="originTitle"
+                    [(ngModel)]="draft.origin.content.pt.title"
+                    name="originTitlePt"
                     maxlength="160"
-                    placeholder="Saudade Sintética (Lado A/B)"
+                    placeholder="Título em português"
+                    (ngModelChange)="invalidateDryRun()"
+                  >
+                </label>
+
+                <label class="wide-field">
+                  <span>
+                    {{
+                      draft.origin.type === 'discography'
+                        ? 'RELEASE // EN-US'
+                        : draft.origin.type === 'system-log'
+                          ? 'LOG TITLE // EN-US'
+                          : 'SAGA TITLE // EN-US'
+                    }}
+                  </span>
+
+                  <input
+                    type="text"
+                    [(ngModel)]="draft.origin.content.en.title"
+                    name="originTitleEn"
+                    maxlength="160"
+                    placeholder="English title"
                     (ngModelChange)="invalidateDryRun()"
                   >
                 </label>
@@ -361,14 +382,27 @@
 
                 @if (draft.origin.type === 'discography') {
                   <label class="wide-field">
-                    <span>FEATURED IN</span>
+                    <span>FEATURED IN // PT-BR</span>
 
                     <input
                       type="text"
-                      [(ngModel)]="draft.origin.featuredIn"
-                      name="originFeaturedIn"
+                      [(ngModel)]="draft.origin.content.pt.featuredIn"
+                      name="originFeaturedInPt"
                       maxlength="160"
                       placeholder="Fitas Desbotadas"
+                      (ngModelChange)="invalidateDryRun()"
+                    >
+                  </label>
+
+                  <label class="wide-field">
+                    <span>FEATURED IN // EN-US</span>
+
+                    <input
+                      type="text"
+                      [(ngModel)]="draft.origin.content.en.featuredIn"
+                      name="originFeaturedInEn"
+                      maxlength="160"
+                      placeholder="Faded Tapes"
                       (ngModelChange)="invalidateDryRun()"
                     >
                   </label>
@@ -383,7 +417,7 @@
                 </span>
 
                 <strong>
-                  {{ draft.origin.title || 'Título da origem' }}
+                  {{ draft.origin.content.pt.title || 'Título da origem' }}
                 </strong>
 
                 <small>
@@ -391,9 +425,9 @@
                   {{ originSourceCollection(draft.origin.type) }}/{{ draft.origin.sourceId || 'document-id' }}
                 </small>
 
-                @if (draft.origin.featuredIn) {
+                @if (draft.origin.content.pt.featuredIn) {
                   <small>
-                    FEATURED IN // {{ draft.origin.featuredIn }}
+                    FEATURED IN // {{ draft.origin.content.pt.featuredIn }}
                   </small>
                 }
 

@@ -47,13 +47,26 @@ export type StoreProductOriginCollection =
   | 'logs'
   | 'discography';
 
-export interface StoreProductOrigin {
-  type: StoreProductOriginType;
+export interface StoreProductOriginLocalizedContent {
   title: string;
   featuredIn: string;
+}
+
+export interface StoreProductOrigin {
+  type: StoreProductOriginType;
+
   sourceCollection:
     StoreProductOriginCollection;
+
   sourceId: string;
+
+  content: {
+    pt:
+      StoreProductOriginLocalizedContent;
+
+    en:
+      StoreProductOriginLocalizedContent;
+  };
 }
 
 export const STORE_ADMIN_ORIGIN_TYPES: StoreProductOriginType[] = [

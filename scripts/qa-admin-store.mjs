@@ -333,52 +333,82 @@ const originCases = [
   {
     type:
       'broklin-saga',
+
     collection:
       'lore',
+
     sourceId:
       's1-e10',
-    title:
-      'ASHES OF ME'
+
+    pt:
+      'Episódio 10 — Pó de Mim',
+
+    en:
+      'Episode 10 — Ashes of Me'
   },
   {
     type:
       'jonah-saga',
+
     collection:
       'lore-jonah',
+
     sourceId:
       's1-e6',
-    title:
+
+    pt:
+      'Episódio Jonah',
+
+    en:
       'Jonah Episode'
   },
   {
     type:
       'global-saga',
+
     collection:
       'global-sagas',
+
     sourceId:
       's1-e10',
-    title:
-      'Global Episode'
+
+    pt:
+      'Saga Global',
+
+    en:
+      'Global Saga'
   },
   {
     type:
       'system-log',
+
     collection:
       'logs',
+
     sourceId:
       '2025-12-08-log',
-    title:
+
+    pt:
+      'Protocolo de Paternidade',
+
+    en:
       'Paternity Protocol'
   },
   {
     type:
       'discography',
+
     collection:
       'discography',
+
     sourceId:
       'ep-saudade-sintetica',
-    title:
-      'Saudade Sintética (Lado A/B)'
+
+    pt:
+      'Saudade Sintética (Lado A/B)',
+
+    en:
+      'Saudade Sintética (Side A/B)'
   }
 ];
 
@@ -394,20 +424,35 @@ for (
         type:
           originCase.type,
 
-        title:
-          originCase.title,
-
-        featuredIn:
-          originCase.type ===
-            'discography'
-            ? 'Fitas Desbotadas'
-            : '',
-
         sourceCollection:
           'wrong-value',
 
         sourceId:
-          originCase.sourceId
+          originCase.sourceId,
+
+        content: {
+          pt: {
+            title:
+              originCase.pt,
+
+            featuredIn:
+              originCase.type ===
+                'discography'
+                ? 'Fitas Desbotadas'
+                : ''
+          },
+
+          en: {
+            title:
+              originCase.en,
+
+            featuredIn:
+              originCase.type ===
+                'discography'
+                ? 'Faded Tapes'
+                : ''
+          }
+        }
       }
     });
 
@@ -424,10 +469,89 @@ for (
 
   assert.equal(
     result.payload
-      .origin.sourceId,
-    originCase.sourceId
+      .origin.content.pt.title,
+    originCase.pt
+  );
+
+  assert.equal(
+    result.payload
+      .origin.content.en.title,
+    originCase.en
   );
 }
+
+const incompleteLocalization =
+  validateProductDraft({
+    ...validDraft,
+
+    origin: {
+      type:
+        'broklin-saga',
+
+      sourceCollection:
+        'lore',
+
+      sourceId:
+        's1-e10',
+
+      content: {
+        pt: {
+          title:
+            'Episódio 10 — Pó de Mim',
+
+          featuredIn: ''
+        },
+
+        en: {
+          title: '',
+          featuredIn: ''
+        }
+      }
+    }
+  });
+
+assert.equal(
+  incompleteLocalization.status,
+  'BLOCKED'
+);
+
+const halfFeaturedIn =
+  validateProductDraft({
+    ...validDraft,
+
+    origin: {
+      type:
+        'discography',
+
+      sourceCollection:
+        'discography',
+
+      sourceId:
+        'ep-saudade-sintetica',
+
+      content: {
+        pt: {
+          title:
+            'Saudade Sintética',
+
+          featuredIn:
+            'Fitas Desbotadas'
+        },
+
+        en: {
+          title:
+            'Saudade Sintética',
+
+          featuredIn: ''
+        }
+      }
+    }
+  });
+
+assert.equal(
+  halfFeaturedIn.status,
+  'BLOCKED'
+);
 
 const invalidSourceId =
   validateProductDraft({
@@ -437,16 +561,27 @@ const invalidSourceId =
       type:
         'broklin-saga',
 
-      title:
-        'ASHES OF ME',
-
-      featuredIn: '',
-
       sourceCollection:
         'lore',
 
       sourceId:
-        'bad/id'
+        'bad/id',
+
+      content: {
+        pt: {
+          title:
+            'Título',
+
+          featuredIn: ''
+        },
+
+        en: {
+          title:
+            'Title',
+
+          featuredIn: ''
+        }
+      }
     }
   });
 
@@ -523,37 +658,24 @@ assert.equal(
   's1-e10'
 );
 
-const legacyDiscographyOrigin =
-  normalizeStoreAdminProduct({
-    origin: {
-      type:
-        'discography',
-
-      title:
-        'Saudade Sintética',
-
-      releaseId:
-        'ep-saudade-sintetica',
-
-      route:
-        '/musical-archives'
-    }
-  });
-
 assert.equal(
-  legacyDiscographyOrigin
-    .origin.sourceCollection,
-  'discography'
+  legacyBroklinOrigin
+    .origin.content.pt.title,
+  'ASHES OF ME'
 );
 
 assert.equal(
-  legacyDiscographyOrigin
-    .origin.sourceId,
-  'ep-saudade-sintetica'
+  legacyBroklinOrigin
+    .origin.content.en.title,
+  'ASHES OF ME'
 );
 
 console.log(
   'STORE_UNIVERSAL_ORIGIN_REFERENCE = PASS'
+);
+
+console.log(
+  'STORE_ORIGIN_LOCALIZATION = PASS'
 );
 
 console.log(

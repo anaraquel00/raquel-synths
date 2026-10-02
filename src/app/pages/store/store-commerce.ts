@@ -25,13 +25,30 @@ export type StoreProductOriginCollection =
   | 'logs'
   | 'discography';
 
-export interface StoreProductOrigin {
-  type: StoreProductOriginType;
+export type StoreLanguage =
+  | 'pt'
+  | 'en';
+
+export interface StoreProductOriginLocalizedContent {
   title: string;
   featuredIn: string;
+}
+
+export interface StoreProductOrigin {
+  type: StoreProductOriginType;
+
   sourceCollection:
     StoreProductOriginCollection;
+
   sourceId: string;
+
+  content: {
+    pt:
+      StoreProductOriginLocalizedContent;
+
+    en:
+      StoreProductOriginLocalizedContent;
+  };
 }
 
 const AFFILIATE_MERCHANTS: StoreMerchant[] = [
@@ -330,8 +347,6 @@ export function normalizeStoreProductOrigin(
   } else if (
     rawType === 'saga'
   ) {
-    // Compatibility for origins written
-    // before Universal Origin Reference.
     type =
       inferLegacyStoreSagaType(
         legacyRoute
@@ -339,14 +354,6 @@ export function normalizeStoreProductOrigin(
   }
 
   if (!type) {
-    return null;
-  }
-
-  const title =
-    String(value?.title || '')
-      .trim();
-
-  if (!title) {
     return null;
   }
 
@@ -370,23 +377,112 @@ export function normalizeStoreProductOrigin(
     return null;
   }
 
+  // Compatibility with origins stored before 6E.5.
+  const legacyTitle =
+    String(
+      value?.title || ''
+    ).trim();
+
+  const legacyFeaturedIn =
+    String(
+      value?.featuredIn || ''
+    ).trim();
+
+  const ptTitle =
+    String(
+      value?.content?.pt?.title ||
+      legacyTitle ||
+      value?.content?.en?.title ||
+      ''
+    ).trim();
+
+  const enTitle =
+    String(
+      value?.content?.en?.title ||
+      legacyTitle ||
+      ptTitle ||
+      ''
+    ).trim();
+
+  if (
+    !ptTitle &&
+    !enTitle
+  ) {
+    return null;
+  }
+
+  const ptFeaturedIn =
+    String(
+      value?.content?.pt
+        ?.featuredIn ||
+      legacyFeaturedIn ||
+      value?.content?.en
+        ?.featuredIn ||
+      ''
+    ).trim();
+
+  const enFeaturedIn =
+    String(
+      value?.content?.en
+        ?.featuredIn ||
+      legacyFeaturedIn ||
+      ptFeaturedIn ||
+      ''
+    ).trim();
+
   return {
     type,
-    title,
-
-    featuredIn:
-      String(
-        value?.featuredIn || ''
-      ).trim(),
-
     sourceCollection,
-    sourceId
+    sourceId,
+
+    content: {
+      pt: {
+        title:
+          ptTitle || enTitle,
+
+        featuredIn:
+          ptFeaturedIn
+      },
+
+      en: {
+        title:
+          enTitle || ptTitle,
+
+        featuredIn:
+          enFeaturedIn
+      }
+    }
   };
 }
 
 export function getStoreOriginTypeLabel(
-  type: StoreProductOriginType
+  type: StoreProductOriginType,
+  lang: StoreLanguage = 'en'
 ): string {
+  if (lang === 'pt') {
+    if (type === 'system-log') {
+      return 'LOG DO SISTEMA';
+    }
+
+    if (type === 'discography') {
+      return 'DISCOGRAFIA';
+    }
+
+    if (type === 'broklin-saga') {
+      return 'SAGA BROKLIN';
+    }
+
+    if (type === 'jonah-saga') {
+      return 'SAGA JONAH';
+    }
+
+    if (type === 'global-saga') {
+      return 'SAGA GLOBAL';
+    }
+
+    return '';
+  }
+
   if (type === 'system-log') {
     return 'SYSTEM LOG';
   }
@@ -411,8 +507,21 @@ export function getStoreOriginTypeLabel(
 }
 
 export function getStoreOriginCta(
-  type: StoreProductOriginType
+  type: StoreProductOriginType,
+  lang: StoreLanguage = 'en'
 ): string {
+  if (lang === 'pt') {
+    if (type === 'system-log') {
+      return 'ACESSAR LOG →';
+    }
+
+    if (type === 'discography') {
+      return 'ACESSAR LANÇAMENTO →';
+    }
+
+    return 'ACESSAR HISTÓRIA →';
+  }
+
   if (type === 'system-log') {
     return 'ACCESS LOG →';
   }
@@ -421,15 +530,7 @@ export function getStoreOriginCta(
     return 'ACCESS RELEASE →';
   }
 
-  if (
-    type === 'broklin-saga' ||
-    type === 'jonah-saga' ||
-    type === 'global-saga'
-  ) {
-    return 'ACCESS STORY →';
-  }
-
-  return '';
+  return 'ACCESS STORY →';
 }
 
 export function getStoreOriginHref(

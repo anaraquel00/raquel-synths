@@ -382,6 +382,28 @@ function localizedContent(value) {
   };
 }
 
+function localizedOriginContent(
+  value,
+  legacyTitle = '',
+  legacyFeaturedIn = ''
+) {
+  return {
+    title:
+      String(
+        value?.title ||
+        legacyTitle ||
+        ''
+      ).trim(),
+
+    featuredIn:
+      String(
+        value?.featuredIn ||
+        legacyFeaturedIn ||
+        ''
+      ).trim()
+  };
+}
+
 function decodeOriginId(value) {
   try {
     return decodeURIComponent(
@@ -542,8 +564,7 @@ function normalizeOrigin(value = {}) {
   let type =
     rawType;
 
-  // Backward compatibility:
-  // old generic saga + manual route.
+  // Compatibility with pre-6E.4 generic saga records.
   if (type === 'saga') {
     type =
       inferLegacySagaType(
@@ -562,10 +583,22 @@ function normalizeOrigin(value = {}) {
   if (type === 'none') {
     return {
       type: 'none',
-      title: '',
-      featuredIn: '',
+
       sourceCollection: '',
-      sourceId: ''
+
+      sourceId: '',
+
+      content: {
+        pt: {
+          title: '',
+          featuredIn: ''
+        },
+
+        en: {
+          title: '',
+          featuredIn: ''
+        }
+      }
     };
   }
 
@@ -581,22 +614,60 @@ function normalizeOrigin(value = {}) {
       legacyRoute
     );
 
+  // Compatibility with 6E.2 / 6E.4 records.
+  const legacyTitle =
+    String(
+      value?.title || ''
+    ).trim();
+
+  const legacyFeaturedIn =
+    String(
+      value?.featuredIn || ''
+    ).trim();
+
+  const pt =
+    localizedOriginContent(
+      value?.content?.pt,
+      legacyTitle,
+      legacyFeaturedIn
+    );
+
+  const en =
+    localizedOriginContent(
+      value?.content?.en,
+      legacyTitle || pt.title,
+      legacyFeaturedIn ||
+        pt.featuredIn
+    );
+
+  // Defensive fallback if only EN exists.
+  if (
+    !pt.title &&
+    en.title
+  ) {
+    pt.title =
+      en.title;
+  }
+
+  if (
+    !pt.featuredIn &&
+    en.featuredIn
+  ) {
+    pt.featuredIn =
+      en.featuredIn;
+  }
+
   return {
     type,
 
-    title:
-      String(
-        value?.title || ''
-      ).trim(),
-
-    featuredIn:
-      String(
-        value?.featuredIn || ''
-      ).trim(),
-
     sourceCollection,
 
-    sourceId
+    sourceId,
+
+    content: {
+      pt,
+      en
+    }
   };
 }
 
@@ -983,28 +1054,6 @@ export function validateProductDraft(
   if (
     draft.origin.type !== 'none'
   ) {
-    if (!draft.origin.title) {
-      blocked.push(
-        'RQS Origin title is required.'
-      );
-    }
-
-    if (
-      draft.origin.title.length > 160
-    ) {
-      blocked.push(
-        'RQS Origin title exceeds 160 characters.'
-      );
-    }
-
-    if (
-      draft.origin.featuredIn.length > 160
-    ) {
-      blocked.push(
-        'RQS Origin featuredIn exceeds 160 characters.'
-      );
-    }
-
     const expectedCollection =
       ORIGIN_COLLECTION_BY_TYPE[
         draft.origin.type
@@ -1027,6 +1076,88 @@ export function validateProductDraft(
     ) {
       blocked.push(
         'RQS Origin sourceId is required and must be a valid Firestore document ID.'
+      );
+    }
+
+    // Writes must provide localized presentation explicitly.
+    // Legacy PT/EN fallback belongs only to read normalization.
+    const submittedOriginContent = {
+      pt: {
+        title:
+          String(
+            input?.origin?.content
+              ?.pt?.title || ''
+          ).trim(),
+
+        featuredIn:
+          String(
+            input?.origin?.content
+              ?.pt?.featuredIn || ''
+          ).trim()
+      },
+
+      en: {
+        title:
+          String(
+            input?.origin?.content
+              ?.en?.title || ''
+          ).trim(),
+
+        featuredIn:
+          String(
+            input?.origin?.content
+              ?.en?.featuredIn || ''
+          ).trim()
+      }
+    };
+
+    for (
+      const [language, content]
+      of Object.entries(
+        submittedOriginContent
+      )
+    ) {
+      if (!content.title) {
+        blocked.push(
+          `${language.toUpperCase()} RQS Origin title is required.`
+        );
+      }
+
+      if (
+        content.title.length > 160
+      ) {
+        blocked.push(
+          `${language.toUpperCase()} RQS Origin title exceeds 160 characters.`
+        );
+      }
+
+      if (
+        content.featuredIn.length > 160
+      ) {
+        blocked.push(
+          `${language.toUpperCase()} RQS Origin featuredIn exceeds 160 characters.`
+        );
+      }
+    }
+
+    const ptFeatured =
+      Boolean(
+        submittedOriginContent.pt
+          .featuredIn
+      );
+
+    const enFeatured =
+      Boolean(
+        submittedOriginContent.en
+          .featuredIn
+      );
+
+    if (
+      ptFeatured !==
+      enFeatured
+    ) {
+      blocked.push(
+        'RQS Origin featuredIn must be provided in both languages or neither.'
       );
     }
   }
@@ -1110,16 +1241,6 @@ function productFields(product) {
         type:
           stringValue(
             product.origin.type
-          ),
-
-        title:
-          stringValue(
-            product.origin.title
-          ),
-
-        featuredIn:
-          stringValue(
-            product.origin.featuredIn
           ),
 
         sourceCollection:
