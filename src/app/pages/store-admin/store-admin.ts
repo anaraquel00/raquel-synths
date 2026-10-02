@@ -667,12 +667,28 @@ implements OnInit, OnDestroy {
   }
 
   onOriginTypeChange(): void {
-    this.draft.origin.sourceCollection =
+    const previousCollection =
+      this.draft.origin.sourceCollection;
+
+    const nextCollection =
       this.originSourceCollection(
         this.draft.origin.type
       );
 
-    this.draft.origin.sourceId = '';
+    this.draft.origin.sourceCollection =
+      nextCollection;
+
+    // Preserve the canonical Firestore document ID when
+    // the effective origin collection did not change.
+    // This prevents harmless editor/model refreshes from
+    // silently destroying an existing Origin reference.
+    if (
+      previousCollection &&
+      previousCollection !==
+        nextCollection
+    ) {
+      this.draft.origin.sourceId = '';
+    }
 
     if (
       this.draft.origin.type !==
