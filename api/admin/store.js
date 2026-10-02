@@ -1214,7 +1214,7 @@ function mapValue(fields) {
   };
 }
 
-function productFields(product) {
+export function productFields(product) {
   return {
     faction:
       stringValue(product.faction),
@@ -1252,7 +1252,42 @@ function productFields(product) {
         sourceId:
           stringValue(
             product.origin.sourceId
-          )
+          ),
+
+        content:
+          mapValue({
+            pt:
+              mapValue({
+                title:
+                  stringValue(
+                    product.origin
+                      .content.pt.title
+                  ),
+
+                featuredIn:
+                  stringValue(
+                    product.origin
+                      .content.pt
+                      .featuredIn
+                  )
+              }),
+
+            en:
+              mapValue({
+                title:
+                  stringValue(
+                    product.origin
+                      .content.en.title
+                  ),
+
+                featuredIn:
+                  stringValue(
+                    product.origin
+                      .content.en
+                      .featuredIn
+                  )
+              })
+          })
       }),
 
     content:

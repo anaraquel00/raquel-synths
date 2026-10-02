@@ -9,6 +9,7 @@ import {
 import storeAdminHandler, {
   makeProductDryRunToken,
   normalizeStoreAdminProduct,
+  productFields,
   resolveStoreAdminMerchant,
   validateProductDraft,
   verifyProductDryRunToken
@@ -676,6 +677,96 @@ console.log(
 
 console.log(
   'STORE_ORIGIN_LOCALIZATION = PASS'
+);
+
+
+const serializedLocalizedOrigin =
+  productFields({
+    ...valid.payload,
+
+    origin: {
+      type:
+        'broklin-saga',
+
+      sourceCollection:
+        'lore',
+
+      sourceId:
+        's1-e10',
+
+      content: {
+        pt: {
+          title:
+            'PÓ DE MIM',
+
+          featuredIn: ''
+        },
+
+        en: {
+          title:
+            'ASHES OF ME',
+
+          featuredIn: ''
+        }
+      }
+    }
+  });
+
+const serializedOriginFields =
+  serializedLocalizedOrigin
+    .origin
+    .mapValue
+    .fields;
+
+assert.equal(
+  serializedOriginFields
+    .type
+    .stringValue,
+  'broklin-saga'
+);
+
+assert.equal(
+  serializedOriginFields
+    .sourceCollection
+    .stringValue,
+  'lore'
+);
+
+assert.equal(
+  serializedOriginFields
+    .sourceId
+    .stringValue,
+  's1-e10'
+);
+
+assert.equal(
+  serializedOriginFields
+    .content
+    .mapValue
+    .fields
+    .pt
+    .mapValue
+    .fields
+    .title
+    .stringValue,
+  'PÓ DE MIM'
+);
+
+assert.equal(
+  serializedOriginFields
+    .content
+    .mapValue
+    .fields
+    .en
+    .mapValue
+    .fields
+    .title
+    .stringValue,
+  'ASHES OF ME'
+);
+
+console.log(
+  'STORE_ORIGIN_FIRESTORE_SERIALIZATION = PASS'
 );
 
 console.log(
