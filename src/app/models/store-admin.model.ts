@@ -33,21 +33,34 @@ export type StoreAdminProductOperation =
 
 export type StoreProductOriginType =
   | 'none'
-  | 'saga'
+  | 'broklin-saga'
+  | 'jonah-saga'
+  | 'global-saga'
   | 'system-log'
+  | 'discography';
+
+export type StoreProductOriginCollection =
+  | ''
+  | 'lore'
+  | 'lore-jonah'
+  | 'global-sagas'
+  | 'logs'
   | 'discography';
 
 export interface StoreProductOrigin {
   type: StoreProductOriginType;
   title: string;
   featuredIn: string;
-  releaseId: string;
-  route: string;
+  sourceCollection:
+    StoreProductOriginCollection;
+  sourceId: string;
 }
 
 export const STORE_ADMIN_ORIGIN_TYPES: StoreProductOriginType[] = [
   'none',
-  'saga',
+  'broklin-saga',
+  'jonah-saga',
+  'global-saga',
   'system-log',
   'discography'
 ];

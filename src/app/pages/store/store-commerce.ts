@@ -12,17 +12,26 @@ export type StoreProductStatus = 'available' | 'sold_out' | 'inactive';
 export type StoreProductType = 'affiliate' | 'official' | 'unknown';
 
 export type StoreProductOriginType =
-  | 'none'
-  | 'saga'
+  | 'broklin-saga'
+  | 'jonah-saga'
+  | 'global-saga'
   | 'system-log'
+  | 'discography';
+
+export type StoreProductOriginCollection =
+  | 'lore'
+  | 'lore-jonah'
+  | 'global-sagas'
+  | 'logs'
   | 'discography';
 
 export interface StoreProductOrigin {
   type: StoreProductOriginType;
   title: string;
   featuredIn: string;
-  releaseId: string;
-  route: string;
+  sourceCollection:
+    StoreProductOriginCollection;
+  sourceId: string;
 }
 
 const AFFILIATE_MERCHANTS: StoreMerchant[] = [
@@ -130,65 +139,206 @@ export function normalizeStoreProductStatus(status: unknown): StoreProductStatus
   return 'inactive';
 }
 
-function validStoreOriginRoute(
-  type: StoreProductOriginType,
-  route: string
-): boolean {
-  if (type === 'none') {
-    return true;
-  }
+const STORE_ORIGIN_COLLECTION_BY_TYPE: Record<
+  StoreProductOriginType,
+  StoreProductOriginCollection
+> = {
+  'broklin-saga': 'lore',
+  'jonah-saga': 'lore-jonah',
+  'global-saga': 'global-sagas',
+  'system-log': 'logs',
+  discography: 'discography'
+};
 
-  if (
-    !route.startsWith('/') ||
-    route.startsWith('//') ||
-    route.includes('\\') ||
-    /\s/u.test(route)
-  ) {
-    return false;
+function decodeStoreOriginId(
+  value: string
+): string {
+  try {
+    return decodeURIComponent(
+      value
+    );
+  } catch {
+    return value;
   }
+}
 
+function storeOriginPathId(
+  route: string,
+  prefix: string
+): string {
   const pathname =
     route.split(/[?#]/u)[0];
 
+  if (!pathname.startsWith(prefix)) {
+    return '';
+  }
+
+  return decodeStoreOriginId(
+    pathname
+      .slice(prefix.length)
+      .split('/')[0]
+  ).trim();
+}
+
+function inferLegacyStoreSagaType(
+  route: string
+): StoreProductOriginType | null {
+  const pathname =
+    route.split(/[?#]/u)[0];
+
+  if (
+    pathname.startsWith(
+      '/lore/broklin/'
+    )
+  ) {
+    return 'broklin-saga';
+  }
+
+  if (
+    pathname.startsWith(
+      '/lore/jonah/'
+    )
+  ) {
+    return 'jonah-saga';
+  }
+
+  if (
+    pathname.startsWith(
+      '/hybrid-reader/'
+    )
+  ) {
+    return 'global-saga';
+  }
+
+  return null;
+}
+
+function legacyStoreDiscographyId(
+  value: any,
+  route: string
+): string {
+  const releaseId =
+    String(
+      value?.releaseId || ''
+    ).trim();
+
+  if (releaseId) {
+    return releaseId;
+  }
+
+  try {
+    const url =
+      new URL(
+        route,
+        'https://raquelsynths.local'
+      );
+
+    return String(
+      url.searchParams.get(
+        'release'
+      ) || ''
+    ).trim();
+  } catch {
+    return '';
+  }
+}
+
+function legacyStoreSourceId(
+  type: StoreProductOriginType,
+  value: any,
+  route: string
+): string {
+  const explicit =
+    String(
+      value?.sourceId || ''
+    ).trim();
+
+  if (explicit) {
+    return explicit;
+  }
+
   if (type === 'discography') {
-    return (
-      pathname === '/discografia' ||
-      pathname.startsWith('/discografia/') ||
-      pathname === '/musical-archives' ||
-      pathname.startsWith('/musical-archives/')
+    return legacyStoreDiscographyId(
+      value,
+      route
     );
   }
 
   if (type === 'system-log') {
-    return (
-      pathname === '/logs-archive' ||
-      pathname.startsWith('/log-reader/')
+    return storeOriginPathId(
+      route,
+      '/log-reader/'
     );
   }
 
-  return (
-    pathname === '/hybrid-saga' ||
-    pathname.startsWith('/hybrid-reader/') ||
-    pathname.startsWith('/lore/') ||
-    pathname.startsWith('/visual-novel/')
+  if (type === 'broklin-saga') {
+    return storeOriginPathId(
+      route,
+      '/lore/broklin/'
+    );
+  }
+
+  if (type === 'jonah-saga') {
+    return storeOriginPathId(
+      route,
+      '/lore/jonah/'
+    );
+  }
+
+  return storeOriginPathId(
+    route,
+    '/hybrid-reader/'
+  );
+}
+
+function validStoreSourceId(
+  value: string
+): boolean {
+  return Boolean(
+    value &&
+    value.length <= 512 &&
+    value !== '.' &&
+    value !== '..' &&
+    !/[\\/]/u.test(value)
   );
 }
 
 export function normalizeStoreProductOrigin(
   value: any
 ): StoreProductOrigin | null {
-  const type =
+  const rawType =
     String(value?.type || '')
       .trim()
-      .toLowerCase() as StoreProductOriginType;
+      .toLowerCase();
+
+  const legacyRoute =
+    String(value?.route || '')
+      .trim();
+
+  let type:
+    StoreProductOriginType | null =
+      null;
 
   if (
-    ![
-      'saga',
-      'system-log',
-      'discography'
-    ].includes(type)
+    rawType === 'broklin-saga' ||
+    rawType === 'jonah-saga' ||
+    rawType === 'global-saga' ||
+    rawType === 'system-log' ||
+    rawType === 'discography'
   ) {
+    type = rawType;
+  } else if (
+    rawType === 'saga'
+  ) {
+    // Compatibility for origins written
+    // before Universal Origin Reference.
+    type =
+      inferLegacyStoreSagaType(
+        legacyRoute
+      );
+  }
+
+  if (!type) {
     return null;
   }
 
@@ -196,42 +346,25 @@ export function normalizeStoreProductOrigin(
     String(value?.title || '')
       .trim();
 
-  const featuredIn =
-    String(value?.featuredIn || '')
-      .trim();
-
-  const releaseId =
-    String(value?.releaseId || '')
-      .trim();
-
-  const rawRoute =
-    String(value?.route || '')
-      .trim();
-
   if (!title) {
     return null;
   }
 
-  // New canonical discography contract.
-  if (
-    type === 'discography' &&
-    releaseId
-  ) {
-    return {
-      type,
-      title,
-      featuredIn,
-      releaseId,
-      route:
-        '/musical-archives'
-    };
-  }
+  const sourceCollection =
+    STORE_ORIGIN_COLLECTION_BY_TYPE[
+      type
+    ];
 
-  // Compatibility while legacy origin documents are upgraded.
-  if (
-    !validStoreOriginRoute(
+  const sourceId =
+    legacyStoreSourceId(
       type,
-      rawRoute
+      value,
+      legacyRoute
+    );
+
+  if (
+    !validStoreSourceId(
+      sourceId
     )
   ) {
     return null;
@@ -240,10 +373,14 @@ export function normalizeStoreProductOrigin(
   return {
     type,
     title,
-    featuredIn,
-    releaseId: '',
-    route:
-      rawRoute
+
+    featuredIn:
+      String(
+        value?.featuredIn || ''
+      ).trim(),
+
+    sourceCollection,
+    sourceId
   };
 }
 
@@ -258,8 +395,16 @@ export function getStoreOriginTypeLabel(
     return 'DISCOGRAPHY';
   }
 
-  if (type === 'saga') {
-    return 'SAGA';
+  if (type === 'broklin-saga') {
+    return 'BROKLIN SAGA';
+  }
+
+  if (type === 'jonah-saga') {
+    return 'JONAH SAGA';
+  }
+
+  if (type === 'global-saga') {
+    return 'GLOBAL SAGA';
   }
 
   return '';
@@ -276,7 +421,11 @@ export function getStoreOriginCta(
     return 'ACCESS RELEASE →';
   }
 
-  if (type === 'saga') {
+  if (
+    type === 'broklin-saga' ||
+    type === 'jonah-saga' ||
+    type === 'global-saga'
+  ) {
     return 'ACCESS STORY →';
   }
 
@@ -286,19 +435,51 @@ export function getStoreOriginCta(
 export function getStoreOriginHref(
   origin: StoreProductOrigin
 ): string {
+  const sourceId =
+    encodeURIComponent(
+      origin.sourceId
+    );
+
   if (
-    origin.type === 'discography' &&
-    origin.releaseId
+    origin.type ===
+    'broklin-saga'
   ) {
     return (
-      '/musical-archives?release=' +
-      encodeURIComponent(
-        origin.releaseId
-      )
+      `/lore/broklin/${sourceId}`
     );
   }
 
-  return origin.route;
+  if (
+    origin.type ===
+    'jonah-saga'
+  ) {
+    return (
+      `/lore/jonah/${sourceId}`
+    );
+  }
+
+  if (
+    origin.type ===
+    'global-saga'
+  ) {
+    return (
+      `/hybrid-reader/${sourceId}`
+    );
+  }
+
+  if (
+    origin.type ===
+    'system-log'
+  ) {
+    return (
+      `/log-reader/${sourceId}`
+    );
+  }
+
+  return (
+    '/musical-archives?release=' +
+    sourceId
+  );
 }
 
 export function adaptStoreProduct<T extends Record<string, any>>(product: T) {

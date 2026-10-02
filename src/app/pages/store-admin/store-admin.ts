@@ -32,6 +32,7 @@ import {
   StoreAdminProductDryRun,
   StoreAdminProductOperation,
   StoreAdminProductStatus,
+  StoreProductOrigin,
   StoreProductOriginType
 } from '../../models/store-admin.model';
 
@@ -232,11 +233,11 @@ implements OnInit, OnDestroy {
         featuredIn:
           product.origin.featuredIn,
 
-        releaseId:
-          product.origin.releaseId,
+        sourceCollection:
+          product.origin.sourceCollection,
 
-        route:
-          product.origin.route
+        sourceId:
+          product.origin.sourceId
       },
 
       content: {
@@ -576,8 +577,16 @@ implements OnInit, OnDestroy {
     value:
       StoreProductOriginType
   ): string {
-    if (value === 'saga') {
-      return 'SAGA';
+    if (value === 'broklin-saga') {
+      return 'BROKLIN SAGA';
+    }
+
+    if (value === 'jonah-saga') {
+      return 'JONAH SAGA';
+    }
+
+    if (value === 'global-saga') {
+      return 'GLOBAL SAGA';
     }
 
     if (value === 'system-log') {
@@ -595,7 +604,11 @@ implements OnInit, OnDestroy {
     value:
       StoreProductOriginType
   ): string {
-    if (value === 'saga') {
+    if (
+      value === 'broklin-saga' ||
+      value === 'jonah-saga' ||
+      value === 'global-saga'
+    ) {
       return 'ACCESS STORY →';
     }
 
@@ -608,6 +621,58 @@ implements OnInit, OnDestroy {
     }
 
     return '';
+  }
+
+  originSourceCollection(
+    value:
+      StoreProductOriginType
+  ): StoreProductOrigin['sourceCollection'] {
+    if (value === 'broklin-saga') {
+      return 'lore';
+    }
+
+    if (value === 'jonah-saga') {
+      return 'lore-jonah';
+    }
+
+    if (value === 'global-saga') {
+      return 'global-sagas';
+    }
+
+    if (value === 'system-log') {
+      return 'logs';
+    }
+
+    if (value === 'discography') {
+      return 'discography';
+    }
+
+    return '';
+  }
+
+  onOriginTypeChange(): void {
+    this.draft.origin.sourceCollection =
+      this.originSourceCollection(
+        this.draft.origin.type
+      );
+
+    this.draft.origin.sourceId = '';
+
+    if (
+      this.draft.origin.type !==
+      'discography'
+    ) {
+      this.draft.origin.featuredIn = '';
+    }
+
+    if (
+      this.draft.origin.type ===
+      'none'
+    ) {
+      this.draft.origin.title = '';
+    }
+
+    this.invalidateDryRun();
   }
 
   statusLabel(
@@ -640,8 +705,8 @@ implements OnInit, OnDestroy {
         type: 'none',
         title: '',
         featuredIn: '',
-        releaseId: '',
-        route: ''
+        sourceCollection: '',
+        sourceId: ''
       },
 
       content: {

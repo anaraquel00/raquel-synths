@@ -289,7 +289,7 @@
                 <select
                   [(ngModel)]="draft.origin.type"
                   name="originType"
-                  (ngModelChange)="invalidateDryRun()"
+                  (ngModelChange)="onOriginTypeChange()"
                 >
                   @for (originType of originTypes; track originType) {
                     <option [value]="originType">
@@ -321,25 +321,45 @@
                   >
                 </label>
 
+                <label>
+                  <span>SOURCE COLLECTION</span>
+
+                  <input
+                    type="text"
+                    [value]="originSourceCollection(draft.origin.type)"
+                    readonly
+                  >
+
+                  <small>
+                    Derivada automaticamente do tipo de origem.
+                  </small>
+                </label>
+
+                <label class="wide-field">
+                  <span>SOURCE ID // FIRESTORE</span>
+
+                  <input
+                    type="text"
+                    [(ngModel)]="draft.origin.sourceId"
+                    name="originSourceId"
+                    maxlength="512"
+                    [placeholder]="
+                      draft.origin.type === 'discography'
+                        ? 'ep-saudade-sintetica'
+                        : draft.origin.type === 'system-log'
+                          ? '2025-12-08-log'
+                          : 's1-e10'
+                    "
+                    (ngModelChange)="invalidateDryRun()"
+                  >
+
+                  <small>
+                    ID exato do documento Firestore.
+                    A rota pública é gerada automaticamente.
+                  </small>
+                </label>
+
                 @if (draft.origin.type === 'discography') {
-                  <label class="wide-field">
-                    <span>RELEASE ID // FIRESTORE</span>
-
-                    <input
-                      type="text"
-                      [(ngModel)]="draft.origin.releaseId"
-                      name="originReleaseId"
-                      maxlength="512"
-                      placeholder="ID do documento na coleção discography"
-                      (ngModelChange)="invalidateDryRun()"
-                    >
-
-                    <small>
-                      ID canônico do documento em Firestore / discography.
-                      A página do Musical Archives será localizada automaticamente.
-                    </small>
-                  </label>
-
                   <label class="wide-field">
                     <span>FEATURED IN</span>
 
@@ -351,27 +371,6 @@
                       placeholder="Fitas Desbotadas"
                       (ngModelChange)="invalidateDryRun()"
                     >
-                  </label>
-                } @else {
-                  <label class="wide-field">
-                    <span>INTERNAL ROUTE</span>
-
-                    <input
-                      type="text"
-                      [(ngModel)]="draft.origin.route"
-                      name="originRoute"
-                      maxlength="512"
-                      [placeholder]="
-                        draft.origin.type === 'system-log'
-                          ? '/log-reader/signal-recalibrated'
-                          : '/hybrid-reader/s1-e1'
-                      "
-                      (ngModelChange)="invalidateDryRun()"
-                    >
-
-                    <small>
-                      Apenas rotas internas compatíveis com o tipo selecionado.
-                    </small>
                   </label>
                 }
               }
@@ -386,6 +385,11 @@
                 <strong>
                   {{ draft.origin.title || 'Título da origem' }}
                 </strong>
+
+                <small>
+                  SOURCE //
+                  {{ originSourceCollection(draft.origin.type) }}/{{ draft.origin.sourceId || 'document-id' }}
+                </small>
 
                 @if (draft.origin.featuredIn) {
                   <small>

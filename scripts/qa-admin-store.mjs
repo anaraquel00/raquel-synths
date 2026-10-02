@@ -286,55 +286,245 @@ console.log(
   'STORE_PRODUCT_VALIDATION = PASS'
 );
 
-const discographyOrigin =
+const legacyIdCreate =
+  validateProductDraft({
+    ...validDraft,
+
+    id:
+      'studio_noir_dress'
+  });
+
+assert.equal(
+  legacyIdCreate.status,
+  'BLOCKED'
+);
+
+const legacyIdUpdate =
+  validateProductDraft(
+    {
+      ...validDraft,
+
+      id:
+        'studio_noir_dress'
+    },
+    'update'
+  );
+
+assert.equal(
+  legacyIdUpdate.status,
+  'PASS'
+);
+
+assert.ok(
+  legacyIdUpdate.warnings.some(
+    warning =>
+      warning.includes(
+        'Legacy Product ID'
+      )
+  )
+);
+
+console.log(
+  'STORE_LEGACY_PRODUCT_ID = PASS'
+);
+
+
+const originCases = [
+  {
+    type:
+      'broklin-saga',
+    collection:
+      'lore',
+    sourceId:
+      's1-e10',
+    title:
+      'ASHES OF ME'
+  },
+  {
+    type:
+      'jonah-saga',
+    collection:
+      'lore-jonah',
+    sourceId:
+      's1-e6',
+    title:
+      'Jonah Episode'
+  },
+  {
+    type:
+      'global-saga',
+    collection:
+      'global-sagas',
+    sourceId:
+      's1-e10',
+    title:
+      'Global Episode'
+  },
+  {
+    type:
+      'system-log',
+    collection:
+      'logs',
+    sourceId:
+      '2025-12-08-log',
+    title:
+      'Paternity Protocol'
+  },
+  {
+    type:
+      'discography',
+    collection:
+      'discography',
+    sourceId:
+      'ep-saudade-sintetica',
+    title:
+      'Saudade Sintética (Lado A/B)'
+  }
+];
+
+for (
+  const originCase
+  of originCases
+) {
+  const result =
+    validateProductDraft({
+      ...validDraft,
+
+      origin: {
+        type:
+          originCase.type,
+
+        title:
+          originCase.title,
+
+        featuredIn:
+          originCase.type ===
+            'discography'
+            ? 'Fitas Desbotadas'
+            : '',
+
+        sourceCollection:
+          'wrong-value',
+
+        sourceId:
+          originCase.sourceId
+      }
+    });
+
+  assert.equal(
+    result.status,
+    'PASS'
+  );
+
+  assert.equal(
+    result.payload
+      .origin.sourceCollection,
+    originCase.collection
+  );
+
+  assert.equal(
+    result.payload
+      .origin.sourceId,
+    originCase.sourceId
+  );
+}
+
+const invalidSourceId =
   validateProductDraft({
     ...validDraft,
 
     origin: {
       type:
-        'discography',
+        'broklin-saga',
 
       title:
-        'Saudade Sintética (Lado A/B)',
+        'ASHES OF ME',
 
-      featuredIn:
-        'Fitas Desbotadas',
+      featuredIn: '',
 
-      releaseId:
-        'ep-saudade-sintetica',
+      sourceCollection:
+        'lore',
 
-      route:
-        '/musical-archives?broPage=11'
+      sourceId:
+        'bad/id'
     }
   });
 
 assert.equal(
-  discographyOrigin.status,
-  'PASS'
+  invalidSourceId.status,
+  'BLOCKED'
 );
 
+const legacyBroklinOrigin =
+  normalizeStoreAdminProduct({
+    id:
+      'studio_noir_dress',
+
+    faction:
+      'synth-general',
+
+    destinationUrl:
+      'https://www.shein.com/example',
+
+    status:
+      'available',
+
+    origin: {
+      type:
+        'saga',
+
+      title:
+        'ASHES OF ME',
+
+      route:
+        '/lore/broklin/s1-e10'
+    },
+
+    content: {
+      pt: {
+        name:
+          'Vestido',
+
+        shortDescription:
+          'Curta.',
+
+        description:
+          'Longa.'
+      },
+
+      en: {
+        name:
+          'Dress',
+
+        shortDescription:
+          'Short.',
+
+        description:
+          'Long.'
+      }
+    }
+  });
+
 assert.equal(
-  discographyOrigin.payload
+  legacyBroklinOrigin
     .origin.type,
-  'discography'
+  'broklin-saga'
 );
 
 assert.equal(
-  discographyOrigin.payload
-    .origin.releaseId,
-  'ep-saudade-sintetica'
+  legacyBroklinOrigin
+    .origin.sourceCollection,
+  'lore'
 );
 
 assert.equal(
-  discographyOrigin.payload
-    .origin.route,
-  '/musical-archives'
+  legacyBroklinOrigin
+    .origin.sourceId,
+  's1-e10'
 );
 
-const missingReleaseId =
-  validateProductDraft({
-    ...validDraft,
-
+const legacyDiscographyOrigin =
+  normalizeStoreAdminProduct({
     origin: {
       type:
         'discography',
@@ -342,10 +532,8 @@ const missingReleaseId =
       title:
         'Saudade Sintética',
 
-      featuredIn:
-        'Fitas Desbotadas',
-
-      releaseId: '',
+      releaseId:
+        'ep-saudade-sintetica',
 
       route:
         '/musical-archives'
@@ -353,31 +541,19 @@ const missingReleaseId =
   });
 
 assert.equal(
-  missingReleaseId.status,
-  'BLOCKED'
+  legacyDiscographyOrigin
+    .origin.sourceCollection,
+  'discography'
 );
 
-const mismatchedOriginRoute =
-  validateProductDraft({
-    ...validDraft,
-
-    origin: {
-      type:
-        'system-log',
-
-      title:
-        'Signal Recalibrated',
-
-      featuredIn: '',
-
-      route:
-        '/discografia'
-    }
-  });
-
 assert.equal(
-  mismatchedOriginRoute.status,
-  'BLOCKED'
+  legacyDiscographyOrigin
+    .origin.sourceId,
+  'ep-saudade-sintetica'
+);
+
+console.log(
+  'STORE_UNIVERSAL_ORIGIN_REFERENCE = PASS'
 );
 
 console.log(

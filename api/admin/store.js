@@ -49,12 +49,22 @@ const ALLOWED_STATUSES = new Set([
   'inactive'
 ]);
 
-const ALLOWED_ORIGIN_TYPES = new Set([
+const WRITABLE_ORIGIN_TYPES = new Set([
   'none',
-  'saga',
+  'broklin-saga',
+  'jonah-saga',
+  'global-saga',
   'system-log',
   'discography'
 ]);
+
+const ORIGIN_COLLECTION_BY_TYPE = Object.freeze({
+  'broklin-saga': 'lore',
+  'jonah-saga': 'lore-jonah',
+  'global-saga': 'global-sagas',
+  'system-log': 'logs',
+  discography: 'discography'
+});
 
 const MERCHANT_LABELS = {
   shein: 'SHEIN',
@@ -372,96 +382,238 @@ function localizedContent(value) {
   };
 }
 
+function decodeOriginId(value) {
+  try {
+    return decodeURIComponent(
+      String(value || '')
+    );
+  } catch {
+    return String(value || '');
+  }
+}
+
+function originPathId(
+  route,
+  prefix
+) {
+  const pathname =
+    String(route || '')
+      .split(/[?#]/u)[0];
+
+  if (!pathname.startsWith(prefix)) {
+    return '';
+  }
+
+  const raw =
+    pathname
+      .slice(prefix.length)
+      .split('/')[0];
+
+  return decodeOriginId(raw)
+    .trim();
+}
+
+function inferLegacySagaType(
+  route
+) {
+  const pathname =
+    String(route || '')
+      .split(/[?#]/u)[0];
+
+  if (
+    pathname.startsWith(
+      '/lore/broklin/'
+    )
+  ) {
+    return 'broklin-saga';
+  }
+
+  if (
+    pathname.startsWith(
+      '/lore/jonah/'
+    )
+  ) {
+    return 'jonah-saga';
+  }
+
+  if (
+    pathname.startsWith(
+      '/hybrid-reader/'
+    )
+  ) {
+    return 'global-saga';
+  }
+
+  return '';
+}
+
+function legacyDiscographyId(
+  value,
+  route
+) {
+  const releaseId =
+    String(
+      value?.releaseId || ''
+    ).trim();
+
+  if (releaseId) {
+    return releaseId;
+  }
+
+  try {
+    const url =
+      new URL(
+        String(route || ''),
+        'https://raquelsynths.local'
+      );
+
+    return String(
+      url.searchParams.get(
+        'release'
+      ) || ''
+    ).trim();
+  } catch {
+    return '';
+  }
+}
+
+function legacyOriginSourceId(
+  type,
+  value,
+  route
+) {
+  const explicit =
+    String(
+      value?.sourceId || ''
+    ).trim();
+
+  if (explicit) {
+    return explicit;
+  }
+
+  if (type === 'discography') {
+    return legacyDiscographyId(
+      value,
+      route
+    );
+  }
+
+  if (type === 'system-log') {
+    return originPathId(
+      route,
+      '/log-reader/'
+    );
+  }
+
+  if (type === 'broklin-saga') {
+    return originPathId(
+      route,
+      '/lore/broklin/'
+    );
+  }
+
+  if (type === 'jonah-saga') {
+    return originPathId(
+      route,
+      '/lore/jonah/'
+    );
+  }
+
+  if (type === 'global-saga') {
+    return originPathId(
+      route,
+      '/hybrid-reader/'
+    );
+  }
+
+  return '';
+}
+
 function normalizeOrigin(value = {}) {
   const rawType =
     String(value?.type || '')
       .trim()
       .toLowerCase();
 
-  const type =
-    ALLOWED_ORIGIN_TYPES.has(rawType)
-      ? rawType
-      : 'none';
+  const legacyRoute =
+    String(value?.route || '')
+      .trim();
+
+  let type =
+    rawType;
+
+  // Backward compatibility:
+  // old generic saga + manual route.
+  if (type === 'saga') {
+    type =
+      inferLegacySagaType(
+        legacyRoute
+      );
+  }
+
+  if (
+    !WRITABLE_ORIGIN_TYPES.has(
+      type
+    )
+  ) {
+    type = 'none';
+  }
 
   if (type === 'none') {
     return {
       type: 'none',
       title: '',
       featuredIn: '',
-      releaseId: '',
-      route: ''
+      sourceCollection: '',
+      sourceId: ''
     };
   }
 
-  const releaseId =
-    String(value?.releaseId || '')
-      .trim();
+  const sourceCollection =
+    ORIGIN_COLLECTION_BY_TYPE[
+      type
+    ] || '';
+
+  const sourceId =
+    legacyOriginSourceId(
+      type,
+      value,
+      legacyRoute
+    );
 
   return {
     type,
 
     title:
-      String(value?.title || '')
-        .trim(),
+      String(
+        value?.title || ''
+      ).trim(),
 
     featuredIn:
-      String(value?.featuredIn || '')
-        .trim(),
+      String(
+        value?.featuredIn || ''
+      ).trim(),
 
-    releaseId:
-      type === 'discography'
-        ? releaseId
-        : '',
+    sourceCollection,
 
-    route:
-      type === 'discography'
-        ? '/musical-archives'
-        : String(value?.route || '')
-            .trim()
+    sourceId
   };
 }
 
-function validOriginRoute(origin) {
-  if (origin.type === 'none') {
-    return true;
-  }
+function validOriginSourceId(
+  value
+) {
+  const sourceId =
+    String(value || '');
 
-  const route =
-    String(origin.route || '');
-
-  if (
-    !route.startsWith('/') ||
-    route.startsWith('//') ||
-    route.includes('\\') ||
-    /\s/u.test(route)
-  ) {
-    return false;
-  }
-
-  const pathname =
-    route.split(/[?#]/u)[0];
-
-  if (origin.type === 'discography') {
-    return (
-      pathname === '/discografia' ||
-      pathname.startsWith('/discografia/') ||
-      pathname === '/musical-archives' ||
-      pathname.startsWith('/musical-archives/')
-    );
-  }
-
-  if (origin.type === 'system-log') {
-    return (
-      pathname === '/logs-archive' ||
-      pathname.startsWith('/log-reader/')
-    );
-  }
-
-  return (
-    pathname === '/hybrid-saga' ||
-    pathname.startsWith('/hybrid-reader/') ||
-    pathname.startsWith('/lore/') ||
-    pathname.startsWith('/visual-novel/')
+  return Boolean(
+    sourceId &&
+    sourceId.length <= 512 &&
+    sourceId !== '.' &&
+    sourceId !== '..' &&
+    !/[\\/]/u.test(sourceId) &&
+    !/[\u0000-\u001f\u007f]/u
+      .test(sourceId)
   );
 }
 
@@ -661,6 +813,20 @@ function normalizeDraft(input = {}) {
   };
 }
 
+function validProductId(
+  value,
+  allowLegacy = false
+) {
+  const pattern =
+    allowLegacy
+      ? /^[a-z0-9][a-z0-9_-]{2,119}$/u
+      : /^[a-z0-9][a-z0-9-]{2,119}$/u;
+
+  return pattern.test(
+    String(value || '')
+  );
+}
+
 function validImage(value) {
   if (/^assets\/[^\s]+$/u.test(value)) {
     return true;
@@ -674,19 +840,43 @@ function validImage(value) {
   }
 }
 
-export function validateProductDraft(input = {}) {
+export function validateProductDraft(
+  input = {},
+  operation = 'create'
+) {
   const draft =
     normalizeDraft(input);
 
   const blocked = [];
   const warnings = [];
 
+  const legacyProductId =
+    operation === 'update' &&
+    !validProductId(
+      draft.id,
+      false
+    ) &&
+    validProductId(
+      draft.id,
+      true
+    );
+
   if (
-    !/^[a-z0-9][a-z0-9-]{2,119}$/u
-      .test(draft.id)
+    !validProductId(
+      draft.id,
+      operation === 'update'
+    )
   ) {
     blocked.push(
-      'Product ID must be a lowercase slug with 3–120 characters.'
+      operation === 'update'
+        ? 'Product ID is invalid.'
+        : 'Product ID must be a lowercase slug with 3–120 characters.'
+    );
+  }
+
+  if (legacyProductId) {
+    warnings.push(
+      'Legacy Product ID with underscore is preserved during update.'
     );
   }
 
@@ -781,7 +971,7 @@ export function validateProductDraft(input = {}) {
   }
 
   if (
-    !ALLOWED_ORIGIN_TYPES.has(
+    !WRITABLE_ORIGIN_TYPES.has(
       draft.origin.type
     )
   ) {
@@ -815,52 +1005,29 @@ export function validateProductDraft(input = {}) {
       );
     }
 
+    const expectedCollection =
+      ORIGIN_COLLECTION_BY_TYPE[
+        draft.origin.type
+      ] || '';
+
     if (
-      draft.origin.type ===
-      'discography'
+      !expectedCollection ||
+      draft.origin.sourceCollection !==
+        expectedCollection
     ) {
-      if (!draft.origin.releaseId) {
-        blocked.push(
-          'Discography origin requires the Firestore releaseId.'
-        );
-      } else if (
-        draft.origin.releaseId.length >
-        512
-      ) {
-        blocked.push(
-          'Discography releaseId exceeds 512 characters.'
-        );
-      } else if (
-        draft.origin.releaseId === '.' ||
-        draft.origin.releaseId === '..' ||
-        /[\\/]/u.test(
-          draft.origin.releaseId
-        )
-      ) {
-        blocked.push(
-          'Discography releaseId is invalid.'
-        );
-      }
-    } else {
-      if (!draft.origin.route) {
-        blocked.push(
-          'RQS Origin internal route is required.'
-        );
-      } else if (
-        draft.origin.route.length > 512
-      ) {
-        blocked.push(
-          'RQS Origin internal route exceeds 512 characters.'
-        );
-      } else if (
-        !validOriginRoute(
-          draft.origin
-        )
-      ) {
-        blocked.push(
-          'RQS Origin route does not match the selected origin type.'
-        );
-      }
+      blocked.push(
+        'RQS Origin source collection does not match the selected origin type.'
+      );
+    }
+
+    if (
+      !validOriginSourceId(
+        draft.origin.sourceId
+      )
+    ) {
+      blocked.push(
+        'RQS Origin sourceId is required and must be a valid Firestore document ID.'
+      );
     }
   }
 
@@ -955,14 +1122,15 @@ function productFields(product) {
             product.origin.featuredIn
           ),
 
-        releaseId:
+        sourceCollection:
           stringValue(
-            product.origin.releaseId
+            product.origin
+              .sourceCollection
           ),
 
-        route:
+        sourceId:
           stringValue(
-            product.origin.route
+            product.origin.sourceId
           )
       }),
 
@@ -1405,8 +1573,10 @@ async function productDryRun(
         .toLowerCase();
 
     if (
-      !/^[a-z0-9][a-z0-9-]{2,119}$/u
-        .test(documentId)
+      !validProductId(
+        documentId,
+        true
+      )
     ) {
       return blockedDryRun(
         operation,
@@ -1528,7 +1698,8 @@ async function productDryRun(
 
   const validation =
     validateProductDraft(
-      input.product
+      input.product,
+      operation
     );
 
   const product =

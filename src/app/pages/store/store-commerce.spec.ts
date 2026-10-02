@@ -132,7 +132,7 @@ describe('Store commerce adapter', () => {
     );
   });
 
-  it('normalizes RQS product origins and derives public labels', () => {
+  it('normalizes universal RQS origin references', () => {
     const origin =
       normalizeStoreProductOrigin({
         type:
@@ -144,27 +144,19 @@ describe('Store commerce adapter', () => {
         featuredIn:
           'Fitas Desbotadas',
 
-        releaseId:
-          'ep-saudade-sintetica',
+        sourceCollection:
+          'discography',
 
-        route:
-          '/musical-archives?broPage=11'
+        sourceId:
+          'ep-saudade-sintetica'
       });
 
-    expect(origin?.type)
+    expect(origin?.sourceCollection)
       .toBe('discography');
 
-    expect(origin?.featuredIn)
-      .toBe('Fitas Desbotadas');
-
-    expect(origin?.releaseId)
+    expect(origin?.sourceId)
       .toBe(
         'ep-saudade-sintetica'
-      );
-
-    expect(origin?.route)
-      .toBe(
-        '/musical-archives'
       );
 
     expect(
@@ -174,22 +166,152 @@ describe('Store commerce adapter', () => {
     ).toBe(
       '/musical-archives?release=ep-saudade-sintetica'
     );
+  });
+
+  it('generates canonical public routes from origin type + Firestore id', () => {
+    const cases = [
+      {
+        type:
+          'broklin-saga' as const,
+        collection:
+          'lore' as const,
+        id:
+          's1-e10',
+        href:
+          '/lore/broklin/s1-e10'
+      },
+      {
+        type:
+          'jonah-saga' as const,
+        collection:
+          'lore-jonah' as const,
+        id:
+          's1-e6',
+        href:
+          '/lore/jonah/s1-e6'
+      },
+      {
+        type:
+          'global-saga' as const,
+        collection:
+          'global-sagas' as const,
+        id:
+          's1-e10',
+        href:
+          '/hybrid-reader/s1-e10'
+      },
+      {
+        type:
+          'system-log' as const,
+        collection:
+          'logs' as const,
+        id:
+          '2025-12-08-log',
+        href:
+          '/log-reader/2025-12-08-log'
+      }
+    ];
+
+    for (const item of cases) {
+      const origin =
+        normalizeStoreProductOrigin({
+          type:
+            item.type,
+
+          title:
+            'Origin',
+
+          sourceCollection:
+            item.collection,
+
+          sourceId:
+            item.id
+        });
+
+      expect(origin?.sourceCollection)
+        .toBe(item.collection);
+
+      expect(
+        getStoreOriginHref(
+          origin!
+        )
+      ).toBe(item.href);
+    }
+  });
+
+  it('reads legacy origin records without keeping manual routes as canonical data', () => {
+    const broklin =
+      normalizeStoreProductOrigin({
+        type:
+          'saga',
+
+        title:
+          'ASHES OF ME',
+
+        route:
+          '/lore/broklin/s1-e10'
+      });
+
+    expect(broklin?.type)
+      .toBe('broklin-saga');
+
+    expect(broklin?.sourceCollection)
+      .toBe('lore');
+
+    expect(broklin?.sourceId)
+      .toBe('s1-e10');
+
+    expect(
+      getStoreOriginHref(
+        broklin!
+      )
+    ).toBe(
+      '/lore/broklin/s1-e10'
+    );
+
+    const oldDiscography =
+      normalizeStoreProductOrigin({
+        type:
+          'discography',
+
+        title:
+          'Saudade Sintética',
+
+        releaseId:
+          'ep-saudade-sintetica',
+
+        route:
+          '/musical-archives'
+      });
+
+    expect(oldDiscography?.sourceId)
+      .toBe(
+        'ep-saudade-sintetica'
+      );
+  });
+
+  it('derives public origin labels and CTAs', () => {
+    expect(
+      getStoreOriginTypeLabel(
+        'broklin-saga'
+      )
+    ).toBe('BROKLIN SAGA');
 
     expect(
       getStoreOriginTypeLabel(
-        'discography'
+        'jonah-saga'
       )
-    ).toBe('DISCOGRAPHY');
+    ).toBe('JONAH SAGA');
+
+    expect(
+      getStoreOriginTypeLabel(
+        'global-saga'
+      )
+    ).toBe('GLOBAL SAGA');
 
     expect(
       getStoreOriginCta(
-        'discography'
-      )
-    ).toBe('ACCESS RELEASE →');
-
-    expect(
-      getStoreOriginCta(
-        'saga'
+        'broklin-saga'
       )
     ).toBe('ACCESS STORY →');
 
@@ -198,23 +320,33 @@ describe('Store commerce adapter', () => {
         'system-log'
       )
     ).toBe('ACCESS LOG →');
+
+    expect(
+      getStoreOriginCta(
+        'discography'
+      )
+    ).toBe('ACCESS RELEASE →');
   });
 
-  it('rejects external or mismatched RQS origin routes', () => {
+  it('rejects incomplete universal origins', () => {
     expect(
       normalizeStoreProductOrigin({
-        type: 'discography',
-        title: 'Release',
-        route:
-          'https://example.com/release'
+        type:
+          'broklin-saga',
+        title:
+          'ASHES OF ME',
+        sourceId: ''
       })
     ).toBeNull();
 
     expect(
       normalizeStoreProductOrigin({
-        type: 'system-log',
-        title: 'Signal Recalibrated',
-        route: '/discografia'
+        type:
+          'system-log',
+        title:
+          'Signal',
+        sourceId:
+          'bad/id'
       })
     ).toBeNull();
   });
