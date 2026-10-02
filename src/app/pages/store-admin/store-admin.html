@@ -5,16 +5,17 @@
     <p class="eyebrow">RQS ADMIN / COMMERCE</p>
     <h1>Neon Store</h1>
     <p>
-      Diagnóstico interno do catálogo afiliado. Esta fundação opera somente
-      em leitura e não altera documentos no Firestore.
+      Controle interno do catálogo afiliado da RaQuel Synths.
+      Produtos são validados por DRY RUN antes de qualquer escrita.
     </p>
   </header>
 
   <section class="policy-banner" aria-label="Política do módulo">
-    <strong>PATCH 6A // READ ONLY</strong>
-    <span>FIRESTORE WRITES = 0</span>
-    <span>PRODUCT MUTATION = DISABLED</span>
-    <span>CAMPAIGN MUTATION = DISABLED</span>
+    <strong>PATCH 6B // PRODUCT OPERATIONS</strong>
+    <span>DRY RUN REQUIRED</span>
+    <span>OWNER CONFIRMATION REQUIRED</span>
+    <span>DELETE = DISABLED</span>
+    <span>CAMPAIGNS = HOLD</span>
   </section>
 
   @if (!checked()) {
@@ -25,10 +26,19 @@
     <div class="toolbar">
       <button
         type="button"
+        class="primary-action"
+        (click)="startCreate()"
+        [disabled]="loading()"
+      >
+        + NOVO PRODUTO
+      </button>
+
+      <button
+        type="button"
         (click)="refresh()"
         [disabled]="loading()"
       >
-        {{ loading() ? 'LENDO CATÁLOGO…' : 'ATUALIZAR DIAGNÓSTICO' }}
+        {{ loading() ? 'PROCESSANDO…' : 'ATUALIZAR CATÁLOGO' }}
       </button>
     </div>
 
@@ -56,11 +66,349 @@
         </article>
 
         <article class="metric-card warning">
-          <span>COM OBSERVAÇÕES</span>
-          <strong>{{ data.summary.productsWithWarnings }}</strong>
-          <small>diagnóstico não mutável</small>
+          <span>SEM SHORT COPY</span>
+          <strong>{{ data.summary.missingShortDescriptions }}</strong>
+          <small>PT ou EN ausente</small>
         </article>
       </section>
+
+      @if (editorMode(); as mode) {
+        <section class="panel editor-panel">
+          <div class="section-heading">
+            <div>
+              <p class="section-label">
+                {{ mode === 'create' ? 'NEW PRODUCT' : 'EDIT PRODUCT' }}
+              </p>
+
+              <h2>
+                {{ mode === 'create' ? 'Adicionar produto afiliado' : 'Editar produto afiliado' }}
+              </h2>
+            </div>
+
+            <button
+              type="button"
+              class="ghost-action"
+              (click)="closeEditor()"
+              [disabled]="loading()"
+            >
+              FECHAR
+            </button>
+          </div>
+
+          <div class="editor-grid">
+            <label>
+              <span>PRODUCT ID</span>
+
+              <div class="inline-field">
+                <input
+                  type="text"
+                  [(ngModel)]="draft.id"
+                  name="productId"
+                  [readonly]="mode === 'edit'"
+                  maxlength="120"
+                  placeholder="corset-rosa-enganoso"
+                  (ngModelChange)="invalidateDryRun()"
+                >
+
+                @if (mode === 'create') {
+                  <button
+                    type="button"
+                    (click)="generateProductId()"
+                  >
+                    GERAR ID
+                  </button>
+                }
+              </div>
+            </label>
+
+            <label>
+              <span>SETOR</span>
+
+              <select
+                [(ngModel)]="draft.faction"
+                name="faction"
+                (ngModelChange)="invalidateDryRun()"
+              >
+                @for (faction of factions; track faction) {
+                  <option [value]="faction">
+                    {{ faction }}
+                  </option>
+                }
+              </select>
+            </label>
+
+            <label>
+              <span>STATUS</span>
+
+              <select
+                [(ngModel)]="draft.status"
+                name="status"
+                (ngModelChange)="invalidateDryRun()"
+              >
+                @for (status of statuses; track status) {
+                  <option [value]="status">
+                    {{ statusLabel(status) }}
+                  </option>
+                }
+              </select>
+            </label>
+
+            <label class="wide-field">
+              <span>IMAGE</span>
+
+              <input
+                type="text"
+                [(ngModel)]="draft.image"
+                name="image"
+                placeholder="https://... ou assets/..."
+                (ngModelChange)="invalidateDryRun()"
+              >
+            </label>
+
+            <label class="wide-field">
+              <span>AFFILIATE DESTINATION URL</span>
+
+              <input
+                type="url"
+                [(ngModel)]="draft.destinationUrl"
+                name="destinationUrl"
+                placeholder="https://..."
+                (ngModelChange)="invalidateDryRun()"
+              >
+
+              <small>
+                Merchant será detectado e validado pelo servidor.
+              </small>
+            </label>
+          </div>
+
+          <div class="language-grid">
+            <section class="language-card">
+              <div class="language-heading">
+                <strong>PT-BR</strong>
+                <span>PUBLIC COPY</span>
+              </div>
+
+              <label>
+                <span>NOME</span>
+                <input
+                  type="text"
+                  [(ngModel)]="draft.content.pt.name"
+                  name="ptName"
+                  maxlength="160"
+                  (ngModelChange)="invalidateDryRun()"
+                >
+              </label>
+
+              <label>
+                <span>SHORT DESCRIPTION</span>
+                <textarea
+                  [(ngModel)]="draft.content.pt.shortDescription"
+                  name="ptShortDescription"
+                  maxlength="180"
+                  rows="3"
+                  (ngModelChange)="invalidateDryRun()"
+                ></textarea>
+
+                <small>
+                  {{ draft.content.pt.shortDescription.length }}/180
+                </small>
+              </label>
+
+              <label>
+                <span>DESCRIÇÃO LONGA</span>
+                <textarea
+                  [(ngModel)]="draft.content.pt.description"
+                  name="ptDescription"
+                  maxlength="5000"
+                  rows="8"
+                  (ngModelChange)="invalidateDryRun()"
+                ></textarea>
+              </label>
+            </section>
+
+            <section class="language-card">
+              <div class="language-heading">
+                <strong>EN-US</strong>
+                <span>PUBLIC COPY</span>
+              </div>
+
+              <label>
+                <span>NAME</span>
+                <input
+                  type="text"
+                  [(ngModel)]="draft.content.en.name"
+                  name="enName"
+                  maxlength="160"
+                  (ngModelChange)="invalidateDryRun()"
+                >
+              </label>
+
+              <label>
+                <span>SHORT DESCRIPTION</span>
+                <textarea
+                  [(ngModel)]="draft.content.en.shortDescription"
+                  name="enShortDescription"
+                  maxlength="180"
+                  rows="3"
+                  (ngModelChange)="invalidateDryRun()"
+                ></textarea>
+
+                <small>
+                  {{ draft.content.en.shortDescription.length }}/180
+                </small>
+              </label>
+
+              <label>
+                <span>LONG DESCRIPTION</span>
+                <textarea
+                  [(ngModel)]="draft.content.en.description"
+                  name="enDescription"
+                  maxlength="5000"
+                  rows="8"
+                  (ngModelChange)="invalidateDryRun()"
+                ></textarea>
+              </label>
+            </section>
+          </div>
+
+          <section class="product-preview" aria-label="Prévia do card">
+            <p class="section-label">CARD PREVIEW</p>
+
+            <div class="preview-card">
+              @if (draft.image) {
+                <img
+                  [src]="draft.image"
+                  [alt]="draft.content.pt.name || 'Prévia do produto'"
+                >
+              }
+
+              <div>
+                <span>{{ draft.faction }}</span>
+                <h3>{{ draft.content.pt.name || 'Nome do produto' }}</h3>
+                <p>
+                  {{ draft.content.pt.shortDescription || 'Short description aparecerá aqui.' }}
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <div class="editor-actions">
+            @if (mode === 'create') {
+              <button
+                type="button"
+                class="primary-action"
+                (click)="runProductDryRun('create')"
+                [disabled]="loading()"
+              >
+                DRY RUN // CREATE
+              </button>
+            } @else {
+              <button
+                type="button"
+                class="primary-action"
+                (click)="runProductDryRun('update')"
+                [disabled]="loading()"
+              >
+                DRY RUN // UPDATE
+              </button>
+
+              <button
+                type="button"
+                class="danger-action"
+                (click)="runProductDryRun('archive')"
+                [disabled]="loading()"
+              >
+                DRY RUN // ARCHIVE
+              </button>
+            }
+          </div>
+
+          @if (productDryRun(); as result) {
+            <section
+              class="dry-run-panel"
+              [class.blocked]="result.status === 'BLOCKED'"
+            >
+              <div class="dry-run-heading">
+                <div>
+                  <p class="section-label">DRY RUN RESULT</p>
+                  <h3>{{ result.status }}</h3>
+                </div>
+
+                <span>
+                  FIRESTORE WRITES = {{ result.firestoreWrites }}
+                </span>
+              </div>
+
+              <dl>
+                <dt>OPERATION</dt>
+                <dd>{{ result.writePlan.operation }}</dd>
+
+                <dt>DOCUMENT</dt>
+                <dd>{{ result.documentPath }}</dd>
+
+                <dt>MERCHANT</dt>
+                <dd>{{ result.merchant || 'N/A' }}</dd>
+
+                <dt>FIELDS</dt>
+                <dd>{{ result.writePlan.fields.join(', ') }}</dd>
+              </dl>
+
+              @if (result.blocked.length) {
+                <section class="diagnostic-block blocked-list">
+                  <strong>BLOCKING ISSUES</strong>
+
+                  <ul>
+                    @for (issue of result.blocked; track issue) {
+                      <li>{{ issue }}</li>
+                    }
+                  </ul>
+                </section>
+              }
+
+              @if (result.warnings.length) {
+                <section class="diagnostic-block warning-list">
+                  <strong>OBSERVATIONS</strong>
+
+                  <ul>
+                    @for (warning of result.warnings; track warning) {
+                      <li>{{ warning }}</li>
+                    }
+                  </ul>
+                </section>
+              }
+
+              @if (result.status === 'PASS' && result.dryRunToken) {
+                <label class="owner-confirmation">
+                  <input
+                    #ownerConfirmation
+                    type="checkbox"
+                    [checked]="ownerConfirmed()"
+                    (change)="setOwnerConfirmed(ownerConfirmation.checked)"
+                  >
+
+                  <span>
+                    Confirmo explicitamente a operação
+                    <strong>{{ result.writePlan.operation }}</strong>
+                    em
+                    <code>{{ result.documentPath }}</code>.
+                  </span>
+                </label>
+
+                <button
+                  type="button"
+                  class="commit-action"
+                  [class.danger-action]="result.operation === 'archive'"
+                  [disabled]="!ownerConfirmed() || loading()"
+                  (click)="applyProductOperation()"
+                >
+                  {{ operationLabel(result.operation) }}
+                </button>
+              }
+            </section>
+          }
+        </section>
+      }
 
       <section class="panel">
         <div class="section-heading">
@@ -79,18 +427,22 @@
             <span>SHEIN</span>
             <strong>{{ data.summary.merchantCounts['shein'] || 0 }}</strong>
           </div>
+
           <div>
             <span>MERCADO LIVRE</span>
             <strong>{{ data.summary.merchantCounts['mercado-livre'] || 0 }}</strong>
           </div>
+
           <div>
             <span>AMAZON</span>
             <strong>{{ data.summary.merchantCounts['amazon'] || 0 }}</strong>
           </div>
+
           <div>
             <span>ALIEXPRESS</span>
             <strong>{{ data.summary.merchantCounts['aliexpress'] || 0 }}</strong>
           </div>
+
           <div>
             <span>STRIPE / OFFICIAL</span>
             <strong>{{ data.summary.merchantCounts['stripe'] || 0 }}</strong>
@@ -102,11 +454,11 @@
         <div class="section-heading">
           <div>
             <p class="section-label">PRODUCT CATALOG</p>
-            <h2>Produtos detectados</h2>
+            <h2>Produtos</h2>
           </div>
 
           <p class="section-note">
-            Nenhum campo pode ser editado nesta fase.
+            Stripe/official permanece protegido e somente leitura.
           </p>
         </div>
 
@@ -131,6 +483,12 @@
 
                 <h3>{{ productName(product) }}</h3>
                 <p class="product-id">{{ product.id }}</p>
+
+                @if (product.content.pt.shortDescription) {
+                  <p class="catalog-short-copy">
+                    {{ product.content.pt.shortDescription }}
+                  </p>
+                }
 
                 @if (product.destinationUrl) {
                   <p class="destination">
@@ -170,6 +528,20 @@
                     </ul>
                   </details>
                 }
+
+                @if (canEdit(product)) {
+                  <button
+                    type="button"
+                    class="edit-action"
+                    (click)="startEdit(product)"
+                  >
+                    EDITAR PRODUTO
+                  </button>
+                } @else {
+                  <span class="protected-label">
+                    PROTECTED / READ ONLY
+                  </span>
+                }
               </div>
             </article>
           } @empty {
@@ -182,9 +554,10 @@
         <div>
           <p class="section-label">CAMPAIGNS</p>
           <h2>Campaign Engine reservado</h2>
+
           <p>
-            A coleção <code>store-campaigns</code> ainda não é lida,
-            criada ou modificada no Patch 6A.
+            A coleção <code>store-campaigns</code> continua fora do escopo
+            deste patch e será implementada no Patch 6C.
           </p>
         </div>
 
@@ -193,8 +566,9 @@
 
       <p class="policy">
         COLLECTION = {{ data.collection }}
-        · READ ONLY = {{ data.readOnly ? 'YES' : 'NO' }}
-        · FIRESTORE WRITES = 0
+        · DRY RUN REQUIRED
+        · DELETE = DISABLED
+        · CAMPAIGNS = HOLD
       </p>
     }
   }

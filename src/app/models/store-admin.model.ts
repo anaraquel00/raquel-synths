@@ -26,6 +26,11 @@ export type StoreAdminFaction =
   | 'backstage-vip'
   | string;
 
+export type StoreAdminProductOperation =
+  | 'create'
+  | 'update'
+  | 'archive';
+
 export const STORE_ADMIN_AFFILIATE_MERCHANTS: StoreAdminMerchant[] = [
   'shein',
   'mercado-livre',
@@ -53,6 +58,18 @@ export interface StoreAdminLocalizedContent {
   description: string;
 }
 
+export interface StoreAdminProductDraft {
+  id: string;
+  faction: string;
+  image: string;
+  destinationUrl: string;
+  status: StoreAdminProductStatus;
+  content: {
+    pt: StoreAdminLocalizedContent;
+    en: StoreAdminLocalizedContent;
+  };
+}
+
 export interface StoreAdminProduct {
   id: string;
   faction: StoreAdminFaction;
@@ -75,6 +92,7 @@ export interface StoreAdminProduct {
 
   visibleInStore: boolean;
   legacyDestinationField: boolean;
+  updateTime: string | null;
 
   content: {
     pt: StoreAdminLocalizedContent;
@@ -97,9 +115,31 @@ export interface StoreAdminCatalogSummary {
 export interface StoreAdminOverviewResponse {
   generatedAt: string;
   collection: 'products';
-  readOnly: true;
+  readOnly: boolean;
   summary: StoreAdminCatalogSummary;
   products: StoreAdminProduct[];
+}
+
+export interface StoreAdminProductDryRun {
+  operation: StoreAdminProductOperation;
+  status: 'PASS' | 'BLOCKED';
+  blocked: string[];
+  warnings: string[];
+
+  documentId: string;
+  documentPath: string;
+  merchant: StoreAdminMerchant | null;
+
+  sourceUpdateTime: string | null;
+  firestoreWrites: 0;
+  dryRunToken: string | null;
+
+  writePlan: {
+    operation: 'CREATE' | 'UPDATE' | 'ARCHIVE';
+    fields: string[];
+  };
+
+  preview: StoreAdminProductDraft | null;
 }
 
 export type StoreCampaignStatus =
