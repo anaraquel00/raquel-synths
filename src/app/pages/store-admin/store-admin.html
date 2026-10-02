@@ -1,0 +1,209 @@
+<main class="store-admin">
+  <a class="back-link" routerLink="/admin">← Painel Admin</a>
+
+  <header class="page-header">
+    <p class="eyebrow">RQS ADMIN / COMMERCE</p>
+    <h1>Neon Store</h1>
+    <p>
+      Diagnóstico interno do catálogo afiliado. Esta fundação opera somente
+      em leitura e não altera documentos no Firestore.
+    </p>
+  </header>
+
+  <section class="policy-banner" aria-label="Política do módulo">
+    <strong>PATCH 6A // READ ONLY</strong>
+    <span>FIRESTORE WRITES = 0</span>
+    <span>PRODUCT MUTATION = DISABLED</span>
+    <span>CAMPAIGN MUTATION = DISABLED</span>
+  </section>
+
+  @if (!checked()) {
+    <section class="panel" aria-live="polite">
+      <p>Validando sessão administrativa…</p>
+    </section>
+  } @else {
+    <div class="toolbar">
+      <button
+        type="button"
+        (click)="refresh()"
+        [disabled]="loading()"
+      >
+        {{ loading() ? 'LENDO CATÁLOGO…' : 'ATUALIZAR DIAGNÓSTICO' }}
+      </button>
+    </div>
+
+    @if (overview(); as data) {
+      <section
+        class="summary-grid"
+        aria-label="Resumo do catálogo"
+      >
+        <article class="metric-card">
+          <span>TOTAL FIRESTORE</span>
+          <strong>{{ data.summary.totalProducts }}</strong>
+          <small>documents / products</small>
+        </article>
+
+        <article class="metric-card accent">
+          <span>VISÍVEIS NA STORE</span>
+          <strong>{{ data.summary.visibleAffiliateProducts }}</strong>
+          <small>affiliate eligible</small>
+        </article>
+
+        <article class="metric-card">
+          <span>LEGACY URL FIELD</span>
+          <strong>{{ data.summary.legacyDestinationProducts }}</strong>
+          <small>affiliate URL em stripeUrl</small>
+        </article>
+
+        <article class="metric-card warning">
+          <span>COM OBSERVAÇÕES</span>
+          <strong>{{ data.summary.productsWithWarnings }}</strong>
+          <small>diagnóstico não mutável</small>
+        </article>
+      </section>
+
+      <section class="panel">
+        <div class="section-heading">
+          <div>
+            <p class="section-label">MERCHANT DISTRIBUTION</p>
+            <h2>Fontes comerciais detectadas</h2>
+          </div>
+
+          <p class="timestamp">
+            {{ data.generatedAt | date:'short' }}
+          </p>
+        </div>
+
+        <div class="merchant-grid">
+          <div>
+            <span>SHEIN</span>
+            <strong>{{ data.summary.merchantCounts['shein'] || 0 }}</strong>
+          </div>
+          <div>
+            <span>MERCADO LIVRE</span>
+            <strong>{{ data.summary.merchantCounts['mercado-livre'] || 0 }}</strong>
+          </div>
+          <div>
+            <span>AMAZON</span>
+            <strong>{{ data.summary.merchantCounts['amazon'] || 0 }}</strong>
+          </div>
+          <div>
+            <span>ALIEXPRESS</span>
+            <strong>{{ data.summary.merchantCounts['aliexpress'] || 0 }}</strong>
+          </div>
+          <div>
+            <span>STRIPE / OFFICIAL</span>
+            <strong>{{ data.summary.merchantCounts['stripe'] || 0 }}</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel catalog-panel">
+        <div class="section-heading">
+          <div>
+            <p class="section-label">PRODUCT CATALOG</p>
+            <h2>Produtos detectados</h2>
+          </div>
+
+          <p class="section-note">
+            Nenhum campo pode ser editado nesta fase.
+          </p>
+        </div>
+
+        <div class="product-list">
+          @for (product of data.products; track product.id) {
+            <article
+              class="product-row"
+              [class.hidden-product]="!product.visibleInStore"
+            >
+              <div class="product-main">
+                <div class="product-flags">
+                  <span class="merchant">{{ product.merchantLabel }}</span>
+                  <span>{{ product.faction || 'SEM SETOR' }}</span>
+                  <span>{{ product.status }}</span>
+
+                  @if (product.visibleInStore) {
+                    <span class="visible">STORE VISIBLE</span>
+                  } @else {
+                    <span class="hidden">STORE HIDDEN</span>
+                  }
+                </div>
+
+                <h3>{{ productName(product) }}</h3>
+                <p class="product-id">{{ product.id }}</p>
+
+                @if (product.destinationUrl) {
+                  <p class="destination">
+                    <span>DESTINATION</span>
+                    <code>{{ product.destinationUrl }}</code>
+                  </p>
+                }
+              </div>
+
+              <div class="product-diagnostics">
+                <p>
+                  <span>TYPE</span>
+                  <strong>{{ product.productType }}</strong>
+                </p>
+
+                <p>
+                  <span>SOURCE FIELD</span>
+                  <strong>{{ product.sourceUrlField || 'NONE' }}</strong>
+                </p>
+
+                <p>
+                  <span>RAW STATUS</span>
+                  <strong>{{ product.rawStatus || 'MISSING' }}</strong>
+                </p>
+
+                @if (product.warnings.length) {
+                  <details>
+                    <summary>
+                      {{ product.warnings.length }}
+                      observação(ões)
+                    </summary>
+
+                    <ul>
+                      @for (warning of product.warnings; track warning) {
+                        <li>{{ warning }}</li>
+                      }
+                    </ul>
+                  </details>
+                }
+              </div>
+            </article>
+          } @empty {
+            <p>Nenhum produto retornado pelo catálogo.</p>
+          }
+        </div>
+      </section>
+
+      <section class="panel future-panel">
+        <div>
+          <p class="section-label">CAMPAIGNS</p>
+          <h2>Campaign Engine reservado</h2>
+          <p>
+            A coleção <code>store-campaigns</code> ainda não é lida,
+            criada ou modificada no Patch 6A.
+          </p>
+        </div>
+
+        <span class="future-status">PATCH 6C</span>
+      </section>
+
+      <p class="policy">
+        COLLECTION = {{ data.collection }}
+        · READ ONLY = {{ data.readOnly ? 'YES' : 'NO' }}
+        · FIRESTORE WRITES = 0
+      </p>
+    }
+  }
+
+  @if (error()) {
+    <p class="error-message" role="alert">{{ error() }}</p>
+  }
+
+  @if (message()) {
+    <p class="success-message" role="status">{{ message() }}</p>
+  }
+</main>

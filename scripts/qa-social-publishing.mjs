@@ -106,10 +106,10 @@ console.log('CANCELED_PACKAGES_HIDDEN = PASS');
 
 const routes = readFileSync(new URL('../src/app/app.routes.ts', import.meta.url), 'utf8');
 const admin = readFileSync(new URL('../src/app/pages/admin-shell/admin-shell.html', import.meta.url), 'utf8');
-for (const route of ['admin/system-logs', 'admin/lore', 'admin/global-sagas', 'admin/stream-importer', 'admin/social-publishing']) {
+for (const route of ['admin/system-logs', 'admin/lore', 'admin/global-sagas', 'admin/stream-importer', 'admin/social-publishing', 'admin/store']) {
   assert.ok(routes.includes(`path: '${route}'`));
 }
-for (const index of ['01', '02', '03', '04', '05']) assert.ok(admin.includes(`module-index">${index}`));
+for (const index of ['01', '02', '03', '04', '05', '06']) assert.ok(admin.includes(`module-index">${index}`));
 console.log('EXISTING_ADMIN_REGRESSION = PASS');
 
 function fakeResponse() {

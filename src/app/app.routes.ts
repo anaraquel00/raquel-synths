@@ -258,6 +258,13 @@ export const routes: Routes = [
     title: 'RQS Admin // Social Publishing'
   },
   {
+    path: 'admin/store',
+    loadComponent: () =>
+      import('./pages/store-admin/store-admin')
+        .then(m => m.StoreAdminComponent),
+    title: 'RQS Admin // Neon Store'
+  },
+  {
     path: 'admin/soundcloud-importer',
     redirectTo: 'stream-importer',
     pathMatch: 'full'
