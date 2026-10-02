@@ -518,6 +518,7 @@ checkCurrentMode() {
 
   getShortDescription(item: any): string {
     const html = item?.content?.[this.currentLang()]?.description || '';
+
     const text = String(html)
       .replace(/<[^>]*>/g, ' ')
       .replace(/&nbsp;/g, ' ')
@@ -525,7 +526,20 @@ checkCurrentMode() {
       .replace(/\s+/g, ' ')
       .trim();
 
-    return text.length > 150 ? `${text.slice(0, 147).trim()}…` : text;
+    if (!text) return '';
+
+    const firstSentence = text.match(/^.*?[.!?](?:\s|$)/)?.[0]?.trim();
+
+    if (firstSentence && firstSentence.length >= 35 && firstSentence.length <= 120) {
+      return firstSentence;
+    }
+
+    if (text.length <= 115) return text;
+
+    const teaser = text.slice(0, 112);
+    const lastSpace = teaser.lastIndexOf(' ');
+
+    return `${teaser.slice(0, lastSpace > 70 ? lastSpace : 112).trim()}…`;
   }
 
   private scrollToCatalog(): void {

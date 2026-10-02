@@ -910,3 +910,19 @@ a {
     outline: none;
   }
 }
+
+/* Product descriptions: preserve source text, clamp presentation only */
+.product-description {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  line-clamp: 5;
+  overflow: hidden;
+}
+
+/* Neon Store V2 — compact commercial copy */
+.product-description {
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  min-height: 4.65em;
+}
