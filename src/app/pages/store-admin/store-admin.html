@@ -323,6 +323,24 @@
 
                 @if (draft.origin.type === 'discography') {
                   <label class="wide-field">
+                    <span>RELEASE ID // FIRESTORE</span>
+
+                    <input
+                      type="text"
+                      [(ngModel)]="draft.origin.releaseId"
+                      name="originReleaseId"
+                      maxlength="512"
+                      placeholder="ID do documento na coleção discography"
+                      (ngModelChange)="invalidateDryRun()"
+                    >
+
+                    <small>
+                      ID canônico do documento em Firestore / discography.
+                      A página do Musical Archives será localizada automaticamente.
+                    </small>
+                  </label>
+
+                  <label class="wide-field">
                     <span>FEATURED IN</span>
 
                     <input
@@ -334,30 +352,28 @@
                       (ngModelChange)="invalidateDryRun()"
                     >
                   </label>
-                }
+                } @else {
+                  <label class="wide-field">
+                    <span>INTERNAL ROUTE</span>
 
-                <label class="wide-field">
-                  <span>INTERNAL ROUTE</span>
-
-                  <input
-                    type="text"
-                    [(ngModel)]="draft.origin.route"
-                    name="originRoute"
-                    maxlength="512"
-                    [placeholder]="
-                      draft.origin.type === 'discography'
-                        ? '/discografia'
-                        : draft.origin.type === 'system-log'
+                    <input
+                      type="text"
+                      [(ngModel)]="draft.origin.route"
+                      name="originRoute"
+                      maxlength="512"
+                      [placeholder]="
+                        draft.origin.type === 'system-log'
                           ? '/log-reader/signal-recalibrated'
                           : '/hybrid-reader/s1-e1'
-                    "
-                    (ngModelChange)="invalidateDryRun()"
-                  >
+                      "
+                      (ngModelChange)="invalidateDryRun()"
+                    >
 
-                  <small>
-                    Apenas rotas internas compatíveis com o tipo selecionado.
-                  </small>
-                </label>
+                    <small>
+                      Apenas rotas internas compatíveis com o tipo selecionado.
+                    </small>
+                  </label>
+                }
               }
             </div>
 

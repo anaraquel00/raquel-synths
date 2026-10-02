@@ -41,6 +41,7 @@ export interface StoreProductOrigin {
   type: StoreProductOriginType;
   title: string;
   featuredIn: string;
+  releaseId: string;
   route: string;
 }
 

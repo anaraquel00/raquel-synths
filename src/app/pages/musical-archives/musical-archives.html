@@ -11,7 +11,9 @@
     </div>
 
     @for (album of paginatedBroklin; track album; let i = $index; let isLast = $last) {
-      <article class="featured-album">
+      <article
+        class="featured-album"
+        [id]="releaseElementId(album.id)">
        <div class="album-cover">
          <img [ngSrc]="album.cover" [priority]="i === 0"
           width="400"
@@ -108,7 +110,9 @@
     </div>
 
     @for (album of paginatedJonah; track album; let i = $index; let isLast = $last) {
-      <article class="featured-album">
+      <article
+        class="featured-album"
+        [id]="releaseElementId(album.id)">
        <div class="album-cover">
          <img [ngSrc]="album.cover" [priority]="i === 0"
           width="400"

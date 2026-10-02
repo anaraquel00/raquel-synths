@@ -300,8 +300,11 @@ const discographyOrigin =
       featuredIn:
         'Fitas Desbotadas',
 
+      releaseId:
+        'ep-saudade-sintetica',
+
       route:
-        '/discografia'
+        '/musical-archives?broPage=11'
     }
   });
 
@@ -316,7 +319,19 @@ assert.equal(
   'discography'
 );
 
-const invalidExternalOrigin =
+assert.equal(
+  discographyOrigin.payload
+    .origin.releaseId,
+  'ep-saudade-sintetica'
+);
+
+assert.equal(
+  discographyOrigin.payload
+    .origin.route,
+  '/musical-archives'
+);
+
+const missingReleaseId =
   validateProductDraft({
     ...validDraft,
 
@@ -330,13 +345,15 @@ const invalidExternalOrigin =
       featuredIn:
         'Fitas Desbotadas',
 
+      releaseId: '',
+
       route:
-        'https://example.com/release'
+        '/musical-archives'
     }
   });
 
 assert.equal(
-  invalidExternalOrigin.status,
+  missingReleaseId.status,
   'BLOCKED'
 );
 

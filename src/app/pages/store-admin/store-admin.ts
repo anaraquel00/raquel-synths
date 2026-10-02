@@ -232,6 +232,9 @@ implements OnInit, OnDestroy {
         featuredIn:
           product.origin.featuredIn,
 
+        releaseId:
+          product.origin.releaseId,
+
         route:
           product.origin.route
       },
@@ -637,6 +640,7 @@ implements OnInit, OnDestroy {
         type: 'none',
         title: '',
         featuredIn: '',
+        releaseId: '',
         route: ''
       },
 

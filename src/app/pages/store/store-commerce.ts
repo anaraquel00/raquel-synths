@@ -21,6 +21,7 @@ export interface StoreProductOrigin {
   type: StoreProductOriginType;
   title: string;
   featuredIn: string;
+  releaseId: string;
   route: string;
 }
 
@@ -199,15 +200,38 @@ export function normalizeStoreProductOrigin(
     String(value?.featuredIn || '')
       .trim();
 
-  const route =
+  const releaseId =
+    String(value?.releaseId || '')
+      .trim();
+
+  const rawRoute =
     String(value?.route || '')
       .trim();
 
+  if (!title) {
+    return null;
+  }
+
+  // New canonical discography contract.
   if (
-    !title ||
+    type === 'discography' &&
+    releaseId
+  ) {
+    return {
+      type,
+      title,
+      featuredIn,
+      releaseId,
+      route:
+        '/musical-archives'
+    };
+  }
+
+  // Compatibility while legacy origin documents are upgraded.
+  if (
     !validStoreOriginRoute(
       type,
-      route
+      rawRoute
     )
   ) {
     return null;
@@ -217,7 +241,9 @@ export function normalizeStoreProductOrigin(
     type,
     title,
     featuredIn,
-    route
+    releaseId: '',
+    route:
+      rawRoute
   };
 }
 
@@ -255,6 +281,24 @@ export function getStoreOriginCta(
   }
 
   return '';
+}
+
+export function getStoreOriginHref(
+  origin: StoreProductOrigin
+): string {
+  if (
+    origin.type === 'discography' &&
+    origin.releaseId
+  ) {
+    return (
+      '/musical-archives?release=' +
+      encodeURIComponent(
+        origin.releaseId
+      )
+    );
+  }
+
+  return origin.route;
 }
 
 export function adaptStoreProduct<T extends Record<string, any>>(product: T) {

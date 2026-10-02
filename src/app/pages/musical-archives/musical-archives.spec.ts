@@ -1,6 +1,9 @@
 import { of } from 'rxjs';
 import { Album } from '../../models/album.model';
-import { MusicalArchives } from './musical-archives';
+import {
+  MusicalArchives,
+  releasePageForId
+} from './musical-archives';
 
 describe('MusicalArchives complete catalog', () => {
   const album = (id: string, faction: string, day: number): Album => ({
@@ -15,6 +18,37 @@ describe('MusicalArchives complete catalog', () => {
     embedLink: null,
     spotifyUrl: null,
     soundcloudUrl: null
+  });
+
+  it('locates a release page from its stable Firestore document id', () => {
+    const releases =
+      Array.from(
+        { length: 60 },
+        (_, index) => ({
+          id:
+            `release-${index}`,
+          faction:
+            'broklin',
+          title:
+            `Release ${index}`
+        } as Album)
+      );
+
+    expect(
+      releasePageForId(
+        releases,
+        'release-50',
+        5
+      )
+    ).toBe(11);
+
+    expect(
+      releasePageForId(
+        releases,
+        'missing-release',
+        5
+      )
+    ).toBeNull();
   });
 
   it('includes newest, older, and hybrid releases before pagination', () => {

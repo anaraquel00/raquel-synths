@@ -3,6 +3,7 @@ import {
   getStoreMerchantCta,
   getStoreMerchantLabel,
   getStoreOriginCta,
+  getStoreOriginHref,
   getStoreOriginTypeLabel,
   getStoreProductTeaser,
   isVisibleAffiliateProduct,
@@ -143,8 +144,11 @@ describe('Store commerce adapter', () => {
         featuredIn:
           'Fitas Desbotadas',
 
+        releaseId:
+          'ep-saudade-sintetica',
+
         route:
-          '/discografia'
+          '/musical-archives?broPage=11'
       });
 
     expect(origin?.type)
@@ -152,6 +156,24 @@ describe('Store commerce adapter', () => {
 
     expect(origin?.featuredIn)
       .toBe('Fitas Desbotadas');
+
+    expect(origin?.releaseId)
+      .toBe(
+        'ep-saudade-sintetica'
+      );
+
+    expect(origin?.route)
+      .toBe(
+        '/musical-archives'
+      );
+
+    expect(
+      getStoreOriginHref(
+        origin!
+      )
+    ).toBe(
+      '/musical-archives?release=ep-saudade-sintetica'
+    );
 
     expect(
       getStoreOriginTypeLabel(

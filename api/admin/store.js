@@ -388,9 +388,14 @@ function normalizeOrigin(value = {}) {
       type: 'none',
       title: '',
       featuredIn: '',
+      releaseId: '',
       route: ''
     };
   }
+
+  const releaseId =
+    String(value?.releaseId || '')
+      .trim();
 
   return {
     type,
@@ -403,9 +408,16 @@ function normalizeOrigin(value = {}) {
       String(value?.featuredIn || '')
         .trim(),
 
+    releaseId:
+      type === 'discography'
+        ? releaseId
+        : '',
+
     route:
-      String(value?.route || '')
-        .trim()
+      type === 'discography'
+        ? '/musical-archives'
+        : String(value?.route || '')
+            .trim()
   };
 }
 
@@ -803,24 +815,52 @@ export function validateProductDraft(input = {}) {
       );
     }
 
-    if (!draft.origin.route) {
-      blocked.push(
-        'RQS Origin internal route is required.'
-      );
-    } else if (
-      draft.origin.route.length > 512
+    if (
+      draft.origin.type ===
+      'discography'
     ) {
-      blocked.push(
-        'RQS Origin internal route exceeds 512 characters.'
-      );
-    } else if (
-      !validOriginRoute(
-        draft.origin
-      )
-    ) {
-      blocked.push(
-        'RQS Origin route does not match the selected origin type.'
-      );
+      if (!draft.origin.releaseId) {
+        blocked.push(
+          'Discography origin requires the Firestore releaseId.'
+        );
+      } else if (
+        draft.origin.releaseId.length >
+        512
+      ) {
+        blocked.push(
+          'Discography releaseId exceeds 512 characters.'
+        );
+      } else if (
+        draft.origin.releaseId === '.' ||
+        draft.origin.releaseId === '..' ||
+        /[\\/]/u.test(
+          draft.origin.releaseId
+        )
+      ) {
+        blocked.push(
+          'Discography releaseId is invalid.'
+        );
+      }
+    } else {
+      if (!draft.origin.route) {
+        blocked.push(
+          'RQS Origin internal route is required.'
+        );
+      } else if (
+        draft.origin.route.length > 512
+      ) {
+        blocked.push(
+          'RQS Origin internal route exceeds 512 characters.'
+        );
+      } else if (
+        !validOriginRoute(
+          draft.origin
+        )
+      ) {
+        blocked.push(
+          'RQS Origin route does not match the selected origin type.'
+        );
+      }
     }
   }
 
@@ -913,6 +953,11 @@ function productFields(product) {
         featuredIn:
           stringValue(
             product.origin.featuredIn
+          ),
+
+        releaseId:
+          stringValue(
+            product.origin.releaseId
           ),
 
         route:

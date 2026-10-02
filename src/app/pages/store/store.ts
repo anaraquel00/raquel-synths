@@ -18,6 +18,7 @@ import {
   getStoreMerchantCta,
   getStoreMerchantLabel,
   getStoreOriginCta,
+  getStoreOriginHref as buildStoreOriginHref,
   getStoreOriginTypeLabel,
   getStoreProductTeaser,
   isVisibleAffiliateProduct,
@@ -654,6 +655,14 @@ checkCurrentMode() {
   ): string {
     return getStoreOriginCta(
       origin.type
+    );
+  }
+
+  getProductOriginHref(
+    origin: StoreProductOrigin
+  ): string {
+    return buildStoreOriginHref(
+      origin
     );
   }
 

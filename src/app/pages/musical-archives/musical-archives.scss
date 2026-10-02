@@ -448,3 +448,9 @@ button {
   from { opacity: 0; transform: translateY(10px) skewX(-5deg); }
   to { opacity: 1; transform: translateY(0) skewX(0); }
 }
+
+
+/* Exact release deep-link offset for the fixed RQS header */
+.featured-album {
+  scroll-margin-top: 110px;
+}

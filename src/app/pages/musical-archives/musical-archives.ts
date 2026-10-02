@@ -14,6 +14,36 @@ import { isPlatformBrowser } from '@angular/common';
 import { TrackingService } from '../../services/tracking.service';
 import { SeoService } from '../../services/seo.service';
 
+export function releasePageForId(
+  releases: Album[] | undefined,
+  releaseId: string,
+  pageSize: number
+): number | null {
+  if (
+    !releases ||
+    !releaseId ||
+    pageSize < 1
+  ) {
+    return null;
+  }
+
+  const index =
+    releases.findIndex(
+      album =>
+        album.id === releaseId
+    );
+
+  if (index < 0) {
+    return null;
+  }
+
+  return (
+    Math.floor(
+      index / pageSize
+    ) + 1
+  );
+}
+
 @Component({
   selector: 'app-musical-archives',
   standalone: true,
@@ -33,6 +63,7 @@ export class MusicalArchives implements OnInit, OnDestroy {
 
   isJonahMode = signal<boolean>(false);
   private themeObserver: MutationObserver | null = null;
+  private targetReleaseId: string | null = null;
 
   legacyReleases: Album[] = [];
   isLoading = true;
@@ -62,13 +93,26 @@ export class MusicalArchives implements OnInit, OnDestroy {
     // 2. 🛡️ PATCH DO CRAWLER: Altera o idioma da tag HTML raiz dinamicamente
     this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
 
-    this.getArchives();
-    // 🔥 BLINDAGEM SEO: O terminal agora rastreia a URL
+    // 🔥 BLINDAGEM SEO + DEEP LINK DE RELEASE
     this.route.queryParams.subscribe(params => {
-      // Se não tiver página na URL, ele assume 1 (padrão)
-      this.currentPageBroklin = params['broPage'] ? Number(params['broPage']) : 1;
-      this.currentPageJonah = params['joPage'] ? Number(params['joPage']) : 1;
+      this.targetReleaseId =
+        typeof params['release'] === 'string'
+          ? params['release'].trim()
+          : null;
+
+      // Paginação manual continua compatível.
+      this.currentPageBroklin =
+        params['broPage']
+          ? Number(params['broPage'])
+          : 1;
+
+      this.currentPageJonah =
+        params['joPage']
+          ? Number(params['joPage'])
+          : 1;
     });
+
+    this.getArchives();
   }
 
   ngOnDestroy() {
@@ -140,7 +184,156 @@ getArchives() {
         ]
       });
         this.isLoading = false;
+
+        this.applyReleaseDeepLink(
+          sortedData
+        );
       }
+    });
+  }
+
+  private applyReleaseDeepLink(
+    albums: Album[]
+  ): void {
+    if (
+      !isPlatformBrowser(
+        this.platformId
+      ) ||
+      !this.targetReleaseId
+    ) {
+      return;
+    }
+
+    const releaseId =
+      this.targetReleaseId;
+
+    const release =
+      albums.find(
+        album =>
+          album.id === releaseId
+      );
+
+    if (!release) {
+      return;
+    }
+
+    let lane:
+      'broklin' | 'jonah';
+
+    if (release.faction === 'jonah') {
+      lane = 'jonah';
+    } else if (
+      release.faction === 'broklin'
+    ) {
+      lane = 'broklin';
+    } else {
+      lane =
+        this.document.body
+          .classList
+          .contains('mode-jonah')
+          ? 'jonah'
+          : 'broklin';
+    }
+
+    let page =
+      releasePageForId(
+        lane === 'jonah'
+          ? this.featuredJonah
+          : this.featuredBroklin,
+        releaseId,
+        this.pageSize
+      );
+
+    // Defensive fallback for hybrid/legacy faction data.
+    if (page === null) {
+      lane =
+        lane === 'jonah'
+          ? 'broklin'
+          : 'jonah';
+
+      page =
+        releasePageForId(
+          lane === 'jonah'
+            ? this.featuredJonah
+            : this.featuredBroklin,
+          releaseId,
+          this.pageSize
+        );
+    }
+
+    if (page === null) {
+      return;
+    }
+
+    this.alignArchiveMode(
+      lane
+    );
+
+    if (lane === 'jonah') {
+      this.currentPageJonah =
+        page;
+    } else {
+      this.currentPageBroklin =
+        page;
+    }
+
+    this.scrollToRelease(
+      releaseId
+    );
+  }
+
+  private alignArchiveMode(
+    lane: 'broklin' | 'jonah'
+  ): void {
+    this.isJonahMode.set(
+      lane === 'jonah'
+    );
+
+    this.contentService.currentMode =
+      lane;
+
+    this.document.body.classList.remove(
+      'mode-broklin',
+      'mode-jonah'
+    );
+
+    this.document.body.classList.add(
+      `mode-${lane}`
+    );
+  }
+
+  public releaseElementId(
+    releaseId: string
+  ): string {
+    return (
+      'release-' +
+      encodeURIComponent(
+        String(releaseId || '')
+      )
+    );
+  }
+
+  private scrollToRelease(
+    releaseId: string
+  ): void {
+    const elementId =
+      this.releaseElementId(
+        releaseId
+      );
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        this.document
+          .getElementById(
+            elementId
+          )
+          ?.scrollIntoView({
+            behavior:
+              'smooth',
+            block:
+              'start'
+          });
+      });
     });
   }
 
