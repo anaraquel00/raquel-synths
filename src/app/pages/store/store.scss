@@ -450,27 +450,44 @@ a {
   color: rgba(255,255,255,0.62);
   font-size: 0.88rem;
   line-height: 1.55;
-  white-space: pre-line;
-
-  &.expanded {
-    max-height: 20rem;
-    padding-right: 0.35rem;
-    overflow-y: auto;
-    scrollbar-width: thin;
-  }
 }
 
-.description-toggle {
-  align-self: flex-start;
-  margin-top: 0.65rem;
-  padding: 0.2rem 0;
-  border: 0;
-  background: transparent;
+.product-origin {
+  display: grid;
+  gap: 0.24rem;
+  margin-top: 1rem;
+  border-left: 2px solid var(--store-accent);
+  padding: 0.15rem 0 0.15rem 0.75rem;
+}
+
+.origin-kicker {
+  margin: 0;
   color: var(--store-accent);
-  font-size: 0.7rem;
-  font-weight: 850;
-  letter-spacing: 0.075em;
-  cursor: pointer;
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.11em;
+}
+
+.origin-title {
+  color: rgba(255,255,255,0.9);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.origin-featured {
+  color: rgba(255,255,255,0.52);
+  font-size: 0.68rem;
+  line-height: 1.35;
+}
+
+.origin-link {
+  width: fit-content;
+  margin-top: 0.28rem;
+  color: var(--store-accent);
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.065em;
+  text-decoration: none;
 
   &:hover,
   &:focus-visible {

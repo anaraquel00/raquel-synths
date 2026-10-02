@@ -11,6 +11,19 @@ export type StoreProductStatus = 'available' | 'sold_out' | 'inactive';
 
 export type StoreProductType = 'affiliate' | 'official' | 'unknown';
 
+export type StoreProductOriginType =
+  | 'none'
+  | 'saga'
+  | 'system-log'
+  | 'discography';
+
+export interface StoreProductOrigin {
+  type: StoreProductOriginType;
+  title: string;
+  featuredIn: string;
+  route: string;
+}
+
 const AFFILIATE_MERCHANTS: StoreMerchant[] = [
   'shein',
   'mercado-livre',
@@ -116,6 +129,134 @@ export function normalizeStoreProductStatus(status: unknown): StoreProductStatus
   return 'inactive';
 }
 
+function validStoreOriginRoute(
+  type: StoreProductOriginType,
+  route: string
+): boolean {
+  if (type === 'none') {
+    return true;
+  }
+
+  if (
+    !route.startsWith('/') ||
+    route.startsWith('//') ||
+    route.includes('\\') ||
+    /\s/u.test(route)
+  ) {
+    return false;
+  }
+
+  const pathname =
+    route.split(/[?#]/u)[0];
+
+  if (type === 'discography') {
+    return (
+      pathname === '/discografia' ||
+      pathname.startsWith('/discografia/') ||
+      pathname === '/musical-archives' ||
+      pathname.startsWith('/musical-archives/')
+    );
+  }
+
+  if (type === 'system-log') {
+    return (
+      pathname === '/logs-archive' ||
+      pathname.startsWith('/log-reader/')
+    );
+  }
+
+  return (
+    pathname === '/hybrid-saga' ||
+    pathname.startsWith('/hybrid-reader/') ||
+    pathname.startsWith('/lore/') ||
+    pathname.startsWith('/visual-novel/')
+  );
+}
+
+export function normalizeStoreProductOrigin(
+  value: any
+): StoreProductOrigin | null {
+  const type =
+    String(value?.type || '')
+      .trim()
+      .toLowerCase() as StoreProductOriginType;
+
+  if (
+    ![
+      'saga',
+      'system-log',
+      'discography'
+    ].includes(type)
+  ) {
+    return null;
+  }
+
+  const title =
+    String(value?.title || '')
+      .trim();
+
+  const featuredIn =
+    String(value?.featuredIn || '')
+      .trim();
+
+  const route =
+    String(value?.route || '')
+      .trim();
+
+  if (
+    !title ||
+    !validStoreOriginRoute(
+      type,
+      route
+    )
+  ) {
+    return null;
+  }
+
+  return {
+    type,
+    title,
+    featuredIn,
+    route
+  };
+}
+
+export function getStoreOriginTypeLabel(
+  type: StoreProductOriginType
+): string {
+  if (type === 'system-log') {
+    return 'SYSTEM LOG';
+  }
+
+  if (type === 'discography') {
+    return 'DISCOGRAPHY';
+  }
+
+  if (type === 'saga') {
+    return 'SAGA';
+  }
+
+  return '';
+}
+
+export function getStoreOriginCta(
+  type: StoreProductOriginType
+): string {
+  if (type === 'system-log') {
+    return 'ACCESS LOG →';
+  }
+
+  if (type === 'discography') {
+    return 'ACCESS RELEASE →';
+  }
+
+  if (type === 'saga') {
+    return 'ACCESS STORY →';
+  }
+
+  return '';
+}
+
 export function adaptStoreProduct<T extends Record<string, any>>(product: T) {
   const destinationUrl = resolveStoreDestination(product);
   const merchant = resolveStoreMerchant(destinationUrl);
@@ -133,7 +274,8 @@ export function adaptStoreProduct<T extends Record<string, any>>(product: T) {
     merchant,
     merchantLabel: getStoreMerchantLabel(merchant),
     productType,
-    status: normalizeStoreProductStatus(product?.['status'])
+    status: normalizeStoreProductStatus(product?.['status']),
+    origin: normalizeStoreProductOrigin(product?.['origin'])
   };
 }
 
@@ -271,42 +413,5 @@ export function getStoreProductTeaser(
 
   return createStoreDescriptionTeaser(
     content?.description || ''
-  );
-}
-
-export function getStoreProductLongDescription(
-  product: any,
-  lang: 'pt' | 'en'
-): string {
-  return storeDescriptionPlainText(
-    product?.content?.[lang]
-      ?.description,
-    true
-  );
-}
-
-export function hasStoreProductLongDescription(
-  product: any,
-  lang: 'pt' | 'en'
-): boolean {
-  const full =
-    storeDescriptionPlainText(
-      product?.content?.[lang]
-        ?.description
-    );
-
-  const teaser =
-    storeDescriptionPlainText(
-      getStoreProductTeaser(
-        product,
-        lang
-      )
-    );
-
-  return Boolean(
-    full &&
-    teaser &&
-    full !== teaser &&
-    full.length > teaser.length
   );
 }

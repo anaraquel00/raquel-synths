@@ -779,3 +779,58 @@ button {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* PATCH 6E — structured RQS product origin */
+
+.origin-editor-card {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+  border: 1px solid #263d48;
+  border-radius: 10px;
+  padding: 1rem;
+  background: #0a1319;
+}
+
+.origin-grid {
+  grid-template-columns:
+    minmax(0, 0.7fr)
+    minmax(0, 1.3fr);
+}
+
+.origin-admin-preview {
+  display: grid;
+  gap: 0.25rem;
+  border-left: 2px solid #62deed;
+  padding: 0.3rem 0 0.3rem 0.8rem;
+}
+
+.origin-admin-preview span {
+  color: #62deed;
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+}
+
+.origin-admin-preview strong {
+  color: #fff;
+}
+
+.origin-admin-preview small {
+  color: #8299a3;
+}
+
+.origin-admin-preview em {
+  margin-top: 0.25rem;
+  color: #62deed;
+  font-size: 0.72rem;
+  font-style: normal;
+  font-weight: 850;
+}
+
+@media (max-width: 700px) {
+  .origin-grid {
+    grid-template-columns: 1fr;
+  }
+}

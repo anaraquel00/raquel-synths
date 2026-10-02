@@ -17,12 +17,13 @@ import {
   adaptStoreProduct,
   getStoreMerchantCta,
   getStoreMerchantLabel,
-  getStoreProductLongDescription,
+  getStoreOriginCta,
+  getStoreOriginTypeLabel,
   getStoreProductTeaser,
-  hasStoreProductLongDescription,
   isVisibleAffiliateProduct,
   resolveStoreMerchant,
-  StoreMerchant
+  StoreMerchant,
+  StoreProductOrigin
 } from './store-commerce';
 
 interface PublicStoreCampaignContent {
@@ -232,11 +233,6 @@ private updateSeoAndLang(isPt: boolean) {
   selectedDepartmentId = signal<string | null>(null);
   selectedMerchant = signal<'all' | StoreMerchant>('all');
   filteredProducts: any[] = [];
-
-  readonly expandedProductDescriptions =
-    signal<ReadonlySet<string>>(
-      new Set<string>()
-    );
 
   readonly merchantFilters: StoreMerchant[] = [
     'shein',
@@ -633,66 +629,31 @@ checkCurrentMode() {
   getProductDescription(
     item: any
   ): string {
-    if (
-      this.isProductDescriptionExpanded(
-        item
-      )
-    ) {
-      return getStoreProductLongDescription(
-        item,
-        this.currentLang()
-      );
-    }
-
     return getStoreProductTeaser(
       item,
       this.currentLang()
     );
   }
 
-  hasExpandableProductDescription(
+  getProductOrigin(
     item: any
-  ): boolean {
-    return hasStoreProductLongDescription(
-      item,
-      this.currentLang()
+  ): StoreProductOrigin | null {
+    return item?.origin || null;
+  }
+
+  getProductOriginLabel(
+    origin: StoreProductOrigin
+  ): string {
+    return getStoreOriginTypeLabel(
+      origin.type
     );
   }
 
-  isProductDescriptionExpanded(
-    item: any
-  ): boolean {
-    const id =
-      String(item?.id || '');
-
-    return Boolean(
-      id &&
-      this.expandedProductDescriptions()
-        .has(id)
-    );
-  }
-
-  toggleProductDescription(
-    item: any
-  ): void {
-    const id =
-      String(item?.id || '');
-
-    if (!id) return;
-
-    const next =
-      new Set(
-        this.expandedProductDescriptions()
-      );
-
-    if (next.has(id)) {
-      next.delete(id);
-    } else {
-      next.add(id);
-    }
-
-    this.expandedProductDescriptions.set(
-      next
+  getProductOriginCta(
+    origin: StoreProductOrigin
+  ): string {
+    return getStoreOriginCta(
+      origin.type
     );
   }
 

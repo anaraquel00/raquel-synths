@@ -24,13 +24,15 @@ import {
 
 import {
   STORE_ADMIN_FACTIONS,
+  STORE_ADMIN_ORIGIN_TYPES,
   STORE_ADMIN_STATUSES,
   StoreAdminOverviewResponse,
   StoreAdminProduct,
   StoreAdminProductDraft,
   StoreAdminProductDryRun,
   StoreAdminProductOperation,
-  StoreAdminProductStatus
+  StoreAdminProductStatus,
+  StoreProductOriginType
 } from '../../models/store-admin.model';
 
 import {
@@ -95,6 +97,9 @@ implements OnInit, OnDestroy {
 
   readonly statuses =
     STORE_ADMIN_STATUSES;
+
+  readonly originTypes =
+    STORE_ADMIN_ORIGIN_TYPES;
 
   draft:
     StoreAdminProductDraft =
@@ -216,6 +221,20 @@ implements OnInit, OnDestroy {
 
       status:
         product.status,
+
+      origin: {
+        type:
+          product.origin.type,
+
+        title:
+          product.origin.title,
+
+        featuredIn:
+          product.origin.featuredIn,
+
+        route:
+          product.origin.route
+      },
 
       content: {
         pt: {
@@ -550,6 +569,44 @@ implements OnInit, OnDestroy {
     return 'ARQUIVAR PRODUTO';
   }
 
+  originTypeLabel(
+    value:
+      StoreProductOriginType
+  ): string {
+    if (value === 'saga') {
+      return 'SAGA';
+    }
+
+    if (value === 'system-log') {
+      return 'SYSTEM LOG';
+    }
+
+    if (value === 'discography') {
+      return 'DISCOGRAPHY';
+    }
+
+    return 'NONE';
+  }
+
+  originAccessLabel(
+    value:
+      StoreProductOriginType
+  ): string {
+    if (value === 'saga') {
+      return 'ACCESS STORY →';
+    }
+
+    if (value === 'system-log') {
+      return 'ACCESS LOG →';
+    }
+
+    if (value === 'discography') {
+      return 'ACCESS RELEASE →';
+    }
+
+    return '';
+  }
+
   statusLabel(
     value:
       StoreAdminProductStatus
@@ -575,6 +632,13 @@ implements OnInit, OnDestroy {
       destinationUrl: '',
       status:
         'available',
+
+      origin: {
+        type: 'none',
+        title: '',
+        featuredIn: '',
+        route: ''
+      },
 
       content: {
         pt: {

@@ -2,10 +2,11 @@ import {
   adaptStoreProduct,
   getStoreMerchantCta,
   getStoreMerchantLabel,
-  getStoreProductLongDescription,
+  getStoreOriginCta,
+  getStoreOriginTypeLabel,
   getStoreProductTeaser,
-  hasStoreProductLongDescription,
   isVisibleAffiliateProduct,
+  normalizeStoreProductOrigin,
   normalizeStoreProductStatus,
   resolveStoreDestination,
   resolveStoreMerchant
@@ -104,25 +105,10 @@ describe('Store commerce adapter', () => {
       );
 
     expect(teaser)
-      .toContain(
-        'Uma armadura clássica'
-      );
-
-    expect(teaser)
       .not.toContain('<');
-
-    expect(teaser.endsWith('…'))
-      .toBeTrue();
-
-    expect(
-      hasStoreProductLongDescription(
-        product,
-        'pt'
-      )
-    ).toBeTrue();
   });
 
-  it('prefers editorial shortDescription while preserving the full description', () => {
+  it('prefers editorial shortDescription for the public card', () => {
     const product = {
       content: {
         en: {
@@ -130,7 +116,7 @@ describe('Store commerce adapter', () => {
             '<p>Editorial card copy.</p>',
 
           description:
-            '<p>Full product description.</p><p>Second paragraph.</p>'
+            '<p>Full product description that stays outside the public card.</p>'
         }
       }
     };
@@ -143,22 +129,72 @@ describe('Store commerce adapter', () => {
     ).toBe(
       'Editorial card copy.'
     );
+  });
+
+  it('normalizes RQS product origins and derives public labels', () => {
+    const origin =
+      normalizeStoreProductOrigin({
+        type:
+          'discography',
+
+        title:
+          'Saudade Sintética (Lado A/B)',
+
+        featuredIn:
+          'Fitas Desbotadas',
+
+        route:
+          '/discografia'
+      });
+
+    expect(origin?.type)
+      .toBe('discography');
+
+    expect(origin?.featuredIn)
+      .toBe('Fitas Desbotadas');
 
     expect(
-      getStoreProductLongDescription(
-        product,
-        'en'
+      getStoreOriginTypeLabel(
+        'discography'
       )
-    ).toContain(
-      'Second paragraph.'
-    );
+    ).toBe('DISCOGRAPHY');
 
     expect(
-      hasStoreProductLongDescription(
-        product,
-        'en'
+      getStoreOriginCta(
+        'discography'
       )
-    ).toBeTrue();
+    ).toBe('ACCESS RELEASE →');
+
+    expect(
+      getStoreOriginCta(
+        'saga'
+      )
+    ).toBe('ACCESS STORY →');
+
+    expect(
+      getStoreOriginCta(
+        'system-log'
+      )
+    ).toBe('ACCESS LOG →');
+  });
+
+  it('rejects external or mismatched RQS origin routes', () => {
+    expect(
+      normalizeStoreProductOrigin({
+        type: 'discography',
+        title: 'Release',
+        route:
+          'https://example.com/release'
+      })
+    ).toBeNull();
+
+    expect(
+      normalizeStoreProductOrigin({
+        type: 'system-log',
+        title: 'Signal Recalibrated',
+        route: '/discografia'
+      })
+    ).toBeNull();
   });
 
   it('provides merchant labels and bilingual CTAs', () => {

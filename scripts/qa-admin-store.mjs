@@ -286,6 +286,88 @@ console.log(
   'STORE_PRODUCT_VALIDATION = PASS'
 );
 
+const discographyOrigin =
+  validateProductDraft({
+    ...validDraft,
+
+    origin: {
+      type:
+        'discography',
+
+      title:
+        'Saudade Sintética (Lado A/B)',
+
+      featuredIn:
+        'Fitas Desbotadas',
+
+      route:
+        '/discografia'
+    }
+  });
+
+assert.equal(
+  discographyOrigin.status,
+  'PASS'
+);
+
+assert.equal(
+  discographyOrigin.payload
+    .origin.type,
+  'discography'
+);
+
+const invalidExternalOrigin =
+  validateProductDraft({
+    ...validDraft,
+
+    origin: {
+      type:
+        'discography',
+
+      title:
+        'Saudade Sintética',
+
+      featuredIn:
+        'Fitas Desbotadas',
+
+      route:
+        'https://example.com/release'
+    }
+  });
+
+assert.equal(
+  invalidExternalOrigin.status,
+  'BLOCKED'
+);
+
+const mismatchedOriginRoute =
+  validateProductDraft({
+    ...validDraft,
+
+    origin: {
+      type:
+        'system-log',
+
+      title:
+        'Signal Recalibrated',
+
+      featuredIn: '',
+
+      route:
+        '/discografia'
+    }
+  });
+
+assert.equal(
+  mismatchedOriginRoute.status,
+  'BLOCKED'
+);
+
+console.log(
+  'STORE_PRODUCT_ORIGIN_VALIDATION = PASS'
+);
+
+
 process.env.RQS_ADMIN_TOKEN =
   'qa-only-secret-32-characters-or-more';
 

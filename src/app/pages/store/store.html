@@ -284,26 +284,35 @@
 
             <h3>{{ item.content?.[currentLang()]?.name }}</h3>
 
-            <p
-              class="product-description"
-              [class.expanded]="isProductDescriptionExpanded(item)"
-              [id]="'product-description-' + item.id">
+            <p class="product-description">
               {{ getProductDescription(item) }}
             </p>
 
-            @if (hasExpandableProductDescription(item)) {
-              <button
-                type="button"
-                class="description-toggle"
-                [attr.aria-expanded]="isProductDescriptionExpanded(item)"
-                [attr.aria-controls]="'product-description-' + item.id"
-                (click)="toggleProductDescription(item)">
-                @if (isProductDescriptionExpanded(item)) {
-                  {{ currentLang() === 'pt' ? 'RECOLHER ↑' : 'COLLAPSE ↑' }}
-                } @else {
-                  {{ currentLang() === 'pt' ? 'AMPLIAR ↓' : 'EXPAND ↓' }}
+            @if (getProductOrigin(item); as origin) {
+              <section
+                class="product-origin"
+                [attr.aria-label]="'RQS Origin: ' + origin.title">
+
+                <p class="origin-kicker">
+                  ORIGIN // {{ getProductOriginLabel(origin) }}
+                </p>
+
+                <strong class="origin-title">
+                  {{ origin.title }}
+                </strong>
+
+                @if (origin.featuredIn) {
+                  <span class="origin-featured">
+                    FEATURED IN // {{ origin.featuredIn }}
+                  </span>
                 }
-              </button>
+
+                <a
+                  class="origin-link"
+                  [routerLink]="origin.route">
+                  {{ getProductOriginCta(origin) }}
+                </a>
+              </section>
             }
 
             <div class="product-actions">

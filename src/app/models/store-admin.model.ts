@@ -31,6 +31,26 @@ export type StoreAdminProductOperation =
   | 'update'
   | 'archive';
 
+export type StoreProductOriginType =
+  | 'none'
+  | 'saga'
+  | 'system-log'
+  | 'discography';
+
+export interface StoreProductOrigin {
+  type: StoreProductOriginType;
+  title: string;
+  featuredIn: string;
+  route: string;
+}
+
+export const STORE_ADMIN_ORIGIN_TYPES: StoreProductOriginType[] = [
+  'none',
+  'saga',
+  'system-log',
+  'discography'
+];
+
 export const STORE_ADMIN_AFFILIATE_MERCHANTS: StoreAdminMerchant[] = [
   'shein',
   'mercado-livre',
@@ -64,6 +84,7 @@ export interface StoreAdminProductDraft {
   image: string;
   destinationUrl: string;
   status: StoreAdminProductStatus;
+  origin: StoreProductOrigin;
   content: {
     pt: StoreAdminLocalizedContent;
     en: StoreAdminLocalizedContent;
@@ -93,6 +114,8 @@ export interface StoreAdminProduct {
   visibleInStore: boolean;
   legacyDestinationField: boolean;
   updateTime: string | null;
+
+  origin: StoreProductOrigin;
 
   content: {
     pt: StoreAdminLocalizedContent;

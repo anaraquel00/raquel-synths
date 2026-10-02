@@ -49,6 +49,13 @@ const ALLOWED_STATUSES = new Set([
   'inactive'
 ]);
 
+const ALLOWED_ORIGIN_TYPES = new Set([
+  'none',
+  'saga',
+  'system-log',
+  'discography'
+]);
+
 const MERCHANT_LABELS = {
   shein: 'SHEIN',
   'mercado-livre': 'Mercado Livre',
@@ -66,6 +73,7 @@ const PRODUCT_UPDATE_FIELDS = [
   'merchant',
   'productType',
   'status',
+  'origin',
   'content.pt.name',
   'content.pt.shortDescription',
   'content.pt.description',
@@ -364,6 +372,87 @@ function localizedContent(value) {
   };
 }
 
+function normalizeOrigin(value = {}) {
+  const rawType =
+    String(value?.type || '')
+      .trim()
+      .toLowerCase();
+
+  const type =
+    ALLOWED_ORIGIN_TYPES.has(rawType)
+      ? rawType
+      : 'none';
+
+  if (type === 'none') {
+    return {
+      type: 'none',
+      title: '',
+      featuredIn: '',
+      route: ''
+    };
+  }
+
+  return {
+    type,
+
+    title:
+      String(value?.title || '')
+        .trim(),
+
+    featuredIn:
+      String(value?.featuredIn || '')
+        .trim(),
+
+    route:
+      String(value?.route || '')
+        .trim()
+  };
+}
+
+function validOriginRoute(origin) {
+  if (origin.type === 'none') {
+    return true;
+  }
+
+  const route =
+    String(origin.route || '');
+
+  if (
+    !route.startsWith('/') ||
+    route.startsWith('//') ||
+    route.includes('\\') ||
+    /\s/u.test(route)
+  ) {
+    return false;
+  }
+
+  const pathname =
+    route.split(/[?#]/u)[0];
+
+  if (origin.type === 'discography') {
+    return (
+      pathname === '/discografia' ||
+      pathname.startsWith('/discografia/') ||
+      pathname === '/musical-archives' ||
+      pathname.startsWith('/musical-archives/')
+    );
+  }
+
+  if (origin.type === 'system-log') {
+    return (
+      pathname === '/logs-archive' ||
+      pathname.startsWith('/log-reader/')
+    );
+  }
+
+  return (
+    pathname === '/hybrid-saga' ||
+    pathname.startsWith('/hybrid-reader/') ||
+    pathname.startsWith('/lore/') ||
+    pathname.startsWith('/visual-novel/')
+  );
+}
+
 export function normalizeStoreAdminProduct(raw = {}) {
   const {
     destinationUrl,
@@ -404,6 +493,9 @@ export function normalizeStoreAdminProduct(raw = {}) {
 
   const en =
     localizedContent(raw.content?.en);
+
+  const origin =
+    normalizeOrigin(raw.origin);
 
   const warnings = [];
 
@@ -504,6 +596,8 @@ export function normalizeStoreAdminProduct(raw = {}) {
     updateTime:
       raw.updateTime || null,
 
+    origin,
+
     content: {
       pt,
       en
@@ -535,6 +629,11 @@ function normalizeDraft(input = {}) {
       String(input.status || '')
         .trim()
         .toLowerCase(),
+
+    origin:
+      normalizeOrigin(
+        input.origin
+      ),
 
     content: {
       pt:
@@ -670,6 +769,62 @@ export function validateProductDraft(input = {}) {
   }
 
   if (
+    !ALLOWED_ORIGIN_TYPES.has(
+      draft.origin.type
+    )
+  ) {
+    blocked.push(
+      'Product origin type is invalid.'
+    );
+  }
+
+  if (
+    draft.origin.type !== 'none'
+  ) {
+    if (!draft.origin.title) {
+      blocked.push(
+        'RQS Origin title is required.'
+      );
+    }
+
+    if (
+      draft.origin.title.length > 160
+    ) {
+      blocked.push(
+        'RQS Origin title exceeds 160 characters.'
+      );
+    }
+
+    if (
+      draft.origin.featuredIn.length > 160
+    ) {
+      blocked.push(
+        'RQS Origin featuredIn exceeds 160 characters.'
+      );
+    }
+
+    if (!draft.origin.route) {
+      blocked.push(
+        'RQS Origin internal route is required.'
+      );
+    } else if (
+      draft.origin.route.length > 512
+    ) {
+      blocked.push(
+        'RQS Origin internal route exceeds 512 characters.'
+      );
+    } else if (
+      !validOriginRoute(
+        draft.origin
+      )
+    ) {
+      blocked.push(
+        'RQS Origin route does not match the selected origin type.'
+      );
+    }
+  }
+
+  if (
     draft.destinationUrl.length > 2048
   ) {
     blocked.push(
@@ -742,6 +897,29 @@ function productFields(product) {
 
     status:
       stringValue(product.status),
+
+    origin:
+      mapValue({
+        type:
+          stringValue(
+            product.origin.type
+          ),
+
+        title:
+          stringValue(
+            product.origin.title
+          ),
+
+        featuredIn:
+          stringValue(
+            product.origin.featuredIn
+          ),
+
+        route:
+          stringValue(
+            product.origin.route
+          )
+      }),
 
     content:
       mapValue({
