@@ -330,6 +330,25 @@ console.log(
 );
 
 
+const storeAdminSource =
+  readFileSync(
+    new URL(
+      '../api/admin/store.js',
+      import.meta.url
+    ),
+    'utf8'
+  );
+
+assert.match(
+  storeAdminSource,
+  /async function patchProduct[\s\S]*?validateProductDraft\(\s*input\.product,\s*'update'\s*\)/u
+);
+
+console.log(
+  'STORE_LEGACY_UPDATE_APPLY_VALIDATION = PASS'
+);
+
+
 const originCases = [
   {
     type:

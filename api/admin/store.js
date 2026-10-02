@@ -2165,7 +2165,8 @@ async function patchProduct(
 
   const validation =
     validateProductDraft(
-      input.product
+      input.product,
+      'update'
     );
 
   if (
