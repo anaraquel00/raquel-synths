@@ -2,6 +2,9 @@ import {
   adaptStoreProduct,
   getStoreMerchantCta,
   getStoreMerchantLabel,
+  getStoreProductLongDescription,
+  getStoreProductTeaser,
+  hasStoreProductLongDescription,
   isVisibleAffiliateProduct,
   normalizeStoreProductStatus,
   resolveStoreDestination,
@@ -77,6 +80,85 @@ describe('Store commerce adapter', () => {
 
     expect(product.productType).toBe('unknown');
     expect(isVisibleAffiliateProduct(product)).toBeFalse();
+  });
+
+  it('builds a legacy teaser from description when shortDescription is absent', () => {
+    const product = {
+      content: {
+        pt: {
+          description:
+            '<p><strong>Dados analógicos nunca morrem.</strong> Uma armadura clássica para proteger memórias magnéticas em um mundo digital.</p><p>Segundo parágrafo completo.</p>'
+        }
+      }
+    };
+
+    const teaser =
+      getStoreProductTeaser(
+        product,
+        'pt'
+      );
+
+    expect(teaser)
+      .toContain(
+        'Dados analógicos nunca morrem.'
+      );
+
+    expect(teaser)
+      .toContain(
+        'Uma armadura clássica'
+      );
+
+    expect(teaser)
+      .not.toContain('<');
+
+    expect(teaser.endsWith('…'))
+      .toBeTrue();
+
+    expect(
+      hasStoreProductLongDescription(
+        product,
+        'pt'
+      )
+    ).toBeTrue();
+  });
+
+  it('prefers editorial shortDescription while preserving the full description', () => {
+    const product = {
+      content: {
+        en: {
+          shortDescription:
+            '<p>Editorial card copy.</p>',
+
+          description:
+            '<p>Full product description.</p><p>Second paragraph.</p>'
+        }
+      }
+    };
+
+    expect(
+      getStoreProductTeaser(
+        product,
+        'en'
+      )
+    ).toBe(
+      'Editorial card copy.'
+    );
+
+    expect(
+      getStoreProductLongDescription(
+        product,
+        'en'
+      )
+    ).toContain(
+      'Second paragraph.'
+    );
+
+    expect(
+      hasStoreProductLongDescription(
+        product,
+        'en'
+      )
+    ).toBeTrue();
   });
 
   it('provides merchant labels and bilingual CTAs', () => {

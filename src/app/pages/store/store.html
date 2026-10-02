@@ -284,9 +284,27 @@
 
             <h3>{{ item.content?.[currentLang()]?.name }}</h3>
 
-            <p class="product-description">
-              {{ getShortDescription(item) }}
+            <p
+              class="product-description"
+              [class.expanded]="isProductDescriptionExpanded(item)"
+              [id]="'product-description-' + item.id">
+              {{ getProductDescription(item) }}
             </p>
+
+            @if (hasExpandableProductDescription(item)) {
+              <button
+                type="button"
+                class="description-toggle"
+                [attr.aria-expanded]="isProductDescriptionExpanded(item)"
+                [attr.aria-controls]="'product-description-' + item.id"
+                (click)="toggleProductDescription(item)">
+                @if (isProductDescriptionExpanded(item)) {
+                  {{ currentLang() === 'pt' ? 'RECOLHER ↑' : 'COLLAPSE ↑' }}
+                } @else {
+                  {{ currentLang() === 'pt' ? 'AMPLIAR ↓' : 'EXPAND ↓' }}
+                }
+              </button>
+            }
 
             <div class="product-actions">
               <button

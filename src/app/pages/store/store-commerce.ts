@@ -177,3 +177,136 @@ export function getStoreMerchantCta(
       return 'VER LOJA EXTERNA ↗';
   }
 }
+export function storeDescriptionPlainText(
+  value: unknown,
+  preserveParagraphs = false
+): string {
+  let text = String(value || '');
+
+  text = text
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/p\s*>/gi, '\n\n')
+    .replace(/<\/li\s*>/gi, '\n')
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>');
+
+  if (preserveParagraphs) {
+    return text
+      .replace(/[ \t]+/g, ' ')
+      .replace(/[ \t]*\n[ \t]*/g, '\n')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+  }
+
+  return text
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function createStoreDescriptionTeaser(
+  value: string
+): string {
+  const text =
+    storeDescriptionPlainText(value);
+
+  if (!text) return '';
+
+  const firstSentence =
+    text
+      .match(
+        /^.*?[.!?](?:\s|$)/
+      )?.[0]
+      ?.trim();
+
+  if (
+    firstSentence &&
+    firstSentence.length >= 35 &&
+    firstSentence.length <= 120
+  ) {
+    return firstSentence;
+  }
+
+  if (text.length <= 115) {
+    return text;
+  }
+
+  const teaser =
+    text.slice(0, 112);
+
+  const lastSpace =
+    teaser.lastIndexOf(' ');
+
+  return `${
+    teaser
+      .slice(
+        0,
+        lastSpace > 70
+          ? lastSpace
+          : 112
+      )
+      .trim()
+  }…`;
+}
+
+export function getStoreProductTeaser(
+  product: any,
+  lang: 'pt' | 'en'
+): string {
+  const content =
+    product?.content?.[lang];
+
+  const editorialShort =
+    storeDescriptionPlainText(
+      content?.shortDescription
+    );
+
+  if (editorialShort) {
+    return editorialShort;
+  }
+
+  return createStoreDescriptionTeaser(
+    content?.description || ''
+  );
+}
+
+export function getStoreProductLongDescription(
+  product: any,
+  lang: 'pt' | 'en'
+): string {
+  return storeDescriptionPlainText(
+    product?.content?.[lang]
+      ?.description,
+    true
+  );
+}
+
+export function hasStoreProductLongDescription(
+  product: any,
+  lang: 'pt' | 'en'
+): boolean {
+  const full =
+    storeDescriptionPlainText(
+      product?.content?.[lang]
+        ?.description
+    );
+
+  const teaser =
+    storeDescriptionPlainText(
+      getStoreProductTeaser(
+        product,
+        lang
+      )
+    );
+
+  return Boolean(
+    full &&
+    teaser &&
+    full !== teaser &&
+    full.length > teaser.length
+  );
+}

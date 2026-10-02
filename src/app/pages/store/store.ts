@@ -17,6 +17,9 @@ import {
   adaptStoreProduct,
   getStoreMerchantCta,
   getStoreMerchantLabel,
+  getStoreProductLongDescription,
+  getStoreProductTeaser,
+  hasStoreProductLongDescription,
   isVisibleAffiliateProduct,
   resolveStoreMerchant,
   StoreMerchant
@@ -229,6 +232,11 @@ private updateSeoAndLang(isPt: boolean) {
   selectedDepartmentId = signal<string | null>(null);
   selectedMerchant = signal<'all' | StoreMerchant>('all');
   filteredProducts: any[] = [];
+
+  readonly expandedProductDescriptions =
+    signal<ReadonlySet<string>>(
+      new Set<string>()
+    );
 
   readonly merchantFilters: StoreMerchant[] = [
     'shein',
@@ -622,30 +630,70 @@ checkCurrentMode() {
     return DEPARTMENTS_DATA.find(dept => dept.id === faction)?.title || faction;
   }
 
-  getShortDescription(item: any): string {
-    const html = item?.content?.[this.currentLang()]?.description || '';
-
-    const text = String(html)
-      .replace(/<[^>]*>/g, ' ')
-      .replace(/&nbsp;/g, ' ')
-      .replace(/&amp;/g, '&')
-      .replace(/\s+/g, ' ')
-      .trim();
-
-    if (!text) return '';
-
-    const firstSentence = text.match(/^.*?[.!?](?:\s|$)/)?.[0]?.trim();
-
-    if (firstSentence && firstSentence.length >= 35 && firstSentence.length <= 120) {
-      return firstSentence;
+  getProductDescription(
+    item: any
+  ): string {
+    if (
+      this.isProductDescriptionExpanded(
+        item
+      )
+    ) {
+      return getStoreProductLongDescription(
+        item,
+        this.currentLang()
+      );
     }
 
-    if (text.length <= 115) return text;
+    return getStoreProductTeaser(
+      item,
+      this.currentLang()
+    );
+  }
 
-    const teaser = text.slice(0, 112);
-    const lastSpace = teaser.lastIndexOf(' ');
+  hasExpandableProductDescription(
+    item: any
+  ): boolean {
+    return hasStoreProductLongDescription(
+      item,
+      this.currentLang()
+    );
+  }
 
-    return `${teaser.slice(0, lastSpace > 70 ? lastSpace : 112).trim()}…`;
+  isProductDescriptionExpanded(
+    item: any
+  ): boolean {
+    const id =
+      String(item?.id || '');
+
+    return Boolean(
+      id &&
+      this.expandedProductDescriptions()
+        .has(id)
+    );
+  }
+
+  toggleProductDescription(
+    item: any
+  ): void {
+    const id =
+      String(item?.id || '');
+
+    if (!id) return;
+
+    const next =
+      new Set(
+        this.expandedProductDescriptions()
+      );
+
+    if (next.has(id)) {
+      next.delete(id);
+    } else {
+      next.add(id);
+    }
+
+    this.expandedProductDescriptions.set(
+      next
+    );
   }
 
   private scrollToCatalog(): void {
