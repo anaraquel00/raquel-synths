@@ -1,4 +1,4 @@
-<main class="module-shell">
+<main class="module-shell" [class.lore-shell]="module === 'lore'">
   <a class="back-link" routerLink="/admin">← Painel Admin</a>
 
   @if (!checked()) {
@@ -20,25 +20,445 @@
         <span class="source-label">FONTE</span>
         <h2>Broklin</h2>
         <p>Google Drive: <strong>Lore - Broklin</strong></p>
-        <span class="source-state">PRÉVIA / EM ESPERA</span>
+        <span class="source-state">DRIVE READ ONLY</span>
       </a>
 
       <a class="source-card jonah" [class.selected]="loreSource === 'jonah'" routerLink="/admin/lore/jonah">
         <span class="source-label">FONTE</span>
         <h2>Jonah</h2>
         <p>Google Drive: <strong>Lore - Jonah</strong></p>
-        <span class="source-state">PRÉVIA / EM ESPERA</span>
+        <span class="source-state">DRIVE READ ONLY</span>
       </a>
     </section>
 
     @if (loreSource) {
-      <section class="hold-panel">
-        <p class="eyebrow">MÓDULO {{ loreSource.toUpperCase() }}</p>
-        <h2>Fonte identificada</h2>
-        <p>
-          As ações de publicação e importação permanecem em espera. Esta Prévia não
-          altera nem reorganiza as pastas de origem no Google Drive.
-        </p>
+      <section
+        class="lore-workspace"
+        [class.jonah-mode]="loreSource === 'jonah'"
+      >
+        <section class="lore-control-bar">
+          <div>
+            <p class="eyebrow">
+              RQS ADMIN / LORE / {{ loreSource.toUpperCase() }}
+            </p>
+            <h2>
+              {{ loreSource === 'broklin' ? 'Broklin' : 'Jonah' }}
+              // Single Source Review
+            </h2>
+            <p>
+              Google Drive /
+              {{ loreSource === 'broklin' ? 'Lore - Broklin' : 'Lore - Jonah' }}
+            </p>
+          </div>
+
+          <div class="lore-control-actions">
+            <span class="validation-chip">DRIVE READ ONLY</span>
+
+            <button
+              type="button"
+              class="secondary-action"
+              [disabled]="loreLoading()"
+              (click)="refreshLoreDocuments()"
+            >
+              {{ loreLoading() ? 'ATUALIZANDO…' : 'ATUALIZAR FONTES' }}
+            </button>
+          </div>
+        </section>
+
+        @if (loreLoading() && !loreDocuments().length) {
+          <p class="session-message" aria-live="polite">
+            Conectando ao Google Drive…
+          </p>
+        } @else {
+          <section class="lore-single-source">
+            <div class="lore-source-heading">
+              <div>
+                <p class="eyebrow">SOURCE DOCUMENT</p>
+                <h3>Um DOCX por Dry Run</h3>
+              </div>
+
+              @if (selectedLoreDocument(); as selectedSource) {
+                <span class="validation-chip">
+                  {{ selectedSource.languageHint || 'IDIOMA NÃO IDENTIFICADO' }}
+                </span>
+              }
+            </div>
+
+            <label for="lore-source-document">DOCUMENTO</label>
+
+            <select
+              #loreSourceDocument
+              id="lore-source-document"
+              [value]="loreSelectedDocumentId()"
+              [disabled]="loreLoading()"
+              (change)="setLoreDocument(loreSourceDocument.value)"
+            >
+              <option value="">Selecione um DOCX</option>
+
+              @for (
+                document of loreDocuments();
+                track document.documentId
+              ) {
+                <option [value]="document.documentId">
+                  {{ document.name }}
+                  {{ document.support.status === 'BLOCKED' ? ' — BLOCKED' : '' }}
+                </option>
+              }
+            </select>
+
+            @if (selectedLoreDocument(); as selectedSource) {
+              <dl class="lore-source-meta">
+                <div>
+                  <dt>LANGUAGE</dt>
+                  <dd>{{ selectedSource.languageHint || 'A CONFIRMAR' }}</dd>
+                </div>
+                <div>
+                  <dt>FORMAT</dt>
+                  <dd>DOCX / Mammoth</dd>
+                </div>
+                <div>
+                  <dt>COLLECTION</dt>
+                  <dd>{{ selectedSource.collection || '—' }}</dd>
+                </div>
+              </dl>
+            }
+          </section>
+
+          <button
+            type="button"
+            class="lore-preview-action"
+            [disabled]="
+              loreLoading() ||
+              !loreSelectedDocumentId()
+            "
+            (click)="runLoreDryRun()"
+          >
+            {{ loreLoading() ? 'PROCESSANDO…' : 'DRY RUN' }}
+          </button>
+
+          <p class="lore-readonly-policy">
+            SINGLE SOURCE · FIRESTORE READ PREFLIGHT · FIRESTORE WRITES = 0
+          </p>
+        }
+
+        @if (loreImportMessage()) {
+          <p class="success-message" role="status">
+            {{ loreImportMessage() }}
+          </p>
+        }
+
+        @if (loreDryRun(); as result) {
+          <section class="lore-health-grid">
+            <article class="lore-health-card">
+              <p class="eyebrow">VALIDATION</p>
+
+              <div class="lore-health-heading">
+                <h3>{{ result.validation.status }}</h3>
+                <span
+                  class="validation-chip"
+                  [class.blocked]="result.validation.status === 'BLOCKED'"
+                >
+                  {{ result.validation.blocked.length }} BLOCKED
+                </span>
+              </div>
+
+              <p>{{ result.validation.warnings.length }} WARNINGS</p>
+
+              @if (result.validation.blocked.length) {
+                <ul class="validation-list blocked">
+                  @for (
+                    issue of result.validation.blocked;
+                    track issue
+                  ) {
+                    <li>{{ issue }}</li>
+                  }
+                </ul>
+              }
+            </article>
+
+            <article class="lore-health-card">
+              <p class="eyebrow">CATALOG MATCH</p>
+              <h3>{{ result.catalogMatch.ids }} IDs</h3>
+
+              <dl class="lore-mini-metadata">
+                <div>
+                  <dt>EXISTING</dt>
+                  <dd>{{ result.catalogMatch.existing }}</dd>
+                </div>
+                <div>
+                  <dt>MISSING</dt>
+                  <dd>{{ result.catalogMatch.missing }}</dd>
+                </div>
+                <div>
+                  <dt>WRITABLE</dt>
+                  <dd>{{ result.catalogMatch.writable }}</dd>
+                </div>
+                <div>
+                  <dt>BLOCKED</dt>
+                  <dd>{{ result.catalogMatch.blocked }}</dd>
+                </div>
+              </dl>
+            </article>
+
+            <article class="lore-health-card safety">
+              <p class="eyebrow">SAFETY</p>
+              <h3>DRY RUN ONLY</h3>
+
+              <dl class="lore-mini-metadata">
+                <div>
+                  <dt>LANGUAGE</dt>
+                  <dd>{{ result.language }}</dd>
+                </div>
+                <div>
+                  <dt>FIRESTORE READS</dt>
+                  <dd>{{ result.firestoreReads }}</dd>
+                </div>
+                <div>
+                  <dt>FIRESTORE WRITES</dt>
+                  <dd>{{ result.firestoreWrites }}</dd>
+                </div>
+                <div>
+                  <dt>SOURCE MUTATED</dt>
+                  <dd>{{ result.sourceMutated ? 'YES' : 'NO' }}</dd>
+                </div>
+              </dl>
+            </article>
+          </section>
+
+          <details class="lore-write-plan">
+            <summary>
+              WRITE PLAN — {{ result.writePlan.length }} EPISODES
+            </summary>
+
+            <ul>
+              @for (item of result.writePlan; track item.id) {
+                <li [class.blocked]="item.action === 'BLOCKED'">
+                  <strong>{{ item.id }}</strong>
+                  <span>{{ item.action }}</span>
+                  <small>
+                    {{ item.fields.length ? item.fields.join(', ') : 'NO FIELDS' }}
+                  </small>
+                  @if (item.issues.length) {
+                    <small>{{ item.issues.join(' ') }}</small>
+                  }
+                </li>
+              }
+            </ul>
+          </details>
+
+          <section class="lore-episode-grid">
+            @for (
+              episode of result.parsed.episodes;
+              track episode.id
+            ) {
+              <article class="lore-episode-card">
+                <header>
+                  <div>
+                    <p class="eyebrow">
+                      {{ result.language }} / FIRESTORE-READY PREVIEW
+                    </p>
+                    <h3>{{ episode.id }}</h3>
+                  </div>
+
+                  @if (lorePlanItem(episode.id); as planItem) {
+                    <span
+                      class="validation-chip"
+                      [class.blocked]="planItem.action === 'BLOCKED'"
+                    >
+                      {{ planItem.action }}
+                    </span>
+                  }
+                </header>
+
+                <dl class="lore-draft-meta">
+                  <div>
+                    <dt>RELEASE DATE</dt>
+                    <dd>{{ formatLoreDate(episode.releaseDate) }}</dd>
+                  </div>
+
+                  <div>
+                    <dt>MODE</dt>
+                    <dd>{{ result.mode }}</dd>
+                  </div>
+
+                  <div class="image-field">
+                    <dt>IMAGE</dt>
+                    <dd>
+                      <a
+                        [href]="episode.image"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {{ episode.image }}
+                      </a>
+                    </dd>
+                  </div>
+                </dl>
+
+                <div class="lore-editorial-field">
+                  <span>TITLE</span>
+                  <h4>{{ episode.title }}</h4>
+                </div>
+
+                <div class="lore-editorial-field">
+                  <span>CATEGORY</span>
+                  <p>{{ episode.category }}</p>
+                </div>
+
+                <div class="lore-editorial-field">
+                  <span>DESCRIPTION</span>
+                  <p>{{ episode.description }}</p>
+                </div>
+
+                <div class="lore-editorial-field content">
+                  <span>CONTENT</span>
+                  <p>{{ episode.content }}</p>
+                </div>
+              </article>
+            }
+          </section>
+
+          @if (result.language === 'pt-BR') {
+            <section class="lore-import-panel">
+              <div class="lore-import-heading">
+                <div>
+                  <p class="eyebrow">STAGE 4 / PT-BR IMPORT</p>
+                  <h3>
+                    {{
+                      result.writesEnabled
+                        ? 'WRITE GATE ENABLED'
+                        : 'WRITE GATE LOCKED'
+                    }}
+                  </h3>
+                </div>
+
+                <span
+                  class="validation-chip"
+                  [class.blocked]="!result.writesEnabled"
+                >
+                  {{
+                    result.writesEnabled
+                      ? 'PT-BR WRITE READY'
+                      : 'RQS_LORE_WRITES_ENABLED = false'
+                  }}
+                </span>
+              </div>
+
+              <p>
+                A importação usa exatamente o plano validado pelo DRY RUN.
+                CREATE_PT cria a base canônica; MERGE_PT atualiza somente campos
+                PT-BR e compartilhados. Campos *_en não são escritos neste estágio.
+              </p>
+
+              @if (result.importAllowed) {
+                <label class="lore-owner-confirmation">
+                  <input
+                    #loreOwnerConfirmation
+                    type="checkbox"
+                    [checked]="loreImportConfirmed()"
+                    [disabled]="!result.writesEnabled || loreLoading()"
+                    (change)="setLoreImportConfirmed(loreOwnerConfirmation.checked)"
+                  >
+                  Confirmo a escrita dos episódios PT-BR indicados no WRITE PLAN.
+                  O Google Drive permanecerá somente leitura.
+                </label>
+
+                <button
+                  type="button"
+                  class="lore-import-action"
+                  [disabled]="
+                    !result.writesEnabled ||
+                    !result.dryRunToken ||
+                    !loreImportConfirmed() ||
+                    loreLoading()
+                  "
+                  (click)="importLorePt()"
+                >
+                  {{
+                    loreLoading()
+                      ? 'IMPORTANDO…'
+                      : 'IMPORTAR PT-BR PARA ' + result.collection
+                  }}
+                </button>
+              } @else {
+                <p class="lore-next-stage-note">
+                  NENHUMA ESCRITA PT-BR DISPONÍVEL NESTE DRY RUN
+                </p>
+              }
+            </section>
+          } @else {
+            <section class="lore-import-panel en-us">
+              <div class="lore-import-heading">
+                <div>
+                  <p class="eyebrow">
+                    STAGE 5A / EN-US WRITE PIPELINE PREPARATION
+                  </p>
+                  <h3>
+                    {{
+                      result.writesEnabled
+                        ? 'WRITE GATE ENABLED'
+                        : 'WRITE GATE LOCKED'
+                    }}
+                  </h3>
+                </div>
+
+                <span
+                  class="validation-chip"
+                  [class.blocked]="!result.writesEnabled"
+                >
+                  {{
+                    result.writesEnabled
+                      ? 'EN-US MERGE READY'
+                      : 'RQS_LORE_EN_WRITES_ENABLED = false'
+                  }}
+                </span>
+              </div>
+
+              <p>
+                MERGE_EN exige uma base PT-BR existente, valida image e
+                releaseDate compartilhados e escreve somente campos *_en.
+                Campos PT-BR e metadados compartilhados são preservados.
+              </p>
+
+              @if (result.importAllowed) {
+                <label class="lore-owner-confirmation">
+                  <input
+                    #loreEnOwnerConfirmation
+                    type="checkbox"
+                    [checked]="loreImportConfirmed()"
+                    [disabled]="!result.writesEnabled || loreLoading()"
+                    (change)="setLoreImportConfirmed(loreEnOwnerConfirmation.checked)"
+                  >
+                  Confirmo o MERGE_EN indicado no WRITE PLAN. Somente campos
+                  *_en poderão ser escritos; a base PT-BR e o Google Drive
+                  permanecerão inalterados.
+                </label>
+
+                <button
+                  type="button"
+                  class="lore-import-action lore-import-en-action"
+                  [disabled]="
+                    !result.writesEnabled ||
+                    !result.dryRunToken ||
+                    !loreImportConfirmed() ||
+                    loreLoading()
+                  "
+                  (click)="importLoreEn()"
+                >
+                  {{
+                    loreLoading()
+                      ? 'IMPORTANDO…'
+                      : 'MERGE EN-US EM ' + result.collection
+                  }}
+                </button>
+              } @else {
+                <p class="lore-next-stage-note">
+                  DRY RUN EN-US BLOQUEADO OU SEM ALTERAÇÕES · REAL WRITE = NO
+                </p>
+              }
+            </section>
+          }
+        }
       </section>
     }
   } @else {

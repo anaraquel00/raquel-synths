@@ -204,3 +204,301 @@ describe('AdminModuleComponent / Sagas Globais', () => {
     expect(fixture.nativeElement.querySelector('.import-action')).toBeNull();
   });
 });
+
+
+describe('AdminModuleComponent / Lore Read Only', () => {
+  let fixture: ComponentFixture<AdminModuleComponent>;
+  let component: AdminModuleComponent;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [AdminModuleComponent],
+      providers: [
+        provideRouter([]),
+        { provide: PLATFORM_ID, useValue: 'server' },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: {
+                adminModule: 'lore',
+                loreSource: 'broklin'
+              }
+            }
+          }
+        }
+      ]
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(AdminModuleComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    component.authenticated.set(true);
+
+    component.loreDocuments.set([
+      {
+        documentId: 'drive_pt_123456',
+        name: 'BROKLIN_S2_PT-BR.docx',
+        mimeType:
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        modifiedTime: '2026-10-03T14:39:51.390Z',
+        webViewLink: '',
+        sourceLocation: 'Google Drive / Lore - Broklin',
+        languageHint: 'pt-BR',
+        collection: 'lore',
+        support: {
+          status: 'SUPPORTED',
+          message: ''
+        }
+      },
+      {
+        documentId: 'drive_en_123456',
+        name: 'BROKLIN_S2_EN-US.docx',
+        mimeType:
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        modifiedTime: '2026-10-03T14:40:09.753Z',
+        webViewLink: '',
+        sourceLocation: 'Google Drive / Lore - Broklin',
+        languageHint: 'en-US',
+        collection: 'lore',
+        support: {
+          status: 'SUPPORTED',
+          message: ''
+        }
+      }
+    ]);
+
+    component.loreSelectedDocumentId.set('drive_pt_123456');
+
+    component.loreDryRun.set({
+      mode: 'broklin',
+      collection: 'lore',
+      sourceLocation: 'Google Drive / Lore - Broklin',
+      source: component.loreDocuments()[0],
+      language: 'pt-BR',
+      parsed: {
+        language: 'pt-BR',
+        inferredLanguage: 'pt-BR',
+        sourceName: 'BROKLIN_S2_PT-BR.docx',
+        warnings: [],
+        episodes: [
+          {
+            id: 's2-e1',
+            category: 'Teste de Integração',
+            releaseDate: '2027-01-01',
+            image:
+              'https://raquelsynths.com/images/banner-seo-global.jpg',
+            title: 'Sinal de Teste',
+            description:
+              'Episódio mínimo usado para validar a integração read-only.',
+            content:
+              'Este é o primeiro teste real do pipeline.'
+          }
+        ]
+      },
+      validation: {
+        status: 'PASS',
+        blocked: [],
+        warnings: []
+      },
+      catalogMatch: {
+        ids: 1,
+        existing: 0,
+        missing: 1,
+        writable: 1,
+        unchanged: 0,
+        blocked: 0
+      },
+      writePlan: [
+        {
+          id: 's2-e1',
+          action: 'CREATE_PT',
+          language: 'pt-BR',
+          fields: [
+            'title',
+            'category',
+            'description',
+            'content',
+            'image',
+            'releaseDate',
+            'mode',
+            'published'
+          ],
+          issues: []
+        }
+      ],
+      dryRunToken: 'signed-lore-dry-run-token',
+      writesEnabled: false,
+      importAllowed: true,
+      firestoreReads: 1,
+      firestoreWrites: 0,
+      sourceMutated: false
+    });
+
+    fixture.detectChanges();
+  });
+
+  it('usa um único seletor de DOCX por Dry Run', () => {
+    const root = fixture.nativeElement as HTMLElement;
+
+    expect(
+      root.querySelectorAll('#lore-source-document').length
+    ).toBe(1);
+    expect(root.textContent).toContain('Um DOCX por Dry Run');
+    expect(root.textContent).toContain('PT-BR');
+  });
+
+  it('mostra catálogo, safety e preview apenas da língua selecionada', () => {
+    const root = fixture.nativeElement as HTMLElement;
+    const text = root.textContent || '';
+
+    expect(text).toContain('CATALOG MATCH');
+    expect(text).toContain('FIRESTORE WRITES');
+    expect(text).toContain('Sinal de Teste');
+    expect(text).toContain('CREATE_PT');
+    expect(text).not.toContain('Test Signal');
+
+    expect(root.querySelector('.lore-import-panel')).toBeTruthy();
+    expect(root.querySelector('.lore-owner-confirmation')).toBeTruthy();
+  });
+
+  it('mantém o write gate PT-BR travado por padrão', () => {
+    const root = fixture.nativeElement as HTMLElement;
+    const text = root.textContent || '';
+    const button = root.querySelector(
+      '.lore-import-action'
+    ) as HTMLButtonElement;
+    const checkbox = root.querySelector(
+      '.lore-owner-confirmation input'
+    ) as HTMLInputElement;
+
+    expect(text).toContain('WRITE GATE LOCKED');
+    expect(text).toContain('RQS_LORE_WRITES_ENABLED = false');
+    expect(text).toContain('FIRESTORE WRITES = 0');
+    expect(button.disabled).toBeTrue();
+    expect(checkbox.disabled).toBeTrue();
+    expect(component.loreDryRun()?.firestoreWrites).toBe(0);
+  });
+
+  it('habilita confirmação e botão somente com gate + token válidos', () => {
+    const dryRun = component.loreDryRun()!;
+
+    component.loreDryRun.set({
+      ...dryRun,
+      writesEnabled: true
+    });
+    fixture.detectChanges();
+
+    const root = fixture.nativeElement as HTMLElement;
+    const checkbox = root.querySelector(
+      '.lore-owner-confirmation input'
+    ) as HTMLInputElement;
+    const button = root.querySelector(
+      '.lore-import-action'
+    ) as HTMLButtonElement;
+
+    expect(checkbox.disabled).toBeFalse();
+    expect(button.disabled).toBeTrue();
+
+    checkbox.checked = true;
+    checkbox.dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+
+    expect(component.loreImportConfirmed()).toBeTrue();
+    expect(button.disabled).toBeFalse();
+  });
+
+
+  it('prepara MERGE_EN com gate travado e owner confirmation', () => {
+    const current = component.loreDryRun()!;
+
+    component.loreImportConfirmed.set(false);
+    component.loreDryRun.set({
+      ...current,
+      language: 'en-US',
+      source: {
+        ...current.source,
+        documentId: 'drive_en_123456',
+        name: 'BROKLIN_S2_EN-US.docx',
+        languageHint: 'en-US'
+      },
+      parsed: {
+        ...current.parsed,
+        language: 'en-US',
+        inferredLanguage: 'en-US',
+        sourceName: 'BROKLIN_S2_EN-US.docx',
+        episodes: [{
+          ...current.parsed.episodes[0],
+          title: 'Test Signal',
+          category: 'Integration Test',
+          description: 'English description',
+          content: 'English content'
+        }]
+      },
+      catalogMatch: {
+        ids: 1,
+        existing: 1,
+        missing: 0,
+        writable: 1,
+        unchanged: 0,
+        blocked: 0
+      },
+      writePlan: [{
+        id: 's2-e1',
+        action: 'MERGE_EN',
+        language: 'en-US',
+        fields: [
+          'title_en',
+          'category_en',
+          'description_en',
+          'content_en'
+        ],
+        issues: []
+      }],
+      dryRunToken: 'signed-en-dry-run-token',
+      writesEnabled: false,
+      importAllowed: true
+    });
+
+    fixture.detectChanges();
+
+    const root = fixture.nativeElement as HTMLElement;
+    const text = root.textContent || '';
+    const panel = root.querySelector(
+      '.lore-import-panel.en-us'
+    ) as HTMLElement;
+    const checkbox = panel.querySelector(
+      '.lore-owner-confirmation input'
+    ) as HTMLInputElement;
+    const button = panel.querySelector(
+      '.lore-import-en-action'
+    ) as HTMLButtonElement;
+
+    expect(text).toContain(
+      'STAGE 5A / EN-US WRITE PIPELINE PREPARATION'
+    );
+    expect(text).toContain('WRITE GATE LOCKED');
+    expect(text).toContain(
+      'RQS_LORE_EN_WRITES_ENABLED = false'
+    );
+    expect(text).toContain('MERGE_EN');
+    expect(checkbox.disabled).toBeTrue();
+    expect(button.disabled).toBeTrue();
+
+    component.loreDryRun.set({
+      ...component.loreDryRun()!,
+      writesEnabled: true
+    });
+    fixture.detectChanges();
+
+    expect(checkbox.disabled).toBeFalse();
+
+    checkbox.checked = true;
+    checkbox.dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+
+    expect(component.loreImportConfirmed()).toBeTrue();
+    expect(button.disabled).toBeFalse();
+  });
+});

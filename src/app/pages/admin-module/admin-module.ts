@@ -23,6 +23,79 @@ interface DriveDocument {
   webViewLink: string;
   sourceLocation: string;
   support: { status: 'SUPPORTED' | 'BLOCKED'; message: string };
+  languageHint?: SagaLanguage | '';
+  collection?: string;
+  size?: number;
+}
+
+interface LoreEpisode {
+  id: string;
+  category: string;
+  releaseDate: string;
+  image: string;
+  title: string;
+  description: string;
+  content: string;
+}
+
+interface LoreWritePlanItem {
+  id: string;
+  action:
+    | 'CREATE_PT'
+    | 'MERGE_PT'
+    | 'MERGE_EN'
+    | 'UNCHANGED_PT'
+    | 'UNCHANGED_EN'
+    | 'BLOCKED';
+  language: SagaLanguage;
+  fields: string[];
+  issues: string[];
+}
+
+interface LoreDryRunResult {
+  mode: Exclude<LoreSource, null>;
+  collection: string;
+  sourceLocation: string;
+  source: DriveDocument;
+  language: SagaLanguage;
+  parsed: {
+    language: SagaLanguage;
+    inferredLanguage: SagaLanguage | '';
+    sourceName: string;
+    warnings: string[];
+    episodes: LoreEpisode[];
+  };
+  validation: {
+    status: 'PASS' | 'BLOCKED';
+    blocked: string[];
+    warnings: string[];
+  };
+  catalogMatch: {
+    ids: number;
+    existing: number;
+    missing: number;
+    writable: number;
+    unchanged: number;
+    blocked: number;
+  };
+  writePlan: LoreWritePlanItem[];
+  dryRunToken: string | null;
+  writesEnabled: boolean;
+  importAllowed: boolean;
+  firestoreReads: number;
+  firestoreWrites: 0;
+  sourceMutated: false;
+}
+
+interface LoreImportResult {
+  mode: Exclude<LoreSource, null>;
+  collection: string;
+  language: SagaLanguage;
+  documentIds: string[];
+  writtenDocumentIds: string[];
+  episodeCount: number;
+  firestoreWrites: number;
+  sourceMutated: false;
 }
 
 interface EditorialBlock {
@@ -110,6 +183,14 @@ export class AdminModuleComponent implements OnInit {
   readonly importConfirmed = signal(false);
   readonly catalogStatus = signal('');
   readonly message = signal('');
+
+  readonly loreDocuments = signal<DriveDocument[]>([]);
+  readonly loreSelectedDocumentId = signal('');
+  readonly loreDryRun = signal<LoreDryRunResult | null>(null);
+  readonly loreLoading = signal(false);
+  readonly loreImportConfirmed = signal(false);
+  readonly loreImportMessage = signal('');
+
   private csrf = '';
 
   constructor(
@@ -129,6 +210,206 @@ export class AdminModuleComponent implements OnInit {
     } else {
       this.checked.set(true);
     }
+  }
+
+  async refreshLoreDocuments(): Promise<void> {
+    const mode = this.loreSource;
+    if (!this.authenticated() || !mode || this.loreLoading()) return;
+
+    this.loreLoading.set(true);
+    this.error.set('');
+
+    try {
+      const result = await this.callLore<{
+        documents: DriveDocument[];
+      }>({
+        action: 'list',
+        mode
+      });
+
+      this.loreDocuments.set(result.documents);
+
+      const current = this.loreSelectedDocumentId();
+      const currentStillExists = result.documents.some(
+        item => item.documentId === current
+      );
+
+      if (!currentStillExists) {
+        const preferred =
+          result.documents.find(
+            item =>
+              item.support.status === 'SUPPORTED' &&
+              this.loreLanguageOf(item) === 'pt-BR'
+          ) ??
+          result.documents.find(
+            item => item.support.status === 'SUPPORTED'
+          ) ??
+          null;
+
+        this.loreSelectedDocumentId.set(
+          preferred?.documentId || ''
+        );
+      }
+
+      this.loreDryRun.set(null);
+    } catch (error) {
+      this.fail(error);
+    } finally {
+      this.loreLoading.set(false);
+    }
+  }
+
+  setLoreDocument(documentId: string): void {
+    this.loreSelectedDocumentId.set(documentId);
+    this.loreDryRun.set(null);
+    this.loreImportConfirmed.set(false);
+    this.loreImportMessage.set('');
+    this.error.set('');
+  }
+
+  selectedLoreDocument(): DriveDocument | null {
+    return this.loreDocuments().find(
+      item =>
+        item.documentId === this.loreSelectedDocumentId()
+    ) ?? null;
+  }
+
+  async runLoreDryRun(): Promise<void> {
+    const mode = this.loreSource;
+    const documentId = this.loreSelectedDocumentId();
+
+    if (
+      !mode ||
+      !documentId ||
+      this.loreLoading()
+    ) {
+      return;
+    }
+
+    this.loreLoading.set(true);
+    this.error.set('');
+    this.loreDryRun.set(null);
+    this.loreImportConfirmed.set(false);
+    this.loreImportMessage.set('');
+
+    try {
+      const result = await this.callLore<LoreDryRunResult>({
+        action: 'dry-run',
+        mode,
+        documentId
+      });
+
+      this.loreDryRun.set(result);
+    } catch (error) {
+      this.fail(error);
+    } finally {
+      this.loreLoading.set(false);
+    }
+  }
+
+  setLoreImportConfirmed(confirmed: boolean): void {
+    this.loreImportConfirmed.set(confirmed);
+  }
+
+  async importLorePt(): Promise<void> {
+    const mode = this.loreSource;
+    const documentId = this.loreSelectedDocumentId();
+    const dryRun = this.loreDryRun();
+
+    if (
+      !mode ||
+      !documentId ||
+      !dryRun ||
+      dryRun.language !== 'pt-BR' ||
+      !dryRun.importAllowed ||
+      !dryRun.writesEnabled ||
+      !dryRun.dryRunToken ||
+      !this.loreImportConfirmed() ||
+      this.loreLoading()
+    ) {
+      return;
+    }
+
+    this.loreLoading.set(true);
+    this.error.set('');
+    this.loreImportMessage.set('');
+
+    try {
+      const result = await this.callLore<LoreImportResult>({
+        action: 'import',
+        mode,
+        documentId,
+        dryRunToken: dryRun.dryRunToken
+      });
+
+      this.loreImportConfirmed.set(false);
+      this.loreDryRun.set(null);
+      this.loreImportMessage.set(
+        `${result.episodeCount} episódio(s) PT-BR escrito(s) em ${result.collection}. ` +
+        'Execute o DRY RUN novamente para confirmar o estado atual do catálogo.'
+      );
+    } catch (error) {
+      this.loreImportConfirmed.set(false);
+      this.fail(error);
+    } finally {
+      this.loreLoading.set(false);
+    }
+  }
+
+  async importLoreEn(): Promise<void> {
+    const mode = this.loreSource;
+    const documentId = this.loreSelectedDocumentId();
+    const dryRun = this.loreDryRun();
+
+    if (
+      !mode ||
+      !documentId ||
+      !dryRun ||
+      dryRun.language !== 'en-US' ||
+      !dryRun.importAllowed ||
+      !dryRun.writesEnabled ||
+      !dryRun.dryRunToken ||
+      !this.loreImportConfirmed() ||
+      this.loreLoading()
+    ) {
+      return;
+    }
+
+    this.loreLoading.set(true);
+    this.error.set('');
+    this.loreImportMessage.set('');
+
+    try {
+      const result = await this.callLore<LoreImportResult>({
+        action: 'import-en',
+        mode,
+        documentId,
+        dryRunToken: dryRun.dryRunToken
+      });
+
+      this.loreImportConfirmed.set(false);
+      this.loreDryRun.set(null);
+      this.loreImportMessage.set(
+        `${result.episodeCount} episódio(s) EN-US escrito(s) em ${result.collection}. ` +
+        'Execute o DRY RUN novamente para confirmar o estado atual do catálogo.'
+      );
+    } catch (error) {
+      this.loreImportConfirmed.set(false);
+      this.fail(error);
+    } finally {
+      this.loreLoading.set(false);
+    }
+  }
+
+  lorePlanItem(id: string): LoreWritePlanItem | null {
+    return this.loreDryRun()?.writePlan.find(
+      item => item.id === id
+    ) ?? null;
+  }
+
+  formatLoreDate(value: string): string {
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value || '');
+    return match ? `${match[3]}/${match[2]}/${match[1]}` : value;
   }
 
   async openSourceSelector(): Promise<void> {
@@ -276,6 +557,20 @@ export class AdminModuleComponent implements OnInit {
     } as const)[type];
   }
 
+  private loreLanguageOf(document: DriveDocument): SagaLanguage | '' {
+    if (
+      document.languageHint === 'pt-BR' ||
+      document.languageHint === 'en-US'
+    ) {
+      return document.languageHint;
+    }
+
+    if (/PT[-_ ]?BR/i.test(document.name)) return 'pt-BR';
+    if (/EN[-_ ]?US/i.test(document.name)) return 'en-US';
+
+    return '';
+  }
+
   private beginRequest(): void {
     this.loading.set(true);
     this.error.set('');
@@ -285,6 +580,25 @@ export class AdminModuleComponent implements OnInit {
     this.error.set(
       error instanceof Error ? error.message : 'Falha inesperada no importador.'
     );
+  }
+
+  private async callLore<T>(body: object): Promise<T> {
+    const response = await fetch('/api/admin/lore', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-RQS-CSRF': this.csrf
+      },
+      body: JSON.stringify(body),
+      credentials: 'same-origin',
+      cache: 'no-store'
+    });
+
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.message || 'Falha na leitura da Lore.');
+    }
+    return result as T;
   }
 
   private async call<T>(body: object): Promise<T> {
@@ -330,6 +644,8 @@ export class AdminModuleComponent implements OnInit {
       if (!result.authenticated || !this.csrf) {
         this.authenticated.set(false);
         await this.router.navigate(['/admin']);
+      } else if (this.module === 'lore' && this.loreSource) {
+        await this.refreshLoreDocuments();
       }
     } catch (error) {
       this.error.set(
