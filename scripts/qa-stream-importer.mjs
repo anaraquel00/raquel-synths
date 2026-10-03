@@ -212,3 +212,17 @@ assert.match(
 console.log(
   'SPOTIFY_EXISTING_RELEASE_SELECTOR = PASS'
 );
+
+assert.match(
+  importerTs,
+  /!release\.spotify\.trim\(\)[\s\S]*?!release\.spotifyUrl\.trim\(\)/u
+);
+
+assert.match(
+  importerTs,
+  /releases\.filter\([\s\S]*?release\.id !== result\.documentId/u
+);
+
+console.log(
+  'SPOTIFY_PENDING_ONLY_CATALOG = PASS'
+);

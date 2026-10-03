@@ -438,15 +438,16 @@ implements OnInit, OnDestroy {
       );
       this.discographyReleases.update(
         releases =>
-          releases.map(release =>
-            release.id === result.documentId
-              ? {
-                  ...release,
-                  spotify: result.spotifyUrl
-                }
-              : release
+          releases.filter(
+            release =>
+              release.id !== result.documentId
           )
       );
+      this.spotifyForm.reset({
+        documentId: '',
+        spotifyUrl: ''
+      });
+      this.linkedSpotifyUrl.set('');
       this.successMessage.set(
         `UPDATED: discography/${result.documentId} ` +
         `(${result.field})`
@@ -545,7 +546,9 @@ implements OnInit, OnDestroy {
           .filter(release =>
             Boolean(
               release.id &&
-              release.title
+              release.title &&
+              !release.spotify.trim() &&
+              !release.spotifyUrl.trim()
             )
           )
           .sort((left, right) =>
