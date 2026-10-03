@@ -317,6 +317,140 @@ function validateSoundCloudUrl(rawUrl) {
   return parsed.toString();
 }
 
+export function validateSpotifyUrl(rawUrl) {
+  let parsed;
+
+  try {
+    parsed = new URL(String(rawUrl || '').trim());
+  } catch {
+    throw new ImporterError(
+      400,
+      'INVALID_SPOTIFY_URL',
+      'Informe uma URL pública válida do Spotify.'
+    );
+  }
+
+  if (
+    parsed.protocol !== 'https:' ||
+    parsed.hostname.toLowerCase() !== 'open.spotify.com' ||
+    parsed.username ||
+    parsed.password
+  ) {
+    throw new ImporterError(
+      400,
+      'INVALID_SPOTIFY_URL',
+      'A URL deve apontar para um release público em open.spotify.com.'
+    );
+  }
+
+  const segments = parsed.pathname
+    .split('/')
+    .filter(Boolean);
+
+  if (
+    segments[0]?.toLowerCase().startsWith('intl-')
+  ) {
+    segments.shift();
+  }
+
+  const resourceType = String(
+    segments[0] || ''
+  ).toLowerCase();
+  const resourceId = String(
+    segments[1] || ''
+  );
+
+  if (
+    segments.length !== 2 ||
+    !['track', 'album'].includes(resourceType) ||
+    !/^[A-Za-z0-9]{10,64}$/u.test(resourceId)
+  ) {
+    throw new ImporterError(
+      400,
+      'INVALID_SPOTIFY_URL',
+      'Use uma URL de faixa ou álbum do Spotify.'
+    );
+  }
+
+  return (
+    `https://open.spotify.com/` +
+    `${resourceType}/${resourceId}`
+  );
+}
+
+export function buildSpotifyLinkPlan(
+  existing = {},
+  rawSpotifyUrl = ''
+) {
+  const requestedSpotifyUrl =
+    validateSpotifyUrl(rawSpotifyUrl);
+  const currentSpotifyField =
+    typeof existing.spotify === 'string' &&
+    existing.spotify.trim()
+      ? 'spotify'
+      : typeof existing.spotifyUrl === 'string' &&
+          existing.spotifyUrl.trim()
+        ? 'spotifyUrl'
+        : null;
+  const currentSpotifyUrl =
+    currentSpotifyField
+      ? existing[currentSpotifyField].trim()
+      : '';
+
+  let normalizedCurrentSpotifyUrl =
+    currentSpotifyUrl;
+
+  if (currentSpotifyUrl) {
+    try {
+      normalizedCurrentSpotifyUrl =
+        validateSpotifyUrl(
+          currentSpotifyUrl
+        );
+    } catch {
+      normalizedCurrentSpotifyUrl =
+        currentSpotifyUrl;
+    }
+  }
+
+  const canonicalSpotifyUrl =
+    typeof existing.spotify === 'string'
+      ? existing.spotify.trim()
+      : '';
+  let normalizedCanonicalSpotifyUrl =
+    canonicalSpotifyUrl;
+
+  if (canonicalSpotifyUrl) {
+    try {
+      normalizedCanonicalSpotifyUrl =
+        validateSpotifyUrl(
+          canonicalSpotifyUrl
+        );
+    } catch {
+      normalizedCanonicalSpotifyUrl =
+        canonicalSpotifyUrl;
+    }
+  }
+
+  const unchanged =
+    Boolean(canonicalSpotifyUrl) &&
+    normalizedCanonicalSpotifyUrl ===
+      requestedSpotifyUrl;
+
+  return {
+    requestedSpotifyUrl,
+    currentSpotifyUrl,
+    currentSpotifyField,
+    firestore:
+      unchanged
+        ? 'UNCHANGED'
+        : 'WOULD UPDATE',
+    fields:
+      unchanged
+        ? []
+        : ['spotify']
+  };
+}
+
 async function getSoundCloudAccessToken() {
   if (
     soundCloudTokenCache &&
@@ -891,6 +1025,68 @@ async function firestoreDocumentExists(documentId, accessToken) {
   );
 }
 
+async function readFirestoreDocument(
+  documentId,
+  accessToken
+) {
+  const response = await fetch(
+    firestoreDocumentUrl(documentId),
+    {
+      headers: {
+        Authorization:
+          `Bearer ${accessToken}`
+      }
+    }
+  );
+
+  if (response.status === 404) {
+    return null;
+  }
+
+  if (!response.ok) {
+    throw new ImporterError(
+      502,
+      'FIRESTORE_READ_FAILED',
+      'Não foi possível carregar o release canônico no Firestore.'
+    );
+  }
+
+  return response.json();
+}
+
+function firestoreStringField(
+  document,
+  field
+) {
+  const value =
+    document?.fields?.[field]?.stringValue;
+
+  return typeof value === 'string'
+    ? value
+    : '';
+}
+
+function validateDiscographyDocumentId(
+  rawDocumentId
+) {
+  const documentId = String(
+    rawDocumentId || ''
+  ).trim();
+
+  if (
+    !/^(?:ep|album|single)-[a-z0-9](?:[a-z0-9-]{0,198}[a-z0-9])?$/u
+      .test(documentId)
+  ) {
+    throw new ImporterError(
+      400,
+      'INVALID_DOCUMENT_ID',
+      'O documentId canônico da discografia é inválido.'
+    );
+  }
+
+  return documentId;
+}
+
 function toFirestoreFields(release) {
   return Object.fromEntries(
     Object.entries(release).map(([key, value]) => [
@@ -940,6 +1136,56 @@ async function createFirestoreDocument(
   }
 }
 
+async function updateSpotifyLink(
+  documentId,
+  spotifyUrl,
+  updateTime,
+  accessToken
+) {
+  const url = new URL(
+    firestoreDocumentUrl(documentId)
+  );
+  url.searchParams.append(
+    'updateMask.fieldPaths',
+    'spotify'
+  );
+
+  if (updateTime) {
+    url.searchParams.set(
+      'currentDocument.updateTime',
+      updateTime
+    );
+  }
+
+  const response = await fetch(url, {
+    method: 'PATCH',
+    headers: {
+      Authorization:
+        `Bearer ${accessToken}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      fields: {
+        spotify: {
+          stringValue: spotifyUrl
+        }
+      }
+    })
+  });
+
+  if (!response.ok) {
+    throw new ImporterError(
+      response.status === 409
+        ? 409
+        : 502,
+      'FIRESTORE_SPOTIFY_UPDATE_FAILED',
+      response.status === 409
+        ? 'O release mudou após o DRY RUN. Execute a validação novamente.'
+        : 'O Firestore recusou a atualização do campo spotify.'
+    );
+  }
+}
+
 function releaseDigest(documentId, release) {
   return createHash('sha256')
     .update(JSON.stringify([documentId, release]))
@@ -985,6 +1231,118 @@ function verifyDryRunToken(
     return parsed.documentId === documentId &&
       parsed.digest === releaseDigest(documentId, release) &&
       Number(parsed.expiresAt) > Date.now();
+  } catch {
+    return false;
+  }
+}
+
+function spotifyLinkDigest(
+  documentId,
+  spotifyUrl,
+  updateTime
+) {
+  return createHash('sha256')
+    .update(JSON.stringify([
+      'spotify-link',
+      documentId,
+      spotifyUrl,
+      updateTime
+    ]))
+    .digest('base64url');
+}
+
+function createSpotifyDryRunToken(
+  documentId,
+  spotifyUrl,
+  updateTime,
+  secret
+) {
+  const payload = Buffer.from(
+    JSON.stringify({
+      kind: 'spotify-link',
+      documentId,
+      digest: spotifyLinkDigest(
+        documentId,
+        spotifyUrl,
+        updateTime
+      ),
+      updateTime,
+      expiresAt:
+        Date.now() + DRY_RUN_TTL_MS,
+      nonce: randomUUID()
+    })
+  ).toString('base64url');
+  const signature = createHmac(
+    'sha256',
+    secret
+  )
+    .update(
+      `spotify-dry-run:${payload}`
+    )
+    .digest('base64url');
+
+  return `${payload}.${signature}`;
+}
+
+function verifySpotifyDryRunToken(
+  token,
+  documentId,
+  spotifyUrl,
+  updateTime,
+  secret
+) {
+  const [
+    payload,
+    suppliedSignature,
+    ...extra
+  ] = String(token || '').split('.');
+
+  if (
+    !payload ||
+    !suppliedSignature ||
+    extra.length
+  ) {
+    return false;
+  }
+
+  const expectedSignature = createHmac(
+    'sha256',
+    secret
+  )
+    .update(
+      `spotify-dry-run:${payload}`
+    )
+    .digest('base64url');
+
+  if (
+    !safeEqual(
+      suppliedSignature,
+      expectedSignature
+    )
+  ) {
+    return false;
+  }
+
+  try {
+    const parsed = JSON.parse(
+      Buffer.from(
+        payload,
+        'base64url'
+      ).toString('utf8')
+    );
+
+    return (
+      parsed.kind === 'spotify-link' &&
+      parsed.documentId === documentId &&
+      parsed.digest === spotifyLinkDigest(
+        documentId,
+        spotifyUrl,
+        updateTime
+      ) &&
+      parsed.updateTime === updateTime &&
+      Number(parsed.expiresAt) >
+        Date.now()
+    );
   } catch {
     return false;
   }
@@ -1134,6 +1492,211 @@ async function handleImport(
   };
 }
 
+async function handleSpotifyDryRun(
+  rawDocumentId,
+  rawSpotifyUrl,
+  adminSecret,
+  operationId
+) {
+  const documentId =
+    validateDiscographyDocumentId(
+      rawDocumentId
+    );
+  const spotifyUrl =
+    validateSpotifyUrl(rawSpotifyUrl);
+  const accessToken =
+    await getFirestoreAccessToken();
+  const document =
+    await readFirestoreDocument(
+      documentId,
+      accessToken
+    );
+
+  if (!document) {
+    throw new ImporterError(
+      404,
+      'RELEASE_NOT_FOUND',
+      'O release canônico ainda não existe em discography. Importe primeiro pelo SoundCloud.'
+    );
+  }
+
+  const existing = {
+    spotifyUrl:
+      firestoreStringField(
+        document,
+        'spotifyUrl'
+      ),
+    spotify:
+      firestoreStringField(
+        document,
+        'spotify'
+      )
+  };
+  const plan =
+    buildSpotifyLinkPlan(
+      existing,
+      spotifyUrl
+    );
+  const updateTime =
+    typeof document.updateTime ===
+      'string'
+      ? document.updateTime
+      : '';
+
+  logOperation({
+    operationId,
+    action: 'spotify-dry-run',
+    documentId,
+    outcome:
+      plan.firestore === 'UNCHANGED'
+        ? 'unchanged'
+        : 'would-update'
+  });
+
+  return {
+    operationId,
+    documentId,
+    title:
+      firestoreStringField(
+        document,
+        'title'
+      ),
+    type:
+      firestoreStringField(
+        document,
+        'type'
+      ),
+    soundcloud:
+      firestoreStringField(
+        document,
+        'soundcloud'
+      ),
+    currentSpotifyUrl:
+      plan.currentSpotifyUrl,
+    currentSpotifyField:
+      plan.currentSpotifyField,
+    spotifyUrl:
+      plan.requestedSpotifyUrl,
+    firestore: plan.firestore,
+    fields: plan.fields,
+    firestoreWrites: 0,
+    dryRunToken:
+      plan.firestore === 'WOULD UPDATE'
+        ? createSpotifyDryRunToken(
+            documentId,
+            plan.requestedSpotifyUrl,
+            updateTime,
+            adminSecret
+          )
+        : null
+  };
+}
+
+async function handleSpotifyLink(
+  rawDocumentId,
+  rawSpotifyUrl,
+  dryRunToken,
+  adminSecret,
+  operationId
+) {
+  const documentId =
+    validateDiscographyDocumentId(
+      rawDocumentId
+    );
+  const spotifyUrl =
+    validateSpotifyUrl(rawSpotifyUrl);
+  const accessToken =
+    await getFirestoreAccessToken();
+  const document =
+    await readFirestoreDocument(
+      documentId,
+      accessToken
+    );
+
+  if (!document) {
+    throw new ImporterError(
+      404,
+      'RELEASE_NOT_FOUND',
+      'O release canônico não existe mais em discography.'
+    );
+  }
+
+  const plan = buildSpotifyLinkPlan(
+    {
+      spotifyUrl:
+        firestoreStringField(
+          document,
+          'spotifyUrl'
+        ),
+      spotify:
+        firestoreStringField(
+          document,
+          'spotify'
+        )
+    },
+    spotifyUrl
+  );
+
+  if (plan.firestore === 'UNCHANGED') {
+    throw new ImporterError(
+      409,
+      'SPOTIFY_ALREADY_LINKED',
+      'Este release já está associado a essa URL do Spotify.'
+    );
+  }
+
+  const updateTime =
+    typeof document.updateTime ===
+      'string'
+      ? document.updateTime
+      : '';
+
+  if (
+    !verifySpotifyDryRunToken(
+      dryRunToken,
+      documentId,
+      plan.requestedSpotifyUrl,
+      updateTime,
+      adminSecret
+    )
+  ) {
+    throw new ImporterError(
+      409,
+      'DRY_RUN_REQUIRED',
+      'Execute novamente o DRY RUN do Spotify antes de atualizar.'
+    );
+  }
+
+  await updateSpotifyLink(
+    documentId,
+    plan.requestedSpotifyUrl,
+    updateTime,
+    accessToken
+  );
+
+  logOperation({
+    operationId,
+    action: 'link-spotify',
+    documentId,
+    outcome: 'updated:spotify'
+  });
+
+  return {
+    operationId,
+    success: true,
+    documentId,
+    title:
+      firestoreStringField(
+        document,
+        'title'
+      ),
+    spotifyUrl:
+      plan.requestedSpotifyUrl,
+    field: 'spotify',
+    firestore: 'UPDATED'
+  };
+}
+
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
   res.setHeader('Vary', 'Origin, Sec-Fetch-Site');
@@ -1165,7 +1728,10 @@ export default async function handler(req, res) {
 
     const body = getRequestBody(req);
     action = body.action;
-    documentId = body.release?.documentId || null;
+    documentId =
+      body.release?.documentId ||
+      body.documentId ||
+      null;
     requireAllowedOrigin(req);
 
     const adminSecret = getAdminSecret();
@@ -1275,6 +1841,31 @@ export default async function handler(req, res) {
       );
 
       return res.status(201).json(result);
+    }
+
+    if (action === 'spotify-dry-run') {
+      const result =
+        await handleSpotifyDryRun(
+          body.documentId,
+          body.spotifyUrl,
+          adminSecret,
+          operationId
+        );
+
+      return res.status(200).json(result);
+    }
+
+    if (action === 'link-spotify') {
+      const result =
+        await handleSpotifyLink(
+          body.documentId,
+          body.spotifyUrl,
+          body.dryRunToken,
+          adminSecret,
+          operationId
+        );
+
+      return res.status(200).json(result);
     }
 
     throw new ImporterError(

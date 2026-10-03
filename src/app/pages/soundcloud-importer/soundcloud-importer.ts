@@ -36,6 +36,8 @@ type BusyAction =
   | 'resolve'
   | 'dry-run'
   | 'import'
+  | 'spotify-dry-run'
+  | 'link-spotify'
   | null;
 
 interface ImportRelease {
@@ -81,6 +83,21 @@ interface DryRunResult {
   };
 }
 
+interface SpotifyDryRunResult {
+  operationId: string;
+  documentId: string;
+  title: string;
+  type: string;
+  soundcloud: string;
+  currentSpotifyUrl: string;
+  currentSpotifyField: 'spotifyUrl' | 'spotify' | null;
+  spotifyUrl: string;
+  firestore: 'WOULD UPDATE' | 'UNCHANGED';
+  fields: string[];
+  firestoreWrites: 0;
+  dryRunToken: string | null;
+}
+
 interface ApiError {
   message?: string;
 }
@@ -122,8 +139,18 @@ implements OnInit, OnDestroy {
     })
   });
 
+  readonly spotifyForm = new FormGroup({
+    spotifyUrl: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required]
+    })
+  });
+
   readonly release = signal<ResolvedRelease | null>(null);
   readonly dryRun = signal<DryRunResult | null>(null);
+  readonly spotifyDryRun =
+    signal<SpotifyDryRunResult | null>(null);
+  readonly linkedSpotifyUrl = signal('');
   readonly busyAction = signal<BusyAction>(null);
   readonly sessionChecked = signal(false);
   readonly authenticated = signal(false);
@@ -202,6 +229,11 @@ implements OnInit, OnDestroy {
       faction: '',
       type: ''
     });
+    this.spotifyForm.reset({
+      spotifyUrl: ''
+    });
+    this.spotifyDryRun.set(null);
+    this.linkedSpotifyUrl.set('');
 
     try {
       const result = await this.callApi<{
@@ -291,8 +323,107 @@ implements OnInit, OnDestroy {
     }
   }
 
+  async runSpotifyDryRun(): Promise<void> {
+    if (
+      !this.authenticated() ||
+      !this.documentId ||
+      this.spotifyForm.invalid ||
+      this.busyAction()
+    ) {
+      return;
+    }
+
+    this.startAction(
+      'spotify-dry-run'
+    );
+
+    try {
+      const result =
+        await this.callApi<
+          SpotifyDryRunResult
+        >({
+          action: 'spotify-dry-run',
+          documentId: this.documentId,
+          spotifyUrl:
+            this.spotifyForm.controls
+              .spotifyUrl.value
+        });
+
+      this.spotifyDryRun.set(result);
+    } catch (error) {
+      this.handleError(error);
+    } finally {
+      this.busyAction.set(null);
+    }
+  }
+
+  async linkSpotify(): Promise<void> {
+    const dryRun =
+      this.spotifyDryRun();
+
+    if (
+      !dryRun?.dryRunToken ||
+      dryRun.firestore !==
+        'WOULD UPDATE' ||
+      !this.authenticated() ||
+      this.busyAction()
+    ) {
+      return;
+    }
+
+    const confirmed =
+      this.document.defaultView?.confirm(
+        `Associar Spotify a discography/${this.documentId}? ` +
+        'Somente o campo spotify será alterado.'
+      );
+
+    if (!confirmed) return;
+
+    this.startAction('link-spotify');
+
+    try {
+      const result =
+        await this.callApi<{
+          operationId: string;
+          documentId: string;
+          title: string;
+          spotifyUrl: string;
+          field: 'spotify';
+          firestore: 'UPDATED';
+        }>({
+          action: 'link-spotify',
+          documentId: this.documentId,
+          spotifyUrl:
+            this.spotifyForm.controls
+              .spotifyUrl.value,
+          dryRunToken:
+            dryRun.dryRunToken
+        });
+
+      this.linkedSpotifyUrl.set(
+        result.spotifyUrl
+      );
+      this.successMessage.set(
+        `UPDATED: discography/${result.documentId} ` +
+        `(${result.field})`
+      );
+      this.spotifyDryRun.set(null);
+    } catch (error) {
+      this.handleError(error);
+      this.spotifyDryRun.set(null);
+    } finally {
+      this.busyAction.set(null);
+    }
+  }
+
   invalidateDryRun(): void {
     this.dryRun.set(null);
+    this.successMessage.set('');
+  }
+
+  invalidateSpotifyDryRun(): void {
+    this.spotifyDryRun.set(null);
+    this.linkedSpotifyUrl.set('');
     this.successMessage.set('');
   }
 
@@ -303,6 +434,13 @@ implements OnInit, OnDestroy {
 
     if (action !== 'import') {
       this.dryRun.set(null);
+    }
+
+    if (
+      action !== 'link-spotify' &&
+      action !== 'spotify-dry-run'
+    ) {
+      this.spotifyDryRun.set(null);
     }
   }
 
@@ -354,6 +492,11 @@ implements OnInit, OnDestroy {
       faction: '',
       type: ''
     });
+    this.spotifyForm.reset({
+      spotifyUrl: ''
+    });
+    this.spotifyDryRun.set(null);
+    this.linkedSpotifyUrl.set('');
   }
 
   private buildReleasePayload(): ImportRelease {

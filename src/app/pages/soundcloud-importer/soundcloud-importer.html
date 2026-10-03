@@ -49,8 +49,8 @@
         </article>
         <article>
           <span class="platform-name">SPOTIFY</span>
-          <strong class="platform-status waiting">NÃO DISPONÍVEL</strong>
-          <p>Link futuro na mesma faixa canônica. Sem descoberta automática.</p>
+          <strong class="platform-status live">LINK MANUAL</strong>
+          <p>Associação segura ao mesmo release canônico. Sem descoberta automática.</p>
         </article>
       </div>
     </section>
@@ -101,7 +101,14 @@
           <div>
             <h3>PLATAFORMAS</h3>
             <p>SoundCloud <strong class="live">LIVE</strong></p>
-            <p>Spotify <strong class="waiting">NÃO DISPONÍVEL</strong></p>
+            <p>
+              Spotify
+              @if (linkedSpotifyUrl() || spotifyDryRun()?.currentSpotifyUrl) {
+                <strong class="live">CONECTADO</strong>
+              } @else {
+                <strong class="waiting">PENDENTE</strong>
+              }
+            </p>
           </div>
           <div>
             <h3>RQS</h3>
@@ -166,8 +173,8 @@
 
       <form
         [formGroup]="detailsForm"
-        (input)="invalidateDryRun()"
-        (change)="invalidateDryRun()"
+        (input)="invalidateDryRun(); invalidateSpotifyDryRun()"
+        (change)="invalidateDryRun(); invalidateSpotifyDryRun()"
       >
         <div class="field">
           <label for="description-pt">DESCRIPTION PT</label>
@@ -204,7 +211,7 @@
     </section>
 
     <section class="panel actions-panel" aria-labelledby="validation-title">
-      <h2 id="validation-title">3. VALIDAÇÃO</h2>
+      <h2 id="validation-title">3. CRIAÇÃO SOUNDCLOUD</h2>
 
       <div class="button-row">
         <button
@@ -287,7 +294,143 @@
           <p class="firestore-status">
             <strong>FIRESTORE:</strong><br>{{ result.firestore }}
           </p>
+          @if (result.existingDocument) {
+            <p>
+              <strong>RELEASE EXISTENTE:</strong><br>
+              Use a etapa 4 para associar o Spotify sem recriar o documento.
+            </p>
+          }
           <small>operationId: {{ result.operationId }}</small>
+        </div>
+      }
+    </section>
+
+    <section class="panel actions-panel" aria-labelledby="spotify-link-title">
+      <h2 id="spotify-link-title">4. SPOTIFY</h2>
+      <p>
+        Associe uma URL do Spotify ao release canônico já existente.
+        O write altera exclusivamente <code>spotify</code>.
+      </p>
+
+      <form
+        [formGroup]="spotifyForm"
+        (ngSubmit)="runSpotifyDryRun()"
+        (input)="invalidateSpotifyDryRun()"
+      >
+        <div class="field">
+          <label for="spotify-url">SPOTIFY URL</label>
+          <input
+            id="spotify-url"
+            type="url"
+            formControlName="spotifyUrl"
+            placeholder="https://open.spotify.com/track/... ou /album/..."
+            autocomplete="off"
+            spellcheck="false"
+          >
+        </div>
+
+        <div class="button-row">
+          <button
+            type="submit"
+            class="button secondary"
+            [disabled]="
+              !documentId ||
+              spotifyForm.invalid ||
+              busyAction() !== null
+            "
+            [attr.aria-busy]="busyAction() === 'spotify-dry-run'"
+          >
+            {{
+              busyAction() === 'spotify-dry-run'
+                ? 'VALIDANDO...'
+                : 'DRY RUN // SPOTIFY'
+            }}
+          </button>
+
+          <button
+            type="button"
+            class="button danger"
+            [disabled]="
+              !spotifyDryRun()?.dryRunToken ||
+              spotifyDryRun()?.firestore !== 'WOULD UPDATE' ||
+              busyAction() !== null
+            "
+            [attr.aria-busy]="busyAction() === 'link-spotify'"
+            (click)="linkSpotify()"
+          >
+            {{
+              busyAction() === 'link-spotify'
+                ? 'ASSOCIANDO...'
+                : 'ASSOCIAR SPOTIFY'
+            }}
+          </button>
+        </div>
+      </form>
+
+      @if (spotifyDryRun(); as spotifyResult) {
+        <div
+          class="dry-run-output"
+          [class.blocked]="spotifyResult.firestore === 'UNCHANGED'"
+          aria-live="polite"
+        >
+          <p>
+            <strong>DOCUMENT:</strong><br>
+            discography/{{ spotifyResult.documentId }}
+          </p>
+          <p>
+            <strong>TITLE:</strong><br>
+            {{ spotifyResult.title || 'MISSING' }}
+          </p>
+          <p>
+            <strong>TYPE:</strong><br>
+            {{ spotifyResult.type || 'MISSING' }}
+          </p>
+          <p>
+            <strong>SOUNDCLOUD:</strong><br>
+            {{ spotifyResult.soundcloud || 'MISSING' }}
+          </p>
+          <p>
+            <strong>SPOTIFY ATUAL:</strong><br>
+            {{
+              spotifyResult.currentSpotifyUrl ||
+              'NÃO CONECTADO'
+            }}
+          </p>
+          @if (spotifyResult.currentSpotifyField) {
+            <p>
+              <strong>CAMPO ATUAL:</strong><br>
+              {{ spotifyResult.currentSpotifyField }}
+            </p>
+          }
+          <p>
+            <strong>NOVO SPOTIFY:</strong><br>
+            {{ spotifyResult.spotifyUrl }}
+          </p>
+          <p>
+            <strong>OPERATION:</strong><br>
+            {{ spotifyResult.firestore }}
+          </p>
+          <p>
+            <strong>FIELDS:</strong><br>
+            {{
+              spotifyResult.fields.length
+                ? spotifyResult.fields.join(', ')
+                : 'NONE'
+            }}
+          </p>
+          <p>
+            <strong>DRY RUN FIRESTORE WRITES:</strong><br>
+            {{ spotifyResult.firestoreWrites }}
+          </p>
+          @if (spotifyResult.firestore === 'UNCHANGED') {
+            <p>
+              A mesma URL Spotify já está conectada.
+              Nenhuma escrita será executada.
+            </p>
+          }
+          <small>
+            operationId: {{ spotifyResult.operationId }}
+          </small>
         </div>
       }
     </section>
