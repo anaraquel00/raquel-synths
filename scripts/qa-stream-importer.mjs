@@ -167,3 +167,48 @@ console.log(
 console.log(
   'MODULE_04_SPOTIFY_LINKING_QA = PASS'
 );
+
+
+const importerTs = readFileSync(
+  new URL(
+    '../src/app/pages/soundcloud-importer/soundcloud-importer.ts',
+    import.meta.url
+  ),
+  'utf8'
+);
+
+const importerHtml = readFileSync(
+  new URL(
+    '../src/app/pages/soundcloud-importer/soundcloud-importer.html',
+    import.meta.url
+  ),
+  'utf8'
+);
+
+assert.match(importerTs, /ContentService/u);
+assert.match(importerTs, /getDiscography\(\)/u);
+assert.match(importerTs, /documentId:\s*new FormControl/u);
+assert.match(
+  importerTs,
+  /spotifyForm\.controls\s*\.documentId\.value/u
+);
+assert.match(
+  importerHtml,
+  /SPOTIFY \/\/ RELEASE EXISTENTE/u
+);
+assert.match(
+  importerHtml,
+  /RELEASE EM DISCOGRAPHY/u
+);
+assert.match(
+  importerHtml,
+  /@for \(item of discographyReleases\(\); track item\.id\)/u
+);
+assert.match(
+  importerHtml,
+  /Nenhuma importação SoundCloud é necessária nesta operação/u
+);
+
+console.log(
+  'SPOTIFY_EXISTING_RELEASE_SELECTOR = PASS'
+);

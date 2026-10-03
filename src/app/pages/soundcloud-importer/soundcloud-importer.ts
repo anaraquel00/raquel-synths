@@ -19,6 +19,9 @@ import {
 } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
 import { Router, RouterLink } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
+
+import { ContentService } from '../../services/content.service';
 
 interface ResolvedRelease {
   title: string;
@@ -27,6 +30,16 @@ interface ResolvedRelease {
   releaseDate: string;
   soundcloud: string;
   typeSuggestion: ReleaseType | '';
+}
+
+interface DiscographyReleaseOption {
+  id: string;
+  title: string;
+  type: string;
+  releaseDate: string;
+  soundcloud: string;
+  spotify: string;
+  spotifyUrl: string;
 }
 
 type Faction = 'broklin' | 'hybrid' | 'jonah';
@@ -140,6 +153,10 @@ implements OnInit, OnDestroy {
   });
 
   readonly spotifyForm = new FormGroup({
+    documentId: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required]
+    }),
     spotifyUrl: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required]
@@ -151,6 +168,10 @@ implements OnInit, OnDestroy {
   readonly spotifyDryRun =
     signal<SpotifyDryRunResult | null>(null);
   readonly linkedSpotifyUrl = signal('');
+  readonly discographyReleases =
+    signal<DiscographyReleaseOption[]>([]);
+  readonly catalogLoading = signal(false);
+  readonly catalogError = signal('');
   readonly busyAction = signal<BusyAction>(null);
   readonly sessionChecked = signal(false);
   readonly authenticated = signal(false);
@@ -162,6 +183,7 @@ implements OnInit, OnDestroy {
   constructor(
     @Inject(DOCUMENT) private readonly document: Document,
     @Inject(PLATFORM_ID) private readonly platformId: object,
+    private readonly contentService: ContentService,
     private readonly meta: Meta,
     private readonly title: Title,
     private readonly router: Router
@@ -194,6 +216,19 @@ implements OnInit, OnDestroy {
 
   get trackSlug(): string {
     return this.documentId.replace(/^(?:ep|album|single)-/, '');
+  }
+
+  get selectedSpotifyRelease():
+    DiscographyReleaseOption | null {
+    const documentId =
+      this.spotifyForm.controls.documentId.value;
+
+    return (
+      this.discographyReleases()
+        .find(release =>
+          release.id === documentId
+        ) || null
+    );
   }
 
   async logout(): Promise<void> {
@@ -229,12 +264,6 @@ implements OnInit, OnDestroy {
       faction: '',
       type: ''
     });
-    this.spotifyForm.reset({
-      spotifyUrl: ''
-    });
-    this.spotifyDryRun.set(null);
-    this.linkedSpotifyUrl.set('');
-
     try {
       const result = await this.callApi<{
         release: ResolvedRelease;
@@ -315,6 +344,7 @@ implements OnInit, OnDestroy {
         `(operationId: ${result.operationId})`
       );
       this.dryRun.set(null);
+      await this.loadDiscography();
     } catch (error) {
       this.handleError(error);
       this.dryRun.set(null);
@@ -326,7 +356,6 @@ implements OnInit, OnDestroy {
   async runSpotifyDryRun(): Promise<void> {
     if (
       !this.authenticated() ||
-      !this.documentId ||
       this.spotifyForm.invalid ||
       this.busyAction()
     ) {
@@ -343,7 +372,9 @@ implements OnInit, OnDestroy {
           SpotifyDryRunResult
         >({
           action: 'spotify-dry-run',
-          documentId: this.documentId,
+          documentId:
+            this.spotifyForm.controls
+              .documentId.value,
           spotifyUrl:
             this.spotifyForm.controls
               .spotifyUrl.value
@@ -373,7 +404,7 @@ implements OnInit, OnDestroy {
 
     const confirmed =
       this.document.defaultView?.confirm(
-        `Associar Spotify a discography/${this.documentId}? ` +
+        `Associar Spotify a discography/${this.spotifyForm.controls.documentId.value}? ` +
         'Somente o campo spotify será alterado.'
       );
 
@@ -392,7 +423,9 @@ implements OnInit, OnDestroy {
           firestore: 'UPDATED';
         }>({
           action: 'link-spotify',
-          documentId: this.documentId,
+          documentId:
+            this.spotifyForm.controls
+              .documentId.value,
           spotifyUrl:
             this.spotifyForm.controls
               .spotifyUrl.value,
@@ -402,6 +435,17 @@ implements OnInit, OnDestroy {
 
       this.linkedSpotifyUrl.set(
         result.spotifyUrl
+      );
+      this.discographyReleases.update(
+        releases =>
+          releases.map(release =>
+            release.id === result.documentId
+              ? {
+                  ...release,
+                  spotify: result.spotifyUrl
+                }
+              : release
+          )
       );
       this.successMessage.set(
         `UPDATED: discography/${result.documentId} ` +
@@ -423,8 +467,111 @@ implements OnInit, OnDestroy {
 
   invalidateSpotifyDryRun(): void {
     this.spotifyDryRun.set(null);
-    this.linkedSpotifyUrl.set('');
+    const release =
+      this.selectedSpotifyRelease;
+    this.linkedSpotifyUrl.set(
+      release?.spotify ||
+      release?.spotifyUrl ||
+      ''
+    );
     this.successMessage.set('');
+  }
+
+  onSpotifyReleaseChange(): void {
+    this.spotifyForm.controls.spotifyUrl.setValue('');
+    this.spotifyDryRun.set(null);
+
+    const release =
+      this.selectedSpotifyRelease;
+
+    this.linkedSpotifyUrl.set(
+      release?.spotify ||
+      release?.spotifyUrl ||
+      ''
+    );
+    this.errorMessage.set('');
+    this.successMessage.set('');
+  }
+
+  async loadDiscography(): Promise<void> {
+    if (
+      !this.authenticated() ||
+      this.catalogLoading()
+    ) {
+      return;
+    }
+
+    this.catalogLoading.set(true);
+    this.catalogError.set('');
+
+    try {
+      const rawReleases =
+        await firstValueFrom(
+          this.contentService.getDiscography()
+        );
+
+      const releases =
+        (rawReleases || [])
+          .map((value: any) => ({
+            id:
+              typeof value?.id === 'string'
+                ? value.id
+                : '',
+            title:
+              typeof value?.title === 'string'
+                ? value.title
+                : '',
+            type:
+              typeof value?.type === 'string'
+                ? value.type
+                : '',
+            releaseDate:
+              typeof value?.releaseDate === 'string'
+                ? value.releaseDate
+                : '',
+            soundcloud:
+              typeof value?.soundcloud === 'string'
+                ? value.soundcloud
+                : '',
+            spotify:
+              typeof value?.spotify === 'string'
+                ? value.spotify
+                : '',
+            spotifyUrl:
+              typeof value?.spotifyUrl === 'string'
+                ? value.spotifyUrl
+                : ''
+          }))
+          .filter(release =>
+            Boolean(
+              release.id &&
+              release.title
+            )
+          )
+          .sort((left, right) =>
+            right.releaseDate.localeCompare(
+              left.releaseDate
+            ) ||
+            left.title.localeCompare(
+              right.title,
+              undefined,
+              {
+                sensitivity: 'base',
+                numeric: true
+              }
+            )
+          );
+
+      this.discographyReleases.set(
+        releases
+      );
+    } catch {
+      this.catalogError.set(
+        'Não foi possível carregar discography.'
+      );
+    } finally {
+      this.catalogLoading.set(false);
+    }
   }
 
   private startAction(action: BusyAction): void {
@@ -452,7 +599,10 @@ implements OnInit, OnDestroy {
       this.applySession(result);
       if (!this.authenticated()) {
         await this.router.navigate(['/admin']);
+        return;
       }
+
+      await this.loadDiscography();
     } catch {
       this.clearSessionState();
       await this.router.navigate(['/admin']);
@@ -493,10 +643,13 @@ implements OnInit, OnDestroy {
       type: ''
     });
     this.spotifyForm.reset({
+      documentId: '',
       spotifyUrl: ''
     });
     this.spotifyDryRun.set(null);
     this.linkedSpotifyUrl.set('');
+    this.discographyReleases.set([]);
+    this.catalogError.set('');
   }
 
   private buildReleasePayload(): ImportRelease {

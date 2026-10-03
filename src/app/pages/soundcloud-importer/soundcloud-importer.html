@@ -103,11 +103,7 @@
             <p>SoundCloud <strong class="live">LIVE</strong></p>
             <p>
               Spotify
-              @if (linkedSpotifyUrl() || spotifyDryRun()?.currentSpotifyUrl) {
-                <strong class="live">CONECTADO</strong>
-              } @else {
-                <strong class="waiting">PENDENTE</strong>
-              }
+              <strong class="waiting">GERENCIAR ABAIXO</strong>
             </p>
           </div>
           <div>
@@ -305,18 +301,104 @@
       }
     </section>
 
+  }
+
+  @if (authenticated()) {
     <section class="panel actions-panel" aria-labelledby="spotify-link-title">
-      <h2 id="spotify-link-title">4. SPOTIFY</h2>
+      <h2 id="spotify-link-title">SPOTIFY // RELEASE EXISTENTE</h2>
       <p>
-        Associe uma URL do Spotify ao release canônico já existente.
-        O write altera exclusivamente <code>spotify</code>.
+        Selecione um Single, EP ou Album que já existe em
+        <code>discography</code> e associe a URL correspondente do Spotify.
+        Nenhuma importação SoundCloud é necessária nesta operação.
       </p>
 
       <form
         [formGroup]="spotifyForm"
         (ngSubmit)="runSpotifyDryRun()"
-        (input)="invalidateSpotifyDryRun()"
       >
+        <div class="field">
+          <label for="spotify-release">RELEASE EM DISCOGRAPHY</label>
+          <select
+            id="spotify-release"
+            formControlName="documentId"
+            (change)="onSpotifyReleaseChange()"
+          >
+            <option value="">Selecione um Single / EP / Album</option>
+            @for (item of discographyReleases(); track item.id) {
+              <option [value]="item.id">
+                {{ item.title }} — {{ item.type || 'Release' }}
+                @if (item.releaseDate) {
+                  — {{ item.releaseDate }}
+                }
+              </option>
+            }
+          </select>
+        </div>
+
+        <div class="button-row">
+          <button
+            type="button"
+            class="button secondary"
+            [disabled]="catalogLoading() || busyAction() !== null"
+            (click)="loadDiscography()"
+          >
+            {{
+              catalogLoading()
+                ? 'ATUALIZANDO CATÁLOGO...'
+                : 'ATUALIZAR CATÁLOGO'
+            }}
+          </button>
+        </div>
+
+        @if (catalogError()) {
+          <p class="error-message">{{ catalogError() }}</p>
+        }
+
+        @if (selectedSpotifyRelease; as selected) {
+          <section
+            class="track-card"
+            aria-label="Release selecionado para associação Spotify"
+          >
+            <div class="track-heading">
+              <span>RELEASE SELECIONADO</span>
+              <strong>{{ selected.title }}</strong>
+            </div>
+
+            <div class="track-columns">
+              <div>
+                <h3>DOCUMENT</h3>
+                <p><code>discography/{{ selected.id }}</code></p>
+              </div>
+
+              <div>
+                <h3>TYPE</h3>
+                <p>{{ selected.type || 'MISSING' }}</p>
+              </div>
+
+              <div>
+                <h3>PLATAFORMAS</h3>
+                <p>
+                  SoundCloud
+                  <strong
+                    [class.live]="selected.soundcloud"
+                    [class.waiting]="!selected.soundcloud"
+                  >
+                    {{ selected.soundcloud ? 'LIVE' : 'MISSING' }}
+                  </strong>
+                </p>
+                <p>
+                  Spotify
+                  @if (linkedSpotifyUrl()) {
+                    <strong class="live">CONECTADO</strong>
+                  } @else {
+                    <strong class="waiting">PENDENTE</strong>
+                  }
+                </p>
+              </div>
+            </div>
+          </section>
+        }
+
         <div class="field">
           <label for="spotify-url">SPOTIFY URL</label>
           <input
@@ -326,6 +408,7 @@
             placeholder="https://open.spotify.com/track/... ou /album/..."
             autocomplete="off"
             spellcheck="false"
+            (input)="invalidateSpotifyDryRun()"
           >
         </div>
 
@@ -333,11 +416,7 @@
           <button
             type="submit"
             class="button secondary"
-            [disabled]="
-              !documentId ||
-              spotifyForm.invalid ||
-              busyAction() !== null
-            "
+            [disabled]="spotifyForm.invalid || busyAction() !== null"
             [attr.aria-busy]="busyAction() === 'spotify-dry-run'"
           >
             {{
@@ -373,64 +452,28 @@
           [class.blocked]="spotifyResult.firestore === 'UNCHANGED'"
           aria-live="polite"
         >
-          <p>
-            <strong>DOCUMENT:</strong><br>
-            discography/{{ spotifyResult.documentId }}
-          </p>
-          <p>
-            <strong>TITLE:</strong><br>
-            {{ spotifyResult.title || 'MISSING' }}
-          </p>
-          <p>
-            <strong>TYPE:</strong><br>
-            {{ spotifyResult.type || 'MISSING' }}
-          </p>
-          <p>
-            <strong>SOUNDCLOUD:</strong><br>
-            {{ spotifyResult.soundcloud || 'MISSING' }}
-          </p>
-          <p>
-            <strong>SPOTIFY ATUAL:</strong><br>
-            {{
-              spotifyResult.currentSpotifyUrl ||
-              'NÃO CONECTADO'
-            }}
-          </p>
+          <p><strong>DOCUMENT:</strong><br>discography/{{ spotifyResult.documentId }}</p>
+          <p><strong>TITLE:</strong><br>{{ spotifyResult.title || 'MISSING' }}</p>
+          <p><strong>TYPE:</strong><br>{{ spotifyResult.type || 'MISSING' }}</p>
+          <p><strong>SOUNDCLOUD:</strong><br>{{ spotifyResult.soundcloud || 'MISSING' }}</p>
+          <p><strong>SPOTIFY ATUAL:</strong><br>{{ spotifyResult.currentSpotifyUrl || 'NÃO CONECTADO' }}</p>
           @if (spotifyResult.currentSpotifyField) {
-            <p>
-              <strong>CAMPO ATUAL:</strong><br>
-              {{ spotifyResult.currentSpotifyField }}
-            </p>
+            <p><strong>CAMPO ATUAL:</strong><br>{{ spotifyResult.currentSpotifyField }}</p>
           }
-          <p>
-            <strong>NOVO SPOTIFY:</strong><br>
-            {{ spotifyResult.spotifyUrl }}
-          </p>
-          <p>
-            <strong>OPERATION:</strong><br>
-            {{ spotifyResult.firestore }}
-          </p>
+          <p><strong>NOVO SPOTIFY:</strong><br>{{ spotifyResult.spotifyUrl }}</p>
+          <p><strong>OPERATION:</strong><br>{{ spotifyResult.firestore }}</p>
           <p>
             <strong>FIELDS:</strong><br>
-            {{
-              spotifyResult.fields.length
-                ? spotifyResult.fields.join(', ')
-                : 'NONE'
-            }}
+            {{ spotifyResult.fields.length ? spotifyResult.fields.join(', ') : 'NONE' }}
           </p>
-          <p>
-            <strong>DRY RUN FIRESTORE WRITES:</strong><br>
-            {{ spotifyResult.firestoreWrites }}
-          </p>
+          <p><strong>DRY RUN FIRESTORE WRITES:</strong><br>{{ spotifyResult.firestoreWrites }}</p>
           @if (spotifyResult.firestore === 'UNCHANGED') {
             <p>
               A mesma URL Spotify já está conectada.
               Nenhuma escrita será executada.
             </p>
           }
-          <small>
-            operationId: {{ spotifyResult.operationId }}
-          </small>
+          <small>operationId: {{ spotifyResult.operationId }}</small>
         </div>
       }
     </section>
