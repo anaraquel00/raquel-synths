@@ -199,7 +199,7 @@ function fieldLabel(line) {
 }
 
 function parseInlineField(line) {
-  const match = /^(EPISODE|CATEGORY|RELEASE DATE|IMAGE|TITLE|DESCRIPTION)\s*[:：]\s*(.*)$/i.exec(
+  const match = /^(EPISODE|CATEGORY|RELEASE DATE|IMAGE|TITLE|DESCRIPTION|CONTENT)\s*[:：]\s*(.*)$/i.exec(
     String(line || '').trim()
   );
   if (!match) return null;
@@ -323,6 +323,23 @@ export function parseLoreBlocks(
     if (inline) {
       if (inline.field === 'episode') {
         setField('episode', inline.value);
+      } else if (inline.field === 'content') {
+        if (!current) {
+          warnings.push('CONTENT encontrado antes de EPISODE.');
+          continue;
+        }
+
+        inContent = true;
+        contentParts = [];
+        lastContentSourceIndex = -1;
+
+        if (inline.value) {
+          appendContent({
+            text: inline.value,
+            separatorBefore: '',
+            sourceIndex: block.sourceIndex
+          });
+        }
       } else if (inline.field && inline.value) {
         setField(inline.field, inline.value);
       }

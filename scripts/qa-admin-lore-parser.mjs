@@ -161,6 +161,31 @@ assert.equal(
   'T-14 // EXPIRATION NOTICE'
 );
 
+
+const inlineContent = parseLoreBlocks(
+  blocks([
+    'EPISODE: s2-e1',
+    'CATEGORY: Teste',
+    'RELEASE DATE: 2027-01-10',
+    'IMAGE: https://example.com/test.webp',
+    'TITLE: Teste',
+    'DESCRIPTION: Resumo.',
+    'CONTENT:',
+    'Conteúdo inline real.',
+    'END EPISODE'
+  ]),
+  {
+    sourceName: 'BROKLIN_S2_PT-BR.docx'
+  }
+);
+
+assert.equal(
+  inlineContent.episodes[0].content,
+  'Conteúdo inline real.'
+);
+
+console.log('LORE_INLINE_CONTENT_COLON = PASS');
+
 const badEn = structuredClone(en);
 badEn.episodes[0].image =
   'https://example.com/other.webp';
