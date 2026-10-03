@@ -204,3 +204,123 @@ describe('AdminModuleComponent / Sagas Globais', () => {
     expect(fixture.nativeElement.querySelector('.import-action')).toBeNull();
   });
 });
+
+
+describe('AdminModuleComponent / Lore Read Only', () => {
+  let fixture: ComponentFixture<AdminModuleComponent>;
+  let component: AdminModuleComponent;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [AdminModuleComponent],
+      providers: [
+        provideRouter([]),
+        { provide: PLATFORM_ID, useValue: 'server' },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: { adminModule: 'lore', loreSource: 'broklin' }
+            }
+          }
+        }
+      ]
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(AdminModuleComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    component.authenticated.set(true);
+
+    component.loreDocuments.set([
+      {
+        documentId: 'drive_pt_123456',
+        name: 'BROKLIN_S2_PT-BR.docx',
+        mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        modifiedTime: '2026-10-03T14:39:51.390Z',
+        webViewLink: '',
+        sourceLocation: 'Google Drive / Lore - Broklin',
+        languageHint: 'pt-BR',
+        support: { status: 'SUPPORTED', message: '' }
+      },
+      {
+        documentId: 'drive_en_123456',
+        name: 'BROKLIN_S2_EN-US.docx',
+        mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        modifiedTime: '2026-10-03T14:40:09.753Z',
+        webViewLink: '',
+        sourceLocation: 'Google Drive / Lore - Broklin',
+        languageHint: 'en-US',
+        support: { status: 'SUPPORTED', message: '' }
+      }
+    ]);
+
+    component.lorePtDocumentId.set('drive_pt_123456');
+    component.loreEnDocumentId.set('drive_en_123456');
+    component.lorePreview.set({
+      mode: 'broklin',
+      collection: 'lore',
+      sourceLocation: 'Google Drive / Lore - Broklin',
+      validation: { status: 'PASS', blocked: [], warnings: [] },
+      pairing: {
+        status: 'PASS',
+        documents: [
+          {
+            id: 's2-e1',
+            collection: 'lore',
+            fields: {
+              title: 'Sinal de Teste',
+              title_en: 'Test Signal',
+              category: 'Teste de Integração',
+              category_en: 'Integration Test',
+              description: 'Episódio mínimo usado para validar a integração read-only.',
+              description_en: 'Minimal episode used to validate the read-only integration.',
+              content: 'Este é o primeiro teste real do pipeline.',
+              content_en: 'This is the first real pipeline test.',
+              image: 'https://raquelsynths.com/images/banner-seo-global.jpg',
+              mode: 'broklin',
+              published: true,
+              releaseDate: '2027-01-01'
+            }
+          }
+        ]
+      },
+      firestoreWrites: 0,
+      sourceMutated: false
+    });
+
+    fixture.detectChanges();
+  });
+
+  it('distribui o workspace Lore pela largura disponível', () => {
+    const root = fixture.nativeElement as HTMLElement;
+    expect(root.querySelector('.module-shell.lore-shell')).toBeTruthy();
+    expect(root.querySelectorAll('.lore-source-slot').length).toBe(2);
+    expect(root.querySelectorAll('.lore-health-card').length).toBe(3);
+    expect(root.querySelectorAll('.lore-language-column').length).toBe(2);
+    expect(root.querySelector('.lore-draft-card')).toBeTruthy();
+  });
+
+  it('mostra o draft PT/EN e mantém a interface estritamente read-only', () => {
+    const root = fixture.nativeElement as HTMLElement;
+    const text = root.textContent || '';
+    expect(text).toContain('Sinal de Teste');
+    expect(text).toContain('Test Signal');
+    expect(text).toContain('01/01/2027');
+    expect(text).toContain('VALIDATION');
+    expect(text).toContain('PAIRING');
+    expect(text).toContain('SAFETY');
+    expect(text).toContain('FIRESTORE WRITES');
+    expect(text).toContain('SOURCE MUTATED');
+    expect(text).toContain('READ ONLY');
+    expect(root.querySelector('.import-action')).toBeNull();
+    expect(root.querySelector('.owner-confirmation')).toBeNull();
+  });
+
+  it('separa corretamente os documentos PT-BR e EN-US', () => {
+    expect(component.loreDocumentsFor('pt-BR').length).toBe(1);
+    expect(component.loreDocumentsFor('en-US').length).toBe(1);
+    expect(component.loreDocumentsFor('pt-BR')[0].name).toContain('PT-BR');
+    expect(component.loreDocumentsFor('en-US')[0].name).toContain('EN-US');
+  });
+});

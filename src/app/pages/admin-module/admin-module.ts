@@ -23,6 +23,47 @@ interface DriveDocument {
   webViewLink: string;
   sourceLocation: string;
   support: { status: 'SUPPORTED' | 'BLOCKED'; message: string };
+  languageHint?: SagaLanguage | '';
+  collection?: string;
+  size?: number;
+}
+
+interface LoreDraftFields {
+  title: string;
+  title_en: string;
+  category: string;
+  category_en: string;
+  content: string;
+  content_en: string;
+  description: string;
+  description_en: string;
+  image: string;
+  mode: 'broklin' | 'jonah';
+  published: true;
+  releaseDate: string;
+}
+
+interface LoreDraftDocument {
+  id: string;
+  collection: string;
+  fields: LoreDraftFields;
+}
+
+interface LorePreviewResult {
+  mode: Exclude<LoreSource, null>;
+  collection: string;
+  sourceLocation: string;
+  validation: {
+    status: 'PASS' | 'BLOCKED';
+    blocked: string[];
+    warnings: string[];
+  };
+  pairing: {
+    status: 'PASS' | 'BLOCKED';
+    documents: LoreDraftDocument[];
+  };
+  firestoreWrites: 0;
+  sourceMutated: false;
 }
 
 interface EditorialBlock {
@@ -110,6 +151,13 @@ export class AdminModuleComponent implements OnInit {
   readonly importConfirmed = signal(false);
   readonly catalogStatus = signal('');
   readonly message = signal('');
+
+  readonly loreDocuments = signal<DriveDocument[]>([]);
+  readonly lorePtDocumentId = signal('');
+  readonly loreEnDocumentId = signal('');
+  readonly lorePreview = signal<LorePreviewResult | null>(null);
+  readonly loreLoading = signal(false);
+
   private csrf = '';
 
   constructor(
@@ -129,6 +177,109 @@ export class AdminModuleComponent implements OnInit {
     } else {
       this.checked.set(true);
     }
+  }
+
+  async refreshLoreDocuments(): Promise<void> {
+    const mode = this.loreSource;
+    if (!this.authenticated() || !mode || this.loreLoading()) return;
+
+    this.loreLoading.set(true);
+    this.error.set('');
+
+    try {
+      const result = await this.callLore<{
+        documents: DriveDocument[];
+      }>({
+        action: 'list',
+        mode
+      });
+
+      this.loreDocuments.set(result.documents);
+
+      const ptDocuments = this.loreDocumentsFor('pt-BR');
+      const enDocuments = this.loreDocumentsFor('en-US');
+      const currentPt = this.lorePtDocumentId();
+      const currentEn = this.loreEnDocumentId();
+
+      this.lorePtDocumentId.set(
+        ptDocuments.some(item => item.documentId === currentPt)
+          ? currentPt
+          : ptDocuments.length === 1
+            ? ptDocuments[0].documentId
+            : ''
+      );
+
+      this.loreEnDocumentId.set(
+        enDocuments.some(item => item.documentId === currentEn)
+          ? currentEn
+          : enDocuments.length === 1
+            ? enDocuments[0].documentId
+            : ''
+      );
+
+      this.lorePreview.set(null);
+    } catch (error) {
+      this.fail(error);
+    } finally {
+      this.loreLoading.set(false);
+    }
+  }
+
+  setLoreDocument(language: SagaLanguage, documentId: string): void {
+    if (language === 'pt-BR') {
+      this.lorePtDocumentId.set(documentId);
+    } else {
+      this.loreEnDocumentId.set(documentId);
+    }
+
+    this.lorePreview.set(null);
+    this.error.set('');
+  }
+
+  async runLorePreview(): Promise<void> {
+    const mode = this.loreSource;
+    const ptDocumentId = this.lorePtDocumentId();
+    const enDocumentId = this.loreEnDocumentId();
+
+    if (
+      !mode ||
+      !ptDocumentId ||
+      !enDocumentId ||
+      ptDocumentId === enDocumentId ||
+      this.loreLoading()
+    ) {
+      return;
+    }
+
+    this.loreLoading.set(true);
+    this.error.set('');
+    this.lorePreview.set(null);
+
+    try {
+      const result = await this.callLore<LorePreviewResult>({
+        action: 'preview',
+        mode,
+        ptDocumentId,
+        enDocumentId
+      });
+
+      this.lorePreview.set(result);
+    } catch (error) {
+      this.fail(error);
+    } finally {
+      this.loreLoading.set(false);
+    }
+  }
+
+  loreDocumentsFor(language: SagaLanguage): DriveDocument[] {
+    return this.loreDocuments().filter(
+      document => this.loreLanguageOf(document) === language
+    );
+  }
+
+  formatLoreDate(value: string): string {
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value || '');
+    return match ? `${match[3]}/${match[2]}/${match[1]}` : value;
   }
 
   async openSourceSelector(): Promise<void> {
@@ -276,6 +427,20 @@ export class AdminModuleComponent implements OnInit {
     } as const)[type];
   }
 
+  private loreLanguageOf(document: DriveDocument): SagaLanguage | '' {
+    if (
+      document.languageHint === 'pt-BR' ||
+      document.languageHint === 'en-US'
+    ) {
+      return document.languageHint;
+    }
+
+    if (/PT[-_ ]?BR/i.test(document.name)) return 'pt-BR';
+    if (/EN[-_ ]?US/i.test(document.name)) return 'en-US';
+
+    return '';
+  }
+
   private beginRequest(): void {
     this.loading.set(true);
     this.error.set('');
@@ -285,6 +450,25 @@ export class AdminModuleComponent implements OnInit {
     this.error.set(
       error instanceof Error ? error.message : 'Falha inesperada no importador.'
     );
+  }
+
+  private async callLore<T>(body: object): Promise<T> {
+    const response = await fetch('/api/admin/lore', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-RQS-CSRF': this.csrf
+      },
+      body: JSON.stringify(body),
+      credentials: 'same-origin',
+      cache: 'no-store'
+    });
+
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.message || 'Falha na leitura da Lore.');
+    }
+    return result as T;
   }
 
   private async call<T>(body: object): Promise<T> {
@@ -330,6 +514,8 @@ export class AdminModuleComponent implements OnInit {
       if (!result.authenticated || !this.csrf) {
         this.authenticated.set(false);
         await this.router.navigate(['/admin']);
+      } else if (this.module === 'lore' && this.loreSource) {
+        await this.refreshLoreDocuments();
       }
     } catch (error) {
       this.error.set(

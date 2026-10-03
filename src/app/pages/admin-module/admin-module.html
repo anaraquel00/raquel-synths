@@ -1,4 +1,4 @@
-<main class="module-shell">
+<main class="module-shell" [class.lore-shell]="module === 'lore'">
   <a class="back-link" routerLink="/admin">← Painel Admin</a>
 
   @if (!checked()) {
@@ -20,25 +20,156 @@
         <span class="source-label">FONTE</span>
         <h2>Broklin</h2>
         <p>Google Drive: <strong>Lore - Broklin</strong></p>
-        <span class="source-state">PRÉVIA / EM ESPERA</span>
+        <span class="source-state">DRIVE READ ONLY</span>
       </a>
 
       <a class="source-card jonah" [class.selected]="loreSource === 'jonah'" routerLink="/admin/lore/jonah">
         <span class="source-label">FONTE</span>
         <h2>Jonah</h2>
         <p>Google Drive: <strong>Lore - Jonah</strong></p>
-        <span class="source-state">PRÉVIA / EM ESPERA</span>
+        <span class="source-state">DRIVE READ ONLY</span>
       </a>
     </section>
 
     @if (loreSource) {
-      <section class="hold-panel">
-        <p class="eyebrow">MÓDULO {{ loreSource.toUpperCase() }}</p>
-        <h2>Fonte identificada</h2>
-        <p>
-          As ações de publicação e importação permanecem em espera. Esta Prévia não
-          altera nem reorganiza as pastas de origem no Google Drive.
-        </p>
+      <section class="lore-workspace" [class.jonah-mode]="loreSource === 'jonah'">
+        <section class="lore-control-bar">
+          <div>
+            <p class="eyebrow">RQS ADMIN / LORE / {{ loreSource.toUpperCase() }}</p>
+            <h2>{{ loreSource === 'broklin' ? 'Broklin' : 'Jonah' }} // Source Review</h2>
+            <p>Google Drive / {{ loreSource === 'broklin' ? 'Lore - Broklin' : 'Lore - Jonah' }}</p>
+          </div>
+          <div class="lore-control-actions">
+            <span class="validation-chip">DRIVE READ ONLY</span>
+            <button type="button" class="secondary-action" [disabled]="loreLoading()" (click)="refreshLoreDocuments()">
+              {{ loreLoading() ? 'ATUALIZANDO…' : 'ATUALIZAR FONTES' }}
+            </button>
+          </div>
+        </section>
+
+        @if (loreLoading() && !loreDocuments().length) {
+          <p class="session-message" aria-live="polite">Conectando ao Google Drive…</p>
+        } @else {
+          <section class="lore-source-pair" aria-label="Par de documentos PT-BR e EN-US">
+            <article class="lore-source-slot">
+              <div class="lore-slot-heading">
+                <div><p class="eyebrow">SOURCE SLOT</p><h3>PT-BR</h3></div>
+                <span class="validation-chip">{{ loreDocumentsFor('pt-BR').length }} DOCX</span>
+              </div>
+              <label for="lore-source-pt">DOCUMENTO</label>
+              <select #lorePtSource id="lore-source-pt" [value]="lorePtDocumentId()" [disabled]="loreLoading()" (change)="setLoreDocument('pt-BR', lorePtSource.value)">
+                <option value="">Selecione PT-BR</option>
+                @for (document of loreDocumentsFor('pt-BR'); track document.documentId) {
+                  <option [value]="document.documentId">{{ document.name }}{{ document.support.status === 'BLOCKED' ? ' — BLOCKED' : '' }}</option>
+                }
+              </select>
+              <p class="lore-slot-note">Parser esperado: PT-BR · DOCX · Mammoth</p>
+            </article>
+
+            <article class="lore-source-slot">
+              <div class="lore-slot-heading">
+                <div><p class="eyebrow">SOURCE SLOT</p><h3>EN-US</h3></div>
+                <span class="validation-chip">{{ loreDocumentsFor('en-US').length }} DOCX</span>
+              </div>
+              <label for="lore-source-en">DOCUMENTO</label>
+              <select #loreEnSource id="lore-source-en" [value]="loreEnDocumentId()" [disabled]="loreLoading()" (change)="setLoreDocument('en-US', loreEnSource.value)">
+                <option value="">Selecione EN-US</option>
+                @for (document of loreDocumentsFor('en-US'); track document.documentId) {
+                  <option [value]="document.documentId">{{ document.name }}{{ document.support.status === 'BLOCKED' ? ' — BLOCKED' : '' }}</option>
+                }
+              </select>
+              <p class="lore-slot-note">Parser esperado: EN-US · DOCX · Mammoth</p>
+            </article>
+          </section>
+
+          <button type="button" class="lore-preview-action" [disabled]="loreLoading() || !lorePtDocumentId() || !loreEnDocumentId() || lorePtDocumentId() === loreEnDocumentId()" (click)="runLorePreview()">
+            {{ loreLoading() ? 'PROCESSANDO…' : 'GERAR PRÉVIA PT / EN' }}
+          </button>
+          <p class="lore-readonly-policy">PREVIEW ONLY · DRIVE READ ONLY · FIRESTORE WRITES = 0</p>
+        }
+
+        @if (lorePreview(); as preview) {
+          <section class="lore-health-grid">
+            <article class="lore-health-card">
+              <p class="eyebrow">VALIDATION</p>
+              <div class="lore-health-heading">
+                <h3>{{ preview.validation.status }}</h3>
+                <span class="validation-chip" [class.blocked]="preview.validation.status === 'BLOCKED'">{{ preview.validation.blocked.length }} BLOCKED</span>
+              </div>
+              <p>{{ preview.validation.warnings.length }} WARNINGS</p>
+              @if (preview.validation.blocked.length) {
+                <ul class="validation-list blocked">
+                  @for (issue of preview.validation.blocked; track issue) { <li>{{ issue }}</li> }
+                </ul>
+              }
+              @if (preview.validation.warnings.length) {
+                <ul class="lore-warning-list">
+                  @for (warning of preview.validation.warnings; track warning) { <li>{{ warning }}</li> }
+                </ul>
+              }
+            </article>
+
+            <article class="lore-health-card">
+              <p class="eyebrow">PAIRING</p>
+              <div class="lore-health-heading">
+                <h3>{{ preview.pairing.status }}</h3>
+                <span class="validation-chip" [class.blocked]="preview.pairing.status === 'BLOCKED'">{{ preview.pairing.documents.length }} {{ preview.pairing.documents.length === 1 ? 'DOCUMENT' : 'DOCUMENTS' }}</span>
+              </div>
+              <dl class="lore-mini-metadata">
+                <div><dt>MODE</dt><dd>{{ preview.mode }}</dd></div>
+                <div><dt>TARGET</dt><dd>{{ preview.collection }}</dd></div>
+              </dl>
+            </article>
+
+            <article class="lore-health-card safety">
+              <p class="eyebrow">SAFETY</p>
+              <h3>READ ONLY</h3>
+              <dl class="lore-mini-metadata">
+                <div><dt>FIRESTORE WRITES</dt><dd>{{ preview.firestoreWrites }}</dd></div>
+                <div><dt>SOURCE MUTATED</dt><dd>{{ preview.sourceMutated ? 'YES' : 'NO' }}</dd></div>
+                <div><dt>DRIVE MODE</dt><dd>READ ONLY</dd></div>
+              </dl>
+            </article>
+          </section>
+
+          <section class="lore-draft-list" aria-label="Draft Firestore-ready">
+            @for (draft of preview.pairing.documents; track draft.id) {
+              <article class="lore-draft-card">
+                <header class="lore-draft-header">
+                  <div><p class="eyebrow">FIRESTORE-READY PREVIEW</p><h3>{{ draft.id }}</h3></div>
+                  <div class="lore-draft-badges">
+                    <span class="validation-chip">{{ draft.collection }}</span>
+                    <span class="validation-chip">{{ formatLoreDate(draft.fields.releaseDate) }}</span>
+                  </div>
+                </header>
+
+                <dl class="lore-draft-meta">
+                  <div><dt>MODE</dt><dd>{{ draft.fields.mode }}</dd></div>
+                  <div><dt>DRAFT FIELD</dt><dd>published = {{ draft.fields.published ? 'true' : 'false' }}</dd></div>
+                  <div class="image-field"><dt>IMAGE</dt><dd><a [href]="draft.fields.image" target="_blank" rel="noopener noreferrer">{{ draft.fields.image }}</a></dd></div>
+                </dl>
+
+                <div class="lore-bilingual-grid">
+                  <section class="lore-language-column">
+                    <p class="lore-language-label">PT-BR</p>
+                    <div class="lore-editorial-field"><span>TITLE</span><h4>{{ draft.fields.title }}</h4></div>
+                    <div class="lore-editorial-field"><span>CATEGORY</span><p>{{ draft.fields.category }}</p></div>
+                    <div class="lore-editorial-field"><span>DESCRIPTION</span><p>{{ draft.fields.description }}</p></div>
+                    <div class="lore-editorial-field content"><span>CONTENT</span><p>{{ draft.fields.content }}</p></div>
+                  </section>
+
+                  <section class="lore-language-column">
+                    <p class="lore-language-label">EN-US</p>
+                    <div class="lore-editorial-field"><span>TITLE</span><h4>{{ draft.fields.title_en }}</h4></div>
+                    <div class="lore-editorial-field"><span>CATEGORY</span><p>{{ draft.fields.category_en }}</p></div>
+                    <div class="lore-editorial-field"><span>DESCRIPTION</span><p>{{ draft.fields.description_en }}</p></div>
+                    <div class="lore-editorial-field content"><span>CONTENT</span><p>{{ draft.fields.content_en }}</p></div>
+                  </section>
+                </div>
+              </article>
+            }
+          </section>
+        }
       </section>
     }
   } @else {
