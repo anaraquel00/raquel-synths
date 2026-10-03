@@ -141,6 +141,12 @@
           </p>
         }
 
+        @if (loreImportMessage()) {
+          <p class="success-message" role="status">
+            {{ loreImportMessage() }}
+          </p>
+        }
+
         @if (loreDryRun(); as result) {
           <section class="lore-health-grid">
             <article class="lore-health-card">
@@ -312,9 +318,79 @@
             }
           </section>
 
-          <p class="lore-next-stage-note">
-            IMPORTAÇÃO DESABILITADA NESTE ESTÁGIO · DRY RUN SOMENTE
-          </p>
+          @if (result.language === 'pt-BR') {
+            <section class="lore-import-panel">
+              <div class="lore-import-heading">
+                <div>
+                  <p class="eyebrow">STAGE 4 / PT-BR IMPORT</p>
+                  <h3>
+                    {{
+                      result.writesEnabled
+                        ? 'WRITE GATE ENABLED'
+                        : 'WRITE GATE LOCKED'
+                    }}
+                  </h3>
+                </div>
+
+                <span
+                  class="validation-chip"
+                  [class.blocked]="!result.writesEnabled"
+                >
+                  {{
+                    result.writesEnabled
+                      ? 'PT-BR WRITE READY'
+                      : 'RQS_LORE_WRITES_ENABLED = false'
+                  }}
+                </span>
+              </div>
+
+              <p>
+                A importação usa exatamente o plano validado pelo DRY RUN.
+                CREATE_PT cria a base canônica; MERGE_PT atualiza somente campos
+                PT-BR e compartilhados. Campos *_en não são escritos neste estágio.
+              </p>
+
+              @if (result.importAllowed) {
+                <label class="lore-owner-confirmation">
+                  <input
+                    #loreOwnerConfirmation
+                    type="checkbox"
+                    [checked]="loreImportConfirmed()"
+                    [disabled]="!result.writesEnabled || loreLoading()"
+                    (change)="setLoreImportConfirmed(loreOwnerConfirmation.checked)"
+                  >
+                  Confirmo a escrita dos episódios PT-BR indicados no WRITE PLAN.
+                  O Google Drive permanecerá somente leitura.
+                </label>
+
+                <button
+                  type="button"
+                  class="lore-import-action"
+                  [disabled]="
+                    !result.writesEnabled ||
+                    !result.dryRunToken ||
+                    !loreImportConfirmed() ||
+                    loreLoading()
+                  "
+                  (click)="importLorePt()"
+                >
+                  {{
+                    loreLoading()
+                      ? 'IMPORTANDO…'
+                      : 'IMPORTAR PT-BR PARA ' + result.collection
+                  }}
+                </button>
+              } @else {
+                <p class="lore-next-stage-note">
+                  NENHUMA ESCRITA PT-BR DISPONÍVEL NESTE DRY RUN
+                </p>
+              }
+            </section>
+          } @else {
+            <p class="lore-next-stage-note">
+              EN-US CONTINUA READ-ONLY · MERGE_EN SERÁ HABILITADO NO STAGE 5
+            </p>
+          }
         }
       </section>
     }

@@ -79,8 +79,22 @@ interface LoreDryRunResult {
     blocked: number;
   };
   writePlan: LoreWritePlanItem[];
+  dryRunToken: string | null;
+  writesEnabled: boolean;
+  importAllowed: boolean;
   firestoreReads: number;
   firestoreWrites: 0;
+  sourceMutated: false;
+}
+
+interface LoreImportResult {
+  mode: Exclude<LoreSource, null>;
+  collection: string;
+  language: 'pt-BR';
+  documentIds: string[];
+  writtenDocumentIds: string[];
+  episodeCount: number;
+  firestoreWrites: number;
   sourceMutated: false;
 }
 
@@ -174,6 +188,8 @@ export class AdminModuleComponent implements OnInit {
   readonly loreSelectedDocumentId = signal('');
   readonly loreDryRun = signal<LoreDryRunResult | null>(null);
   readonly loreLoading = signal(false);
+  readonly loreImportConfirmed = signal(false);
+  readonly loreImportMessage = signal('');
 
   private csrf = '';
 
@@ -246,6 +262,8 @@ export class AdminModuleComponent implements OnInit {
   setLoreDocument(documentId: string): void {
     this.loreSelectedDocumentId.set(documentId);
     this.loreDryRun.set(null);
+    this.loreImportConfirmed.set(false);
+    this.loreImportMessage.set('');
     this.error.set('');
   }
 
@@ -271,6 +289,8 @@ export class AdminModuleComponent implements OnInit {
     this.loreLoading.set(true);
     this.error.set('');
     this.loreDryRun.set(null);
+    this.loreImportConfirmed.set(false);
+    this.loreImportMessage.set('');
 
     try {
       const result = await this.callLore<LoreDryRunResult>({
@@ -281,6 +301,55 @@ export class AdminModuleComponent implements OnInit {
 
       this.loreDryRun.set(result);
     } catch (error) {
+      this.fail(error);
+    } finally {
+      this.loreLoading.set(false);
+    }
+  }
+
+  setLoreImportConfirmed(confirmed: boolean): void {
+    this.loreImportConfirmed.set(confirmed);
+  }
+
+  async importLorePt(): Promise<void> {
+    const mode = this.loreSource;
+    const documentId = this.loreSelectedDocumentId();
+    const dryRun = this.loreDryRun();
+
+    if (
+      !mode ||
+      !documentId ||
+      !dryRun ||
+      dryRun.language !== 'pt-BR' ||
+      !dryRun.importAllowed ||
+      !dryRun.writesEnabled ||
+      !dryRun.dryRunToken ||
+      !this.loreImportConfirmed() ||
+      this.loreLoading()
+    ) {
+      return;
+    }
+
+    this.loreLoading.set(true);
+    this.error.set('');
+    this.loreImportMessage.set('');
+
+    try {
+      const result = await this.callLore<LoreImportResult>({
+        action: 'import',
+        mode,
+        documentId,
+        dryRunToken: dryRun.dryRunToken
+      });
+
+      this.loreImportConfirmed.set(false);
+      this.loreDryRun.set(null);
+      this.loreImportMessage.set(
+        `${result.episodeCount} episódio(s) PT-BR escrito(s) em ${result.collection}. ` +
+        'Execute o DRY RUN novamente para confirmar o estado atual do catálogo.'
+      );
+    } catch (error) {
+      this.loreImportConfirmed.set(false);
       this.fail(error);
     } finally {
       this.loreLoading.set(false);

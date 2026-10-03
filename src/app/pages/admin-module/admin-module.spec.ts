@@ -328,6 +328,9 @@ describe('AdminModuleComponent / Lore Read Only', () => {
           issues: []
         }
       ],
+      dryRunToken: 'signed-lore-dry-run-token',
+      writesEnabled: false,
+      importAllowed: true,
       firestoreReads: 1,
       firestoreWrites: 0,
       sourceMutated: false
@@ -356,17 +359,53 @@ describe('AdminModuleComponent / Lore Read Only', () => {
     expect(text).toContain('CREATE_PT');
     expect(text).not.toContain('Test Signal');
 
-    expect(root.querySelector('.import-action')).toBeNull();
-    expect(root.querySelector('.owner-confirmation')).toBeNull();
+    expect(root.querySelector('.lore-import-panel')).toBeTruthy();
+    expect(root.querySelector('.lore-owner-confirmation')).toBeTruthy();
   });
 
-  it('preserva zero writes e mantém importação desabilitada', () => {
-    const text = fixture.nativeElement.textContent as string;
+  it('mantém o write gate PT-BR travado por padrão', () => {
+    const root = fixture.nativeElement as HTMLElement;
+    const text = root.textContent || '';
+    const button = root.querySelector(
+      '.lore-import-action'
+    ) as HTMLButtonElement;
+    const checkbox = root.querySelector(
+      '.lore-owner-confirmation input'
+    ) as HTMLInputElement;
 
+    expect(text).toContain('WRITE GATE LOCKED');
+    expect(text).toContain('RQS_LORE_WRITES_ENABLED = false');
     expect(text).toContain('FIRESTORE WRITES = 0');
-    expect(text).toContain(
-      'IMPORTAÇÃO DESABILITADA NESTE ESTÁGIO'
-    );
+    expect(button.disabled).toBeTrue();
+    expect(checkbox.disabled).toBeTrue();
     expect(component.loreDryRun()?.firestoreWrites).toBe(0);
+  });
+
+  it('habilita confirmação e botão somente com gate + token válidos', () => {
+    const dryRun = component.loreDryRun()!;
+
+    component.loreDryRun.set({
+      ...dryRun,
+      writesEnabled: true
+    });
+    fixture.detectChanges();
+
+    const root = fixture.nativeElement as HTMLElement;
+    const checkbox = root.querySelector(
+      '.lore-owner-confirmation input'
+    ) as HTMLInputElement;
+    const button = root.querySelector(
+      '.lore-import-action'
+    ) as HTMLButtonElement;
+
+    expect(checkbox.disabled).toBeFalse();
+    expect(button.disabled).toBeTrue();
+
+    checkbox.checked = true;
+    checkbox.dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+
+    expect(component.loreImportConfirmed()).toBeTrue();
+    expect(button.disabled).toBeFalse();
   });
 });

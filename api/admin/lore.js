@@ -1,4 +1,9 @@
-import { createHmac, timingSafeEqual } from 'node:crypto';
+import {
+  createHash,
+  createHmac,
+  randomUUID,
+  timingSafeEqual
+} from 'node:crypto';
 import { google } from 'googleapis';
 import {
   pairLoreDocuments,
@@ -14,6 +19,7 @@ const DOC_MIME = 'application/msword';
 const MAX_DOCUMENT_BYTES = 20 * 1024 * 1024;
 const SESSION_COOKIE = '__Host-rqs_admin_session';
 const SESSION_TTL = 20 * 60 * 1000;
+const LORE_DRY_RUN_TTL = 10 * 60 * 1000;
 
 class LoreDriveError extends Error {
   constructor(status, code, message, details) {
@@ -434,6 +440,39 @@ async function parseSlot(mode, documentId, language) {
   };
 }
 
+function firestoreValue(value) {
+  if (value === null || value === undefined) {
+    return { nullValue: null };
+  }
+  if (typeof value === 'boolean') {
+    return { booleanValue: value };
+  }
+  if (typeof value === 'number') {
+    return Number.isInteger(value)
+      ? { integerValue: String(value) }
+      : { doubleValue: value };
+  }
+  if (Array.isArray(value)) {
+    return {
+      arrayValue: {
+        values: value.map(firestoreValue)
+      }
+    };
+  }
+  if (typeof value === 'object') {
+    return {
+      mapValue: {
+        fields: Object.fromEntries(
+          Object.entries(value).map(
+            ([key, item]) => [key, firestoreValue(item)]
+          )
+        )
+      }
+    };
+  }
+  return { stringValue: String(value) };
+}
+
 function parseFirestoreValue(value = {}) {
   if ('stringValue' in value) return value.stringValue;
   if ('booleanValue' in value) return value.booleanValue;
@@ -656,6 +695,242 @@ function createLoreWritePlan({
   };
 }
 
+function loreWritesEnabled() {
+  if (process.env.RQS_LORE_WRITES_ENABLED !== 'true') {
+    return false;
+  }
+
+  if (process.env.VERCEL_ENV === 'preview') {
+    return process.env.VERCEL_GIT_COMMIT_REF ===
+      'feat/admin-lore-module-02';
+  }
+
+  return process.env.NODE_ENV !== 'production';
+}
+
+function loreWritePlanFingerprint(items) {
+  return createHash('sha256')
+    .update(JSON.stringify((items || []).map(item => ({
+      id: item.id,
+      action: item.action,
+      language: item.language,
+      fields: item.fields,
+      issues: item.issues
+    }))))
+    .digest('base64url');
+}
+
+function loreDryRunIdentity({
+  mode,
+  collection,
+  source,
+  language,
+  sourceChecksum,
+  writePlan
+}) {
+  return {
+    mode,
+    collection,
+    documentId: source.documentId,
+    modifiedTime: source.modifiedTime,
+    language,
+    sourceChecksum,
+    writePlanFingerprint: loreWritePlanFingerprint(writePlan)
+  };
+}
+
+function loreDryRunDigest(identity, key) {
+  return createHmac('sha256', key)
+    .update(JSON.stringify(identity))
+    .digest('base64url');
+}
+
+function makeLoreDryRunToken(identity, key) {
+  const payload = Buffer.from(JSON.stringify({
+    digest: loreDryRunDigest(identity, key),
+    expiresAt: Date.now() + LORE_DRY_RUN_TTL,
+    nonce: randomUUID()
+  })).toString('base64url');
+
+  const signature = createHmac('sha256', key)
+    .update(`lore-dry-run:${payload}`)
+    .digest('base64url');
+
+  return `${payload}.${signature}`;
+}
+
+function verifyLoreDryRunToken(token, identity, key) {
+  const [payload, signature, ...extra] =
+    String(token || '').split('.');
+
+  if (
+    !payload ||
+    !signature ||
+    extra.length ||
+    !safeEqual(
+      signature,
+      createHmac('sha256', key)
+        .update(`lore-dry-run:${payload}`)
+        .digest('base64url')
+    )
+  ) {
+    return false;
+  }
+
+  try {
+    const decoded = JSON.parse(
+      Buffer.from(payload, 'base64url').toString('utf8')
+    );
+
+    return Number(decoded.expiresAt) > Date.now() &&
+      decoded.digest === loreDryRunDigest(identity, key);
+  } catch {
+    return false;
+  }
+}
+
+function firestoreWritesForLorePlan({
+  mode,
+  collection,
+  language,
+  parsed,
+  existingDocuments,
+  writePlan
+}) {
+  if (language !== 'pt-BR') {
+    throw new LoreDriveError(
+      409,
+      'LORE_PT_IMPORT_NOT_ALLOWED',
+      'Stage 4 permite escrita somente da fonte PT-BR.'
+    );
+  }
+
+  const episodeById = new Map(
+    (parsed?.episodes || []).map(episode => [episode.id, episode])
+  );
+
+  return (writePlan || []).flatMap(item => {
+    if (
+      item.action === 'UNCHANGED_PT' ||
+      item.action === 'UNCHANGED_EN'
+    ) {
+      return [];
+    }
+
+    if (
+      item.action === 'BLOCKED' ||
+      item.action === 'MERGE_EN'
+    ) {
+      throw new LoreDriveError(
+        409,
+        'LORE_WRITE_PLAN_BLOCKED',
+        `Plano de escrita bloqueado em ${item.id}.`
+      );
+    }
+
+    const episode = episodeById.get(item.id);
+    if (!episode) {
+      throw new LoreDriveError(
+        409,
+        'LORE_EPISODE_NOT_FOUND',
+        `Episódio ${item.id} não existe na fonte atual.`
+      );
+    }
+
+    const canonicalFields = {
+      ...editorialFields(episode, 'pt-BR'),
+      ...sharedFields(episode),
+      mode,
+      published: true
+    };
+
+    const fieldNames = item.action === 'CREATE_PT'
+      ? [
+          'title',
+          'category',
+          'description',
+          'content',
+          'image',
+          'releaseDate',
+          'mode',
+          'published'
+        ]
+      : item.fields;
+
+    const fields = Object.fromEntries(
+      fieldNames.map(fieldName => [
+        fieldName,
+        firestoreValue(canonicalFields[fieldName])
+      ])
+    );
+
+    if (item.action === 'CREATE_PT') {
+      return [{
+        update: {
+          name: firestoreDocumentName(collection, item.id),
+          fields
+        },
+        currentDocument: { exists: false }
+      }];
+    }
+
+    if (item.action !== 'MERGE_PT') {
+      throw new LoreDriveError(
+        409,
+        'LORE_WRITE_PLAN_BLOCKED',
+        `Ação ${item.action} não é autorizada no Stage 4.`
+      );
+    }
+
+    const existing = existingDocuments[item.id];
+    if (!existing?.updateTime) {
+      throw new LoreDriveError(
+        409,
+        'LORE_PRECONDITION_MISSING',
+        `${item.id}: updateTime ausente para merge seguro.`
+      );
+    }
+
+    return [{
+      update: {
+        name: firestoreDocumentName(collection, item.id),
+        fields
+      },
+      updateMask: {
+        fieldPaths: fieldNames
+      },
+      currentDocument: {
+        updateTime: existing.updateTime
+      }
+    }];
+  });
+}
+
+async function commitLoreWrites(writes) {
+  if (!writes.length) return;
+
+  const token = await firestoreToken();
+  const response = await fetch(
+    `https://firestore.googleapis.com/v1/projects/${encodeURIComponent(PROJECT_ID)}/databases/(default)/documents:commit`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ writes })
+    }
+  );
+
+  if (!response.ok) {
+    throw new LoreDriveError(
+      response.status === 409 ? 409 : 502,
+      'LORE_COMMIT_FAILED',
+      'O Firestore recusou o commit. Execute o DRY RUN novamente.'
+    );
+  }
+}
+
 function summarizeLorePlan(plan, existingDocuments) {
   const values = Object.values(existingDocuments || {});
   return {
@@ -732,6 +1007,26 @@ async function dryRunSingleSource(modeValue, documentId) {
     );
 
   const blocked = [...baseValidation.blocked, ...planBlocked];
+  const catalogMatch = summarizeLorePlan(
+    writePlan,
+    existingDocuments
+  );
+  const validationStatus = blocked.length ? 'BLOCKED' : 'PASS';
+  const importAllowed =
+    language === 'pt-BR' &&
+    validationStatus === 'PASS' &&
+    catalogMatch.writable > 0;
+  const sourceChecksum = createHash('sha256')
+    .update(document.buffer)
+    .digest('base64url');
+  const identity = loreDryRunIdentity({
+    mode: config.mode,
+    collection: config.collection,
+    source: document.source,
+    language,
+    sourceChecksum,
+    writePlan: writePlan.items
+  });
 
   return {
     mode: config.mode,
@@ -741,17 +1036,159 @@ async function dryRunSingleSource(modeValue, documentId) {
     language,
     parsed,
     validation: {
-      status: blocked.length ? 'BLOCKED' : 'PASS',
+      status: validationStatus,
       blocked,
       warnings: baseValidation.warnings
     },
-    catalogMatch: summarizeLorePlan(
-      writePlan,
-      existingDocuments
-    ),
+    catalogMatch,
     writePlan: writePlan.items,
+    dryRunToken: importAllowed
+      ? makeLoreDryRunToken(identity, secret())
+      : null,
+    writesEnabled: loreWritesEnabled(),
+    importAllowed,
     firestoreReads: ids.length,
     firestoreWrites: 0,
+    sourceMutated: false
+  };
+}
+
+async function importLorePt(
+  modeValue,
+  documentId,
+  dryRunToken,
+  key
+) {
+  if (!loreWritesEnabled()) {
+    throw new LoreDriveError(
+      403,
+      'LORE_WRITES_DISABLED',
+      'A escrita de Lore está desabilitada neste ambiente.'
+    );
+  }
+
+  const config = sourceConfig(modeValue);
+  const document = await readDriveDocument(
+    config.mode,
+    documentId
+  );
+  const language = document.source.languageHint;
+
+  if (language !== 'pt-BR') {
+    throw new LoreDriveError(
+      409,
+      'LORE_PT_IMPORT_NOT_ALLOWED',
+      'Stage 4 permite importação somente de DOCX PT-BR.'
+    );
+  }
+
+  const parsed = await parseLoreDocxBuffer(
+    document.buffer,
+    {
+      sourceName: document.source.name,
+      language
+    }
+  );
+
+  const baseValidation =
+    validateLanguageIdentity(parsed, language);
+
+  if (baseValidation.blocked.length) {
+    throw new LoreDriveError(
+      409,
+      'LORE_DRY_RUN_REQUIRED',
+      'A fonte está bloqueada. Execute o DRY RUN novamente.'
+    );
+  }
+
+  const ids = (parsed.episodes || [])
+    .map(episode => episode.id);
+
+  const existingDocuments =
+    await readExistingLoreDocuments(
+      config.collection,
+      ids
+    );
+
+  const plan = createLoreWritePlan({
+    mode: config.mode,
+    collection: config.collection,
+    language,
+    parsed,
+    existingDocuments
+  });
+
+  const blockedItems = plan.items.filter(
+    item => item.action === 'BLOCKED'
+  );
+
+  if (blockedItems.length) {
+    throw new LoreDriveError(
+      409,
+      'LORE_WRITE_PLAN_BLOCKED',
+      'O catálogo mudou ou o plano contém bloqueios. Execute o DRY RUN novamente.'
+    );
+  }
+
+  const catalogMatch =
+    summarizeLorePlan(plan, existingDocuments);
+
+  if (!catalogMatch.writable) {
+    throw new LoreDriveError(
+      409,
+      'LORE_NOTHING_TO_WRITE',
+      'Nenhuma alteração PT-BR está pendente.'
+    );
+  }
+
+  const sourceChecksum = createHash('sha256')
+    .update(document.buffer)
+    .digest('base64url');
+
+  const identity = loreDryRunIdentity({
+    mode: config.mode,
+    collection: config.collection,
+    source: document.source,
+    language,
+    sourceChecksum,
+    writePlan: plan.items
+  });
+
+  if (!verifyLoreDryRunToken(
+    dryRunToken,
+    identity,
+    key
+  )) {
+    throw new LoreDriveError(
+      409,
+      'LORE_DRY_RUN_REQUIRED',
+      'O documento ou o catálogo mudou, ou o DRY RUN expirou. Execute o DRY RUN novamente.'
+    );
+  }
+
+  const writes = firestoreWritesForLorePlan({
+    mode: config.mode,
+    collection: config.collection,
+    language,
+    parsed,
+    existingDocuments,
+    writePlan: plan.items
+  });
+
+  await commitLoreWrites(writes);
+
+  return {
+    mode: config.mode,
+    collection: config.collection,
+    language,
+    documentIds: ids,
+    writtenDocumentIds: plan.items
+      .filter(item =>
+        ['CREATE_PT', 'MERGE_PT'].includes(item.action)
+      )
+      .map(item => item.id),
+    episodeCount: writes.length,
+    firestoreWrites: writes.length,
     sourceMutated: false
   };
 }
@@ -827,11 +1264,15 @@ export {
   DRIVE_SCOPE,
   MAX_DOCUMENT_BYTES,
   createLoreWritePlan,
+  firestoreWritesForLorePlan,
   languageHint,
+  loreDryRunIdentity,
+  makeLoreDryRunToken,
   normalizeMode,
   sourceConfig,
   supportFor,
-  validateLanguageIdentity
+  validateLanguageIdentity,
+  verifyLoreDryRunToken
 };
 
 export default async function handler(req, res) {
@@ -874,6 +1315,19 @@ export default async function handler(req, res) {
           input.documentId
         )
       );
+    }
+
+    if (input.action === 'import') {
+      const result = await importLorePt(
+        mode,
+        input.documentId,
+        input.dryRunToken,
+        key
+      );
+
+      return res
+        .status(result.firestoreWrites ? 201 : 200)
+        .json(result);
     }
 
     if (input.action === 'preview') {

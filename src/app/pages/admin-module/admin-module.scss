@@ -674,3 +674,67 @@ select:disabled { opacity: 0.48; cursor: not-allowed; }
     grid-column: auto;
   }
 }
+
+
+/* ==========================================================
+   LORE STAGE 4 — PT-BR IMPORT GATE
+   ========================================================== */
+
+.lore-import-panel {
+  border: 1px solid rgba(120, 230, 179, 0.45);
+  border-radius: 13px;
+  padding: clamp(1rem, 3vw, 1.35rem);
+  background: rgba(13, 28, 24, 0.76);
+}
+
+.lore-import-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.lore-import-heading h3 {
+  margin: 0.3rem 0 0;
+  color: #fff;
+}
+
+.lore-import-panel > p:not(.lore-next-stage-note) {
+  margin: 0.85rem 0;
+  color: #b9c8cd;
+}
+
+.lore-owner-confirmation {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  border: 1px solid #41606b;
+  border-radius: 7px;
+  padding: 0.9rem;
+  color: #c9d6db;
+  background: rgba(7, 15, 19, 0.55);
+}
+
+.lore-owner-confirmation input {
+  flex: 0 0 auto;
+  margin-top: 0.28rem;
+  accent-color: #69dce9;
+}
+
+.lore-import-action {
+  width: 100%;
+  margin-top: 0.8rem;
+  border-color: #78e6b3;
+  color: #07110d;
+  background: #78e6b3;
+}
+
+.lore-import-action:hover:not(:disabled) {
+  border-color: #b8ffda;
+}
+
+@media (max-width: 680px) {
+  .lore-import-heading {
+    flex-direction: column;
+  }
+}
