@@ -387,9 +387,76 @@
               }
             </section>
           } @else {
-            <p class="lore-next-stage-note">
-              EN-US CONTINUA READ-ONLY · MERGE_EN SERÁ HABILITADO NO STAGE 5
-            </p>
+            <section class="lore-import-panel en-us">
+              <div class="lore-import-heading">
+                <div>
+                  <p class="eyebrow">
+                    STAGE 5A / EN-US WRITE PIPELINE PREPARATION
+                  </p>
+                  <h3>
+                    {{
+                      result.writesEnabled
+                        ? 'WRITE GATE ENABLED'
+                        : 'WRITE GATE LOCKED'
+                    }}
+                  </h3>
+                </div>
+
+                <span
+                  class="validation-chip"
+                  [class.blocked]="!result.writesEnabled"
+                >
+                  {{
+                    result.writesEnabled
+                      ? 'EN-US MERGE READY'
+                      : 'RQS_LORE_EN_WRITES_ENABLED = false'
+                  }}
+                </span>
+              </div>
+
+              <p>
+                MERGE_EN exige uma base PT-BR existente, valida image e
+                releaseDate compartilhados e escreve somente campos *_en.
+                Campos PT-BR e metadados compartilhados são preservados.
+              </p>
+
+              @if (result.importAllowed) {
+                <label class="lore-owner-confirmation">
+                  <input
+                    #loreEnOwnerConfirmation
+                    type="checkbox"
+                    [checked]="loreImportConfirmed()"
+                    [disabled]="!result.writesEnabled || loreLoading()"
+                    (change)="setLoreImportConfirmed(loreEnOwnerConfirmation.checked)"
+                  >
+                  Confirmo o MERGE_EN indicado no WRITE PLAN. Somente campos
+                  *_en poderão ser escritos; a base PT-BR e o Google Drive
+                  permanecerão inalterados.
+                </label>
+
+                <button
+                  type="button"
+                  class="lore-import-action lore-import-en-action"
+                  [disabled]="
+                    !result.writesEnabled ||
+                    !result.dryRunToken ||
+                    !loreImportConfirmed() ||
+                    loreLoading()
+                  "
+                  (click)="importLoreEn()"
+                >
+                  {{
+                    loreLoading()
+                      ? 'IMPORTANDO…'
+                      : 'MERGE EN-US EM ' + result.collection
+                  }}
+                </button>
+              } @else {
+                <p class="lore-next-stage-note">
+                  DRY RUN EN-US BLOQUEADO OU SEM ALTERAÇÕES · REAL WRITE = NO
+                </p>
+              }
+            </section>
           }
         }
       </section>

@@ -90,7 +90,7 @@ interface LoreDryRunResult {
 interface LoreImportResult {
   mode: Exclude<LoreSource, null>;
   collection: string;
-  language: 'pt-BR';
+  language: SagaLanguage;
   documentIds: string[];
   writtenDocumentIds: string[];
   episodeCount: number;
@@ -346,6 +346,51 @@ export class AdminModuleComponent implements OnInit {
       this.loreDryRun.set(null);
       this.loreImportMessage.set(
         `${result.episodeCount} episódio(s) PT-BR escrito(s) em ${result.collection}. ` +
+        'Execute o DRY RUN novamente para confirmar o estado atual do catálogo.'
+      );
+    } catch (error) {
+      this.loreImportConfirmed.set(false);
+      this.fail(error);
+    } finally {
+      this.loreLoading.set(false);
+    }
+  }
+
+  async importLoreEn(): Promise<void> {
+    const mode = this.loreSource;
+    const documentId = this.loreSelectedDocumentId();
+    const dryRun = this.loreDryRun();
+
+    if (
+      !mode ||
+      !documentId ||
+      !dryRun ||
+      dryRun.language !== 'en-US' ||
+      !dryRun.importAllowed ||
+      !dryRun.writesEnabled ||
+      !dryRun.dryRunToken ||
+      !this.loreImportConfirmed() ||
+      this.loreLoading()
+    ) {
+      return;
+    }
+
+    this.loreLoading.set(true);
+    this.error.set('');
+    this.loreImportMessage.set('');
+
+    try {
+      const result = await this.callLore<LoreImportResult>({
+        action: 'import-en',
+        mode,
+        documentId,
+        dryRunToken: dryRun.dryRunToken
+      });
+
+      this.loreImportConfirmed.set(false);
+      this.loreDryRun.set(null);
+      this.loreImportMessage.set(
+        `${result.episodeCount} episódio(s) EN-US escrito(s) em ${result.collection}. ` +
         'Execute o DRY RUN novamente para confirmar o estado atual do catálogo.'
       );
     } catch (error) {

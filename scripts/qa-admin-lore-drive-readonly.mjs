@@ -73,16 +73,26 @@ try {
   );
 
   assert.match(endpointSource, /drive\.readonly/);
-  assert.doesNotMatch(endpointSource, /firestore\.googleapis\.com/i);
-  assert.doesNotMatch(endpointSource, /auth\/datastore/i);
-  assert.doesNotMatch(endpointSource, /documents:commit/i);
-  assert.doesNotMatch(endpointSource, /drive\.files\.(create|update|delete|copy)\s*\(/i);
+
+  // Stage 4/5A legitimately add Firestore read/write pipeline code to the
+  // same endpoint. This QA now checks that Drive itself remains read-only
+  // and that both Firestore write paths are still explicitly gated.
+  assert.match(endpointSource, /RQS_LORE_WRITES_ENABLED/);
+  assert.match(endpointSource, /RQS_LORE_EN_WRITES_ENABLED/);
+  assert.match(endpointSource, /VERCEL_ENV === 'preview'/);
+  assert.match(endpointSource, /NODE_ENV !== 'production'/);
+
+  assert.doesNotMatch(
+    endpointSource,
+    /drive\.files\.(create|update|delete|copy)\s*\(/i
+  );
 
   console.log('LORE_DRIVE_MODE_GUARDS = PASS');
   console.log('LORE_DRIVE_FOLDER_MAPPING = PASS');
   console.log('LORE_DRIVE_DOCX_CONTRACT = PASS');
   console.log('LORE_DRIVE_SCOPE_READONLY = PASS');
-  console.log('FIRESTORE_WRITES_DURING_LORE_DRIVE_QA = 0');
+  console.log('LORE_FIRESTORE_WRITE_GATES_PRESENT = PASS');
+  console.log('FIRESTORE_NETWORK_WRITES_DURING_LORE_DRIVE_QA = 0');
   console.log('DRIVE_MUTATIONS_DURING_LORE_DRIVE_QA = 0');
 } finally {
   if (originalBroklin === undefined) {

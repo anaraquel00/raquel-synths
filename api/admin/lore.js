@@ -695,8 +695,8 @@ function createLoreWritePlan({
   };
 }
 
-function loreWritesEnabled() {
-  if (process.env.RQS_LORE_WRITES_ENABLED !== 'true') {
+function previewWriteGateEnabled(envName) {
+  if (process.env[envName] !== 'true') {
     return false;
   }
 
@@ -706,6 +706,22 @@ function loreWritesEnabled() {
   }
 
   return process.env.NODE_ENV !== 'production';
+}
+
+function loreWritesEnabled(language) {
+  if (language === 'pt-BR') {
+    return previewWriteGateEnabled(
+      'RQS_LORE_WRITES_ENABLED'
+    );
+  }
+
+  if (language === 'en-US') {
+    return previewWriteGateEnabled(
+      'RQS_LORE_EN_WRITES_ENABLED'
+    );
+  }
+
+  return false;
 }
 
 function loreWritePlanFingerprint(items) {
@@ -906,6 +922,127 @@ function firestoreWritesForLorePlan({
   });
 }
 
+function firestoreWritesForLoreEnPlan({
+  mode,
+  collection,
+  language,
+  parsed,
+  existingDocuments,
+  writePlan
+}) {
+  if (language !== 'en-US') {
+    throw new LoreDriveError(
+      409,
+      'LORE_EN_IMPORT_NOT_ALLOWED',
+      'Stage 5A permite o plano EN-US somente para fontes EN-US.'
+    );
+  }
+
+  const episodeById = new Map(
+    (parsed?.episodes || []).map(episode => [episode.id, episode])
+  );
+
+  return (writePlan || []).flatMap(item => {
+    if (item.action === 'UNCHANGED_EN') {
+      return [];
+    }
+
+    if (item.action === 'BLOCKED' || item.action !== 'MERGE_EN') {
+      throw new LoreDriveError(
+        409,
+        'LORE_EN_WRITE_PLAN_BLOCKED',
+        `Ação ${item.action} não é autorizada no plano EN-US.`
+      );
+    }
+
+    const episode = episodeById.get(item.id);
+    if (!episode) {
+      throw new LoreDriveError(
+        409,
+        'LORE_EPISODE_NOT_FOUND',
+        `Episódio ${item.id} não existe na fonte EN-US atual.`
+      );
+    }
+
+    const existing = existingDocuments[item.id];
+    if (!existing) {
+      throw new LoreDriveError(
+        409,
+        'LORE_EN_BASE_REQUIRED',
+        `${item.id}: base PT-BR ausente para MERGE_EN.`
+      );
+    }
+
+    const existingFields = existing.fields || {};
+    for (const requiredPtField of ['title', 'category', 'description', 'content']) {
+      if (!Object.hasOwn(existingFields, requiredPtField)) {
+        throw new LoreDriveError(
+          409,
+          'LORE_EN_BASE_INCOMPLETE',
+          `${item.id}: base PT-BR incompleta (${requiredPtField}).`
+        );
+      }
+    }
+
+    if (existingFields.mode !== mode) {
+      throw new LoreDriveError(
+        409,
+        'LORE_EN_MODE_CONFLICT',
+        `${item.id}: mode existente diverge de ${mode}.`
+      );
+    }
+
+    if (existingFields.published !== true) {
+      throw new LoreDriveError(
+        409,
+        'LORE_EN_PUBLICATION_CONFLICT',
+        `${item.id}: published existente deve permanecer true.`
+      );
+    }
+
+    if (!existing.updateTime) {
+      throw new LoreDriveError(
+        409,
+        'LORE_PRECONDITION_MISSING',
+        `${item.id}: updateTime ausente para MERGE_EN seguro.`
+      );
+    }
+
+    const canonicalFields = editorialFields(episode, 'en-US');
+    const fieldNames = item.fields;
+
+    if (
+      !fieldNames.length ||
+      fieldNames.some(fieldName =>
+        !fieldName.endsWith('_en') ||
+        !Object.hasOwn(canonicalFields, fieldName)
+      )
+    ) {
+      throw new LoreDriveError(
+        409,
+        'LORE_EN_FIELD_SCOPE_VIOLATION',
+        `${item.id}: MERGE_EN pode escrever somente campos *_en.`
+      );
+    }
+
+    const fields = Object.fromEntries(
+      fieldNames.map(fieldName => [
+        fieldName,
+        firestoreValue(canonicalFields[fieldName])
+      ])
+    );
+
+    return [{
+      update: {
+        name: firestoreDocumentName(collection, item.id),
+        fields
+      },
+      updateMask: { fieldPaths: fieldNames },
+      currentDocument: { updateTime: existing.updateTime }
+    }];
+  });
+}
+
 async function commitLoreWrites(writes) {
   if (!writes.length) return;
 
@@ -1013,7 +1150,7 @@ async function dryRunSingleSource(modeValue, documentId) {
   );
   const validationStatus = blocked.length ? 'BLOCKED' : 'PASS';
   const importAllowed =
-    language === 'pt-BR' &&
+    (language === 'pt-BR' || language === 'en-US') &&
     validationStatus === 'PASS' &&
     catalogMatch.writable > 0;
   const sourceChecksum = createHash('sha256')
@@ -1045,7 +1182,7 @@ async function dryRunSingleSource(modeValue, documentId) {
     dryRunToken: importAllowed
       ? makeLoreDryRunToken(identity, secret())
       : null,
-    writesEnabled: loreWritesEnabled(),
+    writesEnabled: loreWritesEnabled(language),
     importAllowed,
     firestoreReads: ids.length,
     firestoreWrites: 0,
@@ -1059,7 +1196,7 @@ async function importLorePt(
   dryRunToken,
   key
 ) {
-  if (!loreWritesEnabled()) {
+  if (!loreWritesEnabled('pt-BR')) {
     throw new LoreDriveError(
       403,
       'LORE_WRITES_DISABLED',
@@ -1193,6 +1330,123 @@ async function importLorePt(
   };
 }
 
+async function importLoreEn(
+  modeValue,
+  documentId,
+  dryRunToken,
+  key
+) {
+  if (!loreWritesEnabled('en-US')) {
+    throw new LoreDriveError(
+      403,
+      'LORE_EN_WRITES_DISABLED',
+      'A escrita EN-US de Lore está desabilitada neste ambiente.'
+    );
+  }
+
+  const config = sourceConfig(modeValue);
+  const document = await readDriveDocument(config.mode, documentId);
+  const language = document.source.languageHint;
+
+  if (language !== 'en-US') {
+    throw new LoreDriveError(
+      409,
+      'LORE_EN_IMPORT_NOT_ALLOWED',
+      'Stage 5A aceita somente DOCX EN-US para MERGE_EN.'
+    );
+  }
+
+  const parsed = await parseLoreDocxBuffer(document.buffer, {
+    sourceName: document.source.name,
+    language
+  });
+
+  const baseValidation = validateLanguageIdentity(parsed, language);
+  if (baseValidation.blocked.length) {
+    throw new LoreDriveError(
+      409,
+      'LORE_DRY_RUN_REQUIRED',
+      'A fonte EN-US está bloqueada. Execute o DRY RUN novamente.'
+    );
+  }
+
+  const ids = (parsed.episodes || []).map(episode => episode.id);
+  const existingDocuments = await readExistingLoreDocuments(
+    config.collection,
+    ids
+  );
+
+  const plan = createLoreWritePlan({
+    mode: config.mode,
+    collection: config.collection,
+    language,
+    parsed,
+    existingDocuments
+  });
+
+  if (plan.items.some(item => item.action === 'BLOCKED')) {
+    throw new LoreDriveError(
+      409,
+      'LORE_EN_WRITE_PLAN_BLOCKED',
+      'A base PT-BR, image/releaseDate ou catálogo divergiu. Execute o DRY RUN novamente.'
+    );
+  }
+
+  const catalogMatch = summarizeLorePlan(plan, existingDocuments);
+  if (!catalogMatch.writable) {
+    throw new LoreDriveError(
+      409,
+      'LORE_NOTHING_TO_WRITE',
+      'Nenhuma alteração EN-US está pendente.'
+    );
+  }
+
+  const sourceChecksum = createHash('sha256')
+    .update(document.buffer)
+    .digest('base64url');
+
+  const identity = loreDryRunIdentity({
+    mode: config.mode,
+    collection: config.collection,
+    source: document.source,
+    language,
+    sourceChecksum,
+    writePlan: plan.items
+  });
+
+  if (!verifyLoreDryRunToken(dryRunToken, identity, key)) {
+    throw new LoreDriveError(
+      409,
+      'LORE_DRY_RUN_REQUIRED',
+      'O DOCX EN-US ou o catálogo mudou, ou o DRY RUN expirou. Execute o DRY RUN novamente.'
+    );
+  }
+
+  const writes = firestoreWritesForLoreEnPlan({
+    mode: config.mode,
+    collection: config.collection,
+    language,
+    parsed,
+    existingDocuments,
+    writePlan: plan.items
+  });
+
+  await commitLoreWrites(writes);
+
+  return {
+    mode: config.mode,
+    collection: config.collection,
+    language,
+    documentIds: ids,
+    writtenDocumentIds: plan.items
+      .filter(item => item.action === 'MERGE_EN')
+      .map(item => item.id),
+    episodeCount: writes.length,
+    firestoreWrites: writes.length,
+    sourceMutated: false
+  };
+}
+
 async function previewPair(modeValue, ptDocumentId, enDocumentId) {
   const config = sourceConfig(modeValue);
 
@@ -1264,6 +1518,7 @@ export {
   DRIVE_SCOPE,
   MAX_DOCUMENT_BYTES,
   createLoreWritePlan,
+  firestoreWritesForLoreEnPlan,
   firestoreWritesForLorePlan,
   languageHint,
   loreDryRunIdentity,
@@ -1319,6 +1574,19 @@ export default async function handler(req, res) {
 
     if (input.action === 'import') {
       const result = await importLorePt(
+        mode,
+        input.documentId,
+        input.dryRunToken,
+        key
+      );
+
+      return res
+        .status(result.firestoreWrites ? 201 : 200)
+        .json(result);
+    }
+
+    if (input.action === 'import-en') {
+      const result = await importLoreEn(
         mode,
         input.documentId,
         input.dryRunToken,

@@ -408,4 +408,97 @@ describe('AdminModuleComponent / Lore Read Only', () => {
     expect(component.loreImportConfirmed()).toBeTrue();
     expect(button.disabled).toBeFalse();
   });
+
+
+  it('prepara MERGE_EN com gate travado e owner confirmation', () => {
+    const current = component.loreDryRun()!;
+
+    component.loreImportConfirmed.set(false);
+    component.loreDryRun.set({
+      ...current,
+      language: 'en-US',
+      source: {
+        ...current.source,
+        documentId: 'drive_en_123456',
+        name: 'BROKLIN_S2_EN-US.docx',
+        languageHint: 'en-US'
+      },
+      parsed: {
+        ...current.parsed,
+        language: 'en-US',
+        inferredLanguage: 'en-US',
+        sourceName: 'BROKLIN_S2_EN-US.docx',
+        episodes: [{
+          ...current.parsed.episodes[0],
+          title: 'Test Signal',
+          category: 'Integration Test',
+          description: 'English description',
+          content: 'English content'
+        }]
+      },
+      catalogMatch: {
+        ids: 1,
+        existing: 1,
+        missing: 0,
+        writable: 1,
+        unchanged: 0,
+        blocked: 0
+      },
+      writePlan: [{
+        id: 's2-e1',
+        action: 'MERGE_EN',
+        language: 'en-US',
+        fields: [
+          'title_en',
+          'category_en',
+          'description_en',
+          'content_en'
+        ],
+        issues: []
+      }],
+      dryRunToken: 'signed-en-dry-run-token',
+      writesEnabled: false,
+      importAllowed: true
+    });
+
+    fixture.detectChanges();
+
+    const root = fixture.nativeElement as HTMLElement;
+    const text = root.textContent || '';
+    const panel = root.querySelector(
+      '.lore-import-panel.en-us'
+    ) as HTMLElement;
+    const checkbox = panel.querySelector(
+      '.lore-owner-confirmation input'
+    ) as HTMLInputElement;
+    const button = panel.querySelector(
+      '.lore-import-en-action'
+    ) as HTMLButtonElement;
+
+    expect(text).toContain(
+      'STAGE 5A / EN-US WRITE PIPELINE PREPARATION'
+    );
+    expect(text).toContain('WRITE GATE LOCKED');
+    expect(text).toContain(
+      'RQS_LORE_EN_WRITES_ENABLED = false'
+    );
+    expect(text).toContain('MERGE_EN');
+    expect(checkbox.disabled).toBeTrue();
+    expect(button.disabled).toBeTrue();
+
+    component.loreDryRun.set({
+      ...component.loreDryRun()!,
+      writesEnabled: true
+    });
+    fixture.detectChanges();
+
+    expect(checkbox.disabled).toBeFalse();
+
+    checkbox.checked = true;
+    checkbox.dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+
+    expect(component.loreImportConfirmed()).toBeTrue();
+    expect(button.disabled).toBeFalse();
+  });
 });
