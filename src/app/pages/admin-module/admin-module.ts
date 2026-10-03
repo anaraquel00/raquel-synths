@@ -28,40 +28,58 @@ interface DriveDocument {
   size?: number;
 }
 
-interface LoreDraftFields {
-  title: string;
-  title_en: string;
-  category: string;
-  category_en: string;
-  content: string;
-  content_en: string;
-  description: string;
-  description_en: string;
-  image: string;
-  mode: 'broklin' | 'jonah';
-  published: true;
-  releaseDate: string;
-}
-
-interface LoreDraftDocument {
+interface LoreEpisode {
   id: string;
-  collection: string;
-  fields: LoreDraftFields;
+  category: string;
+  releaseDate: string;
+  image: string;
+  title: string;
+  description: string;
+  content: string;
 }
 
-interface LorePreviewResult {
+interface LoreWritePlanItem {
+  id: string;
+  action:
+    | 'CREATE_PT'
+    | 'MERGE_PT'
+    | 'MERGE_EN'
+    | 'UNCHANGED_PT'
+    | 'UNCHANGED_EN'
+    | 'BLOCKED';
+  language: SagaLanguage;
+  fields: string[];
+  issues: string[];
+}
+
+interface LoreDryRunResult {
   mode: Exclude<LoreSource, null>;
   collection: string;
   sourceLocation: string;
+  source: DriveDocument;
+  language: SagaLanguage;
+  parsed: {
+    language: SagaLanguage;
+    inferredLanguage: SagaLanguage | '';
+    sourceName: string;
+    warnings: string[];
+    episodes: LoreEpisode[];
+  };
   validation: {
     status: 'PASS' | 'BLOCKED';
     blocked: string[];
     warnings: string[];
   };
-  pairing: {
-    status: 'PASS' | 'BLOCKED';
-    documents: LoreDraftDocument[];
+  catalogMatch: {
+    ids: number;
+    existing: number;
+    missing: number;
+    writable: number;
+    unchanged: number;
+    blocked: number;
   };
+  writePlan: LoreWritePlanItem[];
+  firestoreReads: number;
   firestoreWrites: 0;
   sourceMutated: false;
 }
@@ -153,9 +171,8 @@ export class AdminModuleComponent implements OnInit {
   readonly message = signal('');
 
   readonly loreDocuments = signal<DriveDocument[]>([]);
-  readonly lorePtDocumentId = signal('');
-  readonly loreEnDocumentId = signal('');
-  readonly lorePreview = signal<LorePreviewResult | null>(null);
+  readonly loreSelectedDocumentId = signal('');
+  readonly loreDryRun = signal<LoreDryRunResult | null>(null);
   readonly loreLoading = signal(false);
 
   private csrf = '';
@@ -196,28 +213,29 @@ export class AdminModuleComponent implements OnInit {
 
       this.loreDocuments.set(result.documents);
 
-      const ptDocuments = this.loreDocumentsFor('pt-BR');
-      const enDocuments = this.loreDocumentsFor('en-US');
-      const currentPt = this.lorePtDocumentId();
-      const currentEn = this.loreEnDocumentId();
-
-      this.lorePtDocumentId.set(
-        ptDocuments.some(item => item.documentId === currentPt)
-          ? currentPt
-          : ptDocuments.length === 1
-            ? ptDocuments[0].documentId
-            : ''
+      const current = this.loreSelectedDocumentId();
+      const currentStillExists = result.documents.some(
+        item => item.documentId === current
       );
 
-      this.loreEnDocumentId.set(
-        enDocuments.some(item => item.documentId === currentEn)
-          ? currentEn
-          : enDocuments.length === 1
-            ? enDocuments[0].documentId
-            : ''
-      );
+      if (!currentStillExists) {
+        const preferred =
+          result.documents.find(
+            item =>
+              item.support.status === 'SUPPORTED' &&
+              this.loreLanguageOf(item) === 'pt-BR'
+          ) ??
+          result.documents.find(
+            item => item.support.status === 'SUPPORTED'
+          ) ??
+          null;
 
-      this.lorePreview.set(null);
+        this.loreSelectedDocumentId.set(
+          preferred?.documentId || ''
+        );
+      }
+
+      this.loreDryRun.set(null);
     } catch (error) {
       this.fail(error);
     } finally {
@@ -225,27 +243,26 @@ export class AdminModuleComponent implements OnInit {
     }
   }
 
-  setLoreDocument(language: SagaLanguage, documentId: string): void {
-    if (language === 'pt-BR') {
-      this.lorePtDocumentId.set(documentId);
-    } else {
-      this.loreEnDocumentId.set(documentId);
-    }
-
-    this.lorePreview.set(null);
+  setLoreDocument(documentId: string): void {
+    this.loreSelectedDocumentId.set(documentId);
+    this.loreDryRun.set(null);
     this.error.set('');
   }
 
-  async runLorePreview(): Promise<void> {
+  selectedLoreDocument(): DriveDocument | null {
+    return this.loreDocuments().find(
+      item =>
+        item.documentId === this.loreSelectedDocumentId()
+    ) ?? null;
+  }
+
+  async runLoreDryRun(): Promise<void> {
     const mode = this.loreSource;
-    const ptDocumentId = this.lorePtDocumentId();
-    const enDocumentId = this.loreEnDocumentId();
+    const documentId = this.loreSelectedDocumentId();
 
     if (
       !mode ||
-      !ptDocumentId ||
-      !enDocumentId ||
-      ptDocumentId === enDocumentId ||
+      !documentId ||
       this.loreLoading()
     ) {
       return;
@@ -253,17 +270,16 @@ export class AdminModuleComponent implements OnInit {
 
     this.loreLoading.set(true);
     this.error.set('');
-    this.lorePreview.set(null);
+    this.loreDryRun.set(null);
 
     try {
-      const result = await this.callLore<LorePreviewResult>({
-        action: 'preview',
+      const result = await this.callLore<LoreDryRunResult>({
+        action: 'dry-run',
         mode,
-        ptDocumentId,
-        enDocumentId
+        documentId
       });
 
-      this.lorePreview.set(result);
+      this.loreDryRun.set(result);
     } catch (error) {
       this.fail(error);
     } finally {
@@ -271,10 +287,10 @@ export class AdminModuleComponent implements OnInit {
     }
   }
 
-  loreDocumentsFor(language: SagaLanguage): DriveDocument[] {
-    return this.loreDocuments().filter(
-      document => this.loreLanguageOf(document) === language
-    );
+  lorePlanItem(id: string): LoreWritePlanItem | null {
+    return this.loreDryRun()?.writePlan.find(
+      item => item.id === id
+    ) ?? null;
   }
 
   formatLoreDate(value: string): string {

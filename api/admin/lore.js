@@ -6,6 +6,8 @@ import {
   validateLoreDocument
 } from './lore-parser.js';
 
+const PROJECT_ID =
+  process.env.GOOGLE_CLOUD_PROJECT || 'raquel-synths-platform';
 const DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.readonly';
 const DOCX_MIME = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
 const DOC_MIME = 'application/msword';
@@ -234,6 +236,38 @@ function driveAuth() {
   });
 }
 
+function firestoreAuth() {
+  const raw = process.env.FIREBASE_ADMIN_SERVICE_ACCOUNT_JSON;
+  if (!raw) {
+    throw new LoreDriveError(
+      500,
+      'MISSING_FIRESTORE_CONFIGURATION',
+      'Credencial Firestore não configurada.'
+    );
+  }
+
+  let credentials;
+  try {
+    credentials = JSON.parse(raw);
+    if (credentials.private_key) {
+      credentials.private_key =
+        credentials.private_key.replace(/\\n/g, '\n');
+    }
+  } catch {
+    throw new LoreDriveError(
+      500,
+      'INVALID_FIRESTORE_CONFIGURATION',
+      'Credencial Firestore inválida.'
+    );
+  }
+
+  return new google.auth.GoogleAuth({
+    credentials,
+    projectId: credentials.project_id || PROJECT_ID,
+    scopes: ['https://www.googleapis.com/auth/datastore']
+  });
+}
+
 async function driveClient() {
   return google.drive({
     version: 'v3',
@@ -400,6 +434,328 @@ async function parseSlot(mode, documentId, language) {
   };
 }
 
+function parseFirestoreValue(value = {}) {
+  if ('stringValue' in value) return value.stringValue;
+  if ('booleanValue' in value) return value.booleanValue;
+  if ('integerValue' in value) return Number(value.integerValue);
+  if ('doubleValue' in value) return value.doubleValue;
+  if ('timestampValue' in value) return value.timestampValue;
+  if ('nullValue' in value) return null;
+  if ('arrayValue' in value) {
+    return (value.arrayValue?.values || []).map(parseFirestoreValue);
+  }
+  if ('mapValue' in value) {
+    return Object.fromEntries(
+      Object.entries(value.mapValue?.fields || {})
+        .map(([key, item]) => [key, parseFirestoreValue(item)])
+    );
+  }
+  return undefined;
+}
+
+async function firestoreToken() {
+  const auth = await firestoreAuth().getClient();
+  const value = await auth.getAccessToken();
+  return typeof value === 'string' ? value : value.token;
+}
+
+function firestoreDocumentName(collection, id) {
+  return `projects/${PROJECT_ID}/databases/(default)/documents/${collection}/${id}`;
+}
+
+async function readExistingLoreDocuments(collection, ids) {
+  const token = await firestoreToken();
+
+  const entries = await Promise.all(ids.map(async id => {
+    const response = await fetch(
+      `https://firestore.googleapis.com/v1/${firestoreDocumentName(collection, id)}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    if (response.status === 404) return [id, null];
+
+    if (!response.ok) {
+      throw new LoreDriveError(
+        502,
+        'FIRESTORE_PREFLIGHT_FAILED',
+        `Não foi possível verificar ${collection}/${id}.`
+      );
+    }
+
+    const document = await response.json();
+
+    return [id, {
+      id,
+      updateTime: document.updateTime || '',
+      fields: Object.fromEntries(
+        Object.entries(document.fields || {})
+          .map(([key, value]) => [key, parseFirestoreValue(value)])
+      )
+    }];
+  }));
+
+  return Object.fromEntries(entries);
+}
+
+function materiallyEqual(left, right) {
+  return String(left ?? '').trim() === String(right ?? '').trim();
+}
+
+function editorialFields(episode, language) {
+  const base = {
+    title: episode.title || '',
+    category: episode.category || '',
+    description: episode.description || '',
+    content: episode.content || ''
+  };
+
+  if (language === 'pt-BR') return base;
+
+  return Object.fromEntries(
+    Object.entries(base).map(([key, value]) => [`${key}_en`, value])
+  );
+}
+
+function sharedFields(episode) {
+  return {
+    image: episode.image || '',
+    releaseDate: episode.releaseDate || ''
+  };
+}
+
+function createLoreWritePlan({
+  mode,
+  collection,
+  language,
+  parsed,
+  existingDocuments = {}
+}) {
+  const items = (parsed?.episodes || []).map(episode => {
+    const id = episode.id;
+    const existing = existingDocuments[id] || null;
+    const incomingEditorial = editorialFields(episode, language);
+    const incomingShared = sharedFields(episode);
+
+    if (!existing) {
+      if (language === 'en-US') {
+        return {
+          id,
+          action: 'BLOCKED',
+          language,
+          fields: [],
+          issues: [
+            'Base PT-BR ausente. Importe a versão PT-BR antes da EN-US.'
+          ]
+        };
+      }
+
+      return {
+        id,
+        action: 'CREATE_PT',
+        language,
+        fields: [
+          ...Object.keys(incomingEditorial),
+          ...Object.keys(incomingShared),
+          'mode',
+          'published'
+        ],
+        issues: []
+      };
+    }
+
+    const existingFields = existing.fields || {};
+    const issues = [];
+
+    if (existingFields.mode !== mode) {
+      issues.push(`mode existente diverge de ${mode}.`);
+    }
+
+    if (existingFields.published !== true) {
+      issues.push('published existente deve permanecer true.');
+    }
+
+    if (language === 'en-US') {
+      for (const requiredPtField of [
+        'title',
+        'category',
+        'description',
+        'content'
+      ]) {
+        if (!Object.hasOwn(existingFields, requiredPtField)) {
+          issues.push(
+            `Base PT-BR incompleta: ${requiredPtField} está ausente.`
+          );
+        }
+      }
+
+      for (const [fieldName, incomingValue] of
+        Object.entries(incomingShared)) {
+        if (!Object.hasOwn(existingFields, fieldName)) {
+          issues.push(`${fieldName} compartilhado está ausente.`);
+        } else if (!materiallyEqual(
+          existingFields[fieldName],
+          incomingValue
+        )) {
+          issues.push(
+            `${fieldName} compartilhado diverge da fonte EN-US.`
+          );
+        }
+      }
+    }
+
+    if (issues.length) {
+      return {
+        id,
+        action: 'BLOCKED',
+        language,
+        fields: [],
+        issues
+      };
+    }
+
+    const writeFields = [];
+
+    for (const [fieldName, incomingValue] of
+      Object.entries(incomingEditorial)) {
+      if (
+        !Object.hasOwn(existingFields, fieldName) ||
+        !materiallyEqual(existingFields[fieldName], incomingValue)
+      ) {
+        writeFields.push(fieldName);
+      }
+    }
+
+    if (language === 'pt-BR') {
+      for (const [fieldName, incomingValue] of
+        Object.entries(incomingShared)) {
+        if (
+          !Object.hasOwn(existingFields, fieldName) ||
+          !materiallyEqual(existingFields[fieldName], incomingValue)
+        ) {
+          writeFields.push(fieldName);
+        }
+      }
+    }
+
+    return {
+      id,
+      action: writeFields.length
+        ? language === 'pt-BR' ? 'MERGE_PT' : 'MERGE_EN'
+        : language === 'pt-BR' ? 'UNCHANGED_PT' : 'UNCHANGED_EN',
+      language,
+      fields: writeFields,
+      issues: []
+    };
+  });
+
+  return {
+    mode,
+    collection,
+    language,
+    items
+  };
+}
+
+function summarizeLorePlan(plan, existingDocuments) {
+  const values = Object.values(existingDocuments || {});
+  return {
+    ids: plan.items.length,
+    existing: values.filter(Boolean).length,
+    missing: values.filter(value => !value).length,
+    writable: plan.items.filter(item =>
+      ['CREATE_PT', 'MERGE_PT', 'MERGE_EN'].includes(item.action)
+    ).length,
+    unchanged: plan.items.filter(item =>
+      ['UNCHANGED_PT', 'UNCHANGED_EN'].includes(item.action)
+    ).length,
+    blocked: plan.items.filter(item =>
+      item.action === 'BLOCKED'
+    ).length
+  };
+}
+
+async function dryRunSingleSource(modeValue, documentId) {
+  const config = sourceConfig(modeValue);
+  const document = await readDriveDocument(config.mode, documentId);
+  const language = document.source.languageHint;
+
+  if (language !== 'pt-BR' && language !== 'en-US') {
+    throw new LoreDriveError(
+      422,
+      'LORE_LANGUAGE_NOT_IDENTIFIED',
+      'O nome do DOCX deve identificar PT-BR ou EN-US.'
+    );
+  }
+
+  const parsed = await parseLoreDocxBuffer(document.buffer, {
+    sourceName: document.source.name,
+    language
+  });
+
+  const baseValidation = validateLanguageIdentity(parsed, language);
+  const ids = (parsed.episodes || []).map(episode => episode.id);
+  let existingDocuments = {};
+  let writePlan = {
+    mode: config.mode,
+    collection: config.collection,
+    language,
+    items: []
+  };
+
+  if (!baseValidation.blocked.length && ids.length) {
+    existingDocuments = await readExistingLoreDocuments(
+      config.collection,
+      ids
+    );
+
+    writePlan = createLoreWritePlan({
+      mode: config.mode,
+      collection: config.collection,
+      language,
+      parsed,
+      existingDocuments
+    });
+  } else {
+    writePlan.items = ids.map(id => ({
+      id,
+      action: 'BLOCKED',
+      language,
+      fields: [],
+      issues: [...baseValidation.blocked]
+    }));
+  }
+
+  const planBlocked = writePlan.items
+    .filter(item => item.action === 'BLOCKED')
+    .flatMap(item =>
+      item.issues.map(issue => `${item.id}: ${issue}`)
+    );
+
+  const blocked = [...baseValidation.blocked, ...planBlocked];
+
+  return {
+    mode: config.mode,
+    collection: config.collection,
+    sourceLocation: `Google Drive / ${config.folderName}`,
+    source: document.source,
+    language,
+    parsed,
+    validation: {
+      status: blocked.length ? 'BLOCKED' : 'PASS',
+      blocked,
+      warnings: baseValidation.warnings
+    },
+    catalogMatch: summarizeLorePlan(
+      writePlan,
+      existingDocuments
+    ),
+    writePlan: writePlan.items,
+    firestoreReads: ids.length,
+    firestoreWrites: 0,
+    sourceMutated: false
+  };
+}
+
 async function previewPair(modeValue, ptDocumentId, enDocumentId) {
   const config = sourceConfig(modeValue);
 
@@ -470,6 +826,7 @@ export {
   DOCX_MIME,
   DRIVE_SCOPE,
   MAX_DOCUMENT_BYTES,
+  createLoreWritePlan,
   languageHint,
   normalizeMode,
   sourceConfig,
@@ -508,6 +865,15 @@ export default async function handler(req, res) {
         firestoreWrites: 0,
         sourceMutated: false
       });
+    }
+
+    if (input.action === 'dry-run') {
+      return res.status(200).json(
+        await dryRunSingleSource(
+          mode,
+          input.documentId
+        )
+      );
     }
 
     if (input.action === 'preview') {
