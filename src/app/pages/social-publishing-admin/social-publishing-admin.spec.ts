@@ -1,7 +1,7 @@
 import { PLATFORM_ID } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { MetaConnectionDiagnostics, NormalizedSource, SocialPackageStatus } from '../../models/social-publishing.model';
+import { MetaConnectionDiagnostics, NormalizedSource, SocialPackageStatus, SocialSourceType } from '../../models/social-publishing.model';
 import { SocialPublishingAdminComponent } from './social-publishing-admin';
 
 describe('SocialPublishingAdminComponent / draft editability', () => {
@@ -64,6 +64,37 @@ describe('SocialPublishingAdminComponent / draft editability', () => {
     relationship: { status: 'MATCH' },
     token: { valid: true, appIdMatches: true, expiresAt: null, dataAccessExpiresAt: null }
   };
+
+  function productionMeta(): MetaConnectionDiagnostics {
+    return {
+      ...facebookMeta,
+      instagramWriteGate: {
+        gateMode: 'PRODUCTION',
+        flagEnabled: true,
+        featureEnabled: true,
+        previewEnvironment: false,
+        productionEnvironment: true,
+        branchMatch: null,
+        sourceConfigured: true,
+        sourceMatch: null,
+        destinationMatch: null,
+        pilotSourceId: null,
+        authorizedSourceId: null,
+        configurationEnabled: true,
+        enabled: false
+      },
+      facebookWriteGate: {
+        ...facebookMeta.facebookWriteGate,
+        gateMode: 'PRODUCTION',
+        previewEnvironment: false,
+        productionEnvironment: true,
+        branchMatch: null,
+        pilotSourceId: null,
+        authorizedSourceId: null,
+        configurationEnabled: true
+      }
+    };
+  }
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -355,6 +386,95 @@ describe('SocialPublishingAdminComponent / draft editability', () => {
     expect(component.canPublishInstagram).toBeTrue();
     expect(component.canPublishFacebook).toBeTrue();
     expect(component.canPublishSelected).toBeTrue();
+  });
+
+  it('aplica a allowlist de fontes no Instagram, Facebook e ação combinada', () => {
+    component.selectSource();
+    component.metaDiagnostics.set(productionMeta());
+
+    const packageValue = {
+      ...component.draft!,
+      id: 'source-matrix-package',
+      status: 'APPROVED' as const,
+      instagramCaption: 'Instagram aprovado.',
+      facebookCaption: 'Facebook aprovado.',
+      destinations: ['instagram', 'facebook'] as const
+    };
+
+    for (const sourceType of [
+      'music_release',
+      'system_log',
+      'saga_episode'
+    ] as SocialSourceType[]) {
+      component.draft = {
+        ...packageValue,
+        sourceType,
+        destinations: [...packageValue.destinations]
+      };
+
+      expect(component.canPublishInstagram)
+        .withContext(`${sourceType} no Instagram`)
+        .toBeTrue();
+      expect(component.canPublishFacebook)
+        .withContext(`${sourceType} no Facebook`)
+        .toBeTrue();
+      expect(component.canPublishSelected)
+        .withContext(`${sourceType} nos destinos selecionados`)
+        .toBeTrue();
+    }
+
+    component.draft = {
+      ...packageValue,
+      sourceType: 'future_source' as SocialSourceType,
+      destinations: [...packageValue.destinations]
+    };
+
+    expect(component.canPublishInstagram).toBeFalse();
+    expect(component.canPublishFacebook).toBeFalse();
+    expect(component.canPublishSelected).toBeFalse();
+  });
+
+  it('explica pacote aprovado bloqueado sem expor detalhes de ambiente', () => {
+    component.selectSource();
+    component.metaDiagnostics.set(productionMeta());
+    component.draft = {
+      ...component.draft!,
+      id: 'blocked-editorial-package',
+      sourceType: 'saga_episode',
+      status: 'APPROVED',
+      sourceStale: true,
+      instagramCaption: 'Saga aprovada.',
+      destinations: ['instagram']
+    };
+
+    fixture.detectChanges();
+
+    const hint = (fixture.nativeElement as HTMLElement)
+      .querySelector('.publication-blockers');
+    expect(component.canPublishInstagram).toBeFalse();
+    expect(hint?.textContent).toContain('conteúdo de origem mudou');
+    expect(hint?.textContent).not.toContain('SOCIAL_PUBLISHING_WRITES_ENABLED');
+  });
+
+  it('não oferece ação combinada se um destino pendente estiver inelegível', () => {
+    component.selectSource();
+    component.metaDiagnostics.set(productionMeta());
+    component.draft = {
+      ...component.draft!,
+      id: 'partially-eligible-package',
+      sourceType: 'system_log',
+      status: 'APPROVED',
+      instagramCaption: 'Log aprovado no Instagram.',
+      facebookCaption: '',
+      destinations: ['instagram', 'facebook']
+    };
+
+    expect(component.canPublishInstagram).toBeTrue();
+    expect(component.canPublishFacebook).toBeFalse();
+    expect(component.canPublishSelected).toBeFalse();
+    expect(component.publicationBlockers).toContain(
+      'Facebook: informe a legenda aprovada.'
+    );
   });
 
   it('mantém publicação multi-destino disponível quando uma rede já foi publicada', () => {

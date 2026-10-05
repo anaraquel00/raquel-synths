@@ -780,6 +780,112 @@ console.log('INSTAGRAM_GATE_OFF_ZERO_WRITE = PASS');
 console.log('PRODUCTION_APPROVED_SOURCE_NO_ENV_UPDATE = PASS');
 
 /* -------------------------------------------------------
+ * Fontes editoriais aprovadas em cada destino
+ * ----------------------------------------------------- */
+
+for (const scenario of [
+  { sourceType: 'system_log', destination: 'facebook', sourceId: 'logs/qa-published-log' },
+  { sourceType: 'system_log', destination: 'instagram', sourceId: 'logs/qa-published-log' },
+  { sourceType: 'saga_episode', destination: 'facebook', sourceId: 'lore-jonah/qa-s1-e5' },
+  { sourceType: 'saga_episode', destination: 'instagram', sourceId: 'lore-jonah/qa-s1-e5' }
+]) {
+  const editorialSource = {
+    ...source,
+    sourceType: scenario.sourceType,
+    sourceId: scenario.sourceId,
+    sourceUrl: `firestore://${scenario.sourceId}`,
+    sourceRevision: `qa-${scenario.sourceType}-revision`,
+    title: scenario.sourceType === 'system_log'
+      ? 'System Log publicado'
+      : 'Jonah S1-E5'
+  };
+  const editorialPackage = {
+    ...basePackage,
+    id: `qa-${scenario.sourceType}-${scenario.destination}`,
+    sourceType: scenario.sourceType,
+    sourceId: editorialSource.sourceId,
+    sourceUrl: editorialSource.sourceUrl,
+    sourceRevision: editorialSource.sourceRevision,
+    destinations: [scenario.destination],
+    status: 'APPROVED'
+  };
+  const repository = makeRepository({
+    packageValue: editorialPackage,
+    sourceValue: editorialSource
+  });
+  const calls = [];
+  const options = productionOptions(
+    repository,
+    calls,
+    '2026-10-01T12:50:00.000Z'
+  );
+
+  const result = scenario.destination === 'instagram'
+    ? await publishInstagramPilot(editorialPackage.id, true, options)
+    : await publishFacebookPilot(editorialPackage.id, true, options);
+
+  assert.equal(result.package.status, 'PUBLISHED');
+  assert.equal(result.delivery.status, 'PUBLISHED');
+  assert.equal(
+    calls.length,
+    scenario.destination === 'instagram' ? 2 : 1
+  );
+}
+
+console.log('EDITORIAL_SOURCE_DESTINATION_MATRIX = PASS');
+
+/* -------------------------------------------------------
+ * Currentness editorial continua fail-closed
+ * ----------------------------------------------------- */
+
+{
+  const staleSource = {
+    ...source,
+    sourceType: 'system_log',
+    sourceId: 'logs/qa-stale-log',
+    sourceUrl: 'firestore://logs/qa-stale-log',
+    sourceRevision: 'current-revision'
+  };
+  const stalePackage = {
+    ...basePackage,
+    id: 'qa-stale-system-log',
+    sourceType: 'system_log',
+    sourceId: staleSource.sourceId,
+    sourceUrl: staleSource.sourceUrl,
+    sourceRevision: 'approved-old-revision',
+    destinations: ['facebook'],
+    status: 'APPROVED'
+  };
+  const repository = makeRepository({
+    packageValue: stalePackage,
+    sourceValue: staleSource
+  });
+  let metaWriteCalls = 0;
+
+  await assert.rejects(
+    publishFacebookPilot(stalePackage.id, true, {
+      env,
+      repository,
+      diagnoseMeta: async () => readyMeta,
+      fetchImpl: async () => {
+        metaWriteCalls += 1;
+        throw new Error('UNEXPECTED_META_WRITE');
+      }
+    }),
+    error =>
+      error.code === 'FACEBOOK_PILOT_NOT_ELIGIBLE' &&
+      error.diagnostics?.checks?.some(item =>
+        item.code === 'SOURCE_CURRENT' && item.status === 'FAIL'
+      )
+  );
+
+  assert.equal(metaWriteCalls, 0);
+  assert.equal(repository.events.length, 0);
+}
+
+console.log('EDITORIAL_SOURCE_CURRENTNESS = PASS');
+
+/* -------------------------------------------------------
  * Owner confirmation obrigatória
  * ----------------------------------------------------- */
 
