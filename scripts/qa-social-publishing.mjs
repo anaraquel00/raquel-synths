@@ -398,6 +398,24 @@ assert.ok(failedPilotChecks({ ...pilotPackage, socialAssetType: 'REEL' }).includ
 assert.ok(failedPilotChecks({ ...pilotPackage, destinations: ['facebook'] }).includes('INSTAGRAM_SELECTED'));
 assert.ok(failedPilotChecks(pilotPackage, { ...pilotSource, sourceRevision: 'changed' }).includes('SOURCE_CURRENT'));
 assert.ok(failedPilotChecks({ ...pilotPackage, socialAssetUrl: '' }).includes('ASSET_URL'));
+assert.ok(failedPilotChecks({ ...pilotPackage, socialAssetUrl: 'http://example.com/image.jpg' }).includes('ASSET_URL'));
+assert.ok(failedPilotChecks({ ...pilotPackage, instagramCaption: '' }).includes('INSTAGRAM_CAPTION'));
+assert.ok(failedPilotChecks(pilotPackage, pilotSource, {
+  ...readyMeta, token: { ...readyMeta.token, valid: false }
+}).includes('TOKEN_VALID'));
+assert.ok(failedPilotChecks(pilotPackage, pilotSource, {
+  ...readyMeta, token: { ...readyMeta.token, appIdMatches: false }
+}).includes('TOKEN_VALID'));
+assert.ok(failedPilotChecks(pilotPackage, pilotSource, {
+  ...readyMeta,
+  instagram: { ...readyMeta.instagram, capabilities: { ...readyMeta.instagram.capabilities, feed: false } }
+}).includes('INSTAGRAM_READY'));
+assert.ok(failedPilotChecks(pilotPackage, pilotSource, readyMeta, null, {
+  ...instagramEvaluationOptions, writeGateEnabled: false
+}).includes('WRITE_GATE'));
+assert.ok(failedPilotChecks(pilotPackage, pilotSource, readyMeta, null, {
+  ...instagramEvaluationOptions, ownerConfirmation: false
+}).includes('OWNER_CONFIRMATION'));
 assert.ok(failedPilotChecks(pilotPackage, pilotSource, readyMeta, {
   ...createDeliveryFoundation(pilotPackage.id, 'instagram'), remotePostId: '4444444444'
 }).includes('DELIVERY_READY'));
@@ -455,6 +473,39 @@ function failedFacebookChecks(packageValue, source = pilotSource, meta = readyMe
     .map(item => item.code);
 }
 
+for (const sourceType of ['music_release', 'system_log', 'saga_episode']) {
+  const sourceForType = { ...pilotSource, sourceType };
+  const instagramPackageForType = { ...pilotPackage, sourceType };
+  const facebookPackageForType = { ...facebookPilotPackage, sourceType };
+
+  assert.equal(
+    evaluateInstagramPilot(
+      instagramPackageForType,
+      sourceForType,
+      readyMeta,
+      null,
+      instagramEvaluationOptions
+    ).status,
+    'PASS',
+    `${sourceType} deveria estar elegível no Instagram`
+  );
+  assert.equal(
+    evaluateFacebookPilot(
+      facebookPackageForType,
+      sourceForType,
+      readyMeta,
+      null,
+      facebookEvaluationOptions
+    ).status,
+    'PASS',
+    `${sourceType} deveria estar elegível no Facebook`
+  );
+}
+
+assert.ok(failedPilotChecks({ ...pilotPackage, sourceType: 'unknown' }).includes('SOURCE_GATE'));
+assert.ok(failedFacebookChecks({ ...facebookPilotPackage, sourceType: 'unknown' }).includes('SOURCE_GATE'));
+console.log('SOCIAL_PUBLISHING_SOURCE_TYPE_MATRIX = PASS');
+
 assert.equal(evaluateFacebookPilot(
   facebookPilotPackage, pilotSource, readyMeta, null, facebookEvaluationOptions
 ).status, 'PASS');
@@ -468,7 +519,11 @@ assert.equal(
   ).status,
   'PASS'
 );
+assert.ok(failedFacebookChecks({ ...facebookPilotPackage, status: 'DRAFT' }).includes('PACKAGE_APPROVED'));
+assert.ok(failedFacebookChecks({ ...facebookPilotPackage, destinations: ['instagram'] }).includes('FACEBOOK_SELECTED'));
 assert.ok(failedFacebookChecks({ ...facebookPilotPackage, facebookCaption: '' }).includes('FACEBOOK_CAPTION'));
+assert.ok(failedFacebookChecks({ ...facebookPilotPackage, destinationUrl: 'http://example.com' }).includes('DESTINATION_URL'));
+assert.ok(failedFacebookChecks(facebookPilotPackage, { ...pilotSource, sourceRevision: 'changed' }).includes('SOURCE_CURRENT'));
 assert.ok(failedFacebookChecks(facebookPilotPackage, pilotSource, {
   ...readyMeta, token: { ...readyMeta.token, valid: false }
 }).includes('TOKEN_VALID'));
@@ -479,6 +534,10 @@ assert.ok(failedFacebookChecks(facebookPilotPackage, pilotSource, {
   ...readyMeta,
   facebook: { ...readyMeta.facebook, identity: { id: '9999999999', name: 'Wrong Page' } }
 }).includes('PAGE_IDENTITY'));
+assert.ok(failedFacebookChecks(facebookPilotPackage, pilotSource, {
+  ...readyMeta,
+  facebook: { ...readyMeta.facebook, capabilities: { ...readyMeta.facebook.capabilities, feed: false } }
+}).includes('FACEBOOK_READY'));
 assert.ok(failedFacebookChecks(facebookPilotPackage, pilotSource, readyMeta, {
   ...createDeliveryFoundation(facebookPilotPackage.id, 'facebook'), remotePostId: '2222222222_4444444444'
 }).includes('DELIVERY_READY'));
@@ -488,6 +547,12 @@ assert.ok(failedFacebookChecks(facebookPilotPackage, pilotSource, readyMeta, {
 assert.ok(failedFacebookChecks(facebookPilotPackage, pilotSource, readyMeta, null, {
   ...facebookEvaluationOptions, ownerConfirmation: false
 }).includes('OWNER_CONFIRMATION'));
+assert.ok(failedFacebookChecks(facebookPilotPackage, pilotSource, readyMeta, null, {
+  ...facebookEvaluationOptions, sourceGatePassed: false
+}).includes('SOURCE_GATE'));
+assert.ok(failedFacebookChecks(facebookPilotPackage, pilotSource, readyMeta, null, {
+  ...facebookEvaluationOptions, writeGateEnabled: false
+}).includes('WRITE_GATE'));
 assert.equal(facebookPilotWriteGate(facebookPilotEnv, {
   sourceId: facebookPilotPackage.sourceId, destination: 'facebook'
 }), true);

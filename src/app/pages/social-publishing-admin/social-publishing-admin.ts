@@ -6,6 +6,12 @@ import { DryRunDiagnostics, MetaConnectionDiagnostics, NormalizedSource, SocialD
 
 interface SessionResult { authenticated: boolean; csrfToken?: string; }
 
+const PUBLISHABLE_SOCIAL_SOURCE_TYPES = new Set<SocialSourceType>([
+  'music_release',
+  'system_log',
+  'saga_episode'
+]);
+
 @Component({
   selector: 'app-social-publishing-admin',
   standalone: true,
@@ -69,12 +75,7 @@ export class SocialPublishingAdminComponent implements OnInit {
 
     if (!packageValue || !meta || !gate) return false;
 
-    let assetValid = false;
-    try {
-      assetValid = new URL(packageValue.socialAssetUrl).protocol === 'https:';
-    } catch {
-      assetValid = false;
-    }
+    const assetValid = this.isHttpsUrl(packageValue.socialAssetUrl);
 
     const sourceAllowed = gate.gateMode === 'PRODUCTION'
       ? Boolean(packageValue.sourceId)
@@ -83,7 +84,7 @@ export class SocialPublishingAdminComponent implements OnInit {
 
     return gate.configurationEnabled &&
       sourceAllowed &&
-      packageValue.sourceType === 'music_release' &&
+      this.isPublishableSourceType(packageValue.sourceType) &&
       packageValue.status === 'APPROVED' &&
       packageValue.destinations.includes('instagram') &&
       packageValue.socialAssetType === 'IMAGE' &&
@@ -106,12 +107,7 @@ export class SocialPublishingAdminComponent implements OnInit {
 
     if (!packageValue || !meta || !gate) return false;
 
-    let destinationValid = false;
-    try {
-      destinationValid = new URL(packageValue.destinationUrl).protocol === 'https:';
-    } catch {
-      destinationValid = false;
-    }
+    const destinationValid = this.isHttpsUrl(packageValue.destinationUrl);
 
     const sourceAllowed = gate.gateMode === 'PRODUCTION'
       ? Boolean(packageValue.sourceId)
@@ -120,7 +116,7 @@ export class SocialPublishingAdminComponent implements OnInit {
 
     return gate.configurationEnabled &&
       sourceAllowed &&
-      packageValue.sourceType === 'music_release' &&
+      this.isPublishableSourceType(packageValue.sourceType) &&
       packageValue.status === 'APPROVED' &&
       packageValue.destinations.includes('facebook') &&
       Boolean(packageValue.facebookCaption) &&
@@ -148,7 +144,9 @@ export class SocialPublishingAdminComponent implements OnInit {
   }
 
   get canPublishSelected(): boolean {
-    if (!this.draft || this.draft.status !== 'APPROVED') return false;
+    if (!this.draft ||
+      this.draft.status !== 'APPROVED' ||
+      !this.isPublishableSourceType(this.draft.sourceType)) return false;
 
     const pending = this.pendingDestinations;
     if (!pending.length) return false;
@@ -158,6 +156,106 @@ export class SocialPublishingAdminComponent implements OnInit {
         ? this.canPublishInstagram
         : this.canPublishFacebook
     );
+  }
+
+  get publicationBlockers(): string[] {
+    const packageValue = this.draft;
+    if (!packageValue ||
+      packageValue.status !== 'APPROVED' ||
+      !packageValue.destinations.length ||
+      this.canPublishSelected) return [];
+
+    if (!this.pendingDestinations.length) {
+      return ['Os destinos selecionados já foram publicados.'];
+    }
+
+    return this.pendingDestinations.flatMap(destination => {
+      const eligible = destination === 'instagram'
+        ? this.canPublishInstagram
+        : this.canPublishFacebook;
+
+      return eligible ? [] : [this.publicationBlocker(destination)];
+    });
+  }
+
+  private publicationBlocker(destination: SocialDestination): string {
+    const packageValue = this.draft;
+    const meta = this.metaDiagnostics();
+    const label = destination === 'instagram' ? 'Instagram' : 'Facebook';
+
+    if (!packageValue || !this.isPublishableSourceType(packageValue.sourceType)) {
+      return `${label}: tipo de conteúdo não autorizado para publicação.`;
+    }
+    if (packageValue.sourceStale === true) {
+      return `${label}: o conteúdo de origem mudou e precisa ser revisado novamente.`;
+    }
+
+    const delivery = destination === 'instagram'
+      ? packageValue.instagramDelivery
+      : packageValue.facebookDelivery;
+    if (delivery) {
+      return delivery.status === 'PUBLISHED'
+        ? `${label}: destino já publicado.`
+        : `${label}: existe uma entrega registrada que exige revisão manual.`;
+    }
+
+    const gate = destination === 'instagram'
+      ? meta?.instagramWriteGate
+      : meta?.facebookWriteGate;
+    if (!gate || !gate.configurationEnabled || !this.isSourceAllowedByGate(packageValue, gate)) {
+      return `${label}: publicação indisponível pelo controle de segurança deste ambiente.`;
+    }
+    if (!meta || !meta.token.valid || !meta.token.appIdMatches) {
+      return `${label}: a conexão Meta precisa ser validada.`;
+    }
+
+    if (destination === 'instagram') {
+      if (packageValue.socialAssetType !== 'IMAGE' || !this.isHttpsUrl(packageValue.socialAssetUrl)) {
+        return 'Instagram: selecione uma imagem com URL HTTPS válida.';
+      }
+      if (!packageValue.instagramCaption) return 'Instagram: informe a legenda aprovada.';
+      if (meta.instagram.status !== 'READY' || !meta.instagram.capabilities.feed) {
+        return 'Instagram: conexão ou capacidade de feed indisponível.';
+      }
+      if (meta.relationship.status !== 'MATCH') {
+        return 'Instagram: o vínculo com a Facebook Page precisa ser validado.';
+      }
+    } else {
+      if (!packageValue.facebookCaption) return 'Facebook: informe a legenda aprovada.';
+      if (!this.isHttpsUrl(packageValue.destinationUrl)) {
+        return 'Facebook: informe uma URL de destino HTTPS válida.';
+      }
+      if (meta.facebook.status !== 'READY' ||
+        !meta.facebook.capabilities.feed ||
+        !meta.facebook.identity?.id) {
+        return 'Facebook: conexão ou capacidade de feed indisponível.';
+      }
+    }
+
+    return `${label}: publicação indisponível; atualize o diagnóstico antes de tentar novamente.`;
+  }
+
+  private isPublishableSourceType(sourceType: unknown): boolean {
+    return PUBLISHABLE_SOCIAL_SOURCE_TYPES.has(sourceType as SocialSourceType);
+  }
+
+  private isHttpsUrl(value: string): boolean {
+    try {
+      return new URL(value).protocol === 'https:';
+    } catch {
+      return false;
+    }
+  }
+
+  private isSourceAllowedByGate(
+    packageValue: SocialPackageDraft,
+    gate: NonNullable<MetaConnectionDiagnostics['instagramWriteGate']> |
+      MetaConnectionDiagnostics['facebookWriteGate']
+  ): boolean {
+    return gate.gateMode === 'PRODUCTION'
+      ? Boolean(packageValue.sourceId)
+      : Boolean(gate.authorizedSourceId) &&
+        packageValue.sourceId === gate.authorizedSourceId;
   }
 
   async changeSourceType(): Promise<void> {

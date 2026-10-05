@@ -353,6 +353,21 @@ button:disabled {
   margin-top: 1.25rem;
 }
 
+.publication-blockers {
+  margin-top: .9rem;
+  padding: .8rem .9rem;
+  border: 1px solid #6f5d35;
+  border-radius: 8px;
+  color: #eed9a2;
+  background: #1d190f;
+  overflow-wrap: anywhere;
+}
+
+.publication-blockers ul {
+  margin: .4rem 0 0;
+  padding-left: 1.2rem;
+}
+
 .button-primary {
   border-color: #62deed;
   color: #f4fdff;

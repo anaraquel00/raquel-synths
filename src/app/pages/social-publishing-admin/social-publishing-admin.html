@@ -236,6 +236,17 @@
           }
           <button class="button-danger" type="button" (click)="cancel()" [disabled]="!package.id || (package.status !== 'DRAFT' && package.status !== 'APPROVED') || busy()">Cancelar</button>
         </div>
+
+        @if (publicationBlockers.length) {
+          <div class="publication-blockers" role="status" aria-live="polite">
+            <strong>Publicação indisponível</strong>
+            <ul>
+              @for (blocker of publicationBlockers; track blocker) {
+                <li>{{ blocker }}</li>
+              }
+            </ul>
+          </div>
+        }
       }
     </section>
 
