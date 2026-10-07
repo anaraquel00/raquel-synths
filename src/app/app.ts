@@ -147,7 +147,8 @@ export class App implements OnInit {
         if (!routeMode && params.get('mode') === 'jonah') this.aplicarModo('jonah');
       }
 
-      // 5. AdSense e Tracking Injetados em Segurança
+      // 5. A Google CMP pode iniciar sem liberar anúncios ou tracking opcional.
+      this.adSenseService.ensureCmpBootstrap('ca-pub-5619990751602183');
       this.optionalServices.initializeForRoute(this.currentBrowserUrl(this.router.url));
       });
   }
@@ -205,9 +206,7 @@ ngOnInit() {
 
       this.optionalServices.initializeForRoute(currentPath);
 
-      if (this.consent.state() === 'ACCEPTED') {
-        this.adSenseService.initLazyLoad('ca-pub-5619990751602183');
-      }
+      this.adSenseService.enableAdServing('ca-pub-5619990751602183');
 
     });
     if (isPlatformBrowser(this.platformId)) {
@@ -250,7 +249,7 @@ ngOnInit() {
     }
   }
 
-  acceptCookies() { this.consent.accept(); this.cookiesAccepted.set(true); this.optionalServices.initializeForRoute(this.currentBrowserUrl(this.router.url)); this.adSenseService.initLazyLoad('ca-pub-5619990751602183'); }
+  acceptCookies() { this.consent.accept(); this.cookiesAccepted.set(true); this.optionalServices.initializeForRoute(this.currentBrowserUrl(this.router.url)); this.adSenseService.enableAdServing('ca-pub-5619990751602183'); }
 
   rejectCookies() { this.consent.reject(); this.cookiesAccepted.set(true); }
 

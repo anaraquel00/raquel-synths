@@ -119,12 +119,13 @@ describe('OptionalServicesService privacy policy route hardening', () => {
     expect(seo.initAhrefs).toHaveBeenCalledTimes(1);
   });
 
-  it('keeps /compliance ineligible for all manual AdSense paths', () => {
+  it('allows CMP bootstrap on /compliance without enabling manual ad serving', () => {
     consentState.set('ACCEPTED');
     monetization.updateCurrent('/compliance');
     const readyCallback = jasmine.createSpy('readyCallback');
 
-    adsense.initLazyLoad('ca-pub-5619990751602183');
+    expect(adsense.ensureCmpBootstrap('ca-pub-5619990751602183')).toBeTrue();
+    expect(adsense.enableAdServing('ca-pub-5619990751602183')).toBeFalse();
     adsense.runWhenReady(readyCallback);
 
     expect(monetization.currentBannerEligible()).toBeFalse();
@@ -134,7 +135,7 @@ describe('OptionalServicesService privacy policy route hardening', () => {
       document.head.querySelectorAll(
         'script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]'
       ).length
-    ).toBe(0);
+    ).toBe(1);
     expect(document.querySelectorAll('ins.adsbygoogle').length).toBe(0);
   });
 
