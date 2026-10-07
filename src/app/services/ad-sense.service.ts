@@ -1,8 +1,10 @@
-import { Injectable, PLATFORM_ID, inject, afterNextRender, Injector } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { ConsentService } from './consent.service';
 import { MonetizationPolicyService } from './monetization-policy.service';
-import { Router } from '@angular/router';
+
+const ADSENSE_SCRIPT_SELECTOR =
+  'script#rqs-adsense-cmp-bootstrap, script[src^="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]';
 
 @Injectable({
   providedIn: 'root'
@@ -12,27 +14,49 @@ export class AdSenseService {
   private scriptReady = false;
   private readyCallbacks: Array<() => void> = [];
 
-  // 🛡️ INJEÇÃO BLINDADA: Atualizado para Angular 19+
   private platformId = inject(PLATFORM_ID);
   private document = inject(DOCUMENT);
-  private injector = inject(Injector);
   private consent = inject(ConsentService);
   private policy = inject(MonetizationPolicyService);
-  private router = inject(Router);
 
   /**
-   * Inicia o radar. Assim que o humano respirar na página, injetamos o anúncio.
+   * Inicializa somente o carrier oficial usado pela Google CMP/AdSense.
+   * Não cria unidade de anúncio e não altera consentimento RQS ou TCF.
    */
-  public initLazyLoad(clientId: string): void {
-    // Se estiver rodando no servidor ou se o script já carregou, aborta.
-    if (this.scriptLoaded || !isPlatformBrowser(this.platformId) || this.consent.state() !== 'ACCEPTED' || !this.policy.currentEligible()) {
-      return;
+  public ensureCmpBootstrap(clientId: string): boolean {
+    if (!isPlatformBrowser(this.platformId)) return false;
+
+    const existingScript = this.document.querySelector<HTMLScriptElement>(ADSENSE_SCRIPT_SELECTOR);
+    if (existingScript) {
+      this.observeScript(existingScript);
+      return false;
     }
 
-    // 🛡️ TRAVA TÁTICA: afterNextRender garante execução pós-hidratação no DOM real
-    afterNextRender(() => {
-      if (this.consent.state() === 'ACCEPTED' && this.policy.currentEligible()) this.injectScript(clientId);
-    }, { injector: this.injector });
+    const script = this.document.createElement('script');
+    script.id = 'rqs-adsense-cmp-bootstrap';
+    script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${clientId}`;
+    script.async = true;
+    script.crossOrigin = 'anonymous';
+    this.observeScript(script);
+    this.document.head.appendChild(script);
+    return true;
+  }
+
+  /**
+   * Autoriza somente os caminhos manuais de ad serving da RQS.
+   * O consentimento local continua sendo uma trava adicional e não representa TCF.
+   */
+  public enableAdServing(clientId: string): boolean {
+    if (
+      !isPlatformBrowser(this.platformId) ||
+      this.consent.state() !== 'ACCEPTED' ||
+      !this.policy.currentEligible()
+    ) {
+      return false;
+    }
+
+    this.ensureCmpBootstrap(clientId);
+    return true;
   }
 
   public runWhenReady(callback: () => void): void {
@@ -41,23 +65,25 @@ export class AdSenseService {
     else this.readyCallbacks.push(callback);
   }
 
-  /**
-   * A injeção cirúrgica na matriz do DOM
-   */
-  private injectScript(clientId: string): void {
+  private observeScript(script: HTMLScriptElement): void {
     if (this.scriptLoaded) return;
 
-    const script = this.document.createElement('script');
-    script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${clientId}`;
-    script.async = true;
-    script.crossOrigin = 'anonymous';
-    script.addEventListener('load', () => {
-      this.scriptReady = true;
-      this.readyCallbacks.splice(0).forEach(callback => callback());
-    }, { once: true });
-    this.document.head.appendChild(script);
-
     this.scriptLoaded = true;
-    console.log('🛡️ [AdSense Service] Tag injetada com sucesso após interação.');
+    const adsbygoogle = (this.document.defaultView as Window & { adsbygoogle?: unknown } | null)
+      ?.adsbygoogle;
+    if (adsbygoogle) {
+      this.markScriptReady();
+      return;
+    }
+
+    script.addEventListener('load', () => {
+      this.markScriptReady();
+    }, { once: true });
+  }
+
+  private markScriptReady(): void {
+    if (this.scriptReady) return;
+    this.scriptReady = true;
+    this.readyCallbacks.splice(0).forEach(callback => callback());
   }
 }
