@@ -4,7 +4,7 @@ import { ConsentService } from './consent.service';
 import { MonetizationPolicyService } from './monetization-policy.service';
 
 const ADSENSE_SCRIPT_SELECTOR =
-  'script[data-rqs-adsense-bootstrap], script[src^="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]';
+  'script#rqs-adsense-cmp-bootstrap, script[src^="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +34,6 @@ export class AdSenseService {
 
     const script = this.document.createElement('script');
     script.id = 'rqs-adsense-cmp-bootstrap';
-    script.dataset['rqsAdsenseBootstrap'] = 'true';
     script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${clientId}`;
     script.async = true;
     script.crossOrigin = 'anonymous';
