@@ -78,6 +78,21 @@ describe('AdSenseService consent boundaries', () => {
     expect(appendedScripts.length).toBe(1);
   });
 
+  it('recognizes the static head carrier by its official URL without appending another', () => {
+    const service = createService();
+    const staticScript = document.createElement('script');
+    staticScript.src =
+      'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-test';
+    appendedScripts.push(staticScript);
+
+    expect(service.ensureCmpBootstrap('ca-pub-test')).toBeFalse();
+    expect(service.ensureCmpBootstrap('ca-pub-test')).toBeFalse();
+
+    expect(appendedScripts).toEqual([staticScript]);
+    expect(fakeDocument.createElement).not.toHaveBeenCalled();
+    expect(staticScript.id).toBe('');
+  });
+
   it('does not touch the DOM during SSR', () => {
     const service = createService('server');
 
