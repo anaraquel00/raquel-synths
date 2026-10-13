@@ -44,7 +44,7 @@
           }
 
           @for (block of (translate.isPt() ? ep.content : (ep.content_en || ep.content)) | splitContent; track $index; let count = $count) {
-            <div [innerHTML]="block"></div>
+            <div class="story-block" [innerHTML]="block"></div>
 
             @if ((count <= 6 && $index === 2) || (count > 6 && ($index === 2 || $index === 6 || $index === 11))) {
               <div class="inner-ad" style="margin: 30px 0;">
