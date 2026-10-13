@@ -245,6 +245,7 @@
     filter: contrast(140%) sepia(0%); /* Fica "limpa" e brilhante no hover */
   }
 }
+
 /* --- AJUSTES MOBILE PARA O MODO JONAH --- */
 @media (max-width: 768px) {
 .lore-container {
@@ -883,3 +884,163 @@
   }
 }
 
+/* ================================================= */
+/* LEITURA LONGA: MEDIDA, RITMO E RESPONSIVIDADE     */
+/* ================================================= */
+
+.episode-card .story-content {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 1rem;
+  line-height: 1.75;
+  letter-spacing: normal;
+  text-align: left;
+}
+
+:host-context(body.mode-jonah) .lore-container .story-content {
+  max-width: 100% !important;
+  padding: 0 !important;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+}
+
+.story-block {
+  width: 100%;
+  max-width: 66ch;
+  min-width: 0;
+  margin: 0 auto 1em;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+}
+
+:host ::ng-deep .story-block {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 1rem;
+  line-height: 1.75;
+  letter-spacing: normal;
+  text-align: left;
+
+  p {
+    margin-block: 0;
+  }
+
+  p + p {
+    margin-top: 1em;
+  }
+
+  h2,
+  h3,
+  h4 {
+    margin: 1.35em 0 0.65em;
+    font-family: 'Montserrat', system-ui, sans-serif;
+    line-height: 1.35;
+  }
+
+  .meta-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.5rem;
+    margin: 0.65rem 0 0.9rem;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.75rem;
+    line-height: 1.45;
+  }
+
+  .meta-info .badge {
+    padding: 0.2rem 0.45rem;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.24);
+  }
+
+  .caption,
+  code,
+  pre {
+    font-family: 'Courier New', Courier, monospace;
+  }
+}
+
+@media (max-width: 480px) {
+  .lore-container {
+    width: 100%;
+    max-width: 100%;
+    padding: 0.75rem 1rem !important;
+    box-sizing: border-box;
+  }
+
+  .episode-view,
+  .episode-card,
+  .episode-card .story-content,
+  .story-block {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .episode-card {
+    padding: 0.875rem;
+    margin-bottom: 2rem;
+  }
+
+  .episode-card h2 {
+    font-size: clamp(1.35rem, 6.5vw, 1.5rem) !important;
+    line-height: 1.28;
+    overflow-wrap: break-word;
+  }
+
+  .episode-card .story-content {
+    max-width: none !important;
+    padding-inline: 0 !important;
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+
+  .story-block {
+    width: 100%;
+    max-width: none;
+  }
+
+  .episode-card .episode-cover {
+    float: none;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 0 1.25rem;
+  }
+
+  .episode-card .episode-cover img,
+  :host-context(.mode-jonah) .episode-cover img {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto;
+    margin: 0 !important;
+    box-sizing: border-box;
+  }
+
+  .ep-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.35rem 0.65rem;
+    text-align: left;
+  }
+
+  .episode-card .season-badge {
+    margin: 0;
+    padding: 0.2rem 0.45rem;
+    font-size: 0.72rem;
+    line-height: 1.4;
+  }
+
+  .episode-card .date {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.75rem;
+  }
+
+  :host ::ng-deep .story-block {
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+}
