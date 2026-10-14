@@ -387,6 +387,25 @@ assert.match(adminTemplate, /ALTERAÇÕES DE SEGURANÇA/u);
 assert.match(adminTemplate, /techContent \| safeHtml/u);
 assert.doesNotMatch(adminTemplate, /SOMENTE TAGS PERMITIDAS/u);
 
+const adminComponent = readFileSync(
+  new URL(
+    '../src/app/pages/system-logs-admin/system-logs-admin.ts',
+    import.meta.url
+  ),
+  'utf8'
+);
+assert.match(adminComponent, /await response\.text\(\)/u);
+assert.match(adminComponent, /response\.headers\.get\('content-type'\)/u);
+assert.match(
+  adminComponent,
+  /Falha no módulo Logs do Sistema \(HTTP \$\{response\.status\}\)\./u
+);
+assert.match(
+  adminComponent,
+  /Resposta inválida do módulo Logs do Sistema\./u
+);
+assert.doesNotMatch(adminComponent, /await response\.json\(\)/u);
+
 const safeHtmlPipe = readFileSync(
   new URL('../src/app/components/pipes/safe-html.pipe.ts', import.meta.url),
   'utf8'
@@ -404,6 +423,7 @@ console.log('SYSTEM_LOG_MALICIOUS_SANITIZATION = PASS');
 console.log('SYSTEM_LOG_DRY_RUN_PT = PASS');
 console.log('SYSTEM_LOG_DRY_RUN_EN = PASS');
 console.log('SYSTEM_LOG_PREVIEW_STRUCTURE = PASS');
+console.log('SYSTEM_LOG_RESPONSE_PARSING = PASS');
 console.log('ADSENSE_FIREWALL = PRESERVED');
 console.log('FIRESTORE_WRITES = 0');
 console.log('IMPORT = NO');
