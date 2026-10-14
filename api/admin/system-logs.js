@@ -298,7 +298,7 @@ function validateTechContent(value) {
     }
 
     const close =
-      /^<\s*\/\s*(p|h2|strong|em|a|ul|li)\s*>$/iu.exec(token);
+      /^<\s*\/\s*(p|h2|h3|strong|em|a|ul|ol|li)\s*>$/iu.exec(token);
 
     if (close) {
       const tag = close[1].toLowerCase();
@@ -322,7 +322,7 @@ function validateTechContent(value) {
     }
 
     const open =
-      /^<\s*(p|h2|strong|em|ul|li)\s*>$/iu.exec(token);
+      /^<\s*(p|h2|h3|strong|em|ul|ol|li)\s*>$/iu.exec(token);
 
     if (open) {
       const tag = open[1].toLowerCase();

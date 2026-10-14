@@ -139,6 +139,20 @@ body {
   font-family: monospace;
 }
 
+.tech-body ol {
+  margin-bottom: 2rem;
+  padding-left: 2rem;
+  list-style: decimal;
+}
+
+.tech-body ol > li {
+  padding-left: 0.35rem;
+}
+
+.tech-body ol > li::before {
+  content: none;
+}
+
 /* Bloco de Código (Terminal) */
 .tech-body .code-block {
   background: #0d0d0d;
