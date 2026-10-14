@@ -5,7 +5,10 @@ import {
   timingSafeEqual
 } from 'node:crypto';
 import { google } from 'googleapis';
-import { sanitizeEditorialHtml } from '../../lib/system-logs/editorial-html.js';
+import {
+  sanitizeEditorialHtml,
+  sanitizeSystemLogField
+} from '../../lib/system-logs/editorial-html.js';
 
 const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT || 'raquel-synths-platform';
 const COLLECTION = 'logs';
@@ -207,19 +210,31 @@ function parseSystemLogDocument(text) {
     image: sections.IMAGE,
 
     pt: {
-      title: sections['PT TITLE'],
-      description: sections['PT DESCRIPTION'],
+      title: sanitizeSystemLogField(sections['PT TITLE'], 'title'),
+      description: sanitizeSystemLogField(
+        sections['PT DESCRIPTION'],
+        'description'
+      ),
       techContent: ptTechContent.content,
       techContentDiagnostic: ptTechContent.diagnostic,
-      jonahComment: sections['PT JONAH COMMENT']
+      jonahComment: sanitizeSystemLogField(
+        sections['PT JONAH COMMENT'],
+        'jonahComment'
+      )
     },
 
     en: {
-      title: sections['EN TITLE'],
-      description: sections['EN DESCRIPTION'],
+      title: sanitizeSystemLogField(sections['EN TITLE'], 'title'),
+      description: sanitizeSystemLogField(
+        sections['EN DESCRIPTION'],
+        'description'
+      ),
       techContent: enTechContent.content,
       techContentDiagnostic: enTechContent.diagnostic,
-      jonahComment: sections['EN JONAH COMMENT']
+      jonahComment: sanitizeSystemLogField(
+        sections['EN JONAH COMMENT'],
+        'jonahComment'
+      )
     }
   };
 }
@@ -267,7 +282,28 @@ function techContentDiagnostic(language) {
 }
 function releaseDate(value) { const date = new Date(`${value}T00:00:00.000Z`); return date.getTime() <= Date.now() ? 'PUBLIC' : 'SCHEDULED'; }
 function docId(value) { return `${value}-log`; }
-function normalizePayload(payload) { return { date: String(payload?.date || '').trim(), image: String(payload?.image || '').trim(), pt: { title: String(payload?.pt?.title || ''), description: String(payload?.pt?.description || ''), techContent: validateTechContent(payload?.pt?.techContent).content, jonahComment: String(payload?.pt?.jonahComment || '') }, en: { title: String(payload?.en?.title || ''), description: String(payload?.en?.description || ''), techContent: validateTechContent(payload?.en?.techContent).content, jonahComment: String(payload?.en?.jonahComment || '') } }; }
+function normalizeLanguagePayload(language) {
+  return {
+    title: sanitizeSystemLogField(language?.title, 'title'),
+    description: sanitizeSystemLogField(
+      language?.description,
+      'description'
+    ),
+    techContent: validateTechContent(language?.techContent).content,
+    jonahComment: sanitizeSystemLogField(
+      language?.jonahComment,
+      'jonahComment'
+    )
+  };
+}
+function normalizePayload(payload) {
+  return {
+    date: String(payload?.date || '').trim(),
+    image: String(payload?.image || '').trim(),
+    pt: normalizeLanguagePayload(payload?.pt),
+    en: normalizeLanguagePayload(payload?.en)
+  };
+}
 function digest(payload) { return createHmac('sha256', secret()).update(JSON.stringify(payload)).digest('base64url'); }
 function makeDryRunToken(payload, source) { const data = Buffer.from(JSON.stringify({ digest: digest(payload), source, expiresAt: Date.now() + DRY_RUN_TTL, nonce: randomUUID() })).toString('base64url'); return `${data}.${createHmac('sha256', secret()).update(`system-logs:${data}`).digest('base64url')}`; }
 function verifyToken(token, payload, source) { const [data, sig, ...extra] = String(token || '').split('.'); if (!data || !sig || extra.length || !safeEqual(sig, createHmac('sha256', secret()).update(`system-logs:${data}`).digest('base64url'))) return false; try { const value = JSON.parse(Buffer.from(data, 'base64url').toString('utf8')); return Number(value.expiresAt) > Date.now() && value.digest === digest(payload) && JSON.stringify(value.source) === JSON.stringify(source); } catch { return false; } }

@@ -7,7 +7,9 @@ import systemLogsHandler, {
 } from '../api/admin/system-logs.js';
 import {
   EDITORIAL_TAGS,
-  sanitizeEditorialHtml
+  SYSTEM_LOG_FIELD_PROFILES,
+  sanitizeEditorialHtml,
+  sanitizeSystemLogField
 } from '../lib/system-logs/editorial-html.js';
 
 function assertPublishable(diagnostic, sanitization = 'PASS') {
@@ -18,7 +20,16 @@ function assertPublishable(diagnostic, sanitization = 'PASS') {
   assert.equal(diagnostic.publishAllowed, 'YES');
 }
 
-function documentFixture({ date, title, techContent }) {
+function documentFixture({
+  date,
+  title,
+  techContent,
+  description = {
+    pt: 'Descrição editorial em português.',
+    en: 'English editorial description.'
+  },
+  jonahComment = { pt: '', en: '' }
+}) {
   return [
     'DATE',
     date,
@@ -27,21 +38,61 @@ function documentFixture({ date, title, techContent }) {
     'PT TITLE',
     title.pt,
     'PT DESCRIPTION',
-    'Descrição editorial em português.',
+    description.pt,
     'PT TECH CONTENT',
     techContent.pt,
     'PT JONAH COMMENT',
-    '',
+    jonahComment.pt,
     'EN TITLE',
     title.en,
     'EN DESCRIPTION',
-    'English editorial description.',
+    description.en,
     'EN TECH CONTENT',
     techContent.en,
     'EN JONAH COMMENT',
-    ''
+    jonahComment.en
   ].join('\n');
 }
+
+assert.deepEqual(SYSTEM_LOG_FIELD_PROFILES.title.allowedTags, []);
+assert.ok(!SYSTEM_LOG_FIELD_PROFILES.description.allowedTags.includes('p'));
+assert.ok(SYSTEM_LOG_FIELD_PROFILES.jonahComment.allowedTags.includes('p'));
+
+const plainMetadata = {
+  title: 'SYSTEM LOG // A & B < 3',
+  description: 'Descrição editorial A & B < 3.\nSegunda linha.',
+  jonahComment: 'Comentário de Jonah A & B < 3.'
+};
+
+for (const [profile, value] of Object.entries(plainMetadata)) {
+  assert.equal(sanitizeSystemLogField(value, profile), value);
+}
+
+const maliciousTitle = sanitizeSystemLogField(
+  '<strong>Título público</strong><script>alert(1)</script><img src="x" onerror="alert(2)">',
+  'title'
+);
+assert.equal(maliciousTitle, 'Título público');
+
+const maliciousDescription = sanitizeSystemLogField(
+  '<p style="display:none">Descrição <strong>editorial</strong> ' +
+    '<a href="javascript:alert(1)" onclick="alert(2)">segura</a></p>' +
+    '<style>body{display:none}</style>',
+  'description'
+);
+assert.match(maliciousDescription, /Descrição <strong>editorial<\/strong>/u);
+assert.doesNotMatch(
+  maliciousDescription,
+  /<p|style=|javascript:|onclick|display\s*:\s*none/iu
+);
+
+const maliciousComment = sanitizeSystemLogField(
+  '<p onclick="alert(1)">Comentário <em>preservado</em></p>' +
+    '<iframe src="https://example.com">conteúdo ativo</iframe>',
+  'jonahComment'
+);
+assert.match(maliciousComment, /<p>Comentário <em>preservado<\/em><\/p>/u);
+assert.doesNotMatch(maliciousComment, /onclick|iframe|conteúdo ativo/iu);
 
 const requiredEditorialTags = [
   'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
@@ -194,6 +245,19 @@ const log20261019 = parseSystemLogDocument(documentFixture({
   }
 }));
 
+assert.equal(
+  log20261019.pt.title,
+  'SYSTEM LOG // PEDIDO DE COLISÃO: COMO COMEÇARAM AS REDBLUE SESSIONS'
+);
+assert.equal(
+  log20261019.en.title,
+  'SYSTEM LOG // COLLISION REQUEST: HOW THE REDBLUE SESSIONS BEGAN'
+);
+assert.equal(log20261019.pt.description, 'Descrição editorial em português.');
+assert.equal(log20261019.en.description, 'English editorial description.');
+assert.equal(log20261019.pt.jonahComment, '');
+assert.equal(log20261019.en.jonahComment, '');
+
 for (const language of [log20261019.pt, log20261019.en]) {
   assertPublishable(language.techContentDiagnostic);
   assert.match(language.techContent, /<h3>/u);
@@ -236,6 +300,45 @@ for (const language of [maliciousDocument.pt, maliciousDocument.en]) {
   assert.ok(language.techContentDiagnostic.securityChanges > 0);
   assert.doesNotMatch(language.techContent, /javascript:|onclick|onerror|<script|<iframe|<form/iu);
 }
+
+const maliciousMetadataDocument = parseSystemLogDocument(documentFixture({
+  date: '2026-10-28',
+  title: {
+    pt: '<strong>Título PT</strong><script>alert(1)</script>',
+    en: '<strong>EN title</strong><script>alert(1)</script>'
+  },
+  description: {
+    pt: '<p style="display:none">Descrição PT <em>visível</em></p>',
+    en: '<p onclick="alert(1)">EN description <em>visible</em></p>'
+  },
+  techContent: {
+    pt: legacyTechContent,
+    en: legacyTechContent
+  },
+  jonahComment: {
+    pt: '<p onclick="alert(1)">Comentário PT</p><iframe>ativo</iframe>',
+    en: '<p style="opacity:0">EN comment</p><script>active</script>'
+  }
+}));
+
+assert.equal(maliciousMetadataDocument.pt.title, 'Título PT');
+assert.equal(maliciousMetadataDocument.en.title, 'EN title');
+assert.equal(
+  maliciousMetadataDocument.pt.description,
+  'Descrição PT <em>visível</em>'
+);
+assert.equal(
+  maliciousMetadataDocument.en.description,
+  'EN description <em>visible</em>'
+);
+assert.equal(
+  maliciousMetadataDocument.pt.jonahComment,
+  '<p>Comentário PT</p>'
+);
+assert.equal(
+  maliciousMetadataDocument.en.jonahComment,
+  '<p>EN comment</p>'
+);
 
 function responseRecorder() {
   const result = {
@@ -364,6 +467,92 @@ try {
     maliciousDryRun.value.preview.pt,
     /javascript:|onclick|onerror|<script|<iframe|<form/iu
   );
+
+  const maliciousMetadataPayload = {
+    ...log20261026,
+    pt: {
+      ...log20261026.pt,
+      title: '<strong>Título PT</strong><script>alert(1)</script>',
+      description:
+        '<p style="display:none">Descrição PT <em>visível</em></p>',
+      jonahComment:
+        '<p onclick="alert(1)">Comentário PT</p><iframe>ativo</iframe>'
+    },
+    en: {
+      ...log20261026.en,
+      title: '<strong>EN title</strong><script>alert(1)</script>',
+      description:
+        '<p onclick="alert(1)">EN description <em>visible</em></p>',
+      jonahComment:
+        '<p style="opacity:0">EN comment</p><script>active</script>'
+    }
+  };
+  const maliciousMetadataDryRun = await dryRun(
+    maliciousMetadataPayload,
+    '2026-10-26 - System Log metadata QA',
+    'qa-system-log-2026-10-26-metadata',
+    session
+  );
+
+  assert.equal(maliciousMetadataDryRun.statusCode, 200);
+  assert.equal(maliciousMetadataDryRun.value.firestore, 'WOULD CREATE');
+  assert.equal(maliciousMetadataDryRun.value.payload.pt.title, 'Título PT');
+  assert.equal(maliciousMetadataDryRun.value.payload.en.title, 'EN title');
+  assert.equal(
+    maliciousMetadataDryRun.value.payload.pt.description,
+    'Descrição PT <em>visível</em>'
+  );
+  assert.equal(
+    maliciousMetadataDryRun.value.payload.en.description,
+    'EN description <em>visible</em>'
+  );
+  assert.equal(
+    maliciousMetadataDryRun.value.payload.pt.jonahComment,
+    '<p>Comentário PT</p>'
+  );
+  assert.equal(
+    maliciousMetadataDryRun.value.payload.en.jonahComment,
+    '<p>EN comment</p>'
+  );
+
+  for (const language of [
+    maliciousMetadataDryRun.value.payload.pt,
+    maliciousMetadataDryRun.value.payload.en
+  ]) {
+    assert.doesNotMatch(
+      `${language.title}${language.description}${language.jonahComment}`,
+      /<script|<iframe|style=|onclick|display\s*:\s*none|opacity\s*:\s*0/iu
+    );
+  }
+
+  const unsanitizedCreatePayload = {
+    date: maliciousMetadataPayload.date,
+    image: maliciousMetadataPayload.image,
+    pt: {
+      title: maliciousMetadataPayload.pt.title,
+      description: maliciousMetadataPayload.pt.description,
+      techContent: maliciousMetadataPayload.pt.techContent,
+      jonahComment: maliciousMetadataPayload.pt.jonahComment
+    },
+    en: {
+      title: maliciousMetadataPayload.en.title,
+      description: maliciousMetadataPayload.en.description,
+      techContent: maliciousMetadataPayload.en.techContent,
+      jonahComment: maliciousMetadataPayload.en.jonahComment
+    }
+  };
+  const tokenRejectsUnsanitizedPayload = await callAdmin({
+    action: 'create',
+    payload: unsanitizedCreatePayload,
+    dryRunToken: maliciousMetadataDryRun.value.dryRunToken,
+    source: maliciousMetadataDryRun.value.source
+  }, {
+    cookie: session.cookie,
+    'x-rqs-csrf': session.csrfToken
+  });
+
+  assert.equal(tokenRejectsUnsanitizedPayload.statusCode, 409);
+  assert.equal(tokenRejectsUnsanitizedPayload.value.error, 'DRY_RUN_REQUIRED');
 } finally {
   if (previousAdminToken === undefined) delete process.env.RQS_ADMIN_TOKEN;
   else process.env.RQS_ADMIN_TOKEN = previousAdminToken;
@@ -424,6 +613,13 @@ console.log('SYSTEM_LOG_DRY_RUN_PT = PASS');
 console.log('SYSTEM_LOG_DRY_RUN_EN = PASS');
 console.log('SYSTEM_LOG_PREVIEW_STRUCTURE = PASS');
 console.log('SYSTEM_LOG_RESPONSE_PARSING = PASS');
+console.log('SYSTEM_LOG_TITLE_PROFILE = PASS');
+console.log('SYSTEM_LOG_DESCRIPTION_PROFILE = PASS');
+console.log('SYSTEM_LOG_TECH_CONTENT_PROFILE = PASS');
+console.log('SYSTEM_LOG_COMMENT_PROFILE = PASS');
+console.log('SYSTEM_LOG_PLAIN_TEXT_REGRESSION = PASS');
+console.log('SYSTEM_LOG_MALICIOUS_FIELD_SANITIZATION = PASS');
+console.log('SYSTEM_LOG_FINAL_PAYLOAD_TOKEN_BOUNDARY = PASS');
 console.log('ADSENSE_FIREWALL = PRESERVED');
 console.log('FIRESTORE_WRITES = 0');
 console.log('IMPORT = NO');
