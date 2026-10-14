@@ -1,11 +1,14 @@
 import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { Component, Inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { SafeHtmlPipe } from '../../components/pipes/safe-html.pipe';
 
 interface TechContentDiagnostic {
   sourceFormat: 'HTML' | 'PLAIN_TEXT';
-  htmlValidation: 'PASS' | 'FAIL';
-  allowedTagsOnly: 'PASS' | 'FAIL';
+  sanitization: 'PASS' | 'PASS WITH CHANGES' | 'FAIL';
+  editorialContent: 'PASS' | 'FAIL';
+  securityChanges: number;
+  securityChangeDetails: string[];
   renderableContent: 'PASS' | 'FAIL';
   publishAllowed: 'YES' | 'NO';
 }
@@ -57,7 +60,7 @@ interface DryRunResult {
 @Component({
   selector: 'app-system-logs-admin',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, SafeHtmlPipe],
   templateUrl: './system-logs-admin.html',
   styleUrl: './system-logs-admin.scss'
 })
@@ -218,10 +221,33 @@ export class SystemLogsAdminComponent implements OnInit {
       cache: 'no-store',
       credentials: 'same-origin'
     });
-    const result = await response.json();
-    if (!response.ok) {
-      throw new Error(result.message || 'Falha no módulo Logs do Sistema.');
+    const text = await response.text();
+    const contentType = response.headers.get('content-type')?.toLowerCase() || '';
+    const looksLikeJson = contentType.includes('json') || /^[\[{]/u.test(text.trim());
+    let result: unknown;
+
+    if (looksLikeJson && text.trim()) {
+      try {
+        result = JSON.parse(text);
+      } catch {
+        result = undefined;
+      }
     }
+
+    if (!response.ok) {
+      const message = result && typeof result === 'object' &&
+        'message' in result && typeof result.message === 'string'
+        ? result.message
+        : '';
+      throw new Error(
+        message || `Falha no módulo Logs do Sistema (HTTP ${response.status}).`
+      );
+    }
+
+    if (!result || typeof result !== 'object') {
+      throw new Error('Resposta inválida do módulo Logs do Sistema.');
+    }
+
     return result as T;
   }
 
