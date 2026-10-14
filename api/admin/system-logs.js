@@ -5,6 +5,7 @@ import {
   timingSafeEqual
 } from 'node:crypto';
 import { google } from 'googleapis';
+import { sanitizeEditorialHtml } from '../../lib/system-logs/editorial-html.js';
 
 const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT || 'raquel-synths-platform';
 const COLLECTION = 'logs';
@@ -222,156 +223,46 @@ function parseSystemLogDocument(text) {
     }
   };
 }
-function escapeText(value) { return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
-function invalidTechContent(sourceFormat) {
-  return {
-    content: '',
-    diagnostic: {
-      sourceFormat,
-      htmlValidation: 'FAIL',
-      allowedTagsOnly: 'FAIL',
-      renderableContent: 'FAIL',
-      publishAllowed: 'NO'
-    }
-  };
-}
-function safeAnchor(attributes) {
-  const values = new Map();
-  const pattern = /([a-z][a-z0-9:-]*)\s*=\s*(["'])(.*?)\2/giu;
-  let cursor = 0;
-  let match;
-  while ((match = pattern.exec(attributes))) {
-    if (attributes.slice(cursor, match.index).trim()) return '';
-    const name = match[1].toLowerCase();
-    if (!['href', 'target', 'rel'].includes(name) || values.has(name)) return '';
-    values.set(name, match[3]);
-    cursor = pattern.lastIndex;
-  }
-  if (attributes.slice(cursor).trim()) return '';
-  const href = values.get('href') || '';
-  if (!/^https?:\/\/[^\s"'<>]+$/iu.test(href)) return '';
-  if (values.has('target') && values.get('target') !== '_blank') return '';
-  if (values.has('rel')) {
-    const rel = values.get('rel').trim().split(/\s+/u);
-    if (rel.some(value => !['noopener', 'noreferrer'].includes(value))) return '';
-  }
-  return `<a href="${escapeText(href)}" target="_blank" rel="noopener noreferrer">`;
-}
 function validateTechContent(value) {
-  const source = String(value || '').replace(/\r\n?/g, '\n').trim();
-
-  if (!source) {
-    return invalidTechContent('PLAIN_TEXT');
-  }
-
-  if (!/[<>]/u.test(source)) {
-    return invalidTechContent('PLAIN_TEXT');
-  }
-
-  const tokens = source.match(/<[^>]*>|[^<>]+|[<>]/gu) || [];
-
-  if (tokens.join('') !== source) {
-    return invalidTechContent('HTML');
-  }
-
-  const stack = [];
-  let content = '';
-  let hasText = false;
-
-  for (const token of tokens) {
-    if (!token.startsWith('<')) {
-      if (token === '>' || token.trim().startsWith('<')) {
-        return invalidTechContent('HTML');
-      }
-
-      content += token;
-
-      if (
-        token
-          .replace(/&(?:[a-z]+|#\d+|#x[\da-f]+);/giu, '')
-          .trim()
-      ) {
-        hasText = true;
-      }
-
-      continue;
-    }
-
-    const close =
-      /^<\s*\/\s*(p|h2|h3|strong|em|a|ul|ol|li)\s*>$/iu.exec(token);
-
-    if (close) {
-      const tag = close[1].toLowerCase();
-
-      if (stack.pop() !== tag) {
-        return invalidTechContent('HTML');
-      }
-
-      content += `</${tag}>`;
-      continue;
-    }
-
-    if (/^<\s*br\s*\/?>$/iu.test(token)) {
-      content += '<br>';
-      continue;
-    }
-
-    if (/^<\s*hr\s*\/?>$/iu.test(token)) {
-      content += '<hr>';
-      continue;
-    }
-
-    const open =
-      /^<\s*(p|h2|h3|strong|em|ul|ol|li)\s*>$/iu.exec(token);
-
-    if (open) {
-      const tag = open[1].toLowerCase();
-      stack.push(tag);
-      content += `<${tag}>`;
-      continue;
-    }
-
-    const anchor = /^<\s*a\s+([^>]*)>$/iu.exec(token);
-
-    if (anchor) {
-      const safe = safeAnchor(anchor[1]);
-
-      if (!safe) {
-        return invalidTechContent('HTML');
-      }
-
-      stack.push('a');
-      content += safe;
-      continue;
-    }
-
-    return invalidTechContent('HTML');
-  }
-
-  if (stack.length || !hasText) {
-    return invalidTechContent('HTML');
-  }
-
-  return {
-    content,
-    diagnostic: {
-      sourceFormat: 'HTML',
-      htmlValidation: 'PASS',
-      allowedTagsOnly: 'PASS',
-      renderableContent: 'PASS',
-      publishAllowed: 'YES'
-    }
-  };
+  return sanitizeEditorialHtml(value);
 }
 function techContentDiagnostic(language) {
   const validated = validateTechContent(language?.techContent);
   const declared = language?.techContentDiagnostic;
-  if (
-    validated.diagnostic.publishAllowed === 'NO' &&
-    ['HTML', 'PLAIN_TEXT'].includes(declared?.sourceFormat)
-  ) {
-    validated.diagnostic.sourceFormat = declared.sourceFormat;
+
+  if (validated.diagnostic.publishAllowed === 'NO') {
+    return validated.diagnostic;
   }
+
+  const source = String(language?.techContent || '')
+    .replace(/\r\n?/g, '\n')
+    .trim();
+  const declaredChanges = Number(declared?.securityChanges);
+  const declaredDetails = Array.isArray(declared?.securityChangeDetails)
+    ? declared.securityChangeDetails
+      .filter(detail => typeof detail === 'string')
+      .slice(0, 20)
+      .map(detail => detail.slice(0, 160))
+    : [];
+
+  if (
+    validated.content === source &&
+    declared?.sourceFormat === 'HTML' &&
+    declared?.sanitization === 'PASS WITH CHANGES' &&
+    declared?.editorialContent === 'PASS' &&
+    declared?.renderableContent === 'PASS' &&
+    declared?.publishAllowed === 'YES' &&
+    Number.isInteger(declaredChanges) &&
+    declaredChanges > 0
+  ) {
+    return {
+      ...validated.diagnostic,
+      sanitization: 'PASS WITH CHANGES',
+      securityChanges: declaredChanges,
+      securityChangeDetails: declaredDetails
+    };
+  }
+
   return validated.diagnostic;
 }
 function releaseDate(value) { const date = new Date(`${value}T00:00:00.000Z`); return date.getTime() <= Date.now() ? 'PUBLIC' : 'SCHEDULED'; }

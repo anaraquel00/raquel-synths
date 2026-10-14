@@ -63,8 +63,8 @@
           <button type="button" (click)="viewPreview('pt')">VER PRÉVIA PT</button>
           <button type="button" (click)="viewPreview('en')">VER PRÉVIA EN</button>
         </div>
-        @if (preview() === 'pt') { <article class="preview" [innerHTML]="content.pt.techContent"></article> }
-        @if (preview() === 'en') { <article class="preview" [innerHTML]="content.en.techContent"></article> }
+        @if (preview() === 'pt') { <article class="preview" [innerHTML]="content.pt.techContent | safeHtml"></article> }
+        @if (preview() === 'en') { <article class="preview" [innerHTML]="content.en.techContent | safeHtml"></article> }
         <button class="dry-run" type="button" (click)="runDryRun()">DRY RUN</button>
       </section>
     }
@@ -77,16 +77,32 @@
           <article>
             <h3>PORTUGUÊS / CONTEÚDO TÉCNICO</h3>
             <p><strong>FORMATO DA FONTE</strong> {{ result.checks.pt.techContent.sourceFormat }}</p>
-            <p><strong>VALIDAÇÃO HTML</strong> {{ result.checks.pt.techContent.htmlValidation }}</p>
-            <p><strong>SOMENTE TAGS PERMITIDAS</strong> {{ result.checks.pt.techContent.allowedTagsOnly }}</p>
+            <p><strong>SANITIZAÇÃO HTML</strong> {{ result.checks.pt.techContent.sanitization }}</p>
+            <p><strong>CONTEÚDO EDITORIAL</strong> {{ result.checks.pt.techContent.editorialContent }}</p>
+            <p><strong>ALTERAÇÕES DE SEGURANÇA</strong> {{ result.checks.pt.techContent.securityChanges || 'NONE' }}</p>
+            @if (result.checks.pt.techContent.securityChangeDetails.length) {
+              <ul>
+                @for (detail of result.checks.pt.techContent.securityChangeDetails; track detail) {
+                  <li>{{ detail }}</li>
+                }
+              </ul>
+            }
             <p><strong>CONTEÚDO RENDERIZÁVEL</strong> {{ result.checks.pt.techContent.renderableContent }}</p>
             <p><strong>PUBLICAÇÃO PERMITIDA</strong> {{ result.checks.pt.techContent.publishAllowed }}</p>
           </article>
           <article>
             <h3>INGLÊS / CONTEÚDO TÉCNICO</h3>
             <p><strong>FORMATO DA FONTE</strong> {{ result.checks.en.techContent.sourceFormat }}</p>
-            <p><strong>VALIDAÇÃO HTML</strong> {{ result.checks.en.techContent.htmlValidation }}</p>
-            <p><strong>SOMENTE TAGS PERMITIDAS</strong> {{ result.checks.en.techContent.allowedTagsOnly }}</p>
+            <p><strong>SANITIZAÇÃO HTML</strong> {{ result.checks.en.techContent.sanitization }}</p>
+            <p><strong>CONTEÚDO EDITORIAL</strong> {{ result.checks.en.techContent.editorialContent }}</p>
+            <p><strong>ALTERAÇÕES DE SEGURANÇA</strong> {{ result.checks.en.techContent.securityChanges || 'NONE' }}</p>
+            @if (result.checks.en.techContent.securityChangeDetails.length) {
+              <ul>
+                @for (detail of result.checks.en.techContent.securityChangeDetails; track detail) {
+                  <li>{{ detail }}</li>
+                }
+              </ul>
+            }
             <p><strong>CONTEÚDO RENDERIZÁVEL</strong> {{ result.checks.en.techContent.renderableContent }}</p>
             <p><strong>PUBLICAÇÃO PERMITIDA</strong> {{ result.checks.en.techContent.publishAllowed }}</p>
           </article>

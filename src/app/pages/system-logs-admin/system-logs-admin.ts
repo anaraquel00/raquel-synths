@@ -1,11 +1,14 @@
 import { CommonModule, DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { Component, Inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { SafeHtmlPipe } from '../../components/pipes/safe-html.pipe';
 
 interface TechContentDiagnostic {
   sourceFormat: 'HTML' | 'PLAIN_TEXT';
-  htmlValidation: 'PASS' | 'FAIL';
-  allowedTagsOnly: 'PASS' | 'FAIL';
+  sanitization: 'PASS' | 'PASS WITH CHANGES' | 'FAIL';
+  editorialContent: 'PASS' | 'FAIL';
+  securityChanges: number;
+  securityChangeDetails: string[];
   renderableContent: 'PASS' | 'FAIL';
   publishAllowed: 'YES' | 'NO';
 }
@@ -57,7 +60,7 @@ interface DryRunResult {
 @Component({
   selector: 'app-system-logs-admin',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, SafeHtmlPipe],
   templateUrl: './system-logs-admin.html',
   styleUrl: './system-logs-admin.scss'
 })
