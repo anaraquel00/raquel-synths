@@ -16,6 +16,11 @@ import { HttpClient } from '@angular/common/http';
 import { isPlatformServer } from '@angular/common';
 import { LoreEpisode } from '../data/lore-data';
 import { Product, Department } from '../data/store-data';
+import {
+  getEditorialDateKey,
+  isPublicationEligible,
+  normalizeLegacyPublicationFlag
+} from '../../../shared/editorial-publication.js';
 
 interface FirestoreRestValue {
   stringValue?: string;
@@ -66,6 +71,7 @@ export class ContentService {
 
   // Relógio de release: nulo em produção; sobrescrevível apenas em QA isolado.
   private readonly HYBRID_PREVIEW_NOW: string | null = null;
+  private readonly SYSTEM_LOG_PREVIEW_NOW: string | null = null;
 
   private getHybridNowIso(): string {
     return this.HYBRID_PREVIEW_NOW ?? new Date().toISOString();
@@ -79,6 +85,23 @@ export class ContentService {
     return /^\d{4}-\d{2}-\d{2}$/.test(value)
       ? new Date(`${value}T00:00:00-03:00`)
       : new Date(value);
+  }
+
+  private getSystemLogNow(): Date {
+    return this.SYSTEM_LOG_PREVIEW_NOW
+      ? new Date(this.SYSTEM_LOG_PREVIEW_NOW)
+      : new Date();
+  }
+
+  private getSystemLogQueryBoundary(): string {
+    return `${getEditorialDateKey(this.getSystemLogNow())}\uf8ff`;
+  }
+
+  private isSystemLogPublic(log: Record<string, unknown>): boolean {
+    return isPublicationEligible({
+      published: normalizeLegacyPublicationFlag(log['published']),
+      releaseDate: typeof log['date'] === 'string' ? log['date'] : null
+    }, this.getSystemLogNow());
   }
 
 
@@ -619,8 +642,8 @@ private isEpisodePublic(
         where: {
           fieldFilter: {
             field: { fieldPath: 'date' },
-            op: 'LESS_THAN_OR_EQUAL',
-            value: { stringValue: new Date().toISOString() }
+            op: 'LESS_THAN',
+            value: { stringValue: this.getSystemLogQueryBoundary() }
           }
         },
         orderBy: [
@@ -629,20 +652,23 @@ private isEpisodePublic(
             direction: 'DESCENDING'
           }
         ],
-        limit
+        limit: limit * 5
       }
     }).pipe(
       timeout(4000),
-      map(results => results.flatMap(result => {
-        const restDoc = result.document;
+      map(results => results
+        .flatMap(result => {
+          const restDoc = result.document;
 
-        if (!restDoc) {
-          return [];
-        }
+          if (!restDoc) {
+            return [];
+          }
 
-        const id = restDoc.name.split('/').pop() ?? '';
-        return [this.mapFirestoreRestDocument(restDoc, id)];
-      })),
+          const id = restDoc.name.split('/').pop() ?? '';
+          return [this.mapFirestoreRestDocument(restDoc, id)];
+        })
+        .filter(log => this.isSystemLogPublic(log as unknown as Record<string, unknown>))
+        .slice(0, limit)),
       tap(logs => {
         this.homeContentCache.set(cacheKey, logs);
 
@@ -668,7 +694,7 @@ private isEpisodePublic(
       colRef,
 
       // 👇 [MODO PRODUÇÃO / VERCEL]: Deixe DESCOMENTADO para o site real (filtra logs do futuro)
-      where('date', '<=', new Date().toISOString()),
+      where('date', '<', this.getSystemLogQueryBoundary()),
 
       // 👇 [MODO TESTE QA]: Para testar e agendar logs do futuro no localhost, comente a linha de cima e descomente a de baixo
       // where('date', '<=', '2030-01-01T00:00:00.000Z'),
@@ -681,7 +707,9 @@ private isEpisodePublic(
     // ==========================================
     // 👇 [MODO PRODUÇÃO / VERCEL - SSR SEGURO]:
     return from(getDocs(q)).pipe(
-      map(snapshot => snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }))),
+      map(snapshot => snapshot.docs
+        .map(docSnap => ({ id: docSnap.id, ...docSnap.data() }))
+        .filter(log => this.isSystemLogPublic(log))),
       catchError(err => {
         console.error('⚠️ [ContentService] Erro ao buscar logs:', err);
         return of([]);
@@ -704,7 +732,8 @@ private isEpisodePublic(
     return from(getDoc(docRef)).pipe(
       map(snapshot => {
         if (snapshot.exists()) {
-          return { id: snapshot.id, ...snapshot.data() };
+          const log = { id: snapshot.id, ...snapshot.data() };
+          return this.isSystemLogPublic(log) ? log : null;
         }
         return null;
       }),

@@ -9,6 +9,7 @@ import {
   sanitizeEditorialHtml,
   sanitizeSystemLogField
 } from '../../lib/system-logs/editorial-html.js';
+import { isPublicationEligible } from '../../shared/editorial-publication.js';
 
 const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT || 'raquel-synths-platform';
 const COLLECTION = 'logs';
@@ -280,7 +281,11 @@ function techContentDiagnostic(language) {
 
   return validated.diagnostic;
 }
-function releaseDate(value) { const date = new Date(`${value}T00:00:00.000Z`); return date.getTime() <= Date.now() ? 'PUBLIC' : 'SCHEDULED'; }
+function releaseDate(value) {
+  return isPublicationEligible({ published: true, releaseDate: value })
+    ? 'PUBLIC'
+    : 'SCHEDULED';
+}
 function docId(value) { return `${value}-log`; }
 function normalizeLanguagePayload(language) {
   return {
@@ -307,7 +312,7 @@ function normalizePayload(payload) {
 function digest(payload) { return createHmac('sha256', secret()).update(JSON.stringify(payload)).digest('base64url'); }
 function makeDryRunToken(payload, source) { const data = Buffer.from(JSON.stringify({ digest: digest(payload), source, expiresAt: Date.now() + DRY_RUN_TTL, nonce: randomUUID() })).toString('base64url'); return `${data}.${createHmac('sha256', secret()).update(`system-logs:${data}`).digest('base64url')}`; }
 function verifyToken(token, payload, source) { const [data, sig, ...extra] = String(token || '').split('.'); if (!data || !sig || extra.length || !safeEqual(sig, createHmac('sha256', secret()).update(`system-logs:${data}`).digest('base64url'))) return false; try { const value = JSON.parse(Buffer.from(data, 'base64url').toString('utf8')); return Number(value.expiresAt) > Date.now() && value.digest === digest(payload) && JSON.stringify(value.source) === JSON.stringify(source); } catch { return false; } }
-function firestoreFields(payload) { const string = value => ({ stringValue: value }); const map = value => ({ mapValue: { fields: Object.fromEntries(Object.entries(value).map(([key, item]) => [key, string(item)])) } }); return { date: string(payload.date), image: string(payload.image), pt: map(payload.pt), en: map(payload.en) }; }
+function firestoreFields(payload) { const string = value => ({ stringValue: value }); const map = value => ({ mapValue: { fields: Object.fromEntries(Object.entries(value).map(([key, item]) => [key, string(item)])) } }); return { published: { booleanValue: true }, date: string(payload.date), image: string(payload.image), pt: map(payload.pt), en: map(payload.en) }; }
 async function firestoreCreate(payload) {
   const auth = await firestoreAuth().getClient(); const token = await auth.getAccessToken(); const url = new URL(`https://firestore.googleapis.com/v1/projects/${encodeURIComponent(PROJECT_ID)}/databases/(default)/documents/${COLLECTION}`); url.searchParams.set('documentId', docId(payload.date));
   const response = await fetch(url, { method: 'POST', headers: { Authorization: `Bearer ${typeof token === 'string' ? token : token.token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ fields: firestoreFields(payload) }) });

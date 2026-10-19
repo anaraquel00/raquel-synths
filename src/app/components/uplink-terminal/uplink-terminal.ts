@@ -1,7 +1,8 @@
-import { Component, EventEmitter, OnInit, OnDestroy, Output, PLATFORM_ID, inject, signal, afterNextRender } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, OnInit, OnDestroy, Output, PLATFORM_ID, ViewChild, inject, signal, afterNextRender } from '@angular/core';
 import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { ContentService } from '../../services/content.service';
 import { TranslationService } from '../../services/translation.service';
+import { RQS_EXTERNAL_CHANNELS } from '../../data/external-channels';
 
 @Component({
   selector: 'app-uplink-terminal',
@@ -12,6 +13,7 @@ import { TranslationService } from '../../services/translation.service';
 })
 export class UplinkTerminalComponent implements OnInit, OnDestroy {
   @Output() close = new EventEmitter<void>();
+  @ViewChild('terminalCloseButton') private terminalCloseButton?: ElementRef<HTMLButtonElement>;
 
   private platformId = inject(PLATFORM_ID);
   private document = inject(DOCUMENT);
@@ -20,6 +22,7 @@ export class UplinkTerminalComponent implements OnInit, OnDestroy {
   isFinished = signal<boolean>(false);
   isJonahMode = signal<boolean>(false);
   private themeObserver: MutationObserver | null = null;
+  readonly channels = RQS_EXTERNAL_CHANNELS;
 
   // 🛡️ SCRIPT BROKLIN (Sempre em Inglês - Tech Standard)
   private scriptBroklin = [
@@ -50,6 +53,7 @@ export class UplinkTerminalComponent implements OnInit, OnDestroy {
   ) {
     // 🛡️ TRAVA TÁTICA: O script hacker e a leitura do DOM iniciam APENAS após a hidratação
     afterNextRender(() => {
+      this.terminalCloseButton?.nativeElement.focus();
       this.checkMode();
       this.themeObserver = new MutationObserver(() => this.checkMode());
       this.themeObserver.observe(this.document.body, { attributes: true, attributeFilter: ['class'] });
@@ -90,6 +94,9 @@ export class UplinkTerminalComponent implements OnInit, OnDestroy {
   }
 
   closeTerminal() { this.close.emit(); }
+  @HostListener('document:keydown.escape')
+  onEscape(): void { this.closeTerminal(); }
+
   private delay(ms: number) { return new Promise(resolve => setTimeout(resolve, ms)); }
 
   private scrollToBottom() {
@@ -100,20 +107,4 @@ export class UplinkTerminalComponent implements OnInit, OnDestroy {
       }, 50);
     }
   }
-acessarArquivosMaster() {
-    window.open('https://open.spotify.com/intl-pt/artist/1yrPZaFyIcsCjj876LaHXL?si=m6xr309tQw22RRERSvF2eQ', '_blank');
-  }
-
- acessarAlgoritmoCorporativo() {
-    window.open('https://youtube.com/@RaquelSynths', '_blank');
-  }
-
-  iniciarFrequenciaPirata() {
-    window.open('https://soundcloud.com/rqs_official', '_blank');
-  }
-  // Injeta o comando de abertura de nova aba direto na memória
-  iniciarContrabando() {
-    window.open('https://discord.gg/ryvhdRnQpQ', '_blank');
-  }
-
 }

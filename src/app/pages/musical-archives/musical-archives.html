@@ -10,7 +10,7 @@
       <h3>{{ translate.isPt() ? 'PROTOCOLO RQS: LEGADO & REGISTROS' : 'RQS PROTOCOL: LEGACY & RECORDS' }}</h3>
     </div>
 
-    @for (album of paginatedBroklin; track album; let i = $index; let isLast = $last) {
+    @for (album of paginatedBroklin; track album; let i = $index) {
       <article
         class="featured-album"
         [id]="releaseElementId(album.id)">
@@ -50,18 +50,6 @@
         </div>
       </article>
       <hr class="separator neon-line">
-      @if ((i + 1) % 2 === 0 && !isLast) {
-
-    <div class="inter-list-ad">
-       @defer (on viewport) {
-  <app-ad-article ngSkipHydration></app-ad-article>
-  } @placeholder {
-  <div style="min-height: 250px; width: 100%;"></div>
-  }
-    </div>
-
-    <hr class="separator neon-line">
-  }
     }
 
    <div class="terminal-pagination">
@@ -109,7 +97,7 @@
       <h3>{{ translate.isPt() ? 'DADOS CORROMPIDOS: INCIDENTES' : 'CORRUPTED DATA: INCIDENTS' }}</h3>
     </div>
 
-    @for (album of paginatedJonah; track album; let i = $index; let isLast = $last) {
+    @for (album of paginatedJonah; track album; let i = $index) {
       <article
         class="featured-album"
         [id]="releaseElementId(album.id)">
@@ -150,18 +138,6 @@
         </div>
       </article>
       <hr class="separator hazard-line">
-      @if ((i + 1) % 2 === 0 && !isLast) {
-
-    <div class="inter-list-ad">
-       @defer (on viewport) {
-  <app-ad-article ngSkipHydration></app-ad-article>
-  } @placeholder {
-  <div style="min-height: 250px; width: 100%;"></div>
-  }
-    </div>
-
-    <hr class="separator hazard-line">
-  }
     }
 <div class="terminal-pagination hazard-mode">
       <!-- 🛡️ REWIND_CRASH BLINDADO: Só cria a tag de link se o setor for maior que 1 -->

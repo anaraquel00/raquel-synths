@@ -18,7 +18,7 @@
               </div>
             }
             <div class="log-discovery-content">
-              <time class="date" [attr.datetime]="event.date">{{ event.date | date:'MMM dd, yyyy' | uppercase }}</time>
+              <time class="date" [attr.datetime]="event.date">{{ event.date | date:'MMM dd, yyyy':'UTC' | uppercase }}</time>
               <h3 class="title">{{ content?.title }}</h3>
               <div class="description-lead" [innerHTML]="content?.description | safeHtml"></div>
               <a [routerLink]="['/log-reader', event.id]" class="btn-decrypt">

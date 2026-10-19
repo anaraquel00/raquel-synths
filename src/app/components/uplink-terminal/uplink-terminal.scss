@@ -9,12 +9,13 @@ $font-stack: 'Courier New', monospace;
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     z-index: 10000; // Acima de tudo, até de Deus
 }
 
 .terminal-overlay {
+    box-sizing: border-box;
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.8); // Fundo escuro atrás da janela
@@ -22,13 +23,16 @@ $font-stack: 'Courier New', monospace;
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: clamp(12px, 3vw, 32px);
     animation: fadeIn 0.3s ease;
 }
 
 .terminal-window {
-    width: 90%;
+    box-sizing: border-box;
+    width: min(600px, 100%);
     max-width: 600px;
-    height: 400px;
+    height: min(620px, calc(100dvh - clamp(24px, 6vw, 64px)));
+    max-height: 100%;
     background: $terminal-bg;
     border: 1px solid $neon-green;
     border-radius: 8px;
@@ -55,6 +59,7 @@ $font-stack: 'Courier New', monospace;
 }
 
 .terminal-header {
+    flex: 0 0 auto;
     background: #222;
     padding: 10px;
     display: flex;
@@ -64,8 +69,13 @@ $font-stack: 'Courier New', monospace;
 }
 
 .dot {
+    box-sizing: border-box;
+    display: inline-block;
+    flex: 0 0 12px;
     width: 12px;
     height: 12px;
+    border: 0;
+    padding: 0;
     border-radius: 50%;
     cursor: pointer;
     &.red { background: #ff5f56; }
@@ -73,14 +83,38 @@ $font-stack: 'Courier New', monospace;
     &.green { background: #27c93f; }
 }
 
+button.dot.red {
+    position: relative;
+    width: 36px;
+    height: 36px;
+    flex-basis: 36px;
+    background: transparent;
+
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 12px;
+        border-radius: 50%;
+        background: #ff5f56;
+    }
+
+    &:focus-visible {
+        outline: 3px solid white;
+        outline-offset: 2px;
+    }
+}
+
 .title {
+    min-width: 0;
     color: #ccc;
     font-family: $font-stack;
     font-size: 0.8rem;
     margin-left: 10px;
+    overflow-wrap: anywhere;
 }
 
 .terminal-body {
+    min-height: 0;
     padding: 20px;
     flex: 1;
     overflow-y: auto;
@@ -119,21 +153,30 @@ $font-stack: 'Courier New', monospace;
 }
 
 .action-buttons {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 15px;
     justify-content: center;
     margin: 20px 0;
-    flex-wrap: wrap;
 }
 
 .cyber-btn {
+    box-sizing: border-box;
+    min-width: 0;
+    min-height: 52px;
     background: transparent;
     color: $neon-green;
     border: 1px solid $neon-green;
-    padding: 10px 20px;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     text-decoration: none;
     font-weight: bold;
     text-transform: uppercase;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
     transition: all 0.3s;
     
     &:hover {
@@ -141,9 +184,20 @@ $font-stack: 'Courier New', monospace;
         color: black;
         box-shadow: 0 0 15px $neon-green;
     }
+
+    &:focus-visible {
+        outline: 3px solid white;
+        outline-offset: 3px;
+    }
+
+    i {
+        flex: 0 0 auto;
+        font-size: 1.1rem;
+    }
 }
 
 .close-btn {
+    min-height: 44px;
     background: none;
     border: none;
     color: #666;
@@ -151,6 +205,11 @@ $font-stack: 'Courier New', monospace;
     font-family: $font-stack;
     margin-top: 10px;
     &:hover { color: white; }
+
+    &:focus-visible {
+        outline: 3px solid white;
+        outline-offset: 3px;
+    }
 }
 
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
@@ -214,7 +273,7 @@ $font-stack: 'Courier New', monospace;
         border-color: $jonah-orange;
 
         // Sobrescreve classes específicas (Spotify/Youtube) pra tudo ser unificado no Caos
-        &.spotify, &.youtube, &.soundcloud {
+        &.spotify, &.youtube, &.soundcloud, &.radio {
             border-color: $jonah-orange;
             color: $jonah-orange;
         }
@@ -230,5 +289,65 @@ $font-stack: 'Courier New', monospace;
     .close-btn {
         color: #884444;
         &:hover { color: $jonah-orange; }
+    }
+}
+
+@media (max-width: 520px) {
+    .terminal-overlay {
+        align-items: stretch;
+        padding: 10px;
+    }
+
+    .terminal-window {
+        width: 100%;
+        height: calc(100dvh - 20px);
+        max-height: none;
+    }
+
+    .terminal-header {
+        padding: 9px;
+    }
+
+    .title {
+        margin-left: 4px;
+        font-size: 0.72rem;
+    }
+
+    .terminal-body {
+        padding: 14px;
+        font-size: 0.84rem;
+    }
+
+    .access-granted-panel {
+        margin-top: 14px;
+        padding-top: 14px;
+
+        h3 {
+            max-width: 100%;
+            box-sizing: border-box;
+            font-size: 1.2rem;
+        }
+    }
+
+    .action-buttons {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin: 16px 0;
+    }
+
+    .cyber-btn {
+        width: 100%;
+        min-height: 48px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .terminal-overlay,
+    .cursor {
+        animation: none;
+    }
+
+    .cyber-btn {
+        transition-duration: 0.01ms;
     }
 }
