@@ -1,27 +1,144 @@
 <section class="bios-container" ngSkipHydration>
   <h2 class="section-title">{{ translate.isPt() ? 'DOSSIÊ OPERATIVO' : 'OPERATIVE DOSSIER' }}</h2>
-  <p class="section-subtitle">{{ translate.isPt() ? 'Acesso restrito: decripte os perfis operativos da RQS.' : 'Restricted access: decrypt the operative profiles of RQS.' }}</p>
+  <p class="section-subtitle">{{ isJonahMode() ? jonahCopy().subtitle : broklinCopy().subtitle }}</p>
 
   @if (!isJonahMode()) {
-    <div class="manifesto-text fade-in">
-      <div [innerHTML]="translate.isPt() ? manifestoPt : manifestoEn" (click)="handleClick($event)"></div>
-    </div>
+    <article class="broklin-editorial fade-in" aria-label="Broklin post-war historical dossier">
+      <section class="editorial-block" aria-labelledby="broklin-origin-title">
+        <p class="terminal-label">ORIGIN FILE</p>
+        <h3 id="broklin-origin-title">THE ARCHITECT BEFORE THE WAR</h3>
+        @for (paragraph of broklinCopy().origin; track $index) {
+          <p>{{ paragraph }}</p>
+        }
+      </section>
+
+      <div class="system-status" role="note" [attr.aria-label]="translate.isPt() ? 'Estado histórico de origem' : 'Historical origin status'">
+        <span>ORIGIN // DOCUMENTED</span>
+        <span>KELMA // HISTORICAL PARTNER</span>
+        <span>JONAH // RIVALRY EMERGING</span>
+        <span>AUDIO WAR // NOT YET FORMALIZED</span>
+      </div>
+
+      <section class="editorial-block" aria-labelledby="system-fracture-title">
+        <p class="terminal-label">SYSTEM FRACTURE</p>
+        <h3 id="system-fracture-title">THE COLD WAR</h3>
+        @for (paragraph of broklinCopy().fracture; track $index) {
+          <p>{{ paragraph }}</p>
+        }
+      </section>
+
+      <div class="system-status" role="note" [attr.aria-label]="translate.isPt() ? 'Estado histórico da Guerra Fria' : 'Historical Cold War status'">
+        <span>COLD WAR // ARCHIVED</span>
+        <span>STUDIO INTEGRITY // COMPROMISED</span>
+        <span>PERSONAL CONFLICT // ESCALATED</span>
+      </div>
+
+      <section class="editorial-block" aria-labelledby="blueprint-title">
+        <p class="terminal-label">THE BLUEPRINT</p>
+        <h3 id="blueprint-title">NEON NECROSIS // THE DIVISION</h3>
+        @for (paragraph of broklinCopy().blueprint; track $index) {
+          <p>{{ paragraph }}</p>
+        }
+      </section>
+
+      <div class="system-status" role="note" [attr.aria-label]="translate.isPt() ? 'Estado histórico da divisão Blue e Red' : 'Historical Blue and Red division status'">
+        <span>BLUE TEAM // ESTABLISHED</span>
+        <span>RED TEAM // ESTABLISHED</span>
+        <span>NEON NECROSIS // HISTORICAL BLUEPRINT</span>
+      </div>
+
+      <section class="editorial-block" aria-labelledby="legacy-restoration-title">
+        <p class="terminal-label">LEGACY RESTORATION</p>
+        <h3 id="legacy-restoration-title">THE MAN BEYOND THE TECH LEAD</h3>
+        @for (paragraph of broklinCopy().restoration; track $index) {
+          <p>{{ paragraph }}</p>
+        }
+      </section>
+
+      <div class="system-status" role="note" [attr.aria-label]="translate.isPt() ? 'Estado da restauração de legado' : 'Legacy restoration status'">
+        <span>LEGACY // PRESERVED</span>
+        <span>KELMA // FORMER SPOUSE / CO-PARENT</span>
+        <span>KELLY &amp; KAEL // FAMILY</span>
+        <span>MEMORY INTEGRITY // PARTIAL</span>
+      </div>
+
+      <section class="editorial-block" aria-labelledby="restored-connection-title">
+        <p class="terminal-label">RESTORED CONNECTION</p>
+        <h3 id="restored-connection-title">NICOLE NYX // THE LEGACY BOND</h3>
+        @for (paragraph of broklinCopy().connection; track $index) {
+          <p>{{ paragraph }}</p>
+        }
+      </section>
+
+      <div class="system-status" role="note" [attr.aria-label]="translate.isPt() ? 'Estado da conexão restaurada' : 'Restored connection status'">
+        <span>NICOLE NYX // CURRENT PARTNER</span>
+        <span>LEGACY BOND // RESTORED</span>
+        <span>NEW FAMILY // IN PROGRESS</span>
+      </div>
+    </article>
   } @else {
-    <div class="manifesto_jonah fade-in">
-      <div [innerHTML]="translate.isPt() ? manifesto_jonah_pt : manifesto_jonah_en" (click)="handleClick($event)"></div>
-    </div>
+    <article class="jonah-editorial fade-in" aria-label="Jonah sound war historical dossier">
+      <section class="editorial-block" aria-labelledby="origin-file-title">
+        <p class="terminal-label">ORIGIN FILE</p>
+        <h3 id="origin-file-title">THE SOUND WAR</h3>
+        @for (paragraph of jonahCopy().origin; track $index) {
+          <p>{{ paragraph }}</p>
+        }
+      </section>
+
+      <div
+        class="damage-status"
+        role="note"
+        [attr.aria-label]="translate.isPt() ? 'Diagnóstico histórico da guerra sonora' : 'Historical sound war diagnostic'"
+      >
+        <span>EMOTIONAL DAMAGE // DETECTED</span>
+        <span>BROKLIN // ASSOCIATED WITH LOSS</span>
+        <span>MUSIC // BECOMING WEAPON</span>
+        <span>WAR // NOT YET FORMALIZED</span>
+      </div>
+
+      <section class="editorial-block" aria-labelledby="reforge-title">
+        <p class="terminal-label">SYSTEM UPGRADE</p>
+        <h3 id="reforge-title">THE REFORGE</h3>
+        @for (paragraph of jonahCopy().reforge; track $index) {
+          <p>{{ paragraph }}</p>
+        }
+      </section>
+
+      <section class="editorial-block" aria-labelledby="jonah-current-status-title">
+        <p class="terminal-label">AUDIO CIVIL WAR // ARCHIVED</p>
+        <h3 id="jonah-current-status-title">CURRENT STATUS</h3>
+        @for (paragraph of jonahCopy().current; track $index) {
+          <p>{{ paragraph }}</p>
+        }
+      </section>
+    </article>
   }
 
-  <div class="members-grid">
-    @for (member of members; track member.name; let i = $index) {
+  <div class="members-grid" [class.jonah-current-pair]="isJonahMode()" [class.broklin-current-pair]="!isJonahMode()">
+    @for (member of members; track $index; let i = $index) {
       <div class="member-card">
- <div class="image-frame">
-   @if (!isJonahMode()) {
-     <img [ngSrc]="member.imageBroklin" fill sizes="(max-width: 768px) 100vw, 15vw" [priority]="i === 0" class="img-broklin fade-in" alt="Foto Normal">
-   } @else {
-     <img [ngSrc]="member.imageJonah" fill sizes="(max-width: 768px) 100vw, 15vw" class="img-jonah fade-in" alt="Foto Glitch">
-   }
- </div>
+        <div class="image-frame">
+          @if (!isJonahMode()) {
+            <img
+              [ngSrc]="member.imageBroklin"
+              fill
+              sizes="(max-width: 768px) 100vw, 30vw"
+              [priority]="i === 0"
+              class="img-broklin fade-in"
+              [alt]="member.imageAlt"
+            >
+          } @else {
+            <img
+              [ngSrc]="member.imageJonah"
+              fill
+              sizes="(max-width: 768px) 100vw, 30vw"
+              [priority]="i === 0"
+              class="img-jonah fade-in"
+              [alt]="member.imageAlt"
+            >
+          }
+        </div>
         <div class="info-box">
           <h3>{{ member.name }}</h3>
           <span class="role">{{ member.role }}</span>
@@ -34,4 +151,68 @@
       </div>
     }
   </div>
+
+  @if (!isJonahMode()) {
+    <article class="broklin-editorial broklin-editorial-after-pair fade-in">
+      <section class="editorial-block" aria-labelledby="redblue-protocol-title">
+        <p class="terminal-label">REDBLUE PROTOCOL</p>
+        <h3 id="redblue-protocol-title">THE SIGNAL AFTER THE WAR</h3>
+        @for (paragraph of broklinCopy().redblue; track $index) {
+          <p>{{ paragraph }}</p>
+        }
+      </section>
+
+      <div class="system-status" role="note" [attr.aria-label]="translate.isPt() ? 'Estado atual do protocolo RedBlue' : 'Current RedBlue protocol status'">
+        <span>WAR // ARCHIVED</span>
+        <span>BLUE + RED // INTEROPERABLE</span>
+        <span>REDBLUE // CURRENT SIGNAL</span>
+      </div>
+
+      <section class="editorial-block operative-profile" aria-labelledby="operative-profile-title">
+        <p class="terminal-label">OPERATIVE PROFILE</p>
+        <h3 id="operative-profile-title">BROKLIN GARPETER // SYNTH LORD</h3>
+        <p class="profile-kicker">THE ARCHITECT WHO SURVIVED THE COLLAPSE</p>
+        @for (paragraph of broklinCopy().profile; track $index) {
+          <p>{{ paragraph }}</p>
+        }
+        <p class="profile-closing">{{ broklinCopy().profileClosing }}</p>
+      </section>
+
+      <section class="editorial-block current-status" aria-labelledby="broklin-current-status-title">
+        <p class="terminal-label">CURRENT STATUS</p>
+        <h3 id="broklin-current-status-title">BROKLIN GARPETER // ACTIVE</h3>
+        <div class="system-status" role="note" [attr.aria-label]="translate.isPt() ? 'Estado operativo atual de Broklin' : 'Broklin current operative status'">
+          <span>BLUE ORIGIN // PRESERVED</span>
+          <span>TECH LEAD // LEGACY ROLE</span>
+          <span>NICOLE NYX // PARTNER</span>
+          <span>KELMA ADLANKO // CO-PARENT</span>
+          <span>REDBLUE // CURRENT MUSICAL ERA</span>
+        </div>
+      </section>
+    </article>
+
+    <section class="saga-hook broklin-saga-hook" aria-labelledby="broklin-source-code-title">
+      <p class="terminal-label">ACCESS THE SOURCE CODE</p>
+      <h3 id="broklin-source-code-title">BROKLIN ARC // CONTINUE</h3>
+      @for (paragraph of broklinCopy().sourceBridge; track $index) {
+        <p>{{ paragraph }}</p>
+      }
+      <p class="source-closing">{{ broklinCopy().closing }}</p>
+      <p class="signal-line">SIGNAL &gt; HYPE.</p>
+      <a class="saga-cta" routerLink="/visual-novel/broklin/s1">
+        {{ broklinCopy().cta }}
+      </a>
+    </section>
+  } @else {
+    <section class="saga-hook" aria-labelledby="source-code-title">
+      <p class="terminal-label">ORIGIN // DOCUMENTED · RIVALRY // ARCHIVED · REDBLUE // CURRENT SIGNAL</p>
+      <h3 id="source-code-title">ACCESS THE SOURCE CODE</h3>
+      @for (paragraph of jonahCopy().sourceBridge; track $index) {
+        <p>{{ paragraph }}</p>
+      }
+      <a class="saga-cta" routerLink="/visual-novel/jonah/s1">
+        {{ jonahCopy().cta }}
+      </a>
+    </section>
+  }
 </section>

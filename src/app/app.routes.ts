@@ -64,6 +64,7 @@ export const routes: Routes = [
     path:'musical-archives',
     loadComponent: () => import('./pages/musical-archives/musical-archives').then(m => m.MusicalArchives),
     data: {
+      robots: 'noindex, follow',
       seo: {
         title: {
           pt: 'Arquivo Musical',
@@ -187,11 +188,14 @@ export const routes: Routes = [
   {
     path: 'store',
     loadComponent: () => import('./pages/store/store').then(m => m.StoreComponent),
+    data: { robots: 'noindex, follow' }
   },
- {
+  {
     path: 'store/:dept',
-    loadComponent: () => import('./pages/store/store').then(m => m.StoreComponent),
-     },
+    redirectTo: ({ params }) =>
+      `/store?dept=${encodeURIComponent(params['dept'])}`,
+    pathMatch: 'full'
+  },
 
   // 📡 ROTA 12: O Terminal de Comunicação (Contato/Uplink)
   {
@@ -217,6 +221,7 @@ export const routes: Routes = [
     loadComponent: () => import('./app-discography/app-discography').then(m => m.DiscographyComponent),
     data: {
       limiteToHome: 5, // Variável para limitar o número de faixas exibidas na home
+      robots: 'noindex, follow',
       seo: {
         title: {
           pt: 'Discografia | RQS',
@@ -314,7 +319,8 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/bio-link/bio-link')
         .then(m => m.BioLinkComponent),
-    title: 'RaQuel Synths // Official Links & Bio'
+    title: 'RaQuel Synths // Official Links & Bio',
+    data: { robots: 'noindex, follow' }
   },
 
   // 🛰️ ROTA ALTERNATIVA DE ATALHO (Caso alguém digite /links no navegador)

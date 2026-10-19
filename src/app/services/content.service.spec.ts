@@ -242,3 +242,79 @@ describe('ContentService global saga publication gate', () => {
     expect(releasedResult?.id).toBe('s1-e10');
   });
 });
+
+describe('ContentService System Log publication gate', () => {
+  const endpoint =
+    'https://firestore.googleapis.com/v1/projects/' +
+    'raquel-synths-platform/databases/(default)/documents:runQuery';
+
+  const firestoreLog = (
+    id: string,
+    date: string,
+    published?: boolean
+  ) => ({
+    document: {
+      name:
+        'projects/raquel-synths-platform/databases/(default)/documents/' +
+        `logs/${id}`,
+      fields: {
+        date: { stringValue: date },
+        ...(published === undefined
+          ? {}
+          : { published: { booleanValue: published } }),
+        pt: {
+          mapValue: {
+            fields: {
+              title: { stringValue: id },
+              description: { stringValue: 'Conteúdo editorial.' }
+            }
+          }
+        }
+      }
+    }
+  });
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        ContentService,
+        TransferState,
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: PLATFORM_ID, useValue: 'server' },
+        { provide: Firestore, useValue: {} }
+      ]
+    });
+  });
+
+  afterEach(() => {
+    TestBed.inject(HttpTestingController).verify();
+    TestBed.resetTestingModule();
+  });
+
+  it('exclui logs futuros e published=false do latest sem ocultar legado lançado', () => {
+    const service = TestBed.inject(ContentService);
+    (service as unknown as { SYSTEM_LOG_PREVIEW_NOW: string | null })
+      .SYSTEM_LOG_PREVIEW_NOW = '2026-10-19T02:59:59.000Z';
+    let result: Array<{ id: string }> | undefined;
+
+    service.getLatestLogs(5).subscribe(logs => result = logs);
+
+    const request = TestBed.inject(HttpTestingController).expectOne(endpoint);
+    expect(request.request.body.structuredQuery.where.fieldFilter).toEqual({
+      field: { fieldPath: 'date' },
+      op: 'LESS_THAN',
+      value: { stringValue: '2026-10-18\uf8ff' }
+    });
+    expect(request.request.body.structuredQuery.limit).toBe(25);
+
+    request.flush([
+      firestoreLog('future', '2026-10-19', true),
+      firestoreLog('disabled', '2026-10-18', false),
+      firestoreLog('explicit', '2026-10-18', true),
+      firestoreLog('legacy', '2026-10-17')
+    ]);
+
+    expect(result?.map(log => log.id)).toEqual(['explicit', 'legacy']);
+  });
+});

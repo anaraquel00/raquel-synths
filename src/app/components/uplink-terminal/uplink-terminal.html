@@ -1,12 +1,24 @@
 <div class="terminal-overlay" (click)="closeTerminal()" [class.jonah-theme]="isJonahMode()">
-  <div class="terminal-window" (click)="$event.stopPropagation()">
+  <div
+    class="terminal-window"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="translate.isPt() ? 'Terminal RQS' : 'RQS Terminal'"
+    (click)="$event.stopPropagation()"
+  >
 
     <div class="terminal-header">
-      <span class="dot red" (click)="closeTerminal()"></span>
-      <span class="dot yellow"></span>
-      <span class="dot green"></span>
+      <button
+        #terminalCloseButton
+        class="dot red"
+        type="button"
+        (click)="closeTerminal()"
+        [attr.aria-label]="translate.isPt() ? 'Fechar Terminal RQS' : 'Close RQS Terminal'"
+      ></button>
+      <span class="dot yellow" aria-hidden="true"></span>
+      <span class="dot green" aria-hidden="true"></span>
       <span class="title">
-        {{ isJonahMode() ? 'RUST_VIRUS_INJECTOR.exe' : 'RQS_SECURE_UPLINK_V3.0.exe' }}
+        RQS_SECURE_UPLINK_V3.0.exe
       </span>
     </div>
 
@@ -23,33 +35,29 @@
         <div class="access-granted-panel fade-in">
 
           <h3 class="glitch-text" [class.danger-text]="isJonahMode()">
-            @if (isJonahMode()) {
-              {{ translate.isPt() ? '🛑 INICIAR CONTAMINAÇÃO' : '🛑 INITIATE CONTAMINATION' }}
-            } @else {
-              {{ translate.isPt() ? 'ACESSO CONCEDIDO' : 'ACCESS GRANTED' }}
-            }
+            {{ translate.isPt() ? 'ACESSO CONCEDIDO' : 'ACCESS GRANTED' }}
           </h3>
 
           <p>
-            @if (isJonahMode()) {
-              {{ translate.isPt() ? '⚠️ Nenhum canal é seguro. Boa sorte.' : '⚠️ No channel is safe. Good luck.' }}
-            } @else {
-              {{ translate.isPt() ? 'Escolha um canal seguro:' : 'Choose a secure channel:' }}
-            }
+            {{ translate.isPt() ? 'Escolha um canal seguro:' : 'Choose a secure channel:' }}
           </p>
 
           <div class="action-buttons">
-            <a (click)="acessarArquivosMaster()" style="cursor: pointer;" class="cyber-btn spotify">
-              <i class="ph-spotify-logo"></i> {{ translate.isPt() ? '[ Extrair Arquivos Master ]' : '[Extract Master Files]' }}
+            <a [href]="channels.spotify" target="_blank" rel="noopener noreferrer" class="cyber-btn spotify">
+              <i class="ph-spotify-logo" aria-hidden="true"></i>
+              <span>{{ translate.isPt() ? '[ OUVIR NO SPOTIFY ]' : '[ LISTEN ON SPOTIFY ]' }}</span>
             </a>
-            <a (click)="acessarAlgoritmoCorporativo()" style="cursor: pointer;" class="cyber-btn youtube">
-              <i class="ph-youtube-logo"></i> {{ translate.isPt() ? '[ Burlar o Algoritmo Corporativo ]' : '[Bypass Corporate Algorithm]' }}
+            <a [href]="channels.youtube" target="_blank" rel="noopener noreferrer" class="cyber-btn youtube">
+              <i class="ph-youtube-logo" aria-hidden="true"></i>
+              <span>{{ translate.isPt() ? '[ ASSISTIR NO YOUTUBE ]' : '[ WATCH ON YOUTUBE ]' }}</span>
             </a>
-            <a (click)="iniciarFrequenciaPirata()" style="cursor: pointer;" class="cyber-btn soundcloud">
-              <i class="ph-soundcloud-logo"></i> {{ translate.isPt() ? '[ Rastrear Frequência Pirata ]' : '[Track Pirate Frequency]' }}
+            <a [href]="channels.soundcloud" target="_blank" rel="noopener noreferrer" class="cyber-btn soundcloud">
+              <i class="ph-soundcloud-logo" aria-hidden="true"></i>
+              <span>{{ translate.isPt() ? '[ OUVIR NO SOUNDCLOUD ]' : '[ LISTEN ON SOUNDCLOUD ]' }}</span>
             </a>
-            <a (click)="iniciarContrabando()" style="cursor: pointer;" class="cyber-btn discord">
-              <i class="ph-discord-logo"></i> {{ translate.isPt() ? '[ Acessar contrabando de dados ]' : '[Access Data Smuggling]' }}
+            <a [href]="channels.radio" target="_blank" rel="noopener noreferrer" class="cyber-btn radio">
+              <i class="ph-broadcast" aria-hidden="true"></i>
+              <span>{{ translate.isPt() ? '[ OUVIR RQS RADIO 24/7 ]' : '[ LISTEN TO RQS RADIO 24/7 ]' }}</span>
             </a>
           </div>
 

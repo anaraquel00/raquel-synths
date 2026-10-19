@@ -3,7 +3,7 @@
     <div class="terminal-wrapper">
 
       <header class="log-header">
-        <span class="date">{{ data.date | date:'MMM dd, yyyy' | uppercase }}</span>
+        <span class="date">{{ data.date | date:'MMM dd, yyyy':'UTC' | uppercase }}</span>
         <h1 class="title" [innerHTML]="data.title | safeHtml"></h1>
       </header>
 

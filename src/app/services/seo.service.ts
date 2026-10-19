@@ -43,6 +43,15 @@ export class SeoService {
   this.setCanonicalUrl(absoluteUrl);
 }
 
+  updateRobots(directive: string | null): void {
+    if (directive) {
+      this.meta.updateTag({ name: 'robots', content: directive });
+      return;
+    }
+
+    this.meta.removeTag("name='robots'");
+  }
+
   // O núcleo da nossa narrativa
   private defaultTitle = 'RaQuel Synths | Cyberpunk Sagas & Virtual Band';
   private defaultDesc = 'Broklin\'s Tech vs. Jonah\'s Chaos. A Cyberpunk Literary Saga & Musical Experiment. The story has begun.';

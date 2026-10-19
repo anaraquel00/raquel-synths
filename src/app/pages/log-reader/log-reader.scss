@@ -111,7 +111,6 @@
     border-color: rgba(255, 69, 0, 0.5);
     background: rgba(20, 5, 0, 0.9);
     box-shadow: 0 0 30px rgba(255, 69, 0, 0.2);
-    animation: jitter 0.2s infinite alternate; // Tremor leve de erro
   }
 
   .tech-container {
@@ -166,11 +165,6 @@
 @keyframes scan {
   from { bottom: 100%; }
   to { bottom: -100%; }
-}
-
-@keyframes jitter {
-  0% { transform: translate(1px, 0); }
-  100% { transform: translate(-1px, 0.5px); }
 }
 
 .system-log-detail {

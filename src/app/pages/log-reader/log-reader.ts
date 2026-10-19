@@ -27,6 +27,10 @@ import { Observable, combineLatest, map, switchMap, of, tap, catchError, timeout
 import { take } from 'rxjs/operators';
 import { AdArticleComponent } from '../../components/ad-article/ad-article';
 import { SplitContentPipe } from '../../components/pipes/content-splitter.pipe';
+import {
+  isPublicationEligible,
+  normalizeLegacyPublicationFlag
+} from '../../../../shared/editorial-publication.js';
 
 @Component({
   selector: 'app-log-reader',
@@ -275,32 +279,17 @@ export class LogReaderComponent implements OnInit, OnDestroy {
         return null;
       }
 
-      if (doc.fields.published?.booleanValue === false) {
-        this.setSsrStatus(404);
-        return null;
-      }
-
       const date =
         doc.fields.date?.stringValue ||
         doc.fields.date?.timestampValue ||
         '';
 
-      if (!date) {
-        this.setSsrStatus(404);
-        return null;
-      }
-
-      const publishDate =
-        new Date(
-          date.length === 10
-            ? `${date}T00:00:00Z`
-            : date
-        );
-
-      if (
-        Number.isNaN(publishDate.getTime()) ||
-        publishDate.getTime() > Date.now()
-      ) {
+      if (!isPublicationEligible({
+        published: normalizeLegacyPublicationFlag(
+          doc.fields.published?.booleanValue
+        ),
+        releaseDate: date
+      })) {
         this.setSsrStatus(404);
         return null;
       }

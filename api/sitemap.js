@@ -1,5 +1,10 @@
 /* api/sitemap.js */
 
+import {
+  isPublicationEligible,
+  normalizeLegacyPublicationFlag
+} from '../shared/editorial-publication.js';
+
 export default async function handler(req, res) {
   // =====================================================
   // HEADERS
@@ -108,30 +113,12 @@ export default async function handler(req, res) {
     },
 
     {
-      path: '/discografia',
-      priority: '0.9'
-    },
-
-    {
-      path: '/musical-archives',
-      priority: '0.8'
-    },
-
-    {
       path: '/saga',
       priority: '0.8'
     },
 
     {
       path: '/logs-archive',
-      priority: '0.8'
-    },
-    {
-      path: '/store',
-      priority: '0.8'
-    },
-    {
-      path: '/bio',
       priority: '0.8'
     },
     {
@@ -377,27 +364,16 @@ const appendPublishedLogs = (documents) => {
 
     const fields = doc.fields ?? {};
 
-    if (
-      Object.prototype.hasOwnProperty.call(fields, 'published') &&
-      fields.published?.booleanValue !== true
-    ) {
-      return;
-    }
-
     const dateValue =
       fields.date?.stringValue ??
       fields.date?.timestampValue;
 
-    if (!dateValue) {
-      return;
-    }
-
-    const logDate = new Date(dateValue);
-
-    if (
-      Number.isNaN(logDate.getTime()) ||
-      logDate > now
-    ) {
+    if (!isPublicationEligible({
+      published: normalizeLegacyPublicationFlag(
+        fields.published?.booleanValue
+      ),
+      releaseDate: dateValue
+    }, now)) {
       return;
     }
 
