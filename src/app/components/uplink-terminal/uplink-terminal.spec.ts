@@ -56,6 +56,15 @@ describe('UplinkTerminalComponent channel gateway', () => {
     expect(body.toLowerCase()).not.toContain('discord');
   });
 
+  it('routes music platforms through the canonical Mainframe deeplinks', () => {
+    expect(RQS_EXTERNAL_CHANNELS).toEqual({
+      spotify: 'https://raquelsynths.com/play/rqs-mainframe?service=spotify',
+      youtube: 'https://raquelsynths.com/play/rqs-mainframe?service=youtube',
+      soundcloud: 'https://raquelsynths.com/play/rqs-mainframe?service=soundcloud',
+      radio: 'https://raquelsynths.com/play/rqs-cyberpunk-radio?service=youtube'
+    });
+  });
+
   it('renders the four English destinations without Portuguese CTA labels', () => {
     isPt.set(false);
     fixture.detectChanges();
