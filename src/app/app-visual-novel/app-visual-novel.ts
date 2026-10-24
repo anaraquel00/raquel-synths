@@ -13,6 +13,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { take } from 'rxjs/operators';
 import { DOCUMENT } from '@angular/common';
 import { SeoService } from '../services/seo.service';
+import { KINDLE_EDITORIAL } from '../data/kindle-editorial';
 
 @Component({
   selector: 'app-visual-novel',
@@ -24,6 +25,7 @@ import { SeoService } from '../services/seo.service';
 export class AppVisualNovel implements OnInit, OnDestroy {
   // --- INJEÇÕES ---
   translate = inject(TranslationService);
+  readonly kindleEditorial = KINDLE_EDITORIAL;
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
   private injector = inject(Injector);

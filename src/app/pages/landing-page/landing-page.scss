@@ -98,18 +98,6 @@
   outline-offset: 4px;
 }
 
-.current-music-section {
-  background: linear-gradient(180deg, #050914, #070c16);
-  padding-bottom: 4rem;
-}
-
-.section-cta-row {
-  width: min(1120px, calc(100% - 2.5rem));
-  margin: 0 auto;
-  display: flex;
-  justify-content: center;
-}
-
 .signal-section {
   background:
     linear-gradient(135deg, rgba(var(--primary-rgb), 0.1), transparent 55%),
@@ -117,7 +105,6 @@
 }
 
 .signal-card,
-.archive-card,
 .creator-card,
 .transmitter-card {
   width: min(1040px, calc(100% - 2.5rem));
@@ -209,12 +196,6 @@
 .system-logs-section {
   background: #03060b;
   padding-top: clamp(4rem, 8vw, 7rem);
-}
-
-.archive-section {
-  background:
-    linear-gradient(90deg, rgba(4, 8, 16, 0.97), rgba(4, 8, 16, 0.72)),
-    radial-gradient(circle at 80% 50%, rgba(var(--primary-rgb), 0.17), transparent 42%);
 }
 
 .transmitter-section {
@@ -317,6 +298,11 @@
   min-height: 220px;
 }
 
+.support-grid {
+  max-width: 560px;
+  grid-template-columns: 1fr;
+}
+
 .ads-section {
   background: #04070d;
 }
@@ -328,10 +314,6 @@
 
 :host-context(body.mode-broklin) {
   background: #030812;
-
-  .current-music-section {
-    background: linear-gradient(180deg, #040a16, #07111f);
-  }
 
   .signal-section {
     background:
@@ -346,12 +328,6 @@
 
   .system-logs-section {
     background-color: #02060d;
-  }
-
-  .archive-section {
-    background:
-      linear-gradient(90deg, rgba(3, 9, 20, 0.98), rgba(3, 11, 24, 0.76)),
-      radial-gradient(circle at 80% 50%, rgba(47, 126, 255, 0.2), transparent 42%);
   }
 
   .transmitter-section {
@@ -370,12 +346,7 @@
 :host-context(body.mode-jonah) {
   background: #0a0302;
 
-  .current-music-section {
-    background: linear-gradient(180deg, #0a0302, #130706);
-  }
-
-  .signal-section,
-  .archive-section {
+  .signal-section {
     background:
       linear-gradient(135deg, rgba(255, 61, 0, 0.11), transparent 55%),
       #0d0504;
@@ -444,10 +415,9 @@
 @media (max-width: 560px) {
   .section-shell,
   .signal-card,
-  .archive-card,
   .creator-card,
   .transmitter-card,
-  .section-cta-row {
+  .support-grid {
     width: min(100% - 2rem, 1120px);
   }
 

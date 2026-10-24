@@ -11,8 +11,8 @@
 
       <p class="hero-proposition">
         {{ translate.isPt()
-          ? 'RaQuel Synths é uma banda virtual cyberpunk que transforma música eletrônica em um universo narrativo de personagens, facções e transmissões.'
-          : 'RaQuel Synths is a virtual cyberpunk band that transforms electronic music into a narrative universe of characters, factions, and transmissions.' }}
+          ? 'RaQuel Synths é um universo cyberpunk original contado através de histórias, personagens e produção musical.'
+          : 'RaQuel Synths is an original cyberpunk universe told through stories, characters, and music production.' }}
       </p>
 
       <p class="hero-tagline">
@@ -20,13 +20,14 @@
       </p>
 
       <div class="hero-actions" [attr.aria-label]="translate.isPt() ? 'Navegação principal' : 'Primary navigation'">
-        <a
+        <button
+          #terminalTrigger
+          type="button"
           class="hero-cta hero-cta-primary"
-          routerLink="/discografia"
-          (click)="trackHomeAction('HOME_LISTEN_CLICK')"
+          (click)="triggerUplink()"
         >
-          {{ translate.isPt() ? 'OUVIR AGORA' : 'LISTEN NOW' }}
-        </a>
+          {{ translate.isPt() ? 'ACESSAR TERMINAL RQS' : 'ACCESS RQS TERMINAL' }}
+        </button>
 
         <a
           class="hero-cta hero-cta-secondary"
@@ -36,10 +37,6 @@
           {{ translate.isPt() ? 'EXPLORAR O UNIVERSO' : 'EXPLORE THE UNIVERSE' }}
         </a>
       </div>
-
-      <button class="terminal-trigger" type="button" (click)="triggerUplink()">
-        {{ translate.isPt() ? 'ACESSAR TERMINAL RQS' : 'ACCESS RQS TERMINAL' }}
-      </button>
     </div>
   </div>
 

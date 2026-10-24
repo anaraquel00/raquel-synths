@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy, signal, afterNextRender } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal, afterNextRender, RESPONSE_INIT } from '@angular/core';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { RouterLink, RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -7,7 +7,6 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ContentService } from '../../services/content.service';
 import { TranslationService } from '../../services/translation.service';
 import { Album } from '../../models/album.model';
-import { AdArticleComponent } from "../../components/ad-article/ad-article";
 import { NgOptimizedImage } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
@@ -44,10 +43,28 @@ export function releasePageForId(
   );
 }
 
+export function archivePageFromQuery(value: unknown): number | null {
+  const rawValue = typeof value === 'string' || typeof value === 'number'
+    ? String(value).trim()
+    : '';
+
+  if (!/^[1-9]\d*$/.test(rawValue)) {
+    return null;
+  }
+
+  const page = Number(rawValue);
+  return Number.isSafeInteger(page) ? page : null;
+}
+
+interface ArchiveReleaseLocation {
+  lane: 'broklin' | 'jonah';
+  page: number;
+}
+
 @Component({
   selector: 'app-musical-archives',
   standalone: true,
-  imports: [CommonModule, RouterModule, AdArticleComponent, NgOptimizedImage], // Imports corretos
+  imports: [CommonModule, RouterModule, NgOptimizedImage],
   templateUrl: './musical-archives.html',
   styleUrl: './musical-archives.scss',
 })
@@ -60,10 +77,14 @@ export class MusicalArchives implements OnInit, OnDestroy {
   private platformId = inject(PLATFORM_ID);
   private document = inject(DOCUMENT);
   private seoService = inject(SeoService);
+  private responseInit = inject(RESPONSE_INIT, { optional: true });
 
   isJonahMode = signal<boolean>(false);
   private themeObserver: MutationObserver | null = null;
   private targetReleaseId: string | null = null;
+  private hasReleaseParam = false;
+  private invalidArchiveState = false;
+  private canonicalArchivePath = '/musical-archives';
 
   legacyReleases: Album[] = [];
   isLoading = true;
@@ -95,21 +116,44 @@ export class MusicalArchives implements OnInit, OnDestroy {
 
     // 🔥 BLINDAGEM SEO + DEEP LINK DE RELEASE
     this.route.queryParams.subscribe(params => {
+      const hasBroPage = Object.prototype.hasOwnProperty.call(params, 'broPage');
+      const hasJonahPage = Object.prototype.hasOwnProperty.call(params, 'joPage');
+      this.hasReleaseParam = Object.prototype.hasOwnProperty.call(params, 'release');
+
+      const broPage = hasBroPage
+        ? archivePageFromQuery(params['broPage'])
+        : 1;
+      const jonahPage = hasJonahPage
+        ? archivePageFromQuery(params['joPage'])
+        : 1;
+
       this.targetReleaseId =
-        typeof params['release'] === 'string'
+        this.hasReleaseParam && typeof params['release'] === 'string'
           ? params['release'].trim()
           : null;
 
-      // Paginação manual continua compatível.
-      this.currentPageBroklin =
-        params['broPage']
-          ? Number(params['broPage'])
-          : 1;
+      this.invalidArchiveState =
+        (hasBroPage && broPage === null) ||
+        (hasJonahPage && jonahPage === null) ||
+        (hasBroPage && hasJonahPage) ||
+        (this.hasReleaseParam && !this.targetReleaseId) ||
+        (this.hasReleaseParam && (hasBroPage || hasJonahPage));
 
-      this.currentPageJonah =
-        params['joPage']
-          ? Number(params['joPage'])
-          : 1;
+      this.currentPageBroklin = broPage ?? 1;
+      this.currentPageJonah = jonahPage ?? 1;
+      this.canonicalArchivePath = '/musical-archives';
+
+      if (!this.invalidArchiveState && hasJonahPage) {
+        this.alignArchiveMode('jonah');
+        this.canonicalArchivePath =
+          `/musical-archives?joPage=${this.currentPageJonah}`;
+      } else if (!this.invalidArchiveState && hasBroPage) {
+        this.alignArchiveMode('broklin');
+        if (this.currentPageBroklin > 1) {
+          this.canonicalArchivePath =
+            `/musical-archives?broPage=${this.currentPageBroklin}`;
+        }
+      }
     });
 
     this.getArchives();
@@ -185,23 +229,22 @@ getArchives() {
       });
         this.isLoading = false;
 
-        this.applyReleaseDeepLink(
+        const releaseLocation = this.applyReleaseDeepLink(
           sortedData
         );
+
+        this.finalizeArchiveRequest(releaseLocation);
       }
     });
   }
 
   private applyReleaseDeepLink(
     albums: Album[]
-  ): void {
+  ): ArchiveReleaseLocation | null {
     if (
-      !isPlatformBrowser(
-        this.platformId
-      ) ||
       !this.targetReleaseId
     ) {
-      return;
+      return null;
     }
 
     const releaseId =
@@ -214,7 +257,7 @@ getArchives() {
       );
 
     if (!release) {
-      return;
+      return null;
     }
 
     let lane:
@@ -262,7 +305,7 @@ getArchives() {
     }
 
     if (page === null) {
-      return;
+      return null;
     }
 
     this.alignArchiveMode(
@@ -277,9 +320,49 @@ getArchives() {
         page;
     }
 
-    this.scrollToRelease(
-      releaseId
-    );
+    if (isPlatformBrowser(this.platformId)) {
+      this.scrollToRelease(releaseId);
+    }
+
+    return { lane, page };
+  }
+
+  private finalizeArchiveRequest(
+    releaseLocation: ArchiveReleaseLocation | null
+  ): void {
+    if (this.hasReleaseParam) {
+      if (!releaseLocation) {
+        this.invalidArchiveState = true;
+      } else if (releaseLocation.lane === 'jonah') {
+        this.canonicalArchivePath =
+          `/musical-archives?joPage=${releaseLocation.page}`;
+      } else if (releaseLocation.page > 1) {
+        this.canonicalArchivePath =
+          `/musical-archives?broPage=${releaseLocation.page}`;
+      }
+    }
+
+    const broklinOutOfRange =
+      this.currentPageBroklin > Math.max(this.totalPagesBroklin, 1);
+    const jonahOutOfRange =
+      this.currentPageJonah > Math.max(this.totalPagesJonah, 1);
+
+    if (
+      this.invalidArchiveState ||
+      broklinOutOfRange ||
+      jonahOutOfRange
+    ) {
+      this.canonicalArchivePath = '/musical-archives';
+      this.setSsrStatus(404);
+    }
+
+    this.seoService.updateCanonical(this.canonicalArchivePath);
+  }
+
+  private setSsrStatus(statusCode: number): void {
+    if (this.responseInit) {
+      this.responseInit.status = statusCode;
+    }
   }
 
   private alignArchiveMode(

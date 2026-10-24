@@ -1,18 +1,5 @@
 <app-home id="inicio"></app-home>
 
-<section id="current-music" class="journey-section current-music-section" [attr.aria-label]="translate.isPt() ? 'Música atual' : 'Current music'">
-  <app-discography [limitToHome]="3"></app-discography>
-  <div class="section-cta-row">
-    <a
-      class="journey-cta journey-cta-primary"
-      routerLink="/discografia"
-      (click)="trackHomeAction('HOME_LISTEN_CLICK', 'discografia')"
-    >
-      {{ translate.isPt() ? 'VER MÚSICA ATUAL →' : 'EXPLORE CURRENT MUSIC →' }}
-    </a>
-  </div>
-</section>
-
 <section id="latest-signal" class="journey-section signal-section" aria-labelledby="latest-signal-title">
   @if (latestSignal(); as signal) {
     @let content = getLogContent(signal);
@@ -24,7 +11,7 @@
         <h2 id="latest-signal-title">{{ content?.title }}</h2>
         <p class="section-summary">{{ content?.description }}</p>
         @if (signal.date) {
-          <p class="signal-frequency">{{ signal.date | date:'MMM dd, yyyy' | uppercase }}</p>
+          <p class="signal-frequency">{{ signal.date | date:'MMM dd, yyyy':'UTC' | uppercase }}</p>
         }
         <a
           class="journey-cta journey-cta-primary"
@@ -75,11 +62,11 @@
         (click)="trackHomeAction('HOME_UNIVERSE_CLICK', 'dossier')"
       >
         <span class="card-index">01</span>
-        <h3>{{ translate.isPt() ? 'DOSSIÊ OPERATIVO' : 'OPERATIVE DOSSIER' }}</h3>
+        <h3>{{ translate.isPt() ? 'A ORIGEM DA HISTÓRIA' : 'THE ORIGIN OF THE STORY' }}</h3>
         <p>
           {{ translate.isPt()
-            ? 'Conheça os personagens, as facções e as forças que moldam o universo RQS.'
-            : 'Meet the characters, factions, and forces shaping the RQS universe.' }}
+            ? 'Conheça os personagens, as histórias e os segredos que moldam o universo RQS.'
+            : 'Discover the characters, stories and secrets that shape the RQS universe.' }}
         </p>
         <span class="card-link">{{ translate.isPt() ? 'ABRIR DOSSIÊ' : 'OPEN DOSSIER' }}</span>
       </a>
@@ -127,35 +114,6 @@
 
 <section id="storytelling" class="journey-section system-logs-section" [attr.aria-label]="translate.isPt() ? 'Logs do sistema' : 'System logs'">
   <app-storytelling [logs]="systemLogs()"></app-storytelling>
-</section>
-
-<section id="archive" class="journey-section archive-section" aria-labelledby="archive-title">
-  <div class="section-shell archive-card">
-    <p class="section-kicker">{{ translate.isPt() ? 'DO ARQUIVO' : 'FROM THE ARCHIVE' }}</p>
-    <h2 id="archive-title">
-      {{ translate.isPt() ? 'Frequências que continuam ecoando' : 'Frequencies that keep echoing' }}
-    </h2>
-    <p class="section-summary">
-      {{ translate.isPt()
-        ? 'Revisite lançamentos, notas e processos criativos no arquivo musical completo.'
-        : 'Revisit releases, notes, and creative processes in the complete musical archive.' }}
-    </p>
-    <a
-      class="journey-cta"
-      routerLink="/musical-archives"
-      (click)="trackHomeAction('HOME_ARCHIVE_CLICK', 'musical-archives')"
-    >
-      {{ translate.isPt() ? 'EXPLORAR O ARQUIVO' : 'EXPLORE THE ARCHIVE' }}
-    </a>
-  </div>
-</section>
-
-<section class="ads-section">
-  @defer (on viewport) {
-    <app-ad-banner ngSkipHydration></app-ad-banner>
-  } @placeholder {
-    <div class="ad-placeholder"></div>
-  }
 </section>
 
 <section id="transmitter" class="journey-section transmitter-section" aria-labelledby="transmitter-title">
@@ -269,18 +227,13 @@
   }
 </section>
 
-<section id="store-contact" class="journey-section support-section" aria-labelledby="support-title">
+<section id="contact" class="journey-section support-section" aria-labelledby="support-title">
   <div class="section-shell">
-    <p class="section-kicker">{{ translate.isPt() ? 'LOJA // CONTATO' : 'STORE // CONTACT' }}</p>
+    <p class="section-kicker">{{ translate.isPt() ? 'CONTATO' : 'CONTACT' }}</p>
     <h2 id="support-title">
       {{ translate.isPt() ? 'Conecte-se à RQS' : 'Connect with RQS' }}
     </h2>
     <div class="journey-grid support-grid">
-      <a class="journey-card" routerLink="/store">
-        <h3>{{ translate.isPt() ? 'LOJA' : 'STORE' }}</h3>
-        <p>{{ translate.isPt() ? 'Explore merch e seleções da RQS.' : 'Explore RQS merch and selections.' }}</p>
-        <span class="card-link">{{ translate.isPt() ? 'ABRIR LOJA' : 'OPEN STORE' }}</span>
-      </a>
       <a class="journey-card" routerLink="/contato">
         <h3>{{ translate.isPt() ? 'CONTATO' : 'CONTACT' }}</h3>
         <p>{{ translate.isPt() ? 'Envie propostas, imprensa ou colaborações.' : 'Send proposals, press requests, or collaborations.' }}</p>

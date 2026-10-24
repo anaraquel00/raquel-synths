@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, OnDestroy, signal, effect, HostListener, inject, PLATFORM_ID, ChangeDetectorRef, afterNextRender, Injector } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit, OnDestroy, signal, effect, HostListener, inject, PLATFORM_ID, ChangeDetectorRef, afterNextRender, Injector, ViewChild } from '@angular/core';
 import { DOCUMENT, CommonModule, isPlatformBrowser } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,6 +20,7 @@ import { TrackingService } from '../../services/tracking.service';
   styleUrl: './home.scss'
 })
 export class Home implements OnInit, OnDestroy {
+  @ViewChild('terminalTrigger') private terminalTrigger?: ElementRef<HTMLButtonElement>;
   isBrowser: any;
 
 // 2. A porta dos fundos tática atualizada
@@ -78,6 +79,7 @@ executarQuickhack(targetId: string) {
 }
 
   showUplink = false; // Controle do Modal
+ private bodyOverflowBeforeUplink = '';
  isJonahMode = signal<boolean>(false); // 🛡️ SSR FIX: Padrão Broklin para alinhar hidratação do Servidor
  public currentMode: 'broklin' | 'jonah' = 'broklin';
 
@@ -85,15 +87,21 @@ executarQuickhack(targetId: string) {
   // Função que o botão chama
   triggerUplink() {
     this.trackHomeAction('HOME_TERMINAL_OPEN');
+    if (isPlatformBrowser(this.platformId)) {
+      this.bodyOverflowBeforeUplink = this.document.body.style.overflow;
+      this.document.body.style.overflow = 'hidden';
+    }
     this.showUplink = true;
   }
 
   // Função que o modal chama quando fecha
   closeUplink() {
     this.showUplink = false;
+    this.restoreBodyScroll();
+    this.terminalTrigger?.nativeElement.focus();
   }
 
-  trackHomeAction(eventName: 'HOME_LISTEN_CLICK' | 'HOME_UNIVERSE_CLICK' | 'HOME_TERMINAL_OPEN') {
+  trackHomeAction(eventName: 'HOME_UNIVERSE_CLICK' | 'HOME_TERMINAL_OPEN') {
     this.trackingService.trackCustomEvent(eventName, { location: 'home_hero' });
   }
 currentLanguage: any;
@@ -196,6 +204,13 @@ currentLanguage: any;
 
   ngOnDestroy() {
     this.themeObserver?.disconnect();
+    this.restoreBodyScroll();
+  }
+
+  private restoreBodyScroll(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.document.body.style.overflow = this.bodyOverflowBeforeUplink;
+    }
   }
 
   // 👇 ATUALIZA TUDO (TEXTO + MÚSICA)

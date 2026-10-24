@@ -26,18 +26,13 @@
       </button>
     }
 
-    <button mat-button type="button" (click)="scrollTo('current-music')">
-      {{ translate.isPt() ? 'MÚSICA' : 'MUSIC' }}
-    </button>
     <button mat-button type="button" (click)="scrollTo('universe')">
       {{ translate.isPt() ? 'UNIVERSO' : 'UNIVERSE' }}
     </button>
     <button mat-button type="button" (click)="scrollTo('latest-signal')">
       {{ translate.isPt() ? 'ÚLTIMO SINAL' : 'LATEST SIGNAL' }}
     </button>
-    <a mat-button routerLink="/bio">{{ navText.bio }}</a>
     <a mat-button routerLink="/creator" class="btn-creator">{{ navText.creator }}</a>
-    <a mat-button routerLink="/store" class="store-container">{{ navText.store }}</a>
   </div>
 
   <button
@@ -70,17 +65,12 @@
 
     <mat-divider></mat-divider>
 
-    <button mat-menu-item type="button" (click)="scrollTo('current-music')">
-      <span>{{ translate.isPt() ? 'MÚSICA' : 'MUSIC' }}</span>
-    </button>
     <button mat-menu-item type="button" (click)="scrollTo('universe')">
       <span>{{ translate.isPt() ? 'UNIVERSO' : 'UNIVERSE' }}</span>
     </button>
     <button mat-menu-item type="button" (click)="scrollTo('latest-signal')">
       <span>{{ translate.isPt() ? 'ÚLTIMO SINAL' : 'LATEST SIGNAL' }}</span>
     </button>
-    <a mat-menu-item routerLink="/bio"><span>{{ navText.bio }}</span></a>
     <a mat-menu-item routerLink="/creator"><span>{{ navText.creator }}</span></a>
-    <a mat-menu-item routerLink="/store"><span>{{ navText.store }}</span></a>
   </mat-menu>
 </mat-toolbar>

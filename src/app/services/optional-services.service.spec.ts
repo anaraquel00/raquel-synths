@@ -139,10 +139,12 @@ describe('OptionalServicesService privacy policy route hardening', () => {
     expect(document.querySelectorAll('ins.adsbygoogle').length).toBe(0);
   });
 
-  it('preserves the existing eligible monetization routes', () => {
+  it('restricts monetization to the editorial route set', () => {
     expect(monetization.isBannerEligible('/')).toBeTrue();
-    expect(monetization.isBannerEligible('/discografia')).toBeTrue();
-    expect(monetization.isArticleEligible('/musical-archives')).toBeTrue();
+    expect(monetization.isBannerEligible('/discografia')).toBeFalse();
+    expect(monetization.isBannerEligible('/bio')).toBeFalse();
+    expect(monetization.isArticleEligible('/musical-archives')).toBeFalse();
+    expect(monetization.isArticleEligible('/store?dept=tech-lead')).toBeFalse();
     expect(monetization.isArticleEligible('/log-reader/system-archive')).toBeTrue();
     expect(monetization.isArticleEligible('/lore/broklin/example')).toBeTrue();
     expect(monetization.isArticleEligible('/hybrid-reader/example')).toBeTrue();

@@ -10,6 +10,7 @@ import { PLATFORM_ID } from '@angular/core';
 import { TrackingService } from '../services/tracking.service';
 import { SeoService } from '../services/seo.service';
 import { take } from 'rxjs/operators';
+import { RQS_EXTERNAL_CHANNELS } from '../data/external-channels';
 
 @Component({
   selector: 'app-discography',
@@ -19,6 +20,7 @@ import { take } from 'rxjs/operators';
   styleUrl: './app-discography.scss'
 })
 export class DiscographyComponent implements OnInit {
+  readonly radioUrl = RQS_EXTERNAL_CHANNELS.radio;
   private router = inject(Router);
   public translate = inject(TranslationService);
   private platformId = inject(PLATFORM_ID);

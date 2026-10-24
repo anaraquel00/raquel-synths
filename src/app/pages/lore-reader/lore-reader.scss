@@ -1052,3 +1052,92 @@
     margin-inline: 0;
   }
 }
+
+/* =========================================================
+   KINDLE EDITORIAL GATE
+   ========================================================= */
+
+.story-preview {
+  max-width: 900px;
+  margin: 1.5rem auto;
+  font-size: 1.08rem;
+  line-height: 1.8;
+}
+
+.kindle-gate {
+  clear: both;
+  margin: 3rem auto 1rem;
+  padding: 2rem;
+  max-width: 900px;
+  text-align: center;
+  border: 1px solid rgba(0, 243, 255, 0.45);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0, 243, 255, 0.06),
+      rgba(10, 10, 15, 0.94)
+    );
+  box-shadow: 0 0 24px rgba(0, 243, 255, 0.12);
+}
+
+.kindle-gate-code {
+  margin: 0 0 1rem;
+  color: #00f3ff;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.08em;
+}
+
+.kindle-cta {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+  padding: 0.9rem 1.4rem;
+  border: 1px solid #00f3ff;
+  color: #00f3ff;
+  text-decoration: none;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+a.kindle-cta:hover,
+a.kindle-cta:focus-visible {
+  color: #05070a;
+  background: #00f3ff;
+  box-shadow: 0 0 18px rgba(0, 243, 255, 0.4);
+}
+
+.kindle-cta-disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+:host-context(body.mode-jonah) {
+  .kindle-gate {
+    border-color: rgba(255, 61, 0, 0.5);
+    background:
+      linear-gradient(
+        180deg,
+        rgba(255, 61, 0, 0.07),
+        rgba(18, 5, 3, 0.95)
+      );
+  }
+
+  .kindle-gate-code,
+  .kindle-cta {
+    color: #ff3d00;
+    border-color: #ff3d00;
+  }
+
+  a.kindle-cta:hover,
+  a.kindle-cta:focus-visible {
+    color: #160500;
+    background: #ff3d00;
+    box-shadow: 0 0 18px rgba(255, 61, 0, 0.4);
+  }
+}

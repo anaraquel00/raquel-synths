@@ -5,13 +5,15 @@
   <router-outlet></router-outlet>
 </main>
 
-<section class="ads-section">
-  @defer (on viewport) {
-    <app-ad-banner ngSkipHydration></app-ad-banner>
-  } @placeholder {
-    <div style="min-height: 100px; width: 100%;"></div>
-  }
-</section>
+@if (monetizationPolicy.currentBannerEligible()) {
+  <section class="ads-section">
+    @defer (on viewport) {
+      <app-ad-banner ngSkipHydration></app-ad-banner>
+    } @placeholder {
+      <div style="min-height: 100px; width: 100%;"></div>
+    }
+  </section>
+}
 
 <!-- 🛡️ ESCUDO 2: Protege o Rodapé dinâmico -->
 <app-footer ngSkipHydration></app-footer>

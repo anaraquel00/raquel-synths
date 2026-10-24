@@ -18,6 +18,7 @@ describe('App consent bootstrap boundary', () => {
   let consent: jasmine.SpyObj<ConsentService> & { state: typeof consentState };
   let adSense: jasmine.SpyObj<AdSenseService>;
   let optionalServices: jasmine.SpyObj<OptionalServicesService>;
+  let seoService: jasmine.SpyObj<SeoService>;
 
   beforeEach(async () => {
     routerEvents = new Subject<unknown>();
@@ -33,6 +34,10 @@ describe('App consent bootstrap boundary', () => {
     ]);
     optionalServices = jasmine.createSpyObj<OptionalServicesService>('OptionalServicesService', [
       'initializeForRoute'
+    ]);
+    seoService = jasmine.createSpyObj<SeoService>('SeoService', [
+      'updateMetaTags',
+      'updateRobots'
     ]);
 
     await TestBed.configureTestingModule({
@@ -58,7 +63,7 @@ describe('App consent bootstrap boundary', () => {
             isPt: () => true
           }
         },
-        { provide: SeoService, useValue: { updateMetaTags: jasmine.createSpy('updateMetaTags') } },
+        { provide: SeoService, useValue: seoService },
         {
           provide: Router,
           useValue: { events: routerEvents.asObservable(), url: '/' }
@@ -98,6 +103,7 @@ describe('App consent bootstrap boundary', () => {
 
     expect(adSense.enableAdServing).toHaveBeenCalledOnceWith('ca-pub-5619990751602183');
     expect(consentState()).toBe('UNKNOWN');
+    expect(seoService.updateRobots).toHaveBeenCalledOnceWith(null);
   }));
 
   it('accepts only local RQS consent before requesting manual ad serving', fakeAsync(() => {

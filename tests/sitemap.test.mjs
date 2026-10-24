@@ -56,6 +56,7 @@ const collections = {
   ],
   logs: [
     substantiveLog('log-publico', '2026-09-15T10:00:00Z'),
+    substantiveLog('log-legado', '2026-09-14T10:00:00Z', { published: undefined }),
     substantiveLog('system-archive', '2026-09-20T10:00:00Z'),
     substantiveLog('log-futuro', '2026-09-15T10:00:00Z', { date: { stringValue: '2999-01-01' } }),
     substantiveLog('log-nao-publicado', '2026-09-15T10:00:00Z', { published: { booleanValue: false } })
@@ -106,6 +107,9 @@ test('gera XML válido, URLs únicas e exclui rotas/conteúdo não indexáveis',
   assert.equal(new Set(locs).size, locs.length);
   assert.ok(locs.every((loc) => !new URL(loc).search && !new URL(loc).hash));
   assert.ok(locs.every((loc) => !loc.includes('/admin') && !loc.includes('/diagnostic')));
+  for (const excludedRoute of ['/discografia', '/musical-archives', '/store', '/bio']) {
+    assert.equal(locs.includes(`https://raquelsynths.com${excludedRoute}`), false);
+  }
   assert.ok(locs.every((loc) => !loc.includes('/log-reader/system-archive')));
   assert.ok(locs.every((loc) => !loc.includes('futuro') && !loc.includes('nao-publicado')));
   assert.ok(locs.includes('https://raquelsynths.com/hybrid-reader/hybrid-publico'));
@@ -119,6 +123,16 @@ test('mantém global saga futura aprovada fora do sitemap até a releaseDate', a
 
   assert.ok(locs.includes('https://raquelsynths.com/hybrid-reader/hybrid-publico'));
   assert.equal(locs.includes('https://raquelsynths.com/hybrid-reader/hybrid-futuro'), false);
+});
+
+test('aplica o gate editorial aos System Logs sem ocultar o legado aprovado', async () => {
+  const { body } = await renderSitemap();
+  const locs = parseEntries(body).map(({ loc }) => loc);
+
+  assert.ok(locs.includes('https://raquelsynths.com/log-reader/log-publico'));
+  assert.ok(locs.includes('https://raquelsynths.com/log-reader/log-legado'));
+  assert.equal(locs.includes('https://raquelsynths.com/log-reader/log-futuro'), false);
+  assert.equal(locs.includes('https://raquelsynths.com/log-reader/log-nao-publicado'), false);
 });
 
 test('emite lastmod estático somente para mudanças comprovadas', async () => {

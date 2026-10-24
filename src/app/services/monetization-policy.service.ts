@@ -17,7 +17,7 @@ export class MonetizationPolicyService {
   }
 
   updateCurrent(url: string): void { this.currentUrl.set(url); }
-  isBannerEligible(url: string): boolean { const path = this.path(url); return path === '/' || path === '/discografia'; }
-  isArticleEligible(url: string): boolean { const path = this.path(url); return /^\/lore\/[^/]+\/[^/]+$/.test(path) || /^\/hybrid-reader\/[^/]+$/.test(path) || /^\/log-reader\/[^/]+$/.test(path) || path === '/musical-archives'; }
+  isBannerEligible(url: string): boolean { return this.path(url) === '/'; }
+  isArticleEligible(url: string): boolean { const path = this.path(url); return /^\/lore\/[^/]+\/[^/]+$/.test(path) || /^\/hybrid-reader\/[^/]+$/.test(path) || /^\/log-reader\/[^/]+$/.test(path); }
   private path(url: string): string { return (url.split(/[?#]/)[0] || '/').replace(/\/$/, '') || '/'; }
 }

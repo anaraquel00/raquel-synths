@@ -18,6 +18,10 @@ export interface LoreEpisode {
   description?: string; // Para SEO ou cards
   description_en?: string;
 
+  // Amostra pública usada durante a distribuição Kindle.
+  sample?: string;
+  sample_en?: string;
+
   image: string;       // Antes era 'coverImage'
 
   mode: 'broklin' | 'jonah';

@@ -3,7 +3,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { DiscographyComponent } from '../../app-discography/app-discography';
 import { StorytellingComponent } from '../../app-storytelling/app-storytelling';
 import { Home } from '../home/home';
 import { AdBannerComponent } from '../../components/ad-banner/ad-banner';
@@ -29,7 +28,6 @@ interface LatestSignalLog {
     CommonModule,
     FormsModule,
     RouterLink,
-    DiscographyComponent,
     StorytellingComponent,
     Home,
     AdBannerComponent
@@ -101,10 +99,8 @@ export class LandingPage {
 
   trackHomeAction(
     eventName:
-      | 'HOME_LISTEN_CLICK'
       | 'HOME_UNIVERSE_CLICK'
       | 'HOME_LATEST_SIGNAL_CLICK'
-      | 'HOME_ARCHIVE_CLICK'
       | 'HOME_TRANSMITTER_SUBMIT'
       | 'HOME_CREATOR_CLICK',
     target: string

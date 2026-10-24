@@ -26,6 +26,7 @@ import { LoreEpisode } from '../../data/lore-data';
 import { AdArticleComponent } from "../../components/ad-article/ad-article";
 import { NgOptimizedImage } from '@angular/common';
 import { AuthorSignatureComponent } from '../../components/author-signature/author-signature';
+import { KINDLE_EDITORIAL } from '../../data/kindle-editorial';
 
 @Component({
   selector: 'app-hybrid-reader',
@@ -49,6 +50,7 @@ export class HybridReaderComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private document = inject(DOCUMENT);
   private platformId = inject(PLATFORM_ID);
+  readonly kindleEditorial = KINDLE_EDITORIAL;
 
   // 🛡️ Injeção do token SSR oficial para definir status HTTP
   private responseInit = inject(RESPONSE_INIT, { optional: true });

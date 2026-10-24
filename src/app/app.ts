@@ -30,7 +30,7 @@ export class App implements OnInit {
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
   private consent = inject(ConsentService);
-  private monetizationPolicy = inject(MonetizationPolicyService);
+  protected readonly monetizationPolicy = inject(MonetizationPolicyService);
   private optionalServices = inject(OptionalServicesService);
 
   private document = inject(DOCUMENT);
@@ -59,7 +59,9 @@ export class App implements OnInit {
     });
 
     // A rota é a autoridade visual no SSR e na hidratação inicial.
-    this.applyRouteTheme(this.request?.url ?? this.router.url);
+    const initialUrl = this.request?.url ?? this.router.url;
+    this.applyRouteTheme(initialUrl);
+    this.monetizationPolicy.updateCurrent(initialUrl);
 
      // 📡 O NOVO RADAR GLOBAL DE SEO
     effect(() => {
@@ -196,6 +198,7 @@ ngOnInit() {
       const isHome = currentPath === '/' || currentPath === '';
       this.monetizationPolicy.updateCurrent(currentPath);
       this.applyRouteTheme(currentPath);
+      this.seoService.updateRobots(data['robots'] ?? null);
 
       // Apenas entrega as coordenadas para o Radar (effect) trabalhar!
       this.activeRouteState.set({

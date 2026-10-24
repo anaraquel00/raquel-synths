@@ -1,6 +1,7 @@
 import { of } from 'rxjs';
 import { Album } from '../../models/album.model';
 import {
+  archivePageFromQuery,
   MusicalArchives,
   releasePageForId
 } from './musical-archives';
@@ -51,6 +52,15 @@ describe('MusicalArchives complete catalog', () => {
     ).toBeNull();
   });
 
+  it('accepts only positive integer archive pages', () => {
+    expect(archivePageFromQuery('1')).toBe(1);
+    expect(archivePageFromQuery('12')).toBe(12);
+    expect(archivePageFromQuery('0')).toBeNull();
+    expect(archivePageFromQuery('-1')).toBeNull();
+    expect(archivePageFromQuery('1.5')).toBeNull();
+    expect(archivePageFromQuery('invalid')).toBeNull();
+  });
+
   it('includes newest, older, and hybrid releases before pagination', () => {
     const data = [
       album('old-broklin', 'broklin', 1),
@@ -64,10 +74,17 @@ describe('MusicalArchives complete catalog', () => {
     const component = Object.create(MusicalArchives.prototype) as any;
     component.contentService = { getDiscography: () => of(data) };
     component.translate = { isPt: () => true };
-    component.seoService = jasmine.createSpyObj('SeoService', ['updateMetaTags', 'setJsonLd']);
+    component.seoService = jasmine.createSpyObj('SeoService', [
+      'updateMetaTags',
+      'updateCanonical',
+      'setJsonLd'
+    ]);
     component.pageSize = 5;
     component.currentPageBroklin = 1;
     component.currentPageJonah = 1;
+    component.hasReleaseParam = false;
+    component.invalidArchiveState = false;
+    component.canonicalArchivePath = '/musical-archives';
 
     component.getArchives();
 
@@ -94,5 +111,29 @@ describe('MusicalArchives complete catalog', () => {
     ]);
     expect(component.paginatedBroklin.length).toBe(5);
     expect(component.totalPagesBroklin).toBe(1);
+    expect(component.seoService.updateCanonical)
+      .toHaveBeenCalledOnceWith('/musical-archives');
+  });
+
+  it('returns SSR 404 for an archive page outside the available range', () => {
+    const component = Object.create(MusicalArchives.prototype) as any;
+    component.featuredBroklin = Array.from({ length: 5 }, (_, index) =>
+      album(`broklin-${index}`, 'broklin', index + 1)
+    );
+    component.featuredJonah = [album('jonah-1', 'jonah', 1)];
+    component.pageSize = 5;
+    component.currentPageBroklin = 2;
+    component.currentPageJonah = 1;
+    component.hasReleaseParam = false;
+    component.invalidArchiveState = false;
+    component.canonicalArchivePath = '/musical-archives?broPage=2';
+    component.responseInit = {};
+    component.seoService = jasmine.createSpyObj('SeoService', ['updateCanonical']);
+
+    component.finalizeArchiveRequest(null);
+
+    expect(component.responseInit.status).toBe(404);
+    expect(component.seoService.updateCanonical)
+      .toHaveBeenCalledOnceWith('/musical-archives');
   });
 });
