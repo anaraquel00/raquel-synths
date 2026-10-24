@@ -553,3 +553,213 @@ a.back-btn, .btn-decriptar {
   }
 }
 
+
+/* =========================================================
+   KINDLE EDITORIAL GATE — GLITCH / VIOLET PROTOCOL
+   ========================================================= */
+
+.story-preview {
+  max-width: 900px;
+  margin: 1.75rem auto 0;
+  font-size: 1.08rem;
+  line-height: 1.8;
+}
+
+.kindle-gate {
+  position: relative;
+  clear: both;
+  max-width: 900px;
+  margin: 2.75rem auto 1.5rem;
+  padding: 2rem 2.25rem;
+
+  text-align: center;
+
+  border: 1px solid rgba(207, 46, 255, 0.62);
+  border-radius: 2px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(162, 0, 255, 0.10) 0%,
+      rgba(61, 12, 86, 0.12) 38%,
+      rgba(12, 8, 18, 0.96) 100%
+    );
+
+  box-shadow:
+    0 0 26px rgba(191, 0, 255, 0.14),
+    inset 0 0 30px rgba(138, 43, 226, 0.035);
+
+  overflow: hidden;
+}
+
+
+/* linha energética superior */
+.kindle-gate::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 8%;
+  width: 84%;
+  height: 1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      #b829ff,
+      #ff2bd6,
+      #7c4dff,
+      transparent
+    );
+
+  box-shadow:
+    0 0 15px rgba(210, 46, 255, 0.75);
+}
+
+
+/* brilho de interferência */
+.kindle-gate::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  background:
+    repeating-linear-gradient(
+      180deg,
+      transparent 0,
+      transparent 4px,
+      rgba(205, 75, 255, 0.012) 5px
+    );
+}
+
+
+.kindle-gate-code {
+  position: relative;
+  z-index: 1;
+
+  margin: 0 0 1.25rem;
+
+  color: #dd57ff;
+
+  font-family: 'Courier New', monospace;
+  font-size: 0.98rem;
+  line-height: 1.8;
+  letter-spacing: 0.09em;
+
+  text-shadow:
+    0 0 8px rgba(217, 69, 255, 0.55);
+}
+
+
+.kindle-gate h3 {
+  position: relative;
+  z-index: 1;
+
+  max-width: 720px;
+  margin: 1rem auto;
+
+  color: rgba(255, 255, 255, 0.88);
+
+  font-size: 1.12rem;
+  line-height: 1.55;
+  font-weight: 700;
+}
+
+
+.kindle-cta {
+  position: relative;
+  z-index: 1;
+
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+
+  min-width: 260px;
+  margin-top: 1rem;
+  padding: 0.9rem 1.4rem;
+
+  border: 1px solid #d42cff;
+
+  color: #e56cff;
+  background: rgba(129, 20, 170, 0.08);
+
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+
+  text-decoration: none;
+  text-transform: uppercase;
+
+  box-shadow:
+    0 0 16px rgba(206, 44, 255, 0.10);
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+a.kindle-cta:hover,
+a.kindle-cta:focus-visible {
+  color: #100015;
+
+  background:
+    linear-gradient(
+      90deg,
+      #c22cff,
+      #f239d5
+    );
+
+  border-color: #ef65ff;
+
+  box-shadow:
+    0 0 22px rgba(217, 53, 255, 0.42);
+
+  transform: translateY(-1px);
+}
+
+
+.kindle-cta-disabled {
+  opacity: 0.58;
+  cursor: default;
+  pointer-events: none;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  .story-preview {
+    margin-top: 1.25rem;
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .kindle-gate {
+    margin: 2rem auto 1rem;
+    padding: 1.5rem 1rem;
+  }
+
+  .kindle-gate-code {
+    font-size: 0.82rem;
+    letter-spacing: 0.055em;
+  }
+
+  .kindle-gate h3 {
+    font-size: 1rem;
+  }
+
+  .kindle-cta {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+}
