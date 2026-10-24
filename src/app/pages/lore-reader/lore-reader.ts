@@ -35,9 +35,8 @@ import {
   catchError
 } from 'rxjs/operators';
 
-import { SplitContentPipe } from '../../components/pipes/content-splitter.pipe';
 import { LoreEpisode } from '../../data/lore-data';
-import { AdArticleComponent } from '../../components/ad-article/ad-article';
+import { KINDLE_EDITORIAL } from '../../data/kindle-editorial';
 import { NgOptimizedImage } from '@angular/common';
 import { AuthorSignatureComponent } from '../../components/author-signature/author-signature';
 
@@ -48,8 +47,6 @@ type LoreReaderState = 'LOADING' | 'LOADED' | 'NOT_FOUND' | 'ERROR';
   standalone: true,
   imports: [
     CommonModule,
-    SplitContentPipe,
-    AdArticleComponent,
     NgOptimizedImage,
     AuthorSignatureComponent,
     RouterLink
@@ -60,6 +57,7 @@ type LoreReaderState = 'LOADING' | 'LOADED' | 'NOT_FOUND' | 'ERROR';
 export class LoreReaderComponent implements OnInit, OnDestroy {
 
   public translate = inject(TranslationService);
+  readonly kindleEditorial = KINDLE_EDITORIAL;
 
   private seoService = inject(SeoService);
   private route = inject(ActivatedRoute);

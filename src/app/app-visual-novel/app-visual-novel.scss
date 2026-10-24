@@ -646,3 +646,30 @@
     }
   }
 }
+
+/* =========================================================
+   KINDLE EDITORIAL CATALOG
+   ========================================================= */
+
+.saga-editorial-status {
+  display: inline-block;
+  margin: 0.5rem 0 0.75rem;
+  color: var(--accent-color);
+  font-family: 'Courier New', monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.arc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.kindle-disabled {
+  opacity: 0.5;
+  cursor: default !important;
+  pointer-events: none;
+}

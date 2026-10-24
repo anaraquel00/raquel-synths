@@ -43,19 +43,55 @@
             </div>
           }
 
-          @for (block of (translate.isPt() ? ep.content : (ep.content_en || ep.content)) | splitContent; track $index; let count = $count) {
-            <div class="story-block" [innerHTML]="block"></div>
+          <div
+            class="story-preview"
+            [innerHTML]="
+              translate.isPt()
+                ? (ep.sample || ep.description || '')
+                : (ep.sample_en || ep.sample || ep.description_en || ep.description || '')
+            ">
+          </div>
 
-            @if ((count <= 6 && $index === 2) || (count > 6 && ($index === 2 || $index === 6 || $index === 11))) {
-              <div class="inner-ad" style="margin: 30px 0;">
-                @defer (on viewport) {
-  <app-ad-article ngSkipHydration></app-ad-article>
-   } @placeholder {
-  <div style="min-height: 250px; width: 100%;"></div>
-   }
-              </div>
+          <section class="kindle-gate" aria-label="Kindle edition">
+            <p class="kindle-gate-code">
+              &gt; ACCESS_LIMIT_REACHED<br>
+              &gt; FULL_ARCHIVE: KINDLE
+            </p>
+
+            <h3>
+              {{
+                translate.isPt()
+                  ? 'A história completa continua na edição Kindle.'
+                  : 'The complete story continues in the Kindle edition.'
+              }}
+            </h3>
+
+            @if (kindleEditorial[currentMode()].kindleUrl; as kindleUrl) {
+              <a
+                class="kindle-cta"
+                [href]="kindleUrl"
+                target="_blank"
+                rel="noopener noreferrer">
+                {{
+                  translate.isPt()
+                    ? 'LER A EDIÇÃO COMPLETA NO KINDLE'
+                    : 'READ THE COMPLETE KINDLE EDITION'
+                }}
+              </a>
+            } @else {
+              <span class="kindle-cta kindle-cta-disabled">
+                {{
+                  currentMode() === 'jonah'
+                    ? (translate.isPt()
+                        ? 'EM BREVE NO KINDLE'
+                        : 'COMING SOON TO KINDLE')
+                    : (translate.isPt()
+                        ? 'EDIÇÃO KINDLE EM PROCESSAMENTO'
+                        : 'KINDLE EDITION PROCESSING')
+                }}
+              </span>
             }
-          }
+          </section>
         </div>
 
       <div class="divider"><span>● ● ●</span></div>
