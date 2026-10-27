@@ -3,6 +3,7 @@ export interface KindleSagaEditorialConfig {
   sampleRoute?: string;
   dossierRoute?: string;
   kindleUrl: string | null;
+  kindleUrlEn: string | null;
   publicFullText: boolean;
 }
 
@@ -14,6 +15,7 @@ export const KINDLE_EDITORIAL: Record<
     status: 'AVAILABLE NOW',
     sampleRoute: '/visual-novel/broklin/s1',
     kindleUrl: 'https://www.amazon.com.br/dp/B0HPCNZLDX',
+    kindleUrlEn: null,
     publicFullText: false
   },
 
@@ -21,6 +23,7 @@ export const KINDLE_EDITORIAL: Record<
     status: 'NEXT TRANSMISSION',
     dossierRoute: '/hybrid-saga',
     kindleUrl: null,
+    kindleUrlEn: null,
     publicFullText: false
   },
 
@@ -28,6 +31,7 @@ export const KINDLE_EDITORIAL: Record<
     status: 'AVAILABLE NOW',
     sampleRoute: '/visual-novel/jonah/s1',
     kindleUrl: null,
+    kindleUrlEn: null,
     publicFullText: false
   }
 };

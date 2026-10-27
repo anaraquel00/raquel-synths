@@ -87,7 +87,13 @@
           }
           @else if (arc.mode === 'romance') {
             <span class="saga-editorial-status">
-              {{ kindleEditorial.broklin.kindleUrl ? 'AVAILABLE NOW' : 'KINDLE EDITION' }}
+              {{ (translate.isPt()
+                ? kindleEditorial.broklin.kindleUrl
+                : kindleEditorial.broklin.kindleUrlEn)
+              ? 'AVAILABLE NOW'
+              : (translate.isPt()
+                  ? 'KINDLE EDITION'
+                  : 'ENGLISH EDITION COMING SOON') }}
             </span>
 
             <div class="arc-actions">
@@ -98,7 +104,12 @@
                 {{ translate.isPt() ? 'LER AMOSTRA' : 'READ SAMPLE' }}
               </a>
 
-              @if (kindleEditorial.broklin.kindleUrl; as kindleUrl) {
+              @if (
+                (translate.isPt()
+                  ? kindleEditorial.broklin.kindleUrl
+                  : kindleEditorial.broklin.kindleUrlEn);
+                as kindleUrl
+              ) {
                 <a
                   class="btn-watch"
                   [href]="kindleUrl"
@@ -111,7 +122,7 @@
                 <span class="btn-watch kindle-disabled">
                   {{ translate.isPt()
                     ? 'PUBLICAÇÃO EM PROCESSAMENTO'
-                    : 'PUBLICATION PROCESSING' }}
+                    : 'ENGLISH EDITION COMING SOON' }}
                 </span>
               }
             </div>

@@ -66,7 +66,12 @@
               }}
             </h3>
 
-            @if (kindleEditorial[currentMode()].kindleUrl; as kindleUrl) {
+            @if (
+              (translate.isPt()
+                ? kindleEditorial[currentMode()].kindleUrl
+                : kindleEditorial[currentMode()].kindleUrlEn);
+              as kindleUrl
+            ) {
               <a
                 class="kindle-cta"
                 [href]="kindleUrl"
@@ -87,7 +92,7 @@
                         : 'COMING SOON TO KINDLE')
                     : (translate.isPt()
                         ? 'EDIÇÃO KINDLE EM PROCESSAMENTO'
-                        : 'KINDLE EDITION PROCESSING')
+                        : 'COMING SOON TO KINDLE')
                 }}
               </span>
             }
