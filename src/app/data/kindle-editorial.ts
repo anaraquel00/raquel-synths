@@ -13,7 +13,7 @@ export const KINDLE_EDITORIAL: Record<
   broklin: {
     status: 'AVAILABLE NOW',
     sampleRoute: '/visual-novel/broklin/s1',
-    kindleUrl: null,
+    kindleUrl: 'https://www.amazon.com.br/dp/B0HPCNZLDX',
     publicFullText: false
   },
 
