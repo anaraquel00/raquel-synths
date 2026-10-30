@@ -15,7 +15,7 @@ export const KINDLE_EDITORIAL: Record<
     status: 'AVAILABLE NOW',
     sampleRoute: '/visual-novel/broklin/s1',
     kindleUrl: 'https://www.amazon.com.br/dp/B0HPCNZLDX',
-    kindleUrlEn: null,
+    kindleUrlEn: 'https://www.amazon.com/dp/B0HPL5SPPS',
     publicFullText: false
   },
 
@@ -30,7 +30,7 @@ export const KINDLE_EDITORIAL: Record<
   jonah: {
     status: 'AVAILABLE NOW',
     sampleRoute: '/visual-novel/jonah/s1',
-    kindleUrl: null,
+    kindleUrl: 'https://www.amazon.com/dp/B0HPPRWGCN',
     kindleUrlEn: null,
     publicFullText: false
   }
