@@ -14,6 +14,8 @@ import { LogReaderComponent } from './log-reader';
 
 describe('LogReaderComponent System Log publication gate', () => {
   const id = 'future-log';
+  const logImage =
+    'https://firebasestorage.googleapis.com/v0/b/raquel-synths-platform.firebasestorage.app/o/log-images%2Fqa-log.webp?alt=media';
   const endpoint =
     'https://firestore.googleapis.com/v1/projects/' +
     `raquel-synths-platform/databases/(default)/documents/logs/${id}`;
@@ -69,6 +71,7 @@ describe('LogReaderComponent System Log publication gate', () => {
   const firestoreLog = (date: string, published?: boolean) => ({
     fields: {
       date: { stringValue: date },
+      image: { stringValue: logImage },
       ...(published === undefined
         ? {}
         : { published: { booleanValue: published } }),
@@ -103,8 +106,26 @@ describe('LogReaderComponent System Log publication gate', () => {
     await fixture.whenStable();
     fixture.detectChanges();
 
+    const seo =
+      TestBed.inject(SeoService) as jasmine.SpyObj<SeoService>;
+
     expect(responseInit.status).toBe(200);
     expect(fixture.nativeElement.textContent).toContain('CONTEÚDO FUTURO SIGILOSO');
     expect(fixture.nativeElement.textContent).toContain('JAN 01, 2025');
+
+    expect(seo.updateMetaTags).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        image: logImage,
+        type: 'article',
+        url:
+          `https://raquelsynths.com/log-reader/${id}`
+      })
+    );
+
+    expect(seo.setJsonLd).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        image: [logImage]
+      })
+    );
   });
 });
