@@ -129,6 +129,9 @@ export class LogReaderComponent implements OnInit, OnDestroy {
             id,
             date: data.date,
 
+            image:
+              this.resolveSocialImage(data.image),
+
             title:
               localized?.title ||
               `RQS Log - ${id}`,
@@ -152,6 +155,9 @@ export class LogReaderComponent implements OnInit, OnDestroy {
           const absoluteUrl =
             `https://raquelsynths.com/log-reader/${mappedData.id}`;
 
+          const socialImage =
+            mappedData.image;
+
           this.seoService.updateCanonical(
             absoluteUrl
           );
@@ -162,6 +168,12 @@ export class LogReaderComponent implements OnInit, OnDestroy {
 
             description:
               mappedData.description,
+
+            image:
+              socialImage,
+
+            imageAlt:
+              `Imagem de ${mappedData.title}`,
 
             type: 'article',
 
@@ -183,7 +195,7 @@ export class LogReaderComponent implements OnInit, OnDestroy {
               mappedData.description,
 
             image: [
-              'https://raquelsynths.com/images/banner-seo-global.jpg'
+              socialImage
             ],
 
             datePublished:
@@ -297,6 +309,9 @@ export class LogReaderComponent implements OnInit, OnDestroy {
       return {
         date,
 
+        image:
+          doc.fields.image?.stringValue || '',
+
         pt: {
           title:
             doc.fields.pt?.mapValue?.fields
@@ -355,6 +370,33 @@ export class LogReaderComponent implements OnInit, OnDestroy {
     })
   );
 }
+
+  private resolveSocialImage(image: unknown): string {
+    const fallback =
+      'https://raquelsynths.com/images/banner-seo-global.jpg';
+
+    if (
+      typeof image !== 'string' ||
+      !image.trim()
+    ) {
+      return fallback;
+    }
+
+    try {
+      const resolved =
+        new URL(
+          image.trim(),
+          'https://raquelsynths.com/'
+        );
+
+      return resolved.protocol === 'https:'
+        ? resolved.href
+        : fallback;
+
+    } catch {
+      return fallback;
+    }
+  }
 
   /**
    * Modifica com segurança o status de resposta HTTP de acordo com o contexto
