@@ -30,7 +30,7 @@ export const KINDLE_EDITORIAL: Record<
   jonah: {
     status: 'AVAILABLE NOW',
     sampleRoute: '/visual-novel/jonah/s1',
-    kindleUrl: 'https://www.amazon.com/dp/B0HPPRWGCN',
+    kindleUrl: 'https://www.amazon.com.br/dp/B0HPPRWGCN',
     kindleUrlEn: 'https://www.amazon.com/dp/B0GX3517Y2',
     publicFullText: false
   }

@@ -7,7 +7,7 @@ describe('KINDLE_EDITORIAL', () => {
     expect(KINDLE_EDITORIAL.broklin.kindleUrlEn)
       .toBe('https://www.amazon.com/dp/B0HPL5SPPS');
     expect(KINDLE_EDITORIAL.jonah.kindleUrl)
-      .toBe('https://www.amazon.com/dp/B0HPPRWGCN');
+      .toBe('https://www.amazon.com.br/dp/B0HPPRWGCN');
     expect(KINDLE_EDITORIAL.jonah.kindleUrlEn)
       .toBe('https://www.amazon.com/dp/B0GX3517Y2');
   });
