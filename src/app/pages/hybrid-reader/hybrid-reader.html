@@ -60,7 +60,12 @@
                 }}
               </h3>
 
-              @if (kindleEditorial.glitch.kindleUrl; as kindleUrl) {
+              @if (
+                (translate.isPt()
+                  ? kindleEditorial.glitch.kindleUrl
+                  : kindleEditorial.glitch.kindleUrlEn);
+                as kindleUrl
+              ) {
                 <a
                   class="kindle-cta"
                   [href]="kindleUrl"
