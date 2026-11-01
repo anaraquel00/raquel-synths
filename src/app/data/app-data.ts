@@ -563,47 +563,43 @@ export const ADS_DATA = {
 };
 
 export const VISUAL_NOVEL_PT = [
-    {
-      title: '📼 SAGA JONAH // RQS: ORIGINS',
-      titleDetail: '(Before the Metal)',
-      subtitle: 'Caos, Fios & Revolução',
-      description: 'Quando o sistema falha, a verdade aparece. A revolta industrial de Jonah contra a programação.',
-      image: 'images/lore_jonah.webp', // Capa do Jonah
-      link: '/visual-novel',
-      mode: 'chaos'
-    },
-    {
-      title: 'ARCO BROKLIN',
-      subtitle: 'Amor, Vinho & Melancolia',
-      description: 'A jornada de um vampiro gótico em busca de redenção através do amor de Kelma.',
-      image: 'images/saga_cover.webp', // Use capa do arco
-      link: '/visual-novel',
-      mode: 'romance'
-    },
-
+  {
+    title: '🔥 ECOS DO CAOS: A ORIGEM',
+    subtitle: 'Antes da armadura. Antes do ódio.',
+    description: 'Uma saga cyberpunk musical sobre obsessão, rejeição, identidade e transformação. Descubra como Jo Cyborg morreu para Jonah Cyperfield nascer.',
+    image: 'images/saga_jonah_origin_banner.webp',
+    link: '/visual-novel',
+    mode: 'chaos'
+  },
+  {
+    title: '📚 ECOS DA RQS: A GUERRA DE SERVIDORES',
+    subtitle: 'Onde a música encontra o código proibido.',
+    description: 'Broklin Garpeter entra na raiz da RaQuel Synths e altera para sempre o equilíbrio da banda. Sedução, intriga e guerra sonora colocam ordem e caos em rota de colisão.',
+    image: 'images/saga_broklin_server_war_banner.webp',
+    link: '/visual-novel',
+    mode: 'romance'
+  }
 ];
 
 export const VISUAL_NOVEL_EN = [
-
   {
-      title: '📼 JONAH SAGA // RQS: ORIGINS',
-      titleDetail: '(Before the Metal)',
-      subtitle: 'Chaos, Wires & Revolution',
-      description: 'When the system fails, the truth comes out. Jonahs industrial revolt against programming.',
-      image: 'images/lore_jonah.webp',
-      link: '/visual-novel',
-      mode: 'chaos'
+    title: '🔥 ECHOES OF CHAOS: THE ORIGIN',
+    subtitle: 'Before the armor. Before the hatred.',
+    description: 'A cyberpunk musical saga about obsession, rejection, identity and transformation. Discover how Jo Cyborg died so Jonah Cyperfield could be born.',
+    image: 'images/saga_jonah_origin_banner_EN.webp',
+    link: '/visual-novel',
+    mode: 'chaos'
   },
   {
-      title: 'BROKLIN ARC',
-      subtitle: 'Love, Wine and Melancholy',
-      description: 'The journey of a gothic vampire seeking redemption through the love of Kelma. Includes the hit song "Neon Tears".',
-      image: 'images/saga_cover.webp', // Use a capa do arco
-      link: '/visual-novel',
-      mode: 'romance'
-    },
+    title: '📚 RQS ECHOES: THE SERVER WAR',
+    subtitle: 'Where music meets forbidden code.',
+    description: 'Broklin Garpeter enters the core of RaQuel Synths and changes the band forever. Seduction, intrigue and sonic warfare put order and chaos on a collision course.',
+    image: 'images/saga_broklin_server_war_banner_EN.webp',
+    link: '/visual-novel',
+    mode: 'romance'
+  }
+];
 
-]
 // 2. OS TEXTOS DE INTRO (Separados, fora do Array!)
 
 // 🛡️ MODO GENERAL (Imersão RPG) - Hierarquia Visual Ativada
