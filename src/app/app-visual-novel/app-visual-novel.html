@@ -80,9 +80,21 @@
                 {{ translate.isPt() ? 'LER AMOSTRA' : 'READ SAMPLE' }}
               </a>
 
-              <span class="btn-watch kindle-disabled">
-                {{ translate.isPt() ? 'EM BREVE NO KINDLE' : 'COMING SOON TO KINDLE' }}
-              </span>
+              @if (
+                (translate.isPt()
+                  ? kindleEditorial.jonah.kindleUrl
+                  : kindleEditorial.jonah.kindleUrlEn);
+                as kindleUrl
+              ) {
+                <a
+                  class="btn-watch"
+                  [href]="kindleUrl"
+                  target="_blank"
+                  rel="noopener noreferrer">
+                  <mat-icon>auto_stories</mat-icon>
+                  {{ translate.isPt() ? 'ABRIR NO KINDLE' : 'OPEN ON KINDLE' }}
+                </a>
+              }
             </div>
           }
           @else if (arc.mode === 'romance') {

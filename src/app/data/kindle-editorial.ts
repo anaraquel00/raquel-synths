@@ -31,7 +31,7 @@ export const KINDLE_EDITORIAL: Record<
     status: 'AVAILABLE NOW',
     sampleRoute: '/visual-novel/jonah/s1',
     kindleUrl: 'https://www.amazon.com/dp/B0HPPRWGCN',
-    kindleUrlEn: null,
+    kindleUrlEn: 'https://www.amazon.com/dp/B0GX3517Y2',
     publicFullText: false
   }
 };
