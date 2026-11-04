@@ -7,6 +7,7 @@ import {
   Component,
   computed,
   Inject,
+  OnDestroy,
   OnInit,
   PLATFORM_ID,
   signal
@@ -200,7 +201,7 @@ interface PlansResponse {
     './radio-admin.scss'
 })
 export class RadioAdminComponent
-implements OnInit {
+implements OnInit, OnDestroy {
   readonly checked =
     signal(false);
 
@@ -351,6 +352,9 @@ implements OnInit {
 
   private csrf = '';
 
+  private sessionKeepaliveId:
+    number | null = null;
+
   constructor(
     @Inject(PLATFORM_ID)
     private readonly platformId:
@@ -367,6 +371,16 @@ implements OnInit {
     } else {
       this.checked.set(true);
     }
+  }
+
+  ngOnDestroy(): void {
+    this.stopSessionKeepalive();
+  }
+
+  handleSessionExpired(): void {
+    this.expireAdminSession(
+      'Sua sessão administrativa expirou. Volte ao RQS Admin e entre novamente.'
+    );
   }
 
   selectSection(
@@ -1155,6 +1169,8 @@ implements OnInit {
       if (
         this.authenticated()
       ) {
+        this.startSessionKeepalive();
+
         try {
           await this.loadPlans();
         } catch (error) {
@@ -1233,12 +1249,20 @@ implements OnInit {
       );
 
     const result =
-      await response.json();
+      await response
+        .json()
+        .catch(
+          () => ({})
+        );
 
     if (!response.ok) {
       throw new Error(
-        result.message ||
-        'Falha ao validar a sessão administrativa.'
+        (
+          result as {
+            message?: string;
+          }
+        ).message ||
+        `Falha ao validar a sessão administrativa. HTTP ${response.status}.`
       );
     }
 
@@ -1276,16 +1300,140 @@ implements OnInit {
       );
 
     const result =
-      await response.json();
+      await response
+        .json()
+        .catch(
+          () => ({})
+        );
+
+    if (
+      response.status ===
+      401
+    ) {
+      this.expireAdminSession(
+        'Sua sessão administrativa expirou. Volte ao RQS Admin e entre novamente.'
+      );
+
+      throw new Error(
+        'Sessão administrativa expirada.'
+      );
+    }
 
     if (!response.ok) {
       throw new Error(
-        result.message ||
-        'Falha no Media Control Plane.'
+        (
+          result as {
+            message?: string;
+          }
+        ).message ||
+        `Falha no Media Control Plane. HTTP ${response.status}.`
       );
     }
 
     return result as T;
+  }
+
+  private startSessionKeepalive():
+  void {
+    if (
+      !isPlatformBrowser(
+        this.platformId
+      ) ||
+      this.sessionKeepaliveId !==
+        null
+    ) {
+      return;
+    }
+
+    this.sessionKeepaliveId =
+      window.setInterval(
+        () => {
+          void this.keepSessionAlive();
+        },
+        5 * 60 * 1000
+      );
+  }
+
+  private stopSessionKeepalive():
+  void {
+    if (
+      !isPlatformBrowser(
+        this.platformId
+      ) ||
+      this.sessionKeepaliveId ===
+        null
+    ) {
+      return;
+    }
+
+    window.clearInterval(
+      this.sessionKeepaliveId
+    );
+
+    this.sessionKeepaliveId =
+      null;
+  }
+
+  private async keepSessionAlive():
+  Promise<void> {
+    if (
+      !this.authenticated()
+    ) {
+      this.stopSessionKeepalive();
+      return;
+    }
+
+    try {
+      const session =
+        await this.sessionCall();
+
+      if (
+        !session.authenticated ||
+        !session.csrfToken
+      ) {
+        this.expireAdminSession(
+          'Sua sessão administrativa expirou. Volte ao RQS Admin e entre novamente.'
+        );
+
+        return;
+      }
+
+      this.csrf =
+        session.csrfToken;
+    } catch {
+      // Falha transitória não derruba uma sessão ainda válida.
+      // A próxima chamada protegida continua sendo a autoridade.
+    }
+  }
+
+  private expireAdminSession(
+    message: string
+  ): void {
+    this.stopSessionKeepalive();
+
+    this.authenticated.set(
+      false
+    );
+
+    this.csrf = '';
+
+    this.queue.set([]);
+    this.history.set([]);
+
+    this.selectedPlanId.set(
+      null
+    );
+
+    this.selectedPlanRevision.set(
+      null
+    );
+
+    this.selectedUpdateTime =
+      null;
+
+    this.error.set(
+      message
+    );
   }
 
   private async execute(

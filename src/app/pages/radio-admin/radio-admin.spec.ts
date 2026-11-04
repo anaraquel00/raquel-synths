@@ -226,5 +226,47 @@ describe(
           );
       }
     );
+
+    it(
+      'fails closed when the admin session expires',
+      () => {
+        const fixture =
+          TestBed.createComponent(
+            RadioAdminComponent
+          );
+
+        fixture.detectChanges();
+
+        const component =
+          fixture.componentInstance;
+
+        component
+          .authenticated
+          .set(true);
+
+        fixture.detectChanges();
+
+        component
+          .handleSessionExpired();
+
+        fixture.detectChanges();
+
+        expect(
+          component
+            .authenticated()
+        ).toBeFalse();
+
+        const text =
+          fixture
+            .nativeElement
+            .textContent || '';
+
+        expect(text)
+          .toContain(
+            'ADMIN SESSION REQUIRED'
+          );
+      }
+    );
+
   }
 );

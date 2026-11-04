@@ -71,6 +71,10 @@ implements OnChanges {
   readonly planUpdated =
     new EventEmitter<void>();
 
+  @Output()
+  readonly sessionExpired =
+    new EventEmitter<void>();
+
   readonly config =
     signal<YoutubeOperationsConfig | null>(
       null
@@ -1030,12 +1034,35 @@ implements OnChanges {
       );
 
     const result =
-      await response.json();
+      await response
+        .json()
+        .catch(
+          () => ({})
+        );
+
+    if (
+      response.status ===
+      401
+    ) {
+      this.connected.set(
+        false
+      );
+
+      this.sessionExpired.emit();
+
+      throw new Error(
+        'Sessão administrativa expirada.'
+      );
+    }
 
     if (!response.ok) {
       throw new Error(
-        result.message ||
-        'Falha na API administrativa.'
+        (
+          result as {
+            message?: string;
+          }
+        ).message ||
+        `Falha na API administrativa. HTTP ${response.status}.`
       );
     }
 

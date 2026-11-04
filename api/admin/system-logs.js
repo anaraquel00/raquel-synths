@@ -73,10 +73,42 @@ function requireOrigin(req) {
 }
 function cookies(req) { return Object.fromEntries(String(req.headers.cookie || '').split(';').map(v => v.trim()).filter(Boolean).map(v => { const i = v.indexOf('='); return [v.slice(0, i), v.slice(i + 1)]; })); }
 function signSession(payload, key) { return createHmac('sha256', key).update(`admin-session:${payload}`).digest('base64url'); }
+function signedSession(value, key) {
+  const payload = Buffer
+    .from(JSON.stringify(value))
+    .toString('base64url');
+
+  return {
+    csrfToken: value.csrfToken,
+    expiresAt: value.expiresAt,
+    token: `${payload}.${signSession(payload, key)}`
+  };
+}
+
 function newSession(key) {
-  const csrfToken = randomBytes(32).toString('base64url'); const expiresAt = Date.now() + SESSION_TTL;
-  const payload = Buffer.from(JSON.stringify({ version: 1, csrfToken, expiresAt, issuedAt: Date.now(), nonce: randomUUID() })).toString('base64url');
-  return { csrfToken, expiresAt, token: `${payload}.${signSession(payload, key)}` };
+  return signedSession(
+    {
+      version: 1,
+      csrfToken: randomBytes(32).toString('base64url'),
+      expiresAt: Date.now() + SESSION_TTL,
+      issuedAt: Date.now(),
+      nonce: randomUUID()
+    },
+    key
+  );
+}
+
+function renewSession(session, key) {
+  return signedSession(
+    {
+      version: 1,
+      csrfToken: session.csrfToken,
+      expiresAt: Date.now() + SESSION_TTL,
+      issuedAt: Date.now(),
+      nonce: session.nonce
+    },
+    key
+  );
 }
 function cookie(token, maxAge = SESSION_TTL) { return [`${SESSION_COOKIE}=${token}`, `Max-Age=${Math.floor(maxAge / 1000)}`, 'Path=/', 'HttpOnly', 'Secure', 'SameSite=Strict'].join('; '); }
 function expiredCookies() { return [cookie('', 0), `${LEGACY_SESSION_COOKIE}=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Strict`]; }
@@ -336,7 +368,30 @@ export default async function handler(req, res) {
     if (!String(req.headers['content-type'] || '').toLowerCase().startsWith('application/json')) throw new SystemLogsError(415, 'UNSUPPORTED_MEDIA_TYPE', 'Use application/json.');
     requireOrigin(req); const input = body(req); const action = input.action; const key = secret();
     if (action === 'login') { if (!input.credential || !safeEqual(input.credential, key)) throw new SystemLogsError(401, 'INVALID_ADMIN_CREDENTIAL', 'Credencial inválida.'); const session = newSession(key); res.setHeader('Set-Cookie', cookie(session.token)); return res.status(200).json({ authenticated: true, csrfToken: session.csrfToken, expiresAt: session.expiresAt }); }
-    if (action === 'session') { const session = readSession(req, key); if (!session) { res.setHeader('Set-Cookie', expiredCookies()); return res.status(200).json({ authenticated: false }); } return res.status(200).json({ authenticated: true, csrfToken: session.csrfToken, expiresAt: session.expiresAt }); }
+    if (action === 'session') {
+      const current = readSession(req, key);
+
+      if (!current) {
+        res.setHeader('Set-Cookie', expiredCookies());
+
+        return res.status(200).json({
+          authenticated: false
+        });
+      }
+
+      const session = renewSession(current, key);
+
+      res.setHeader(
+        'Set-Cookie',
+        cookie(session.token)
+      );
+
+      return res.status(200).json({
+        authenticated: true,
+        csrfToken: session.csrfToken,
+        expiresAt: session.expiresAt
+      });
+    }
     const session = requireSession(req, key); requireCsrf(req, session);
     if (action === 'logout') { res.setHeader('Set-Cookie', expiredCookies()); return res.status(200).json({ authenticated: false }); }
     if (action === 'list') return res.status(200).json({ documents: await listDocuments() });

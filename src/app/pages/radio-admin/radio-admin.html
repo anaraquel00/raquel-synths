@@ -265,6 +265,7 @@
             [plan]="selectedLivePlan()"
             expectedKind="monthly-radio"
             (planUpdated)="refreshPlans()"
+            (sessionExpired)="handleSessionExpired()"
           ></app-youtube-live-operations-panel>
         }
 
@@ -396,6 +397,7 @@
             [plan]="selectedPlan()"
             expectedKind="weekly-video"
             (planUpdated)="refreshPlans()"
+            (sessionExpired)="handleSessionExpired()"
           ></app-youtube-publisher-panel>
         }
 
@@ -527,6 +529,7 @@
             [plan]="selectedPlan()"
             expectedKind="short"
             (planUpdated)="refreshPlans()"
+            (sessionExpired)="handleSessionExpired()"
           ></app-youtube-publisher-panel>
         }
 
@@ -673,6 +676,7 @@
             [plan]="selectedLivePlan()"
             expectedKind="special-stream"
             (planUpdated)="refreshPlans()"
+            (sessionExpired)="handleSessionExpired()"
           ></app-youtube-live-operations-panel>
         }
 

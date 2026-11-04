@@ -34,6 +34,7 @@ export class YoutubePublisherPanelComponent implements OnChanges {
   @Input() plan: YoutubePublishPlan | null = null;
   @Input() expectedKind: 'weekly-video' | 'short' = 'weekly-video';
   @Output() readonly planUpdated = new EventEmitter<void>();
+  @Output() readonly sessionExpired = new EventEmitter<void>();
 
   readonly config = signal<YoutubeOperationsConfig | null>(null);
   readonly connected = signal(false);
@@ -259,8 +260,21 @@ export class YoutubePublisherPanelComponent implements OnChanges {
       cache: 'no-store',
       body: JSON.stringify(payload)
     });
-    const result = await response.json();
-    if (!response.ok) throw new Error(result.message || 'Falha na API administrativa.');
+    const result = await response.json().catch(() => ({}));
+
+    if (response.status === 401) {
+      this.connected.set(false);
+      this.sessionExpired.emit();
+      throw new Error('Sessão administrativa expirada.');
+    }
+
+    if (!response.ok) {
+      throw new Error(
+        (result as { message?: string }).message ||
+        `Falha na API administrativa. HTTP ${response.status}.`
+      );
+    }
+
     return result as T;
   }
 

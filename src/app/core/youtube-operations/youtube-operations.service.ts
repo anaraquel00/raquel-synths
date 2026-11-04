@@ -169,14 +169,26 @@ export class YoutubeOperationsService {
   }
 
   disconnect(): void {
-    const token = this.accessToken;
+    const token =
+      this.accessToken;
+
+    const tokenIsCurrent =
+      Boolean(
+        token &&
+        Date.now() <
+          this.expiresAt
+      );
+
     this.clearToken();
 
     const oauth2 =
       (window as GoogleIdentityWindow)
         .google?.accounts?.oauth2;
 
-    if (token && oauth2?.revoke) {
+    if (
+      tokenIsCurrent &&
+      oauth2?.revoke
+    ) {
       oauth2.revoke(token);
     }
   }
