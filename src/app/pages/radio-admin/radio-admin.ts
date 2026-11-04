@@ -5,6 +5,7 @@ import {
 
 import {
   Component,
+  computed,
   Inject,
   OnInit,
   PLATFORM_ID,
@@ -18,6 +19,10 @@ import {
 import {
   RouterLink
 } from '@angular/router';
+
+import {
+  YoutubePublisherPanelComponent
+} from './youtube-publisher-panel';
 
 type MediaSection =
   | 'monthly-radio'
@@ -121,6 +126,12 @@ interface MediaPlan {
     | 'PASS'
     | 'FAIL';
   dryRunAt: string | null;
+  youtubeVideoId?: string | null;
+  youtubeUrl?: string | null;
+  uploadStatus?: string;
+  processingStatus?: string;
+  thumbnailStatus?: string;
+  playlistStatus?: string;
   revision: number;
   createdAt: string;
   updatedAt: string;
@@ -140,7 +151,8 @@ interface PlansResponse {
   imports: [
     CommonModule,
     FormsModule,
-    RouterLink
+    RouterLink,
+    YoutubePublisherPanelComponent
   ],
 
   templateUrl:
@@ -196,6 +208,24 @@ implements OnInit {
     signal<number | null>(
       null
     );
+
+  readonly selectedPlan =
+    computed(() => {
+      const id =
+        this.selectedPlanId();
+
+      if (!id) {
+        return null;
+      }
+
+      return [
+        ...this.queue(),
+        ...this.history()
+      ].find(
+        plan =>
+          plan.id === id
+      ) || null;
+    });
 
   private selectedUpdateTime:
     string | null = null;
@@ -1029,6 +1059,11 @@ implements OnInit {
     } finally {
       this.checked.set(true);
     }
+  }
+
+  async refreshPlans():
+  Promise<void> {
+    await this.loadPlans();
   }
 
   private async loadPlans():

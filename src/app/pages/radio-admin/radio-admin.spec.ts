@@ -87,7 +87,7 @@ describe(
 
         expect(text)
           .toContain(
-            'NO YOUTUBE WRITES'
+            'DIRECT PUBLISHING'
           );
 
         expect(text)

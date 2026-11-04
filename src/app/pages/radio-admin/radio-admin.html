@@ -24,11 +24,11 @@
 
     <div class="foundation-badge">
       <strong>
-        FOUNDATION
+        PHASE 3
       </strong>
 
       <span>
-        NO YOUTUBE WRITES
+        DIRECT PUBLISHING // GATED
       </span>
     </div>
   </header>
@@ -373,6 +373,12 @@
               </span>
             </div>
           </section>
+
+          <app-youtube-publisher-panel
+            [plan]="selectedPlan()"
+            expectedKind="weekly-video"
+            (planUpdated)="refreshPlans()"
+          ></app-youtube-publisher-panel>
         }
 
         @if (
@@ -486,6 +492,12 @@
               </span>
             </div>
           </section>
+
+          <app-youtube-publisher-panel
+            [plan]="selectedPlan()"
+            expectedKind="short"
+            (planUpdated)="refreshPlans()"
+          ></app-youtube-publisher-panel>
         }
 
         @if (
@@ -717,16 +729,16 @@
 
           <div>
             <strong>
-              No YouTube Writes
+              YouTube Writes
             </strong>
 
             <span>
-              Nenhuma alteração de canal nesta fase.
+              Somente após OAuth, Dry Run PASS e confirmação explícita.
             </span>
           </div>
 
           <b>
-            ENFORCED
+            GATED
           </b>
         </section>
 
@@ -910,6 +922,15 @@
                     · DRY RUN {{ plan.dryRunStatus }}
                     · R{{ plan.revision }}
                   </small>
+
+                  @if (plan.youtubeVideoId) {
+                    <small>
+                      YOUTUBE {{ plan.youtubeVideoId }}
+                      · {{ plan.uploadStatus }}
+                      · {{ plan.thumbnailStatus }}
+                      · {{ plan.playlistStatus }}
+                    </small>
+                  }
 
                   <div class="queue-actions">
                     <button

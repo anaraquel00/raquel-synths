@@ -20,10 +20,12 @@ import {
 } from '../../lib/radio/media-plan-state.js';
 
 import {
+  beginYoutubeUpload,
   cancelMediaPlan,
   deleteMediaPlan,
   listMediaPlans,
   MediaPlanError,
+  recordYoutubePublishResult,
   saveMediaPlan
 } from '../../lib/radio/media-plan-repository.js';
 
@@ -205,6 +207,59 @@ export default async function handler(
           youtube,
           operationalStatuses:
             RADIO_OPERATIONAL_STATUSES
+        });
+    }
+
+    if (
+      action ===
+      'operations-config'
+    ) {
+      const clientId =
+        String(
+          process.env
+            .RQS_YOUTUBE_OPERATIONS_CLIENT_ID ||
+          ''
+        ).trim();
+
+      const expectedChannelId =
+        String(
+          process.env
+            .RQS_YOUTUBE_EXPECTED_CHANNEL_ID ||
+          ''
+        ).trim();
+
+      const enabled =
+        process.env
+          .RQS_YOUTUBE_OPERATIONS_ENABLED ===
+        'true';
+
+      const configured =
+        Boolean(
+          clientId &&
+          expectedChannelId &&
+          clientId.endsWith(
+            '.apps.googleusercontent.com'
+          ) &&
+          expectedChannelId.startsWith('UC')
+        );
+
+      return res
+        .status(200)
+        .json({
+          enabled:
+            enabled &&
+            configured,
+          configured,
+          clientId:
+            configured
+              ? clientId
+              : null,
+          expectedChannelId:
+            configured
+              ? expectedChannelId
+              : null,
+          scope:
+            'https://www.googleapis.com/auth/youtube.force-ssl'
         });
     }
 
@@ -475,6 +530,85 @@ export default async function handler(
         .json({
           plan:
             saved
+        });
+    }
+
+    if (
+      action ===
+      'plan-upload-intent'
+    ) {
+      if (
+        process.env
+          .RQS_YOUTUBE_OPERATIONS_ENABLED !==
+        'true'
+      ) {
+        throw new MediaPlanError(
+          403,
+          'YOUTUBE_OPERATIONS_LOCKED',
+          'YouTube Operations está bloqueado neste ambiente.'
+        );
+      }
+
+      const updated =
+        await beginYoutubeUpload({
+          id:
+            String(input.id || ''),
+          sourceUpdateTime:
+            input.updateTime
+        });
+
+      radioAudit(
+        'YOUTUBE_UPLOAD_INTENT',
+        {
+          id: updated.id,
+          kind: updated.kind,
+          revision: updated.revision
+        }
+      );
+
+      return res
+        .status(200)
+        .json({
+          plan: updated
+        });
+    }
+
+    if (
+      action ===
+      'plan-youtube-result'
+    ) {
+      const updated =
+        await recordYoutubePublishResult({
+          id:
+            String(input.id || ''),
+          sourceUpdateTime:
+            input.updateTime,
+          result:
+            input.result
+        });
+
+      radioAudit(
+        'YOUTUBE_PUBLISH_RESULT',
+        {
+          id: updated.id,
+          kind: updated.kind,
+          youtubeVideoId:
+            updated.youtubeVideoId,
+          uploadStatus:
+            updated.uploadStatus,
+          processingStatus:
+            updated.processingStatus,
+          thumbnailStatus:
+            updated.thumbnailStatus,
+          playlistStatus:
+            updated.playlistStatus
+        }
+      );
+
+      return res
+        .status(200)
+        .json({
+          plan: updated
         });
     }
 
