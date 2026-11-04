@@ -1,0 +1,135 @@
+<main class="radio-admin">
+  <header class="radio-header">
+    <div>
+      <a routerLink="/admin" class="back-link">← RQS ADMIN</a>
+      <p class="eyebrow">RQS RADIO // CONTROL PLANE</p>
+      <h1>Radio Operations</h1>
+      <p class="lede">
+        Controle administrativo da YouTube Live Streaming API.
+        O áudio e o vídeo nunca passam pelo backend da RQS.
+      </p>
+    </div>
+
+    <div class="foundation-badge">
+      <strong>FOUNDATION</strong>
+      <span>NO YOUTUBE WRITES</span>
+    </div>
+  </header>
+
+  @if (!checked()) {
+    <section class="panel"><p>Validando sessão administrativa…</p></section>
+  } @else if (!authenticated()) {
+    <section class="panel blocked">
+      <p class="section-label">ADMIN SESSION REQUIRED</p>
+      <h2>Acesso administrativo necessário</h2>
+      <p>Entre pelo RQS Admin antes de acessar o control plane da rádio.</p>
+      <a routerLink="/admin" class="button primary">VOLTAR AO ADMIN</a>
+    </section>
+  } @else {
+    <section class="safety-strip">
+      <span>CONTROL PLANE ONLY</span>
+      <span>OBS → YOUTUBE RTMPS</span>
+      <span>ZERO CLOUD MEDIA EGRESS</span>
+    </section>
+
+    <section class="panel diagnostics-panel">
+      <div class="section-heading">
+        <div>
+          <p class="section-label">01 // YOUTUBE CONNECTION</p>
+          <h2>Diagnostics</h2>
+        </div>
+        <button type="button" class="button" [disabled]="busy()" (click)="runDiagnostics()">RUN DIAGNOSTICS</button>
+      </div>
+
+      @if (diagnostics(); as result) {
+        <div class="diagnostic-grid">
+          <article><span>CONFIG</span><strong>{{ result.youtube.configurationStatus }}</strong></article>
+          <article><span>CHANNEL</span><strong>{{ result.youtube.channelStatus }}</strong></article>
+          <article><span>IDENTITY</span><strong>{{ result.youtube.channel?.title || 'NOT AVAILABLE' }}</strong></article>
+          <article><span>REUSABLE STREAM</span><strong>{{ result.youtube.reusableStream?.title || 'NOT FOUND' }}</strong></article>
+        </div>
+
+        @if (result.youtube.missingConfiguration?.length) {
+          <p class="notice warning">Missing: {{ result.youtube.missingConfiguration?.join(', ') }}</p>
+        }
+
+        @if (result.youtube.diagnostic) {
+          <p class="notice error">
+            {{ result.youtube.diagnostic.category }}
+            @if (result.youtube.diagnostic.httpStatus) { · HTTP {{ result.youtube.diagnostic.httpStatus }} }
+            @if (result.youtube.diagnostic.reason) { · {{ result.youtube.diagnostic.reason }} }
+          </p>
+        }
+      }
+    </section>
+
+    <section class="panel">
+      <div class="section-heading">
+        <div>
+          <p class="section-label">02 // TRANSMISSION DRAFT</p>
+          <h2>New Transmission</h2>
+        </div>
+        <span class="read-only">DRY RUN ONLY</span>
+      </div>
+
+      <div class="form-grid">
+        <label class="wide">Title <input [(ngModel)]="title" maxlength="100"></label>
+        <label class="wide">Description <textarea [(ngModel)]="description" rows="5" maxlength="5000"></textarea></label>
+        <label>Scheduled Start <input type="datetime-local" [(ngModel)]="scheduledStartLocal"></label>
+        <label>Visibility
+          <select [(ngModel)]="visibility">
+            <option value="private">PRIVATE</option>
+            <option value="unlisted">UNLISTED</option>
+            <option value="public">PUBLIC</option>
+          </select>
+        </label>
+        <label class="wide">Thumbnail URL <input type="url" [(ngModel)]="thumbnailUrl" placeholder="https://..."></label>
+        <label class="wide">Setlist <textarea [(ngModel)]="setlistText" rows="7" placeholder="Uma faixa por linha"></textarea></label>
+        <label class="wide">YouTube Playlist ID <input [(ngModel)]="playlistId" placeholder="Optional in Foundation"></label>
+      </div>
+
+      <div class="toggles">
+        <label><input type="checkbox" [(ngModel)]="autoStart"> AutoStart</label>
+        <label><input type="checkbox" [(ngModel)]="autoStop"> AutoStop</label>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="button primary" [disabled]="busy()" (click)="runDryRun()">RUN RADIO DRY RUN</button>
+        <span>Nenhum broadcast, stream, bind ou playlist será criado.</span>
+      </div>
+    </section>
+
+    @if (dryRun(); as result) {
+      <section class="panel">
+        <div class="section-heading">
+          <div>
+            <p class="section-label">03 // PRE-FLIGHT</p>
+            <h2>{{ result.diagnostics.status }}</h2>
+          </div>
+          <span class="read-only">writesEnabled={{ result.writesEnabled }}</span>
+        </div>
+
+        <div class="checks">
+          @for (check of result.diagnostics.checks; track check.code) {
+            <article [class.fail]="check.status === 'FAIL'">
+              <strong>{{ check.status }} · {{ check.code }}</strong>
+              <span>{{ check.message }}</span>
+            </article>
+          }
+        </div>
+
+        <div class="plan">
+          @for (step of result.plan; track step.step) {
+            <article>
+              <span>{{ step.step }}</span>
+              <strong>{{ step.status }}</strong>
+              <small>{{ step.detail }}</small>
+            </article>
+          }
+        </div>
+      </section>
+    }
+  }
+
+  @if (error()) { <p class="notice error" role="alert">{{ error() }}</p> }
+</main>

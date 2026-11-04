@@ -249,6 +249,13 @@ export const routes: Routes = [
     title: 'RQS Admin'
   },
   {
+    path: 'admin/radio',
+    loadComponent: () =>
+      import('./pages/radio-admin/radio-admin')
+        .then(m => m.RadioAdminComponent),
+    title: 'RQS Admin // Radio Control Plane'
+  },
+  {
     path: 'admin/stream-importer',
     loadComponent: () =>
       import('./pages/soundcloud-importer/soundcloud-importer')
