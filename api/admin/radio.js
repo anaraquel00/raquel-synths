@@ -47,9 +47,111 @@ import {
   newRadioTransmission
 } from '../../lib/radio/radio-repository.js';
 
-import {
-  diagnoseYouTubeConnection
-} from '../../lib/radio/youtube-client.js';
+function youtubeOperationsReadiness(
+  env = process.env
+) {
+  const clientId =
+    String(
+      env.RQS_YOUTUBE_OPERATIONS_CLIENT_ID ||
+      ''
+    ).trim();
+
+  const expectedChannelId =
+    String(
+      env.RQS_YOUTUBE_EXPECTED_CHANNEL_ID ||
+      ''
+    ).trim();
+
+  const enabled =
+    env.RQS_YOUTUBE_OPERATIONS_ENABLED ===
+    'true';
+
+  const clientConfigured =
+    Boolean(
+      clientId &&
+      clientId.endsWith(
+        '.apps.googleusercontent.com'
+      )
+    );
+
+  const expectedChannelIdConfigured =
+    Boolean(
+      expectedChannelId &&
+      expectedChannelId.startsWith('UC')
+    );
+
+  const configured =
+    clientConfigured &&
+    expectedChannelIdConfigured;
+
+  const missingConfiguration = [];
+
+  if (!enabled) {
+    missingConfiguration.push(
+      'RQS_YOUTUBE_OPERATIONS_ENABLED'
+    );
+  }
+
+  if (!clientConfigured) {
+    missingConfiguration.push(
+      'RQS_YOUTUBE_OPERATIONS_CLIENT_ID'
+    );
+  }
+
+  if (!expectedChannelIdConfigured) {
+    missingConfiguration.push(
+      'RQS_YOUTUBE_EXPECTED_CHANNEL_ID'
+    );
+  }
+
+  return {
+    configurationStatus:
+      enabled && configured
+        ? 'READY'
+        : configured
+          ? 'LOCKED'
+          : 'NOT_CONFIGURED',
+
+    operationsEnabled:
+      enabled && configured,
+
+    clientConfigured,
+
+    expectedChannelIdConfigured,
+
+    expectedChannelId:
+      expectedChannelIdConfigured
+        ? expectedChannelId
+        : null,
+
+    channelStatus:
+      expectedChannelIdConfigured
+        ? 'DEFERRED_TO_BROWSER'
+        : 'NOT_CHECKED',
+
+    channel:
+      expectedChannelIdConfigured
+        ? {
+            id:
+              expectedChannelId,
+            title:
+              'Validated on browser connect'
+          }
+        : null,
+
+    reusableStream:
+      null,
+
+    streams:
+      [],
+
+    missingConfiguration,
+
+    checkedAt:
+      new Date()
+        .toISOString()
+  };
+}
 
 function statusFor(error) {
   if (
@@ -182,7 +284,7 @@ export default async function handler(
       'diagnostics'
     ) {
       const youtube =
-        await diagnoseYouTubeConnection();
+        youtubeOperationsReadiness();
 
       radioAudit(
         'DIAGNOSTICS',
@@ -204,9 +306,9 @@ export default async function handler(
         .status(200)
         .json({
           mode:
-            'FOUNDATION_READ_ONLY',
+            'BROWSER_OAUTH_OPERATIONS_READINESS',
           writesEnabled:
-            false,
+            youtube.operationsEnabled === true,
           youtube,
           operationalStatuses:
             RADIO_OPERATIONAL_STATUSES
@@ -217,6 +319,9 @@ export default async function handler(
       action ===
       'operations-config'
     ) {
+      const readiness =
+        youtubeOperationsReadiness();
+
       const clientId =
         String(
           process.env
@@ -224,43 +329,20 @@ export default async function handler(
           ''
         ).trim();
 
-      const expectedChannelId =
-        String(
-          process.env
-            .RQS_YOUTUBE_EXPECTED_CHANNEL_ID ||
-          ''
-        ).trim();
-
-      const enabled =
-        process.env
-          .RQS_YOUTUBE_OPERATIONS_ENABLED ===
-        'true';
-
-      const configured =
-        Boolean(
-          clientId &&
-          expectedChannelId &&
-          clientId.endsWith(
-            '.apps.googleusercontent.com'
-          ) &&
-          expectedChannelId.startsWith('UC')
-        );
-
       return res
         .status(200)
         .json({
           enabled:
-            enabled &&
-            configured,
-          configured,
+            readiness.operationsEnabled,
+          configured:
+            readiness.configurationStatus ===
+              'READY',
           clientId:
-            configured
+            readiness.clientConfigured
               ? clientId
               : null,
           expectedChannelId:
-            configured
-              ? expectedChannelId
-              : null,
+            readiness.expectedChannelId,
           scope:
             'https://www.googleapis.com/auth/youtube.force-ssl'
         });
@@ -303,7 +385,7 @@ export default async function handler(
         );
 
       const youtube =
-        await diagnoseYouTubeConnection();
+        youtubeOperationsReadiness();
 
       const diagnostics =
         diagnoseRadioDraft(
@@ -361,9 +443,11 @@ export default async function handler(
         .status(200)
         .json({
           mode:
-            'FOUNDATION_READ_ONLY',
+            'BROWSER_OAUTH_DRY_RUN',
           writesEnabled:
             false,
+          operationsEnabled:
+            youtube.operationsEnabled === true,
           contentType:
             'monthly-radio',
           diagnostics,
@@ -391,7 +475,7 @@ export default async function handler(
       const youtube =
         draft.kind ===
         'special-stream'
-          ? await diagnoseYouTubeConnection()
+          ? youtubeOperationsReadiness()
           : {};
 
       const diagnostics =
@@ -437,9 +521,13 @@ export default async function handler(
         .status(200)
         .json({
           mode:
-            'FOUNDATION_READ_ONLY',
+            'BROWSER_OAUTH_DRY_RUN',
           writesEnabled:
             false,
+          operationsEnabled:
+            draft.kind === 'special-stream'
+              ? youtube.operationsEnabled === true
+              : null,
           contentType:
             draft.kind,
           diagnostics,
