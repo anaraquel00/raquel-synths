@@ -12,7 +12,24 @@ import {
   normalizeMediaDraft
 } from '../../lib/radio/media-state.js';
 
-import { radioAudit } from '../../lib/radio/radio-audit.js';
+import {
+  makeMediaPlanDryRunToken,
+  normalizeMediaPlanDraft,
+  partitionMediaPlans,
+  verifyMediaPlanDryRunToken
+} from '../../lib/radio/media-plan-state.js';
+
+import {
+  cancelMediaPlan,
+  deleteMediaPlan,
+  listMediaPlans,
+  MediaPlanError,
+  saveMediaPlan
+} from '../../lib/radio/media-plan-repository.js';
+
+import {
+  radioAudit
+} from '../../lib/radio/radio-audit.js';
 
 import {
   buildRadioDryRunPlan,
@@ -30,13 +47,23 @@ import {
 } from '../../lib/radio/youtube-client.js';
 
 function statusFor(error) {
+  if (
+    error instanceof
+    MediaPlanError
+  ) {
+    return error.status;
+  }
+
   const status =
-    Number(error?.status || 0);
+    Number(
+      error?.status || 0
+    );
 
   return [
     400,
     401,
     403,
+    404,
     405,
     409,
     415,
@@ -45,6 +72,25 @@ function statusFor(error) {
   ].includes(status)
     ? status
     : 500;
+}
+
+function errorCodeFor(
+  error,
+  status
+) {
+  if (
+    error instanceof
+    MediaPlanError
+  ) {
+    return error.code;
+  }
+
+  return status >= 500
+    ? 'RADIO_INTERNAL_ERROR'
+    : String(
+        error?.code ||
+        'RADIO_REQUEST_FAILED'
+      );
 }
 
 export default async function handler(
@@ -67,12 +113,18 @@ export default async function handler(
   );
 
   try {
-    if (req.method !== 'POST') {
-      return res.status(405).json({
-        code: 'METHOD_NOT_ALLOWED',
-        message:
-          'Método não permitido.'
-      });
+    if (
+      req.method !==
+      'POST'
+    ) {
+      return res
+        .status(405)
+        .json({
+          code:
+            'METHOD_NOT_ALLOWED',
+          message:
+            'Método não permitido.'
+        });
     }
 
     if (
@@ -86,20 +138,25 @@ export default async function handler(
           'application/json'
         )
     ) {
-      return res.status(415).json({
-        code:
-          'UNSUPPORTED_MEDIA_TYPE',
-        message:
-          'Use application/json.'
-      });
+      return res
+        .status(415)
+        .json({
+          code:
+            'UNSUPPORTED_MEDIA_TYPE',
+          message:
+            'Use application/json.'
+        });
     }
 
     requireOrigin(req);
 
+    const adminSecret =
+      secret();
+
     const session =
       requireSession(
         req,
-        secret()
+        adminSecret
       );
 
     requireCsrf(
@@ -138,14 +195,44 @@ export default async function handler(
         }
       );
 
-      return res.status(200).json({
-        mode:
-          'FOUNDATION_READ_ONLY',
-        writesEnabled: false,
-        youtube,
-        operationalStatuses:
-          RADIO_OPERATIONAL_STATUSES
-      });
+      return res
+        .status(200)
+        .json({
+          mode:
+            'FOUNDATION_READ_ONLY',
+          writesEnabled:
+            false,
+          youtube,
+          operationalStatuses:
+            RADIO_OPERATIONAL_STATUSES
+        });
+    }
+
+    if (
+      action ===
+      'plans-list'
+    ) {
+      const plans =
+        await listMediaPlans();
+
+      const {
+        queue,
+        history
+      } =
+        partitionMediaPlans(
+          plans
+        );
+
+      return res
+        .status(200)
+        .json({
+          collection:
+            'media-plans',
+          queue,
+          history,
+          total:
+            plans.length
+        });
     }
 
     if (
@@ -177,6 +264,22 @@ export default async function handler(
           draft
         );
 
+      const dryRunToken =
+        makeMediaPlanDryRunToken(
+          {
+            kind:
+              'monthly-radio',
+            draft: {
+              kind:
+                'monthly-radio',
+              ...draft
+            },
+            dryRunStatus:
+              diagnostics.status
+          },
+          adminSecret
+        );
+
       radioAudit(
         'RADIO_DRY_RUN',
         {
@@ -196,22 +299,26 @@ export default async function handler(
         }
       );
 
-      return res.status(200).json({
-        mode:
-          'FOUNDATION_READ_ONLY',
-        writesEnabled: false,
-        contentType:
-          'monthly-radio',
-        diagnostics,
-        plan,
-        modelPreview: {
-          ...modelPreview,
-          idempotencyKey:
-            '[GENERATED_ON_REAL_PROVISION]',
-          id:
-            '[GENERATED_ON_REAL_PROVISION]'
-        }
-      });
+      return res
+        .status(200)
+        .json({
+          mode:
+            'FOUNDATION_READ_ONLY',
+          writesEnabled:
+            false,
+          contentType:
+            'monthly-radio',
+          diagnostics,
+          plan,
+          dryRunToken,
+          modelPreview: {
+            ...modelPreview,
+            idempotencyKey:
+              '[GENERATED_ON_REAL_PROVISION]',
+            id:
+              '[GENERATED_ON_REAL_PROVISION]'
+          }
+        });
     }
 
     if (
@@ -241,10 +348,23 @@ export default async function handler(
           youtube
         );
 
+      const dryRunToken =
+        makeMediaPlanDryRunToken(
+          {
+            kind:
+              draft.kind,
+            draft,
+            dryRunStatus:
+              diagnostics.status
+          },
+          adminSecret
+        );
+
       radioAudit(
         'CONTENT_PLAN_DRY_RUN',
         {
-          kind: draft.kind,
+          kind:
+            draft.kind,
           status:
             diagnostics.status,
           visibility:
@@ -255,24 +375,180 @@ export default async function handler(
         }
       );
 
-      return res.status(200).json({
-        mode:
-          'FOUNDATION_READ_ONLY',
-        writesEnabled: false,
-        contentType:
-          draft.kind,
-        diagnostics,
-        plan,
-        draft
-      });
+      return res
+        .status(200)
+        .json({
+          mode:
+            'FOUNDATION_READ_ONLY',
+          writesEnabled:
+            false,
+          contentType:
+            draft.kind,
+          diagnostics,
+          plan,
+          dryRunToken,
+          draft
+        });
     }
 
-    return res.status(400).json({
-      code:
-        'INVALID_ACTION',
-      message:
-        'Ação inválida.'
-    });
+    if (
+      action ===
+      'plan-save'
+    ) {
+      const kind =
+        String(
+          input.plan?.kind ||
+          ''
+        );
+
+      const draft =
+        normalizeMediaPlanDraft(
+          kind,
+          input.plan?.content
+        );
+
+      let dryRunStatus =
+        'NOT_RUN';
+
+      if (
+        input.plan
+          ?.dryRunToken
+      ) {
+        const verified =
+          verifyMediaPlanDryRunToken(
+            input.plan
+              .dryRunToken,
+            {
+              kind,
+              draft
+            },
+            adminSecret
+          );
+
+        if (!verified) {
+          throw new MediaPlanError(
+            409,
+            'DRY_RUN_STALE',
+            'O formulário mudou depois do Dry Run. Execute o Dry Run novamente antes de salvar como validado.'
+          );
+        }
+
+        dryRunStatus =
+          verified
+            .dryRunStatus;
+      }
+
+      const saved =
+        await saveMediaPlan({
+          id:
+            input.plan?.id,
+          sourceUpdateTime:
+            input.plan
+              ?.updateTime,
+          draft,
+          dryRunStatus
+        });
+
+      radioAudit(
+        'MEDIA_PLAN_SAVED',
+        {
+          id:
+            saved.id,
+          kind:
+            saved.kind,
+          status:
+            saved.status,
+          dryRunStatus:
+            saved
+              .dryRunStatus,
+          revision:
+            saved.revision
+        }
+      );
+
+      return res
+        .status(
+          input.plan?.id
+            ? 200
+            : 201
+        )
+        .json({
+          plan:
+            saved
+        });
+    }
+
+    if (
+      action ===
+      'plan-cancel'
+    ) {
+      const cancelled =
+        await cancelMediaPlan({
+          id:
+            String(
+              input.id || ''
+            ),
+          sourceUpdateTime:
+            input.updateTime
+        });
+
+      radioAudit(
+        'MEDIA_PLAN_CANCELLED',
+        {
+          id:
+            cancelled.id,
+          kind:
+            cancelled.kind,
+          revision:
+            cancelled.revision
+        }
+      );
+
+      return res
+        .status(200)
+        .json({
+          plan:
+            cancelled
+        });
+    }
+
+    if (
+      action ===
+      'plan-delete'
+    ) {
+      const deleted =
+        await deleteMediaPlan({
+          id:
+            String(
+              input.id || ''
+            ),
+          sourceUpdateTime:
+            input.updateTime
+        });
+
+      radioAudit(
+        'MEDIA_PLAN_DELETED',
+        {
+          id:
+            deleted.id
+        }
+      );
+
+      return res
+        .status(200)
+        .json(
+          deleted
+        );
+    }
+
+    return res
+      .status(400)
+      .json({
+        code:
+          'INVALID_ACTION',
+        message:
+          'Ação inválida.'
+      });
   } catch (error) {
     const status =
       statusFor(error);
@@ -282,7 +558,8 @@ export default async function handler(
       {
         status,
         code:
-          error?.code || null,
+          error?.code ||
+          null,
         message:
           status >= 500
             ? 'internal'
@@ -295,19 +572,24 @@ export default async function handler(
       .status(status)
       .json({
         code:
-          status >= 500
-            ? 'RADIO_INTERNAL_ERROR'
-            : String(
-                error?.code ||
-                'RADIO_REQUEST_FAILED'
-              ),
+          errorCodeFor(
+            error,
+            status
+          ),
         message:
           status >= 500
             ? 'Falha interna no Media Control Plane.'
             : String(
                 error?.message ||
                 'Falha no Media Control Plane.'
-              )
+              ),
+        ...(
+          error instanceof
+          MediaPlanError
+            ? error.details ||
+              {}
+            : {}
+        )
       });
   }
 }

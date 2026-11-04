@@ -30,6 +30,15 @@ type PlannedKind =
   | 'short'
   | 'special-stream';
 
+type MediaPlanStatus =
+  | 'DRAFT'
+  | 'READY'
+  | 'SCHEDULED'
+  | 'LIVE'
+  | 'COMPLETE'
+  | 'CANCELLED'
+  | 'ERROR';
+
 interface AdminSession {
   authenticated: boolean;
   csrfToken?: string;
@@ -83,6 +92,7 @@ interface DryRunResponse {
   mode: string;
   writesEnabled: boolean;
   contentType?: string;
+  dryRunToken?: string;
 
   diagnostics: {
     status: 'PASS' | 'FAIL';
@@ -92,16 +102,50 @@ interface DryRunResponse {
   plan: DryRunStep[];
 }
 
+interface MediaPlan {
+  id: string;
+  updateTime: string | null;
+  kind: MediaSection;
+  status: MediaPlanStatus;
+  title: string;
+  description: string;
+  scheduledStartTime: string;
+  visibility: string;
+  thumbnailUrl: string;
+  playlistId: string;
+  setlist: string[];
+  autoStart: boolean;
+  autoStop: boolean;
+  dryRunStatus:
+    | 'NOT_RUN'
+    | 'PASS'
+    | 'FAIL';
+  dryRunAt: string | null;
+  revision: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface PlansResponse {
+  collection: 'media-plans';
+  queue: MediaPlan[];
+  history: MediaPlan[];
+  total: number;
+}
+
 @Component({
   selector: 'app-radio-admin',
   standalone: true,
+
   imports: [
     CommonModule,
     FormsModule,
     RouterLink
   ],
+
   templateUrl:
     './radio-admin.html',
+
   styleUrl:
     './radio-admin.scss'
 })
@@ -114,6 +158,9 @@ implements OnInit {
     signal(false);
 
   readonly busy =
+    signal(false);
+
+  readonly queueBusy =
     signal(false);
 
   readonly error =
@@ -134,8 +181,26 @@ implements OnInit {
       null
     );
 
-  readonly pendingCount =
-    signal(0);
+  readonly queue =
+    signal<MediaPlan[]>([]);
+
+  readonly history =
+    signal<MediaPlan[]>([]);
+
+  readonly selectedPlanId =
+    signal<string | null>(
+      null
+    );
+
+  readonly selectedPlanRevision =
+    signal<number | null>(
+      null
+    );
+
+  private selectedUpdateTime:
+    string | null = null;
+
+  private dryRunToken = '';
 
   title =
     'RQS RADIO // NOVEMBER 2026';
@@ -220,8 +285,33 @@ implements OnInit {
       section
     );
 
-    this.dryRun.set(null);
-    this.error.set('');
+    this.selectedPlanId.set(
+      null
+    );
+
+    this.selectedPlanRevision.set(
+      null
+    );
+
+    this.selectedUpdateTime =
+      null;
+
+    this.clearValidation();
+  }
+
+  newPlan(): void {
+    this.selectedPlanId.set(
+      null
+    );
+
+    this.selectedPlanRevision.set(
+      null
+    );
+
+    this.selectedUpdateTime =
+      null;
+
+    this.clearValidation();
   }
 
   async runDiagnostics():
@@ -244,41 +334,20 @@ implements OnInit {
   Promise<void> {
     await this.execute(
       async () => {
-        const scheduledStartTime =
-          this.toIso(
-            this
-              .scheduledStartLocal
-          );
-
-        this.dryRun.set(
+        const result =
           await this.call<
             DryRunResponse
           >({
-            action: 'dry-run',
+            action:
+              'dry-run',
 
-            transmission: {
-              title:
-                this.title,
-              description:
-                this.description,
-              scheduledStartTime,
-              visibility:
-                this.visibility,
-              thumbnailUrl:
-                this.thumbnailUrl,
-              setlist:
-                this.lines(
-                  this
-                    .setlistText
-                ),
-              playlistId:
-                this.playlistId,
-              autoStart:
-                this.autoStart,
-              autoStop:
-                this.autoStop
-            }
-          })
+            transmission:
+              this
+                .monthlyRadioContent()
+          });
+
+        this.setDryRun(
+          result
         );
       }
     );
@@ -288,25 +357,7 @@ implements OnInit {
   Promise<void> {
     await this.runContentPlan(
       'weekly-video',
-      {
-        title:
-          this.weeklyTitle,
-        description:
-          this
-            .weeklyDescription,
-        scheduledStartTime:
-          this.toIso(
-            this
-              .weeklyScheduledLocal
-          ),
-        visibility:
-          this.weeklyVisibility,
-        thumbnailUrl:
-          this
-            .weeklyThumbnailUrl,
-        playlistId:
-          this.weeklyPlaylistId
-      }
+      this.weeklyContent()
     );
   }
 
@@ -314,24 +365,7 @@ implements OnInit {
   Promise<void> {
     await this.runContentPlan(
       'short',
-      {
-        title:
-          this.shortHook,
-        description:
-          this.shortCaption,
-        scheduledStartTime:
-          this.toIso(
-            this
-              .shortScheduledLocal
-          ),
-        visibility:
-          this.shortVisibility,
-        thumbnailUrl:
-          this
-            .shortThumbnailUrl,
-        playlistId:
-          this.shortPlaylistId
-      }
+      this.shortContent()
     );
   }
 
@@ -339,35 +373,356 @@ implements OnInit {
   Promise<void> {
     await this.runContentPlan(
       'special-stream',
-      {
-        title:
-          this.eventTitle,
-        description:
-          this
-            .eventDescription,
-        scheduledStartTime:
-          this.toIso(
-            this
-              .eventScheduledLocal
-          ),
-        visibility:
-          this.eventVisibility,
-        thumbnailUrl:
-          this
-            .eventThumbnailUrl,
-        setlist:
-          this.lines(
-            this
-              .eventSetlistText
-          ),
-        playlistId:
-          this.eventPlaylistId,
-        autoStart:
-          this.eventAutoStart,
-        autoStop:
-          this.eventAutoStop
+      this.eventContent()
+    );
+  }
+
+  async saveCurrentPlan():
+  Promise<void> {
+    await this.execute(
+      async () => {
+        const result =
+          await this.call<{
+            plan: MediaPlan;
+          }>({
+            action:
+              'plan-save',
+
+            plan: {
+              id:
+                this
+                  .selectedPlanId(),
+
+              updateTime:
+                this
+                  .selectedUpdateTime,
+
+              kind:
+                this
+                  .activeSection(),
+
+              content:
+                this
+                  .activeContent(),
+
+              dryRunToken:
+                this
+                  .dryRunToken ||
+                null
+            }
+          });
+
+        this.selectedPlanId.set(
+          result.plan.id
+        );
+
+        this.selectedPlanRevision.set(
+          result.plan.revision
+        );
+
+        this.selectedUpdateTime =
+          result
+            .plan
+            .updateTime;
+
+        await this.loadPlans();
+
+        this.error.set('');
       }
     );
+  }
+
+  editPlan(
+    plan: MediaPlan
+  ): void {
+    this.activeSection.set(
+      plan.kind
+    );
+
+    this.selectedPlanId.set(
+      plan.id
+    );
+
+    this.selectedPlanRevision.set(
+      plan.revision
+    );
+
+    this.selectedUpdateTime =
+      plan.updateTime;
+
+    this.clearValidation();
+
+    if (
+      plan.kind ===
+      'monthly-radio'
+    ) {
+      this.title =
+        plan.title;
+
+      this.description =
+        plan.description;
+
+      this.scheduledStartLocal =
+        this.toLocalInput(
+          plan
+            .scheduledStartTime
+        );
+
+      this.visibility =
+        plan.visibility;
+
+      this.thumbnailUrl =
+        plan.thumbnailUrl;
+
+      this.playlistId =
+        plan.playlistId;
+
+      this.setlistText =
+        plan.setlist
+          .join('\n');
+
+      this.autoStart =
+        plan.autoStart;
+
+      this.autoStop =
+        plan.autoStop;
+
+      return;
+    }
+
+    if (
+      plan.kind ===
+      'weekly-video'
+    ) {
+      this.weeklyTitle =
+        plan.title;
+
+      this.weeklyDescription =
+        plan.description;
+
+      this.weeklyScheduledLocal =
+        this.toLocalInput(
+          plan
+            .scheduledStartTime
+        );
+
+      this.weeklyVisibility =
+        plan.visibility;
+
+      this.weeklyThumbnailUrl =
+        plan.thumbnailUrl;
+
+      this.weeklyPlaylistId =
+        plan.playlistId;
+
+      return;
+    }
+
+    if (
+      plan.kind ===
+      'short'
+    ) {
+      this.shortHook =
+        plan.title;
+
+      this.shortCaption =
+        plan.description;
+
+      this.shortScheduledLocal =
+        this.toLocalInput(
+          plan
+            .scheduledStartTime
+        );
+
+      this.shortVisibility =
+        plan.visibility;
+
+      this.shortThumbnailUrl =
+        plan.thumbnailUrl;
+
+      this.shortPlaylistId =
+        plan.playlistId;
+
+      return;
+    }
+
+    this.eventTitle =
+      plan.title;
+
+    this.eventDescription =
+      plan.description;
+
+    this.eventScheduledLocal =
+      this.toLocalInput(
+        plan
+          .scheduledStartTime
+      );
+
+    this.eventVisibility =
+      plan.visibility;
+
+    this.eventThumbnailUrl =
+      plan.thumbnailUrl;
+
+    this.eventPlaylistId =
+      plan.playlistId;
+
+    this.eventSetlistText =
+      plan.setlist
+        .join('\n');
+
+    this.eventAutoStart =
+      plan.autoStart;
+
+    this.eventAutoStop =
+      plan.autoStop;
+  }
+
+  async cancelPlan(
+    plan: MediaPlan
+  ): Promise<void> {
+    if (
+      isPlatformBrowser(
+        this.platformId
+      ) &&
+      !window.confirm(
+        `Cancelar "${plan.title}"?`
+      )
+    ) {
+      return;
+    }
+
+    await this.execute(
+      async () => {
+        await this.call({
+          action:
+            'plan-cancel',
+
+          id:
+            plan.id,
+
+          updateTime:
+            plan.updateTime
+        });
+
+        if (
+          this
+            .selectedPlanId() ===
+          plan.id
+        ) {
+          this.newPlan();
+        }
+
+        await this.loadPlans();
+      }
+    );
+  }
+
+  async deletePlan(
+    plan: MediaPlan
+  ): Promise<void> {
+    if (
+      ![
+        'DRAFT',
+        'CANCELLED'
+      ].includes(
+        plan.status
+      )
+    ) {
+      return;
+    }
+
+    if (
+      isPlatformBrowser(
+        this.platformId
+      ) &&
+      !window.confirm(
+        `Excluir permanentemente "${plan.title}"?`
+      )
+    ) {
+      return;
+    }
+
+    await this.execute(
+      async () => {
+        await this.call({
+          action:
+            'plan-delete',
+
+          id:
+            plan.id,
+
+          updateTime:
+            plan.updateTime
+        });
+
+        if (
+          this
+            .selectedPlanId() ===
+          plan.id
+        ) {
+          this.newPlan();
+        }
+
+        await this.loadPlans();
+      }
+    );
+  }
+
+  planDate(
+    plan: MediaPlan
+  ): string {
+    if (
+      !plan
+        .scheduledStartTime
+    ) {
+      return 'SEM DATA';
+    }
+
+    const date =
+      new Date(
+        plan
+          .scheduledStartTime
+      );
+
+    if (
+      Number.isNaN(
+        date.getTime()
+      )
+    ) {
+      return 'DATA INVÁLIDA';
+    }
+
+    return new Intl
+      .DateTimeFormat(
+        'pt-BR',
+        {
+          day:
+            '2-digit',
+          month:
+            'short',
+          hour:
+            '2-digit',
+          minute:
+            '2-digit'
+        }
+      )
+      .format(date);
+  }
+
+  planKindLabel(
+    kind: MediaSection
+  ): string {
+    return {
+      'monthly-radio':
+        'MONTHLY RADIO',
+      'weekly-video':
+        'WEEKLY VIDEO',
+      short:
+        'SHORT',
+      'special-stream':
+        'SPECIAL STREAM'
+    }[kind];
   }
 
   private async runContentPlan(
@@ -376,7 +731,7 @@ implements OnInit {
   ): Promise<void> {
     await this.execute(
       async () => {
-        this.dryRun.set(
+        const result =
           await this.call<
             DryRunResponse
           >({
@@ -387,10 +742,199 @@ implements OnInit {
               kind,
               ...content
             }
-          })
+          });
+
+        this.setDryRun(
+          result
         );
       }
     );
+  }
+
+  private setDryRun(
+    result: DryRunResponse
+  ): void {
+    this.dryRun.set(
+      result
+    );
+
+    this.dryRunToken =
+      result
+        .dryRunToken ||
+      '';
+  }
+
+  private clearValidation():
+  void {
+    this.dryRun.set(null);
+    this.dryRunToken = '';
+    this.error.set('');
+  }
+
+  private activeContent():
+  object {
+    const kind =
+      this.activeSection();
+
+    if (
+      kind ===
+      'monthly-radio'
+    ) {
+      return this
+        .monthlyRadioContent();
+    }
+
+    if (
+      kind ===
+      'weekly-video'
+    ) {
+      return this
+        .weeklyContent();
+    }
+
+    if (
+      kind ===
+      'short'
+    ) {
+      return this
+        .shortContent();
+    }
+
+    return this
+      .eventContent();
+  }
+
+  private monthlyRadioContent():
+  object {
+    return {
+      title:
+        this.title,
+
+      description:
+        this.description,
+
+      scheduledStartTime:
+        this.toIso(
+          this
+            .scheduledStartLocal
+        ),
+
+      visibility:
+        this.visibility,
+
+      thumbnailUrl:
+        this.thumbnailUrl,
+
+      setlist:
+        this.lines(
+          this
+            .setlistText
+        ),
+
+      playlistId:
+        this.playlistId,
+
+      autoStart:
+        this.autoStart,
+
+      autoStop:
+        this.autoStop
+    };
+  }
+
+  private weeklyContent():
+  object {
+    return {
+      title:
+        this.weeklyTitle,
+
+      description:
+        this
+          .weeklyDescription,
+
+      scheduledStartTime:
+        this.toIso(
+          this
+            .weeklyScheduledLocal
+        ),
+
+      visibility:
+        this.weeklyVisibility,
+
+      thumbnailUrl:
+        this
+          .weeklyThumbnailUrl,
+
+      playlistId:
+        this.weeklyPlaylistId
+    };
+  }
+
+  private shortContent():
+  object {
+    return {
+      title:
+        this.shortHook,
+
+      description:
+        this.shortCaption,
+
+      scheduledStartTime:
+        this.toIso(
+          this
+            .shortScheduledLocal
+        ),
+
+      visibility:
+        this.shortVisibility,
+
+      thumbnailUrl:
+        this
+          .shortThumbnailUrl,
+
+      playlistId:
+        this.shortPlaylistId
+    };
+  }
+
+  private eventContent():
+  object {
+    return {
+      title:
+        this.eventTitle,
+
+      description:
+        this
+          .eventDescription,
+
+      scheduledStartTime:
+        this.toIso(
+          this
+            .eventScheduledLocal
+        ),
+
+      visibility:
+        this.eventVisibility,
+
+      thumbnailUrl:
+        this
+          .eventThumbnailUrl,
+
+      setlist:
+        this.lines(
+          this
+            .eventSetlistText
+        ),
+
+      playlistId:
+        this.eventPlaylistId,
+
+      autoStart:
+        this.eventAutoStart,
+
+      autoStop:
+        this.eventAutoStop
+    };
   }
 
   private lines(
@@ -419,6 +963,37 @@ implements OnInit {
       : date.toISOString();
   }
 
+  private toLocalInput(
+    value: string
+  ): string {
+    if (!value) return '';
+
+    const date =
+      new Date(value);
+
+    if (
+      Number.isNaN(
+        date.getTime()
+      )
+    ) {
+      return '';
+    }
+
+    const offset =
+      date
+        .getTimezoneOffset();
+
+    const local =
+      new Date(
+        date.getTime() -
+        offset * 60_000
+      );
+
+    return local
+      .toISOString()
+      .slice(0, 16);
+  }
+
   private async restoreSession():
   Promise<void> {
     try {
@@ -434,11 +1009,52 @@ implements OnInit {
 
       this.csrf =
         result.csrfToken || '';
+
+      if (
+        this.authenticated()
+      ) {
+        try {
+          await this.loadPlans();
+        } catch (error) {
+          this.error.set(
+            error instanceof Error
+              ? error.message
+              : 'Falha ao carregar a Publishing Queue.'
+          );
+        }
+      }
     } catch {
       this.authenticated.set(false);
       this.csrf = '';
     } finally {
       this.checked.set(true);
+    }
+  }
+
+  private async loadPlans():
+  Promise<void> {
+    if (!this.csrf) return;
+
+    this.queueBusy.set(true);
+
+    try {
+      const result =
+        await this.call<
+          PlansResponse
+        >({
+          action:
+            'plans-list'
+        });
+
+      this.queue.set(
+        result.queue
+      );
+
+      this.history.set(
+        result.history
+      );
+    } finally {
+      this.queueBusy.set(false);
     }
   }
 

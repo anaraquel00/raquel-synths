@@ -246,6 +246,15 @@
                 ◉ RUN RADIO DRY RUN
               </button>
 
+              <button
+                type="button"
+                class="button"
+                [disabled]="busy()"
+                (click)="saveCurrentPlan()"
+              >
+                {{ selectedPlanId() ? 'UPDATE PLAN' : 'SAVE PLAN' }}
+              </button>
+
               <span>
                 Nenhum broadcast, stream, bind ou playlist será criado.
               </span>
@@ -350,6 +359,15 @@
                 ▷ RUN VIDEO PLAN
               </button>
 
+              <button
+                type="button"
+                class="button"
+                [disabled]="busy()"
+                (click)="saveCurrentPlan()"
+              >
+                {{ selectedPlanId() ? 'UPDATE PLAN' : 'SAVE PLAN' }}
+              </button>
+
               <span>
                 Upload do vídeo permanece manual / externo ao backend.
               </span>
@@ -452,6 +470,15 @@
                 (click)="runShortPlan()"
               >
                 ϟ RUN SHORT PLAN
+              </button>
+
+              <button
+                type="button"
+                class="button"
+                [disabled]="busy()"
+                (click)="saveCurrentPlan()"
+              >
+                {{ selectedPlanId() ? 'UPDATE PLAN' : 'SAVE PLAN' }}
               </button>
 
               <span>
@@ -583,6 +610,15 @@
                 (click)="runEventPlan()"
               >
                 ▣ RUN EVENT DRY RUN
+              </button>
+
+              <button
+                type="button"
+                class="button"
+                [disabled]="busy()"
+                (click)="saveCurrentPlan()"
+              >
+                {{ selectedPlanId() ? 'UPDATE PLAN' : 'SAVE PLAN' }}
               </button>
 
               <span>
@@ -813,24 +849,160 @@
             </div>
 
             <span>
-              {{ pendingCount() }} PENDING
+              {{ queue().length }} PENDING
             </span>
           </div>
 
-          <div class="queue-empty">
-            <span aria-hidden="true">
-              ▢
-            </span>
+          <button
+            type="button"
+            class="mini-button queue-new"
+            (click)="newPlan()"
+          >
+            + NEW PLAN
+          </button>
 
-            <strong>
-              Nenhum item na fila.
-            </strong>
+          @if (queueBusy()) {
+            <div class="queue-empty">
+              <strong>
+                Atualizando fila…
+              </strong>
+            </div>
+          } @else if (!queue().length) {
+            <div class="queue-empty">
+              <span aria-hidden="true">
+                ▢
+              </span>
 
-            <p>
-              Planeje uma rádio, vídeo, Short ou evento para começar.
-            </p>
-          </div>
+              <strong>
+                Nenhum item na fila.
+              </strong>
+
+              <p>
+                Planeje uma rádio, vídeo, Short ou evento para começar.
+              </p>
+            </div>
+          } @else {
+            <div class="queue-list">
+              @for (
+                plan of queue();
+                track plan.id
+              ) {
+                <article
+                  class="queue-item"
+                  [class.selected]="selectedPlanId() === plan.id"
+                >
+                  <div class="queue-item-head">
+                    <span>
+                      {{ planKindLabel(plan.kind) }}
+                    </span>
+
+                    <b [attr.data-status]="plan.status">
+                      {{ plan.status }}
+                    </b>
+                  </div>
+
+                  <strong>
+                    {{ plan.title }}
+                  </strong>
+
+                  <small>
+                    {{ planDate(plan) }}
+                    · DRY RUN {{ plan.dryRunStatus }}
+                    · R{{ plan.revision }}
+                  </small>
+
+                  <div class="queue-actions">
+                    <button
+                      type="button"
+                      class="mini-button"
+                      (click)="editPlan(plan)"
+                    >
+                      EDIT
+                    </button>
+
+                    <button
+                      type="button"
+                      class="mini-button danger"
+                      (click)="cancelPlan(plan)"
+                    >
+                      CANCEL
+                    </button>
+
+                    @if (plan.status === 'DRAFT') {
+                      <button
+                        type="button"
+                        class="mini-button danger"
+                        (click)="deletePlan(plan)"
+                      >
+                        DELETE
+                      </button>
+                    }
+                  </div>
+                </article>
+              }
+            </div>
+          }
         </section>
+
+        @if (history().length) {
+          <section class="queue-card history-card">
+            <div class="queue-heading">
+              <div>
+                <p class="section-label">
+                  HISTORY
+                </p>
+
+                <strong>
+                  Arquivo operacional
+                </strong>
+              </div>
+
+              <span>
+                {{ history().length }}
+              </span>
+            </div>
+
+            <div class="queue-list">
+              @for (
+                plan of history();
+                track plan.id
+              ) {
+                <article class="queue-item historical">
+                  <div class="queue-item-head">
+                    <span>
+                      {{ planKindLabel(plan.kind) }}
+                    </span>
+
+                    <b [attr.data-status]="plan.status">
+                      {{ plan.status }}
+                    </b>
+                  </div>
+
+                  <strong>
+                    {{ plan.title }}
+                  </strong>
+
+                  <small>
+                    {{ planDate(plan) }}
+                    · R{{ plan.revision }}
+                  </small>
+
+                  @if (plan.status === 'CANCELLED') {
+                    <div class="queue-actions">
+                      <button
+                        type="button"
+                        class="mini-button danger"
+                        (click)="deletePlan(plan)"
+                      >
+                        DELETE
+                      </button>
+                    </div>
+                  }
+                </article>
+              }
+            </div>
+          </section>
+        }
       </aside>
     </div>
 

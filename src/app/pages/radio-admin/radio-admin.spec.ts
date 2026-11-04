@@ -37,7 +37,7 @@ describe(
     });
 
     it(
-      'renders four independent media sessions while keeping Foundation read-only',
+      'renders four media sessions and Phase 2 persistence controls without YouTube writes',
       () => {
         const fixture =
           TestBed.createComponent(
@@ -92,7 +92,12 @@ describe(
 
         expect(text)
           .toContain(
-            'RUN RADIO DRY RUN'
+            'SAVE PLAN'
+          );
+
+        expect(text)
+          .toContain(
+            'PUBLISHING QUEUE'
           );
 
         expect(text)
@@ -110,7 +115,7 @@ describe(
     );
 
     it(
-      'switches to the weekly video planner without enabling media upload',
+      'renders a persisted queue item with edit and cancel actions',
       () => {
         const fixture =
           TestBed.createComponent(
@@ -126,10 +131,46 @@ describe(
           .authenticated
           .set(true);
 
-        component
-          .selectSection(
-            'weekly-video'
-          );
+        component.queue.set([
+          {
+            id:
+              'plan-1',
+            updateTime:
+              '2026-11-04T17:00:00Z',
+            kind:
+              'weekly-video',
+            status:
+              'SCHEDULED',
+            title:
+              'RQS // Weekly Update #142',
+            description:
+              'Bastidores.',
+            scheduledStartTime:
+              '2026-11-10T18:00:00.000Z',
+            visibility:
+              'unlisted',
+            thumbnailUrl:
+              '',
+            playlistId:
+              '',
+            setlist:
+              [],
+            autoStart:
+              false,
+            autoStop:
+              false,
+            dryRunStatus:
+              'PASS',
+            dryRunAt:
+              '2026-11-04T17:00:00Z',
+            revision:
+              2,
+            createdAt:
+              '2026-11-04T16:00:00Z',
+            updatedAt:
+              '2026-11-04T17:00:00Z'
+          }
+        ]);
 
         fixture.detectChanges();
 
@@ -140,17 +181,27 @@ describe(
 
         expect(text)
           .toContain(
-            'Plan Weekly Video'
+            '1 PENDING'
           );
 
         expect(text)
           .toContain(
-            'RUN VIDEO PLAN'
+            'RQS // Weekly Update #142'
           );
 
         expect(text)
           .toContain(
-            'Upload do vídeo permanece manual'
+            'SCHEDULED'
+          );
+
+        expect(text)
+          .toContain(
+            'EDIT'
+          );
+
+        expect(text)
+          .toContain(
+            'CANCEL'
           );
       }
     );

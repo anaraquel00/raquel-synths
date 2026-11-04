@@ -804,3 +804,105 @@ a:focus-visible {
     width: 72px;
   }
 }
+
+.queue-new {
+  width: 100%;
+  margin: .8rem 0;
+}
+
+.queue-list {
+  display: grid;
+  gap: .7rem;
+  margin-top: .8rem;
+}
+
+.queue-item {
+  display: grid;
+  gap: .45rem;
+  padding: .85rem;
+  border:
+    1px solid
+    rgba(122, 157, 171, .22);
+  border-radius: 10px;
+  background: #091117;
+}
+
+.queue-item.selected {
+  border-color: #62deed;
+  box-shadow:
+    inset 3px 0 0
+    #62deed;
+}
+
+.queue-item.historical {
+  opacity: .88;
+}
+
+.queue-item-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .6rem;
+}
+
+.queue-item-head span {
+  color: #62deed;
+  font-size: .66rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+}
+
+.queue-item-head b {
+  padding: .22rem .42rem;
+  border: 1px solid #44616d;
+  border-radius: 999px;
+  color: #b9cbd2;
+  font-size: .62rem;
+}
+
+.queue-item-head b[data-status='SCHEDULED'],
+.queue-item-head b[data-status='READY'] {
+  border-color:
+    rgba(89, 239, 137, .55);
+  color: #8ff1aa;
+}
+
+.queue-item-head b[data-status='LIVE'] {
+  border-color:
+    rgba(98, 222, 237, .6);
+  color: #62deed;
+}
+
+.queue-item-head b[data-status='ERROR'],
+.queue-item-head b[data-status='CANCELLED'] {
+  border-color:
+    rgba(255, 113, 140, .45);
+  color: #ff9aad;
+}
+
+.queue-item > strong {
+  color: #edf7fa;
+  overflow-wrap: anywhere;
+}
+
+.queue-item > small {
+  color: #879ea9;
+}
+
+.queue-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .45rem;
+  margin-top: .25rem;
+}
+
+.mini-button.danger {
+  border-color:
+    rgba(255, 113, 140, .35);
+  color: #ff9aad;
+}
+
+.history-card {
+  max-height: 420px;
+  overflow: auto;
+}
