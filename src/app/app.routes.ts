@@ -253,7 +253,7 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/radio-admin/radio-admin')
         .then(m => m.RadioAdminComponent),
-    title: 'RQS Admin // Radio Control Plane'
+    title: 'RQS Admin // Media Control Plane'
   },
   {
     path: 'admin/social-publishing',

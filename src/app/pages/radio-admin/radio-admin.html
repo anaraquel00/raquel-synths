@@ -1,135 +1,953 @@
-<main class="radio-admin">
-  <header class="radio-header">
+<main class="media-admin">
+  <header class="media-header">
     <div>
-      <a routerLink="/admin" class="back-link">← RQS ADMIN</a>
-      <p class="eyebrow">RQS RADIO // CONTROL PLANE</p>
-      <h1>Radio Operations</h1>
+      <a
+        routerLink="/admin"
+        class="back-link"
+      >
+        ← RQS ADMIN
+      </a>
+
+      <p class="eyebrow">
+        RQS ADMIN // VIDEO + LIVE OPERATIONS
+      </p>
+
+      <h1>
+        Media Control Plane
+      </h1>
+
       <p class="lede">
-        Controle administrativo da YouTube Live Streaming API.
-        O áudio e o vídeo nunca passam pelo backend da RQS.
+        Orquestração de rádio, vídeos, Shorts e transmissões especiais no YouTube.
+        Áudio e vídeo nunca passam pelo backend da RQS.
       </p>
     </div>
 
     <div class="foundation-badge">
-      <strong>FOUNDATION</strong>
-      <span>NO YOUTUBE WRITES</span>
+      <strong>
+        FOUNDATION
+      </strong>
+
+      <span>
+        NO YOUTUBE WRITES
+      </span>
     </div>
   </header>
 
   @if (!checked()) {
-    <section class="panel"><p>Validando sessão administrativa…</p></section>
+    <section class="panel">
+      <p>
+        Validando sessão administrativa…
+      </p>
+    </section>
   } @else if (!authenticated()) {
     <section class="panel blocked">
-      <p class="section-label">ADMIN SESSION REQUIRED</p>
-      <h2>Acesso administrativo necessário</h2>
-      <p>Entre pelo RQS Admin antes de acessar o control plane da rádio.</p>
-      <a routerLink="/admin" class="button primary">VOLTAR AO ADMIN</a>
+      <p class="section-label">
+        ADMIN SESSION REQUIRED
+      </p>
+
+      <h2>
+        Acesso administrativo necessário
+      </h2>
+
+      <p>
+        Entre pelo RQS Admin antes de acessar o Media Control Plane.
+      </p>
+
+      <a
+        routerLink="/admin"
+        class="button primary"
+      >
+        VOLTAR AO ADMIN
+      </a>
     </section>
   } @else {
+    <nav
+      class="media-tabs"
+      aria-label="Media Control Plane"
+    >
+      <button
+        type="button"
+        [class.active]="activeSection() === 'monthly-radio'"
+        (click)="selectSection('monthly-radio')"
+      >
+        <span aria-hidden="true">◉</span>
+        Monthly Radio
+      </button>
+
+      <button
+        type="button"
+        [class.active]="activeSection() === 'weekly-video'"
+        (click)="selectSection('weekly-video')"
+      >
+        <span aria-hidden="true">▷</span>
+        Weekly Videos
+      </button>
+
+      <button
+        type="button"
+        [class.active]="activeSection() === 'short'"
+        (click)="selectSection('short')"
+      >
+        <span aria-hidden="true">ϟ</span>
+        Shorts
+      </button>
+
+      <button
+        type="button"
+        [class.active]="activeSection() === 'special-stream'"
+        (click)="selectSection('special-stream')"
+      >
+        <span aria-hidden="true">▣</span>
+        Special Streams
+      </button>
+    </nav>
+
     <section class="safety-strip">
-      <span>CONTROL PLANE ONLY</span>
-      <span>OBS → YOUTUBE RTMPS</span>
-      <span>ZERO CLOUD MEDIA EGRESS</span>
+      <span>
+        CONTROL PLANE ONLY
+      </span>
+
+      <span>
+        OBS → YOUTUBE RTMPS
+      </span>
+
+      <span>
+        SCHEDULED CONTENT
+      </span>
+
+      <span>
+        ZERO CLOUD MEDIA EGRESS
+      </span>
     </section>
 
-    <section class="panel diagnostics-panel">
-      <div class="section-heading">
-        <div>
-          <p class="section-label">01 // YOUTUBE CONNECTION</p>
-          <h2>Diagnostics</h2>
-        </div>
-        <button type="button" class="button" [disabled]="busy()" (click)="runDiagnostics()">RUN DIAGNOSTICS</button>
-      </div>
+    <div class="control-layout">
+      <div class="main-column">
+        @if (
+          activeSection() ===
+          'monthly-radio'
+        ) {
+          <section class="panel editor-panel">
+            <div class="section-heading">
+              <div>
+                <p class="section-label">
+                  01 // MONTHLY RADIO
+                </p>
 
-      @if (diagnostics(); as result) {
-        <div class="diagnostic-grid">
-          <article><span>CONFIG</span><strong>{{ result.youtube.configurationStatus }}</strong></article>
-          <article><span>CHANNEL</span><strong>{{ result.youtube.channelStatus }}</strong></article>
-          <article><span>IDENTITY</span><strong>{{ result.youtube.channel?.title || 'NOT AVAILABLE' }}</strong></article>
-          <article><span>REUSABLE STREAM</span><strong>{{ result.youtube.reusableStream?.title || 'NOT FOUND' }}</strong></article>
-        </div>
+                <h2>
+                  New Radio Transmission
+                </h2>
 
-        @if (result.youtube.missingConfiguration?.length) {
-          <p class="notice warning">Missing: {{ result.youtube.missingConfiguration?.join(', ') }}</p>
+                <p class="section-copy">
+                  Planeje a próxima edição da RQS Radio.
+                  Seguro, não-destrutivo e sem escrita no YouTube.
+                </p>
+              </div>
+
+              <span class="safe-pill">
+                SAFE MODE — PLANNING ONLY
+              </span>
+            </div>
+
+            <div class="form-grid">
+              <label>
+                Title *
+                <input
+                  [(ngModel)]="title"
+                  maxlength="100"
+                >
+              </label>
+
+              <label>
+                Scheduled Start
+                <input
+                  type="datetime-local"
+                  [(ngModel)]="scheduledStartLocal"
+                >
+              </label>
+
+              <label>
+                Visibility
+                <select
+                  [(ngModel)]="visibility"
+                >
+                  <option value="private">
+                    PRIVATE
+                  </option>
+                  <option value="unlisted">
+                    UNLISTED
+                  </option>
+                  <option value="public">
+                    PUBLIC
+                  </option>
+                </select>
+              </label>
+
+              <label class="span-2">
+                Description
+                <textarea
+                  [(ngModel)]="description"
+                  rows="4"
+                  maxlength="5000"
+                ></textarea>
+              </label>
+
+              <label>
+                Thumbnail URL
+                <input
+                  type="url"
+                  [(ngModel)]="thumbnailUrl"
+                  placeholder="https://..."
+                >
+              </label>
+
+              <label>
+                YouTube Playlist ID
+                <input
+                  [(ngModel)]="playlistId"
+                  placeholder="Optional in Foundation"
+                >
+              </label>
+
+              <label class="span-3">
+                Setlist
+                <textarea
+                  [(ngModel)]="setlistText"
+                  rows="5"
+                  placeholder="Uma faixa por linha"
+                ></textarea>
+              </label>
+            </div>
+
+            <div class="toggles">
+              <label>
+                <input
+                  type="checkbox"
+                  [(ngModel)]="autoStart"
+                >
+                AutoStart
+              </label>
+
+              <label>
+                <input
+                  type="checkbox"
+                  [(ngModel)]="autoStop"
+                >
+                AutoStop
+              </label>
+            </div>
+
+            <div class="actions">
+              <button
+                type="button"
+                class="button primary"
+                [disabled]="busy()"
+                (click)="runRadioDryRun()"
+              >
+                ◉ RUN RADIO DRY RUN
+              </button>
+
+              <span>
+                Nenhum broadcast, stream, bind ou playlist será criado.
+              </span>
+            </div>
+          </section>
         }
 
-        @if (result.youtube.diagnostic) {
-          <p class="notice error">
-            {{ result.youtube.diagnostic.category }}
-            @if (result.youtube.diagnostic.httpStatus) { · HTTP {{ result.youtube.diagnostic.httpStatus }} }
-            @if (result.youtube.diagnostic.reason) { · {{ result.youtube.diagnostic.reason }} }
-          </p>
+        @if (
+          activeSection() ===
+          'weekly-video'
+        ) {
+          <section class="panel editor-panel">
+            <div class="section-heading">
+              <div>
+                <p class="section-label">
+                  02 // WEEKLY VIDEOS
+                </p>
+
+                <h2>
+                  Plan Weekly Video
+                </h2>
+
+                <p class="section-copy">
+                  Planejamento editorial e de metadata.
+                  O arquivo de vídeo continua fora do backend da RQS.
+                </p>
+              </div>
+
+              <span class="safe-pill">
+                METADATA PLAN ONLY
+              </span>
+            </div>
+
+            <div class="form-grid">
+              <label class="span-2">
+                Title *
+                <input
+                  [(ngModel)]="weeklyTitle"
+                  maxlength="100"
+                >
+              </label>
+
+              <label>
+                Publish Slot
+                <input
+                  type="datetime-local"
+                  [(ngModel)]="weeklyScheduledLocal"
+                >
+              </label>
+
+              <label class="span-2">
+                Description
+                <textarea
+                  [(ngModel)]="weeklyDescription"
+                  rows="5"
+                  maxlength="5000"
+                ></textarea>
+              </label>
+
+              <label>
+                Visibility
+                <select
+                  [(ngModel)]="weeklyVisibility"
+                >
+                  <option value="private">
+                    PRIVATE
+                  </option>
+                  <option value="unlisted">
+                    UNLISTED
+                  </option>
+                  <option value="public">
+                    PUBLIC
+                  </option>
+                </select>
+              </label>
+
+              <label class="span-2">
+                Thumbnail URL
+                <input
+                  type="url"
+                  [(ngModel)]="weeklyThumbnailUrl"
+                  placeholder="https://..."
+                >
+              </label>
+
+              <label>
+                Playlist ID
+                <input
+                  [(ngModel)]="weeklyPlaylistId"
+                  placeholder="Optional"
+                >
+              </label>
+            </div>
+
+            <div class="actions">
+              <button
+                type="button"
+                class="button primary"
+                [disabled]="busy()"
+                (click)="runWeeklyPlan()"
+              >
+                ▷ RUN VIDEO PLAN
+              </button>
+
+              <span>
+                Upload do vídeo permanece manual / externo ao backend.
+              </span>
+            </div>
+          </section>
         }
-      }
-    </section>
 
-    <section class="panel">
-      <div class="section-heading">
-        <div>
-          <p class="section-label">02 // TRANSMISSION DRAFT</p>
-          <h2>New Transmission</h2>
-        </div>
-        <span class="read-only">DRY RUN ONLY</span>
+        @if (
+          activeSection() ===
+          'short'
+        ) {
+          <section class="panel editor-panel">
+            <div class="section-heading">
+              <div>
+                <p class="section-label">
+                  03 // SHORTS
+                </p>
+
+                <h2>
+                  Plan Short
+                </h2>
+
+                <p class="section-copy">
+                  Prepare hook, caption, thumbnail e slot editorial
+                  sem transferir o arquivo de mídia pela infraestrutura RQS.
+                </p>
+              </div>
+
+              <span class="safe-pill">
+                SHORT PLAN ONLY
+              </span>
+            </div>
+
+            <div class="form-grid">
+              <label class="span-2">
+                Hook / Title *
+                <input
+                  [(ngModel)]="shortHook"
+                  maxlength="100"
+                >
+              </label>
+
+              <label>
+                Publish Slot
+                <input
+                  type="datetime-local"
+                  [(ngModel)]="shortScheduledLocal"
+                >
+              </label>
+
+              <label class="span-2">
+                Caption
+                <textarea
+                  [(ngModel)]="shortCaption"
+                  rows="5"
+                  maxlength="5000"
+                ></textarea>
+              </label>
+
+              <label>
+                Visibility
+                <select
+                  [(ngModel)]="shortVisibility"
+                >
+                  <option value="private">
+                    PRIVATE
+                  </option>
+                  <option value="unlisted">
+                    UNLISTED
+                  </option>
+                  <option value="public">
+                    PUBLIC
+                  </option>
+                </select>
+              </label>
+
+              <label class="span-2">
+                Cover / Thumbnail URL
+                <input
+                  type="url"
+                  [(ngModel)]="shortThumbnailUrl"
+                  placeholder="https://..."
+                >
+              </label>
+
+              <label>
+                Playlist ID
+                <input
+                  [(ngModel)]="shortPlaylistId"
+                  placeholder="Optional"
+                >
+              </label>
+            </div>
+
+            <div class="actions">
+              <button
+                type="button"
+                class="button primary"
+                [disabled]="busy()"
+                (click)="runShortPlan()"
+              >
+                ϟ RUN SHORT PLAN
+              </button>
+
+              <span>
+                Nenhum arquivo de Short será enviado pela Vercel.
+              </span>
+            </div>
+          </section>
+        }
+
+        @if (
+          activeSection() ===
+          'special-stream'
+        ) {
+          <section class="panel editor-panel">
+            <div class="section-heading">
+              <div>
+                <p class="section-label">
+                  04 // SPECIAL STREAMS
+                </p>
+
+                <h2>
+                  Plan Special Stream
+                </h2>
+
+                <p class="section-copy">
+                  Sessão live independente para eventos sazonais,
+                  lançamentos ou transmissões especiais.
+                </p>
+              </div>
+
+              <span class="safe-pill">
+                LIVE DRY RUN ONLY
+              </span>
+            </div>
+
+            <div class="form-grid">
+              <label class="span-2">
+                Title *
+                <input
+                  [(ngModel)]="eventTitle"
+                  maxlength="100"
+                >
+              </label>
+
+              <label>
+                Scheduled Start
+                <input
+                  type="datetime-local"
+                  [(ngModel)]="eventScheduledLocal"
+                >
+              </label>
+
+              <label class="span-2">
+                Description
+                <textarea
+                  [(ngModel)]="eventDescription"
+                  rows="4"
+                  maxlength="5000"
+                ></textarea>
+              </label>
+
+              <label>
+                Visibility
+                <select
+                  [(ngModel)]="eventVisibility"
+                >
+                  <option value="private">
+                    PRIVATE
+                  </option>
+                  <option value="unlisted">
+                    UNLISTED
+                  </option>
+                  <option value="public">
+                    PUBLIC
+                  </option>
+                </select>
+              </label>
+
+              <label>
+                Thumbnail URL
+                <input
+                  type="url"
+                  [(ngModel)]="eventThumbnailUrl"
+                  placeholder="https://..."
+                >
+              </label>
+
+              <label>
+                Playlist ID
+                <input
+                  [(ngModel)]="eventPlaylistId"
+                  placeholder="Optional"
+                >
+              </label>
+
+              <label class="span-3">
+                Setlist / Rundown
+                <textarea
+                  [(ngModel)]="eventSetlistText"
+                  rows="5"
+                  placeholder="Uma entrada por linha"
+                ></textarea>
+              </label>
+            </div>
+
+            <div class="toggles">
+              <label>
+                <input
+                  type="checkbox"
+                  [(ngModel)]="eventAutoStart"
+                >
+                AutoStart
+              </label>
+
+              <label>
+                <input
+                  type="checkbox"
+                  [(ngModel)]="eventAutoStop"
+                >
+                AutoStop
+              </label>
+            </div>
+
+            <div class="actions">
+              <button
+                type="button"
+                class="button primary"
+                [disabled]="busy()"
+                (click)="runEventPlan()"
+              >
+                ▣ RUN EVENT DRY RUN
+              </button>
+
+              <span>
+                OBS continua responsável pelo encoder e pelo RTMPS.
+              </span>
+            </div>
+          </section>
+        }
+
+        @if (dryRun(); as result) {
+          <section class="panel preflight-panel">
+            <div class="section-heading">
+              <div>
+                <p class="section-label">
+                  PRE-FLIGHT // {{ result.contentType || 'monthly-radio' }}
+                </p>
+
+                <h2>
+                  {{ result.diagnostics.status }}
+                </h2>
+              </div>
+
+              <span class="read-only">
+                writesEnabled={{ result.writesEnabled }}
+              </span>
+            </div>
+
+            <div class="checks">
+              @for (
+                check of result.diagnostics.checks;
+                track check.code
+              ) {
+                <article
+                  [class.fail]="check.status === 'FAIL'"
+                >
+                  <strong>
+                    {{ check.status }} · {{ check.code }}
+                  </strong>
+
+                  <span>
+                    {{ check.message }}
+                  </span>
+                </article>
+              }
+            </div>
+
+            <div class="plan">
+              @for (
+                step of result.plan;
+                track step.step
+              ) {
+                <article>
+                  <span>
+                    {{ step.step }}
+                  </span>
+
+                  <strong>
+                    {{ step.status }}
+                  </strong>
+
+                  <small>
+                    {{ step.detail }}
+                  </small>
+                </article>
+              }
+            </div>
+          </section>
+        }
       </div>
 
-      <div class="form-grid">
-        <label class="wide">Title <input [(ngModel)]="title" maxlength="100"></label>
-        <label class="wide">Description <textarea [(ngModel)]="description" rows="5" maxlength="5000"></textarea></label>
-        <label>Scheduled Start <input type="datetime-local" [(ngModel)]="scheduledStartLocal"></label>
-        <label>Visibility
-          <select [(ngModel)]="visibility">
-            <option value="private">PRIVATE</option>
-            <option value="unlisted">UNLISTED</option>
-            <option value="public">PUBLIC</option>
-          </select>
-        </label>
-        <label class="wide">Thumbnail URL <input type="url" [(ngModel)]="thumbnailUrl" placeholder="https://..."></label>
-        <label class="wide">Setlist <textarea [(ngModel)]="setlistText" rows="7" placeholder="Uma faixa por linha"></textarea></label>
-        <label class="wide">YouTube Playlist ID <input [(ngModel)]="playlistId" placeholder="Optional in Foundation"></label>
-      </div>
-
-      <div class="toggles">
-        <label><input type="checkbox" [(ngModel)]="autoStart"> AutoStart</label>
-        <label><input type="checkbox" [(ngModel)]="autoStop"> AutoStop</label>
-      </div>
-
-      <div class="actions">
-        <button type="button" class="button primary" [disabled]="busy()" (click)="runDryRun()">RUN RADIO DRY RUN</button>
-        <span>Nenhum broadcast, stream, bind ou playlist será criado.</span>
-      </div>
-    </section>
-
-    @if (dryRun(); as result) {
-      <section class="panel">
-        <div class="section-heading">
-          <div>
-            <p class="section-label">03 // PRE-FLIGHT</p>
-            <h2>{{ result.diagnostics.status }}</h2>
+      <aside class="side-column">
+        <section class="status-card active-card">
+          <div class="status-icon">
+            ◫
           </div>
-          <span class="read-only">writesEnabled={{ result.writesEnabled }}</span>
+
+          <div>
+            <strong>
+              Foundation
+            </strong>
+
+            <span>
+              Modo base de operações.
+            </span>
+          </div>
+
+          <b>
+            ACTIVE
+          </b>
+        </section>
+
+        <section class="status-card">
+          <div class="status-icon">
+            ◇
+          </div>
+
+          <div>
+            <strong>
+              No YouTube Writes
+            </strong>
+
+            <span>
+              Nenhuma alteração de canal nesta fase.
+            </span>
+          </div>
+
+          <b>
+            ENFORCED
+          </b>
+        </section>
+
+        <section class="status-card diagnostic-card">
+          <div class="status-icon">
+            ∿
+          </div>
+
+          <div>
+            <strong>
+              Channel Diagnostics
+            </strong>
+
+            <span>
+              OAuth, canal e reusable stream.
+            </span>
+          </div>
+
+          <button
+            type="button"
+            class="mini-button"
+            [disabled]="busy()"
+            (click)="runDiagnostics()"
+          >
+            RUN
+          </button>
+        </section>
+
+        @if (diagnostics(); as result) {
+          <section class="panel compact-panel">
+            <p class="section-label">
+              YOUTUBE CONNECTION
+            </p>
+
+            <dl class="diagnostic-list">
+              <div>
+                <dt>
+                  CONFIG
+                </dt>
+                <dd>
+                  {{ result.youtube.configurationStatus }}
+                </dd>
+              </div>
+
+              <div>
+                <dt>
+                  CHANNEL
+                </dt>
+                <dd>
+                  {{ result.youtube.channelStatus }}
+                </dd>
+              </div>
+
+              <div>
+                <dt>
+                  IDENTITY
+                </dt>
+                <dd>
+                  {{ result.youtube.channel?.title || 'NOT AVAILABLE' }}
+                </dd>
+              </div>
+
+              <div>
+                <dt>
+                  STREAM
+                </dt>
+                <dd>
+                  {{ result.youtube.reusableStream?.title || 'NOT FOUND' }}
+                </dd>
+              </div>
+            </dl>
+
+            @if (
+              result.youtube
+                .missingConfiguration
+                ?.length
+            ) {
+              <p class="notice warning">
+                Missing:
+                {{
+                  result.youtube
+                    .missingConfiguration
+                    ?.join(', ')
+                }}
+              </p>
+            }
+          </section>
+        }
+
+        <section class="status-card">
+          <div class="status-icon">
+            ▣
+          </div>
+
+          <div>
+            <strong>
+              Reusable Stream
+            </strong>
+
+            <span>
+              Compartilhado por rádio e eventos live.
+            </span>
+          </div>
+
+          <b>
+            SAFE
+          </b>
+        </section>
+
+        <section class="queue-card">
+          <div class="queue-heading">
+            <div>
+              <p class="section-label">
+                PUBLISHING QUEUE
+              </p>
+
+              <strong>
+                Próximas sessões
+              </strong>
+            </div>
+
+            <span>
+              {{ pendingCount() }} PENDING
+            </span>
+          </div>
+
+          <div class="queue-empty">
+            <span aria-hidden="true">
+              ▢
+            </span>
+
+            <strong>
+              Nenhum item na fila.
+            </strong>
+
+            <p>
+              Planeje uma rádio, vídeo, Short ou evento para começar.
+            </p>
+          </div>
+        </section>
+      </aside>
+    </div>
+
+    <section class="session-previews">
+      <article class="preview-card">
+        <div class="preview-art video-art">
+          <span>
+            ▷
+          </span>
         </div>
 
-        <div class="checks">
-          @for (check of result.diagnostics.checks; track check.code) {
-            <article [class.fail]="check.status === 'FAIL'">
-              <strong>{{ check.status }} · {{ check.code }}</strong>
-              <span>{{ check.message }}</span>
-            </article>
-          }
+        <div>
+          <p class="section-label">
+            02 // WEEKLY VIDEOS
+          </p>
+
+          <h3>
+            {{ weeklyTitle }}
+          </h3>
+
+          <p>
+            {{ weeklyDescription }}
+          </p>
         </div>
 
-        <div class="plan">
-          @for (step of result.plan; track step.step) {
-            <article>
-              <span>{{ step.step }}</span>
-              <strong>{{ step.status }}</strong>
-              <small>{{ step.detail }}</small>
-            </article>
-          }
+        <button
+          type="button"
+          class="mini-button"
+          (click)="selectSection('weekly-video')"
+        >
+          PLAN VIDEO
+        </button>
+      </article>
+
+      <article class="preview-card">
+        <div class="preview-art short-art">
+          <span>
+            ϟ
+          </span>
         </div>
-      </section>
-    }
+
+        <div>
+          <p class="section-label">
+            03 // SHORTS
+          </p>
+
+          <h3>
+            {{ shortHook }}
+          </h3>
+
+          <p>
+            {{ shortCaption }}
+          </p>
+        </div>
+
+        <button
+          type="button"
+          class="mini-button"
+          (click)="selectSection('short')"
+        >
+          PLAN SHORT
+        </button>
+      </article>
+
+      <article class="preview-card">
+        <div class="preview-art event-art">
+          <span>
+            ▣
+          </span>
+        </div>
+
+        <div>
+          <p class="section-label">
+            04 // SPECIAL STREAMS
+          </p>
+
+          <h3>
+            {{ eventTitle }}
+          </h3>
+
+          <p>
+            {{ eventDescription }}
+          </p>
+        </div>
+
+        <button
+          type="button"
+          class="mini-button"
+          (click)="selectSection('special-stream')"
+        >
+          PLAN EVENT
+        </button>
+      </article>
+
+      <article class="roadmap-card">
+        <p class="section-label">
+          ROADMAP // INDEPENDENT SESSIONS
+        </p>
+
+        <h3>
+          Uma operação, quatro fluxos.
+        </h3>
+
+        <p>
+          Rádio, vídeos, Shorts e streams especiais são sessões independentes,
+          cada uma com seu próprio planejamento, agenda e futura execução.
+        </p>
+      </article>
+    </section>
   }
 
-  @if (error()) { <p class="notice error" role="alert">{{ error() }}</p> }
+  @if (error()) {
+    <p
+      class="notice error"
+      role="alert"
+    >
+      {{ error() }}
+    </p>
+  }
 </main>
