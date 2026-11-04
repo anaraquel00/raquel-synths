@@ -687,7 +687,7 @@ export class YoutubeOperationsService {
         });
 
       client.requestAccessToken({
-        prompt: ''
+        prompt: 'select_account consent'
       });
     });
   }
