@@ -126,22 +126,50 @@ implements OnChanges {
   ngOnChanges(
     changes: SimpleChanges
   ): void {
+    const change =
+      changes['plan'];
+
+    if (!change) {
+      return;
+    }
+
+    const previous =
+      change.previousValue as
+        PersistedLivePlan | null;
+
+    const current =
+      change.currentValue as
+        PersistedLivePlan | null;
+
+    const liveIdentityChanged =
+      !previous ||
+      !current ||
+      previous.id !==
+        current.id ||
+      previous.youtubeBroadcastId !==
+        current.youtubeBroadcastId ||
+      previous.youtubeStreamId !==
+        current.youtubeStreamId;
+
     if (
-      changes['plan']
+      liveIdentityChanged
     ) {
-      this.liveStatus.set(null);
+      this.liveStatus.set(
+        null
+      );
+
       this.message.set('');
       this.error.set('');
+    }
 
-      if (
-        this.plan
-          ?.youtubeStreamId
-      ) {
-        this.selectedStreamId.set(
-          this.plan
-            .youtubeStreamId
-        );
-      }
+    if (
+      current
+        ?.youtubeStreamId
+    ) {
+      this.selectedStreamId.set(
+        current
+          .youtubeStreamId
+      );
     }
   }
 
@@ -565,16 +593,29 @@ implements OnChanges {
     const status =
       this.liveStatus();
 
+    const streamStatus =
+      status
+        ?.streamStatus ||
+      this.plan
+        ?.youtubeStreamStatus ||
+      '';
+
+    const broadcastStatus =
+      status
+        ?.broadcastStatus ||
+      this.plan
+        ?.youtubeBroadcastStatus ||
+      '';
+
     return Boolean(
       this.connected() &&
-      status &&
-      status.streamStatus ===
+      streamStatus ===
         'active' &&
       [
         'ready',
         'testing'
       ].includes(
-        status.broadcastStatus
+        broadcastStatus
       )
     );
   }

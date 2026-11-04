@@ -104,5 +104,57 @@ describe(
           );
       }
     );
+
+    it(
+      'keeps GO LIVE available after queue refresh using persisted live status',
+      () => {
+        const component =
+          fixture.componentInstance;
+
+        component.plan = {
+          id:
+            'live-plan',
+          updateTime:
+            '2026-11-04T23:45:00Z',
+          kind:
+            'monthly-radio',
+          dryRunStatus:
+            'PASS',
+          title:
+            'RQS RADIO // TEST',
+          description:
+            'Monthly test',
+          scheduledStartTime:
+            '2099-11-29T21:00:00.000Z',
+          visibility:
+            'private',
+          playlistId:
+            '',
+          autoStart:
+            false,
+          autoStop:
+            false,
+          youtubeBroadcastId:
+            'QmIMuzq3w08',
+          youtubeStreamId:
+            'stream-safe-id',
+          youtubeBroadcastStatus:
+            'ready',
+          youtubeStreamStatus:
+            'active',
+          youtubeHealthStatus:
+            'good'
+        };
+
+        component
+          .connected
+          .set(true);
+
+        expect(
+          component.canGoLive()
+        ).toBeTrue();
+      }
+    );
+
   }
 );
