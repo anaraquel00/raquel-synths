@@ -100,6 +100,22 @@ describe(
             'PUBLISHING QUEUE'
           );
 
+        component.selectSection(
+          'weekly-video'
+        );
+
+        fixture.detectChanges();
+
+        const weeklyText =
+          fixture
+            .nativeElement
+            .textContent || '';
+
+        expect(weeklyText)
+          .toContain(
+            'Tags'
+          );
+
         expect(text)
           .not
           .toContain(

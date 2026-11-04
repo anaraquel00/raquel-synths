@@ -24,6 +24,16 @@ import {
   YoutubePublisherPanelComponent
 } from './youtube-publisher-panel';
 
+const DEFAULT_RQS_TAGS_TEXT = [
+  'DJ mix',
+  'RQS',
+  'RaQuel Synths',
+  'RaQuelSynths',
+  'Raquel Synths',
+  'Red Blue Sessions',
+  'RedBlue Sessions'
+].join('\n');
+
 type MediaSection =
   | 'monthly-radio'
   | 'weekly-video'
@@ -132,6 +142,14 @@ interface MediaPlan {
   processingStatus?: string;
   thumbnailStatus?: string;
   playlistStatus?: string;
+  tags?: string[];
+  studioChecklist?: {
+    endScreenConfigured?: boolean;
+    cardsConfigured?: boolean;
+    shortsRemixAudioOnly?: boolean;
+    automaticPlacesDisabled?: boolean;
+    automaticConceptsDisabled?: boolean;
+  };
   revision: number;
   createdAt: string;
   updatedAt: string;
@@ -258,6 +276,7 @@ implements OnInit {
 
   weeklyThumbnailUrl = '';
   weeklyPlaylistId = '';
+  weeklyTagsText = DEFAULT_RQS_TAGS_TEXT;
 
   shortHook =
     'O próximo sinal já está no ar';
@@ -271,6 +290,7 @@ implements OnInit {
 
   shortThumbnailUrl = '';
   shortPlaylistId = '';
+  shortTagsText = DEFAULT_RQS_TAGS_TEXT;
 
   eventTitle =
     'RQS // Special Transmission';
@@ -545,6 +565,12 @@ implements OnInit {
       this.weeklyPlaylistId =
         plan.playlistId;
 
+      this.weeklyTagsText =
+        (plan.tags?.length
+          ? plan.tags
+          : DEFAULT_RQS_TAGS_TEXT.split('\n')
+        ).join('\n');
+
       return;
     }
 
@@ -572,6 +598,12 @@ implements OnInit {
 
       this.shortPlaylistId =
         plan.playlistId;
+
+      this.shortTagsText =
+        (plan.tags?.length
+          ? plan.tags
+          : DEFAULT_RQS_TAGS_TEXT.split('\n')
+        ).join('\n');
 
       return;
     }
@@ -896,7 +928,12 @@ implements OnInit {
           .weeklyThumbnailUrl,
 
       playlistId:
-        this.weeklyPlaylistId
+        this.weeklyPlaylistId,
+
+      tags:
+        this.tagLines(
+          this.weeklyTagsText
+        )
     };
   }
 
@@ -923,7 +960,12 @@ implements OnInit {
           .shortThumbnailUrl,
 
       playlistId:
-        this.shortPlaylistId
+        this.shortPlaylistId,
+
+      tags:
+        this.tagLines(
+          this.shortTagsText
+        )
     };
   }
 
@@ -965,6 +1007,35 @@ implements OnInit {
       autoStop:
         this.eventAutoStop
     };
+  }
+
+  tagCharacterCount(value: string): number {
+    return this.tagLines(value).join(',').length;
+  }
+
+  studioChecklistDone(plan: MediaPlan): number {
+    const checklist = plan.studioChecklist || {};
+    return [
+      checklist.endScreenConfigured,
+      checklist.cardsConfigured,
+      checklist.shortsRemixAudioOnly,
+      checklist.automaticPlacesDisabled,
+      checklist.automaticConceptsDisabled
+    ].filter(Boolean).length;
+  }
+
+  private tagLines(value: string): string[] {
+    const seen = new Set<string>();
+    return value
+      .split('\n')
+      .map(item => item.trim())
+      .filter(Boolean)
+      .filter(item => {
+        const key = item.toLocaleLowerCase('pt-BR');
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
   }
 
   private lines(

@@ -906,3 +906,7 @@ a:focus-visible {
   max-height: 420px;
   overflow: auto;
 }
+
+.tags-field small { color: #879ea9; font-size: .72rem; }
+.tags-field small.over-limit { color: #ff9aad; font-weight: 800; }
+.queue-actions a.mini-button { text-decoration: none; }

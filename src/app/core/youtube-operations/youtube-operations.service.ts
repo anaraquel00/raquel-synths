@@ -13,6 +13,14 @@ export interface YoutubeOperationsIdentity {
   channelTitle: string;
 }
 
+export interface YoutubeStudioChecklist {
+  endScreenConfigured: boolean;
+  cardsConfigured: boolean;
+  shortsRemixAudioOnly: boolean;
+  automaticPlacesDisabled: boolean;
+  automaticConceptsDisabled: boolean;
+}
+
 export interface YoutubePublishPlan {
   id: string;
   updateTime: string | null;
@@ -27,6 +35,10 @@ export interface YoutubePublishPlan {
   scheduledStartTime: string;
   visibility: string;
   playlistId: string;
+  tags?: string[];
+  youtubeVideoId?: string | null;
+  youtubeUrl?: string | null;
+  studioChecklist?: Partial<YoutubeStudioChecklist>;
 }
 
 export interface YoutubeUploadResult {
@@ -79,32 +91,13 @@ const GOOGLE_IDENTITY_SCRIPT =
   'https://accounts.google.com/gsi/client';
 
 const RQS_DEFAULT_TAGS = Object.freeze([
-  'RaQuel Synths',
-  'Raquel Synths',
-  'RaQuelSynths',
-  'RQS',
-  'RedBlue Sessions',
-  'Red Blue Sessions',
-  'cyberpunk music',
-  'cyberpunk electronic music',
-  'electronic music mix',
-  'hybrid electronic music',
-  'virtual band',
-  'progressive trance',
-  'melodic trance',
-  'progressive house',
-  'industrial metal',
-  'industrial rock',
-  'industrial music',
-  'electronic industrial',
-  'dark electronic music',
-  'cyberpunk trance',
-  'trance industrial',
-  'progressive electronic music',
-  'trance mix',
-  'progressive house mix',
   'DJ mix',
-  'extended mix'
+  'RQS',
+  'RaQuel Synths',
+  'RaQuelSynths',
+  'Raquel Synths',
+  'Red Blue Sessions',
+  'RedBlue Sessions'
 ]);
 
 @Injectable({
@@ -715,7 +708,10 @@ export function buildYoutubeVideoResource(
     snippet: {
       title: plan.title,
       description: plan.description,
-      tags: [...RQS_DEFAULT_TAGS],
+      tags:
+        plan.tags?.length
+          ? [...plan.tags]
+          : [...RQS_DEFAULT_TAGS],
       categoryId: '10',
       defaultLanguage: 'pt-BR'
     },

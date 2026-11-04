@@ -347,6 +347,18 @@
                   placeholder="Optional"
                 >
               </label>
+
+              <label class="span-3 tags-field">
+                Tags
+                <textarea
+                  [(ngModel)]="weeklyTagsText"
+                  rows="7"
+                  placeholder="Uma tag por linha"
+                ></textarea>
+                <small [class.over-limit]="tagCharacterCount(weeklyTagsText) > 500">
+                  Uma tag por linha · {{ tagCharacterCount(weeklyTagsText) }}/500 caracteres
+                </small>
+              </label>
             </div>
 
             <div class="actions">
@@ -369,7 +381,7 @@
               </button>
 
               <span>
-                Upload do vídeo permanece manual / externo ao backend.
+                Upload direto do navegador ao YouTube — sem tráfego de mídia pelo backend.
               </span>
             </div>
           </section>
@@ -466,6 +478,18 @@
                   placeholder="Optional"
                 >
               </label>
+
+              <label class="span-3 tags-field">
+                Tags
+                <textarea
+                  [(ngModel)]="shortTagsText"
+                  rows="7"
+                  placeholder="Uma tag por linha"
+                ></textarea>
+                <small [class.over-limit]="tagCharacterCount(shortTagsText) > 500">
+                  Uma tag por linha · {{ tagCharacterCount(shortTagsText) }}/500 caracteres
+                </small>
+              </label>
             </div>
 
             <div class="actions">
@@ -488,7 +512,7 @@
               </button>
 
               <span>
-                Nenhum arquivo de Short será enviado pela Vercel.
+                Upload direto do navegador ao YouTube — sem tráfego de mídia pela Vercel.
               </span>
             </div>
           </section>
@@ -929,10 +953,21 @@
                       · {{ plan.uploadStatus }}
                       · {{ plan.thumbnailStatus }}
                       · {{ plan.playlistStatus }}
+                      · STUDIO {{ studioChecklistDone(plan) }}/5
                     </small>
                   }
 
                   <div class="queue-actions">
+                    @if (plan.youtubeVideoId) {
+                      <a
+                        class="mini-button"
+                        [href]="'https://studio.youtube.com/video/' + plan.youtubeVideoId + '/edit'"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        OPEN STUDIO
+                      </a>
+                    }
                     <button
                       type="button"
                       class="mini-button"

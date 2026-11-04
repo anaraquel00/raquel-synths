@@ -26,7 +26,8 @@ import {
   listMediaPlans,
   MediaPlanError,
   recordYoutubePublishResult,
-  saveMediaPlan
+  saveMediaPlan,
+  updateStudioChecklist
 } from '../../lib/radio/media-plan-repository.js';
 
 import {
@@ -610,6 +611,30 @@ export default async function handler(
         .json({
           plan: updated
         });
+    }
+
+    if (
+      action ===
+      'plan-studio-checklist'
+    ) {
+      const updated =
+        await updateStudioChecklist({
+          id: String(input.id || ''),
+          sourceUpdateTime: input.updateTime,
+          checklist: input.checklist
+        });
+
+      radioAudit(
+        'STUDIO_CHECKLIST_UPDATED',
+        {
+          id: updated.id,
+          kind: updated.kind,
+          revision: updated.revision,
+          youtubeVideoId: updated.youtubeVideoId
+        }
+      );
+
+      return res.status(200).json({ plan: updated });
     }
 
     if (

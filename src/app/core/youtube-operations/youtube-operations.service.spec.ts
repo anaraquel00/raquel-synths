@@ -19,7 +19,12 @@ describe('YouTube publish policy', () => {
             scheduledStartTime:
               '2099-11-10T18:00:00.000Z',
             visibility: 'public',
-            playlistId: ''
+            playlistId: '',
+            tags: [
+              'DJ mix',
+              'RQS',
+              'RedBlue Sessions'
+            ]
           },
           Date.parse(
             '2099-01-01T00:00:00.000Z'
@@ -28,6 +33,7 @@ describe('YouTube publish policy', () => {
           snippet: {
             categoryId: string;
             defaultLanguage: string;
+            tags: string[];
           };
           status: {
             privacyStatus: string;
@@ -64,6 +70,14 @@ describe('YouTube publish policy', () => {
       expect(
         resource.snippet.defaultLanguage
       ).toBe('pt-BR');
+
+      expect(
+        resource.snippet.tags
+      ).toEqual([
+        'DJ mix',
+        'RQS',
+        'RedBlue Sessions'
+      ]);
 
       expect(
         resource.status.embeddable
