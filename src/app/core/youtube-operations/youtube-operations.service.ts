@@ -41,6 +41,30 @@ export interface YoutubePublishPlan {
   studioChecklist?: Partial<YoutubeStudioChecklist>;
 }
 
+export interface YoutubeReusableLiveStream {
+  id: string;
+  title: string;
+  streamStatus: string;
+  healthStatus: string;
+  isReusable: boolean;
+}
+
+export interface YoutubeLivePlan extends YoutubePublishPlan {
+  kind: 'monthly-radio' | 'special-stream';
+  autoStart?: boolean;
+  autoStop?: boolean;
+}
+
+export interface YoutubeLiveOperationalStatus {
+  broadcastId: string;
+  streamId: string;
+  broadcastStatus: string;
+  streamStatus: string;
+  healthStatus: string;
+  actualStartTime: string | null;
+  actualEndTime: string | null;
+}
+
 export interface YoutubeUploadResult {
   videoId: string;
   processingStatus: string;
@@ -254,6 +278,632 @@ export class YoutubeOperationsService {
       playlistStatus,
       lastError
     };
+  }
+
+  async listReusableLiveStreams():
+  Promise<YoutubeReusableLiveStream[]> {
+    const token =
+      this.requireToken();
+
+    const url =
+      new URL(
+        'https://www.googleapis.com/youtube/v3/liveStreams'
+      );
+
+    url.search =
+      new URLSearchParams({
+        part:
+          'id,snippet,status,contentDetails',
+        mine:
+          'true',
+        maxResults:
+          '50'
+      }).toString();
+
+    const response =
+      await fetch(
+        url,
+        {
+          headers: {
+            Authorization:
+              `Bearer ${token}`
+          }
+        }
+      );
+
+    if (!response.ok) {
+      throw new Error(
+        `liveStreams.list HTTP ${response.status}.`
+      );
+    }
+
+    const payload =
+      await response.json();
+
+    return (
+      payload?.items || []
+    )
+      .filter(
+        (item: any) =>
+          item?.contentDetails
+            ?.isReusable ===
+          true
+      )
+      .map(
+        (item: any) => ({
+          id:
+            String(
+              item?.id || ''
+            ),
+          title:
+            String(
+              item?.snippet
+                ?.title || ''
+            ),
+          streamStatus:
+            String(
+              item?.status
+                ?.streamStatus ||
+              ''
+            ),
+          healthStatus:
+            String(
+              item?.status
+                ?.healthStatus
+                ?.status ||
+              'noData'
+            ),
+          isReusable:
+            true
+        })
+      )
+      .filter(
+        (
+          item:
+          YoutubeReusableLiveStream
+        ) =>
+          Boolean(item.id)
+      );
+  }
+
+  async createLiveBroadcast(
+    plan: YoutubeLivePlan
+  ): Promise<{
+    broadcastId: string;
+    broadcastStatus: string;
+  }> {
+    const token =
+      this.requireToken();
+
+    if (
+      ![
+        'monthly-radio',
+        'special-stream'
+      ].includes(plan.kind)
+    ) {
+      throw new Error(
+        'Apenas Monthly Radio e Special Streams usam Live Operations.'
+      );
+    }
+
+    if (
+      plan.dryRunStatus !==
+      'PASS'
+    ) {
+      throw new Error(
+        'Execute e salve um Dry Run PASS antes de criar a live.'
+      );
+    }
+
+    const url =
+      new URL(
+        'https://www.googleapis.com/youtube/v3/liveBroadcasts'
+      );
+
+    url.search =
+      new URLSearchParams({
+        part:
+          'id,snippet,status,contentDetails'
+      }).toString();
+
+    const response =
+      await fetch(
+        url,
+        {
+          method:
+            'POST',
+
+          headers: {
+            Authorization:
+              `Bearer ${token}`,
+            'Content-Type':
+              'application/json'
+          },
+
+          body:
+            JSON.stringify(
+              buildYoutubeLiveBroadcastResource(
+                plan
+              )
+            )
+        }
+      );
+
+    if (!response.ok) {
+      throw new Error(
+        `liveBroadcasts.insert HTTP ${response.status}.`
+      );
+    }
+
+    const payload =
+      await response.json();
+
+    const broadcastId =
+      String(
+        payload?.id || ''
+      );
+
+    if (!broadcastId) {
+      throw new Error(
+        'YouTube não retornou broadcastId.'
+      );
+    }
+
+    await this
+      .applySyntheticDisclosureToVideo(
+        broadcastId
+      );
+
+    return {
+      broadcastId,
+      broadcastStatus:
+        String(
+          payload?.status
+            ?.lifeCycleStatus ||
+          'created'
+        )
+    };
+  }
+
+  async bindLiveBroadcast(
+    broadcastId: string,
+    streamId: string
+  ): Promise<string> {
+    const token =
+      this.requireToken();
+
+    const url =
+      new URL(
+        'https://www.googleapis.com/youtube/v3/liveBroadcasts/bind'
+      );
+
+    url.search =
+      new URLSearchParams({
+        id:
+          broadcastId,
+        streamId,
+        part:
+          'id,snippet,status,contentDetails'
+      }).toString();
+
+    const response =
+      await fetch(
+        url,
+        {
+          method:
+            'POST',
+
+          headers: {
+            Authorization:
+              `Bearer ${token}`
+          }
+        }
+      );
+
+    if (!response.ok) {
+      throw new Error(
+        `liveBroadcasts.bind HTTP ${response.status}.`
+      );
+    }
+
+    const payload =
+      await response.json();
+
+    return String(
+      payload?.status
+        ?.lifeCycleStatus ||
+      'ready'
+    );
+  }
+
+  async liveOperationalStatus(
+    broadcastId: string,
+    streamId: string
+  ): Promise<YoutubeLiveOperationalStatus> {
+    const token =
+      this.requireToken();
+
+    const broadcastUrl =
+      new URL(
+        'https://www.googleapis.com/youtube/v3/liveBroadcasts'
+      );
+
+    broadcastUrl.search =
+      new URLSearchParams({
+        part:
+          'id,snippet,status,contentDetails',
+        id:
+          broadcastId
+      }).toString();
+
+    const streamUrl =
+      new URL(
+        'https://www.googleapis.com/youtube/v3/liveStreams'
+      );
+
+    streamUrl.search =
+      new URLSearchParams({
+        part:
+          'id,snippet,status,contentDetails',
+        id:
+          streamId
+      }).toString();
+
+    const [
+      broadcastResponse,
+      streamResponse
+    ] =
+      await Promise.all([
+        fetch(
+          broadcastUrl,
+          {
+            headers: {
+              Authorization:
+                `Bearer ${token}`
+            }
+          }
+        ),
+        fetch(
+          streamUrl,
+          {
+            headers: {
+              Authorization:
+                `Bearer ${token}`
+            }
+          }
+        )
+      ]);
+
+    if (
+      !broadcastResponse.ok
+    ) {
+      throw new Error(
+        `liveBroadcasts.list HTTP ${broadcastResponse.status}.`
+      );
+    }
+
+    if (!streamResponse.ok) {
+      throw new Error(
+        `liveStreams.list HTTP ${streamResponse.status}.`
+      );
+    }
+
+    const broadcastPayload =
+      await broadcastResponse
+        .json();
+
+    const streamPayload =
+      await streamResponse
+        .json();
+
+    const broadcast =
+      broadcastPayload
+        ?.items
+        ?.[0];
+
+    const stream =
+      streamPayload
+        ?.items
+        ?.[0];
+
+    if (!broadcast?.id) {
+      throw new Error(
+        'Broadcast não encontrado no YouTube.'
+      );
+    }
+
+    if (!stream?.id) {
+      throw new Error(
+        'Reusable stream não encontrado no YouTube.'
+      );
+    }
+
+    return {
+      broadcastId:
+        String(
+          broadcast.id
+        ),
+
+      streamId:
+        String(
+          stream.id
+        ),
+
+      broadcastStatus:
+        String(
+          broadcast
+            ?.status
+            ?.lifeCycleStatus ||
+          'unknown'
+        ),
+
+      streamStatus:
+        String(
+          stream
+            ?.status
+            ?.streamStatus ||
+          'unknown'
+        ),
+
+      healthStatus:
+        String(
+          stream
+            ?.status
+            ?.healthStatus
+            ?.status ||
+          'noData'
+        ),
+
+      actualStartTime:
+        broadcast
+          ?.snippet
+          ?.actualStartTime ||
+        null,
+
+      actualEndTime:
+        broadcast
+          ?.snippet
+          ?.actualEndTime ||
+        null
+    };
+  }
+
+  async transitionLiveBroadcast(
+    broadcastId: string,
+    target:
+      'live' | 'complete'
+  ): Promise<string> {
+    const token =
+      this.requireToken();
+
+    const url =
+      new URL(
+        'https://www.googleapis.com/youtube/v3/liveBroadcasts/transition'
+      );
+
+    url.search =
+      new URLSearchParams({
+        broadcastStatus:
+          target,
+        id:
+          broadcastId,
+        part:
+          'id,snippet,status,contentDetails'
+      }).toString();
+
+    const response =
+      await fetch(
+        url,
+        {
+          method:
+            'POST',
+
+          headers: {
+            Authorization:
+              `Bearer ${token}`
+          }
+        }
+      );
+
+    if (!response.ok) {
+      throw new Error(
+        `liveBroadcasts.transition(${target}) HTTP ${response.status}.`
+      );
+    }
+
+    const payload =
+      await response.json();
+
+    return String(
+      payload?.status
+        ?.lifeCycleStatus ||
+      target
+    );
+  }
+
+  async deleteLiveBroadcast(
+    broadcastId: string
+  ): Promise<void> {
+    const token =
+      this.requireToken();
+
+    const url =
+      new URL(
+        'https://www.googleapis.com/youtube/v3/liveBroadcasts'
+      );
+
+    url.search =
+      new URLSearchParams({
+        id:
+          broadcastId
+      }).toString();
+
+    const response =
+      await fetch(
+        url,
+        {
+          method:
+            'DELETE',
+
+          headers: {
+            Authorization:
+              `Bearer ${token}`
+          }
+        }
+      );
+
+    if (!response.ok) {
+      throw new Error(
+        `liveBroadcasts.delete HTTP ${response.status}.`
+      );
+    }
+  }
+
+  async setLiveThumbnail(
+    broadcastId: string,
+    file: File
+  ): Promise<void> {
+    await this
+      .setThumbnail(
+        broadcastId,
+        file
+      );
+  }
+
+  async addLiveVodToPlaylist(
+    broadcastId: string,
+    playlistId: string
+  ): Promise<void> {
+    await this
+      .addToPlaylist(
+        broadcastId,
+        playlistId
+      );
+  }
+
+  private async applySyntheticDisclosureToVideo(
+    videoId: string
+  ): Promise<void> {
+    const token =
+      this.requireToken();
+
+    const readUrl =
+      new URL(
+        'https://www.googleapis.com/youtube/v3/videos'
+      );
+
+    readUrl.search =
+      new URLSearchParams({
+        part:
+          'status',
+        id:
+          videoId
+      }).toString();
+
+    const read =
+      await fetch(
+        readUrl,
+        {
+          headers: {
+            Authorization:
+              `Bearer ${token}`
+          }
+        }
+      );
+
+    if (!read.ok) {
+      throw new Error(
+        `videos.list live defaults HTTP ${read.status}.`
+      );
+    }
+
+    const payload =
+      await read.json();
+
+    const current =
+      payload
+        ?.items
+        ?.[0]
+        ?.status;
+
+    if (!current) {
+      throw new Error(
+        'Status do vídeo da live não encontrado.'
+      );
+    }
+
+    const status: Record<
+      string,
+      unknown
+    > = {
+      privacyStatus:
+        current
+          .privacyStatus ||
+        'private',
+      embeddable:
+        current
+          .embeddable !==
+        false,
+      license:
+        current
+          .license ||
+        'youtube',
+      publicStatsViewable:
+        current
+          .publicStatsViewable !==
+        false,
+      selfDeclaredMadeForKids:
+        false,
+      containsSyntheticMedia:
+        true
+    };
+
+    if (
+      current.publishAt
+    ) {
+      status['publishAt'] =
+        current.publishAt;
+    }
+
+    const updateUrl =
+      new URL(
+        'https://www.googleapis.com/youtube/v3/videos'
+      );
+
+    updateUrl.search =
+      new URLSearchParams({
+        part:
+          'status'
+      }).toString();
+
+    const update =
+      await fetch(
+        updateUrl,
+        {
+          method:
+            'PUT',
+
+          headers: {
+            Authorization:
+              `Bearer ${token}`,
+            'Content-Type':
+              'application/json'
+          },
+
+          body:
+            JSON.stringify({
+              id:
+                videoId,
+              status
+            })
+        }
+      );
+
+    if (!update.ok) {
+      throw new Error(
+        `videos.update synthetic disclosure HTTP ${update.status}.`
+      );
+    }
   }
 
   async processingStatus(
@@ -684,6 +1334,71 @@ export class YoutubeOperationsService {
       });
     });
   }
+}
+
+export function buildYoutubeLiveBroadcastResource(
+  plan: YoutubeLivePlan
+): object {
+  const scheduled =
+    Date.parse(
+      plan
+        .scheduledStartTime ||
+      ''
+    );
+
+  if (
+    !Number.isFinite(
+      scheduled
+    )
+  ) {
+    throw new Error(
+      'Scheduled Start inválido para a live.'
+    );
+  }
+
+  return {
+    snippet: {
+      title:
+        plan.title,
+      description:
+        plan.description,
+      categoryId:
+        '10',
+      scheduledStartTime:
+        new Date(
+          scheduled
+        )
+          .toISOString()
+    },
+
+    status: {
+      privacyStatus:
+        normalizePrivacy(
+          plan.visibility
+        ),
+      selfDeclaredMadeForKids:
+        false
+    },
+
+    contentDetails: {
+      enableAutoStart:
+        plan.autoStart ===
+        true,
+      enableAutoStop:
+        plan.autoStop ===
+        true,
+      enableDvr:
+        true,
+      enableEmbed:
+        true,
+      recordFromStart:
+        true,
+      monitorStream: {
+        enableMonitorStream:
+          false
+      }
+    }
+  };
 }
 
 export function buildYoutubeVideoResource(

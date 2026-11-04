@@ -260,6 +260,12 @@
               </span>
             </div>
           </section>
+
+          <app-youtube-live-operations-panel
+            [plan]="selectedLivePlan()"
+            expectedKind="monthly-radio"
+            (planUpdated)="refreshPlans()"
+          ></app-youtube-live-operations-panel>
         }
 
         @if (
@@ -662,6 +668,12 @@
               </span>
             </div>
           </section>
+
+          <app-youtube-live-operations-panel
+            [plan]="selectedLivePlan()"
+            expectedKind="special-stream"
+            (planUpdated)="refreshPlans()"
+          ></app-youtube-live-operations-panel>
         }
 
         @if (dryRun(); as result) {
@@ -947,7 +959,17 @@
                     · R{{ plan.revision }}
                   </small>
 
-                  @if (plan.youtubeVideoId) {
+                  @if (
+                    (plan.kind === 'monthly-radio' || plan.kind === 'special-stream') &&
+                    plan.youtubeBroadcastId
+                  ) {
+                    <small>
+                      LIVE {{ plan.youtubeBroadcastId }}
+                      · {{ plan.youtubeBroadcastStatus || 'UNKNOWN' }}
+                      · STREAM {{ plan.youtubeStreamStatus || 'UNKNOWN' }}
+                      · HEALTH {{ plan.youtubeHealthStatus || 'NO DATA' }}
+                    </small>
+                  } @else if (plan.youtubeVideoId) {
                     <small>
                       YOUTUBE {{ plan.youtubeVideoId }}
                       · {{ plan.uploadStatus }}

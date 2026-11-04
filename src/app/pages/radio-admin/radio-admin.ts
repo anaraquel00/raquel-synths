@@ -24,6 +24,10 @@ import {
   YoutubePublisherPanelComponent
 } from './youtube-publisher-panel';
 
+import {
+  YoutubeLiveOperationsPanelComponent
+} from './youtube-live-operations-panel';
+
 const DEFAULT_RQS_TAGS_TEXT = [
   'DJ mix',
   'RQS',
@@ -137,11 +141,19 @@ interface MediaPlan {
     | 'FAIL';
   dryRunAt: string | null;
   youtubeVideoId?: string | null;
+  youtubeBroadcastId?: string | null;
+  youtubeStreamId?: string | null;
   youtubeUrl?: string | null;
   uploadStatus?: string;
   processingStatus?: string;
   thumbnailStatus?: string;
   playlistStatus?: string;
+  liveProvisioningStage?: string;
+  youtubeBroadcastStatus?: string | null;
+  youtubeStreamStatus?: string | null;
+  youtubeHealthStatus?: string | null;
+  actualStartTime?: string | null;
+  actualEndTime?: string | null;
   tags?: string[];
   studioChecklist?: {
     endScreenConfigured?: boolean;
@@ -154,6 +166,13 @@ interface MediaPlan {
   createdAt: string;
   updatedAt: string;
 }
+
+type LiveMediaPlan =
+  MediaPlan & {
+    kind:
+      | 'monthly-radio'
+      | 'special-stream';
+  };
 
 interface PlansResponse {
   collection: 'media-plans';
@@ -170,7 +189,8 @@ interface PlansResponse {
     CommonModule,
     FormsModule,
     RouterLink,
-    YoutubePublisherPanelComponent
+    YoutubePublisherPanelComponent,
+    YoutubeLiveOperationsPanelComponent
   ],
 
   templateUrl:
@@ -243,6 +263,27 @@ implements OnInit {
         plan =>
           plan.id === id
       ) || null;
+    });
+
+
+  readonly selectedLivePlan =
+    computed<LiveMediaPlan | null>(() => {
+      const plan =
+        this.selectedPlan();
+
+      if (
+        !plan ||
+        ![
+          'monthly-radio',
+          'special-stream'
+        ].includes(
+          plan.kind
+        )
+      ) {
+        return null;
+      }
+
+      return plan as LiveMediaPlan;
     });
 
   private selectedUpdateTime:

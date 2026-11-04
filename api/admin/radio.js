@@ -20,11 +20,13 @@ import {
 } from '../../lib/radio/media-plan-state.js';
 
 import {
+  beginLiveProvisioning,
   beginYoutubeUpload,
   cancelMediaPlan,
   deleteMediaPlan,
   listMediaPlans,
   MediaPlanError,
+  recordLiveProgress,
   recordYoutubePublishResult,
   saveMediaPlan,
   updateStudioChecklist
@@ -531,6 +533,96 @@ export default async function handler(
         .json({
           plan:
             saved
+        });
+    }
+
+    if (
+      action ===
+      'plan-live-intent'
+    ) {
+      if (
+        process.env
+          .RQS_YOUTUBE_OPERATIONS_ENABLED !==
+        'true'
+      ) {
+        throw new MediaPlanError(
+          403,
+          'YOUTUBE_OPERATIONS_LOCKED',
+          'YouTube Operations está bloqueado neste ambiente.'
+        );
+      }
+
+      const updated =
+        await beginLiveProvisioning({
+          id:
+            String(input.id || ''),
+          sourceUpdateTime:
+            input.updateTime
+        });
+
+      radioAudit(
+        'YOUTUBE_LIVE_INTENT',
+        {
+          id:
+            updated.id,
+          kind:
+            updated.kind,
+          revision:
+            updated.revision
+        }
+      );
+
+      return res
+        .status(200)
+        .json({
+          plan:
+            updated
+        });
+    }
+
+    if (
+      action ===
+      'plan-live-progress'
+    ) {
+      const updated =
+        await recordLiveProgress({
+          id:
+            String(input.id || ''),
+          sourceUpdateTime:
+            input.updateTime,
+          progress:
+            input.progress
+        });
+
+      radioAudit(
+        'YOUTUBE_LIVE_PROGRESS',
+        {
+          id:
+            updated.id,
+          kind:
+            updated.kind,
+          stage:
+            updated.liveProvisioningStage,
+          status:
+            updated.status,
+          youtubeBroadcastId:
+            updated.youtubeBroadcastId,
+          youtubeStreamId:
+            updated.youtubeStreamId,
+          youtubeBroadcastStatus:
+            updated.youtubeBroadcastStatus,
+          youtubeStreamStatus:
+            updated.youtubeStreamStatus,
+          youtubeHealthStatus:
+            updated.youtubeHealthStatus
+        }
+      );
+
+      return res
+        .status(200)
+        .json({
+          plan:
+            updated
         });
     }
 

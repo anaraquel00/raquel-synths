@@ -1,4 +1,5 @@
 import {
+  buildYoutubeLiveBroadcastResource,
   buildYoutubeVideoResource
 } from './youtube-operations.service';
 
@@ -126,3 +127,95 @@ describe('YouTube publish policy', () => {
     }
   );
 });
+
+
+describe(
+  'YouTube live broadcast policy',
+  () => {
+    it(
+      'builds a safe live broadcast resource with RQS defaults',
+      () => {
+        const resource =
+          buildYoutubeLiveBroadcastResource({
+            id:
+              'live-plan',
+            updateTime:
+              null,
+            kind:
+              'monthly-radio',
+            dryRunStatus:
+              'PASS',
+            title:
+              'RQS RADIO // TEST',
+            description:
+              'Monthly RQS Radio test.',
+            scheduledStartTime:
+              '2099-11-29T21:00:00.000Z',
+            visibility:
+              'private',
+            playlistId:
+              '',
+            autoStart:
+              false,
+            autoStop:
+              false
+          }) as {
+            snippet: {
+              categoryId: string;
+              scheduledStartTime: string;
+            };
+            status: {
+              privacyStatus: string;
+              selfDeclaredMadeForKids: boolean;
+            };
+            contentDetails: {
+              enableAutoStart: boolean;
+              enableAutoStop: boolean;
+              enableDvr: boolean;
+              enableEmbed: boolean;
+              recordFromStart: boolean;
+              monitorStream: {
+                enableMonitorStream: boolean;
+              };
+            };
+          };
+
+        expect(
+          resource.snippet.categoryId
+        ).toBe('10');
+
+        expect(
+          resource.status.privacyStatus
+        ).toBe('private');
+
+        expect(
+          resource.status.selfDeclaredMadeForKids
+        ).toBeFalse();
+
+        expect(
+          resource.contentDetails.enableAutoStart
+        ).toBeFalse();
+
+        expect(
+          resource.contentDetails.enableAutoStop
+        ).toBeFalse();
+
+        expect(
+          resource.contentDetails.enableDvr
+        ).toBeTrue();
+
+        expect(
+          resource.contentDetails.enableEmbed
+        ).toBeTrue();
+
+        expect(
+          resource.contentDetails.recordFromStart
+        ).toBeTrue();
+
+        expect(
+          resource.contentDetails.monitorStream.enableMonitorStream
+        ).toBeFalse();
+      }
+    );
+  }
+);

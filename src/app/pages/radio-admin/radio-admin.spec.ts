@@ -92,6 +92,11 @@ describe(
 
         expect(text)
           .toContain(
+            'PHASE 4 // LIVE OPERATIONS'
+          );
+
+        expect(text)
+          .toContain(
             'SAVE PLAN'
           );
 
