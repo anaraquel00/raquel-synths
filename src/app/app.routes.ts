@@ -256,30 +256,11 @@ export const routes: Routes = [
     title: 'RQS Admin // Radio Control Plane'
   },
   {
-    path: 'admin/stream-importer',
-    loadComponent: () =>
-      import('./pages/soundcloud-importer/soundcloud-importer')
-        .then(m => m.SoundcloudImporterComponent),
-    title: 'RQS Admin // Importador de Streaming'
-  },
-  {
     path: 'admin/social-publishing',
     loadComponent: () =>
       import('./pages/social-publishing-admin/social-publishing-admin')
         .then(m => m.SocialPublishingAdminComponent),
     title: 'RQS Admin // Social Publishing'
-  },
-  {
-    path: 'admin/store',
-    loadComponent: () =>
-      import('./pages/store-admin/store-admin')
-        .then(m => m.StoreAdminComponent),
-    title: 'RQS Admin // Neon Store'
-  },
-  {
-    path: 'admin/soundcloud-importer',
-    redirectTo: 'stream-importer',
-    pathMatch: 'full'
   },
   {
     path: 'admin/system-logs',

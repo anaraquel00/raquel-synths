@@ -4,7 +4,6 @@ Allow: /
 
 # Area administrativa privada
 Disallow: /api/admin/
-Disallow: /api/soundcloud-importer
 
 # Quarentena: Setores de memoria que nao devem ser rastreados
 Disallow: /assets/private/
