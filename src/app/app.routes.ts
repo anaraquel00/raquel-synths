@@ -246,35 +246,50 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/admin-shell/admin-shell')
         .then(m => m.AdminShellComponent),
-    title: 'RQS Admin'
+    title: 'RQS Admin',
+    data: {
+      robots: 'noindex, nofollow, noarchive'
+    }
   },
   {
     path: 'admin/radio',
     loadComponent: () =>
       import('./pages/radio-admin/radio-admin')
         .then(m => m.RadioAdminComponent),
-    title: 'RQS Admin // Media Control Plane'
+    title: 'RQS Admin // Media Control Plane',
+    data: {
+      robots: 'noindex, nofollow, noarchive'
+    }
   },
   {
     path: 'admin/social-publishing',
     loadComponent: () =>
       import('./pages/social-publishing-admin/social-publishing-admin')
         .then(m => m.SocialPublishingAdminComponent),
-    title: 'RQS Admin // Social Publishing'
+    title: 'RQS Admin // Social Publishing',
+    data: {
+      robots: 'noindex, nofollow, noarchive'
+    }
   },
   {
     path: 'admin/system-logs',
     loadComponent: () =>
       import('./pages/system-logs-admin/system-logs-admin')
         .then(m => m.SystemLogsAdminComponent),
-    title: 'RQS Admin // Logs do Sistema'
+    title: 'RQS Admin // Logs do Sistema',
+    data: {
+      robots: 'noindex, nofollow, noarchive'
+    }
   },
   {
     path: 'admin/lore',
     loadComponent: () =>
       import('./pages/admin-module/admin-module')
         .then(m => m.AdminModuleComponent),
-    data: { adminModule: 'lore' },
+    data: {
+      adminModule: 'lore',
+      robots: 'noindex, nofollow, noarchive'
+    },
     title: 'RQS Admin // Lore'
   },
   {
@@ -282,7 +297,11 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/admin-module/admin-module')
         .then(m => m.AdminModuleComponent),
-    data: { adminModule: 'lore', loreSource: 'broklin' },
+    data: {
+      adminModule: 'lore',
+      loreSource: 'broklin',
+      robots: 'noindex, nofollow, noarchive'
+    },
     title: 'RQS Admin // Lore // Broklin'
   },
   {
@@ -290,7 +309,11 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/admin-module/admin-module')
         .then(m => m.AdminModuleComponent),
-    data: { adminModule: 'lore', loreSource: 'jonah' },
+    data: {
+      adminModule: 'lore',
+      loreSource: 'jonah',
+      robots: 'noindex, nofollow, noarchive'
+    },
     title: 'RQS Admin // Lore // Jonah'
   },
   {
@@ -298,7 +321,10 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/admin-module/admin-module')
         .then(m => m.AdminModuleComponent),
-    data: { adminModule: 'global-sagas' },
+    data: {
+      adminModule: 'global-sagas',
+      robots: 'noindex, nofollow, noarchive'
+    },
     title: 'RQS Admin // Sagas Globais'
   },
   // 🛰️ ROTA DE BIO CENTRAL (O "Beacons" Próprio da RaQuel Synths)
