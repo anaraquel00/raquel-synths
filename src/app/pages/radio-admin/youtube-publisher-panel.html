@@ -1,0 +1,83 @@
+<section class="publisher-panel">
+  <div class="publisher-heading">
+    <div>
+      <p class="publisher-eyebrow">PHASE 3 // DIRECT YOUTUBE PUBLISHING</p>
+      <h3>Browser → YouTube</h3>
+      <p>O vídeo e a thumbnail saem deste navegador diretamente para a API do YouTube. A Vercel não transporta os arquivos.</p>
+    </div>
+    <span class="gate" [class.armed]="config()?.enabled">{{ config()?.enabled ? 'PREVIEW ARMED' : 'OPERATIONS LOCKED' }}</span>
+  </div>
+
+  @if (!plan || plan.kind !== expectedKind) {
+    <div class="publisher-note">Salve o plano e selecione-o na Publishing Queue para habilitar o upload.</div>
+  } @else {
+    <div class="plan-summary">
+      <div><span>SAVED PLAN</span><strong>{{ plan.title }}</strong></div>
+      <div><span>DRY RUN</span><strong>{{ plan.dryRunStatus }}</strong></div>
+      <div><span>YOUTUBE</span><strong>{{ connected() ? identity() : 'NOT CONNECTED' }}</strong></div>
+    </div>
+
+    <div class="file-grid">
+      <label class="file-box">
+        <span>VIDEO FILE *</span>
+        <input type="file" accept="video/*" (change)="selectVideo($event)">
+        <strong>{{ videoName() || 'SELECT VIDEO' }}</strong>
+      </label>
+      <label class="file-box">
+        <span>THUMBNAIL</span>
+        <input type="file" accept="image/jpeg,image/png" (change)="selectThumbnail($event)">
+        <strong>{{ thumbnailName() || 'SELECT JPG / PNG' }}</strong>
+      </label>
+    </div>
+
+    <div class="defaults">
+      <span>RQS DEFAULTS</span>
+      <b>Not made for kids</b><b>AI / Synthetic disclosed</b><b>Category: Music</b>
+      <b>Language: pt-BR</b><b>Standard YouTube License</b><b>Embedding ON</b>
+      <b>Notify subscribers ON</b><b>Tags: {{ plan.tags?.length || 0 }}</b>
+    </div>
+
+    <div class="publisher-actions">
+      @if (!connected()) {
+        <button type="button" class="connect-button" [disabled]="!config()?.enabled || phase() === 'CONNECTING'" (click)="connect()">CONNECT YOUTUBE OPERATIONS</button>
+      } @else {
+        <button type="button" class="disconnect-button" (click)="disconnect()">DISCONNECT</button>
+      }
+      <button type="button" class="upload-button" [disabled]="!config()?.enabled || !connected() || !videoName() || plan.dryRunStatus !== 'PASS' || phase() === 'UPLOADING' || phase() === 'FINALIZING'" (click)="upload()">UPLOAD TO YOUTUBE</button>
+    </div>
+
+    @if (phase() === 'UPLOADING' || progress() > 0) {
+      <div class="upload-progress"><div><span>UPLOAD</span><strong>{{ progress() }}%</strong></div><progress max="100" [value]="progress()"></progress></div>
+    }
+
+    @if (plan.youtubeVideoId) {
+      <section class="studio-only">
+        <div class="studio-only-heading">
+          <div>
+            <p class="publisher-eyebrow">POST-UPLOAD // YOUTUBE STUDIO ONLY</p>
+            <h4>Checklist manual</h4>
+            <p>Estes controles não são expostos pela YouTube Data API. Marque somente depois de conferir no Studio.</p>
+          </div>
+          <strong>{{ checklistDone() }}/5</strong>
+        </div>
+
+        <div class="studio-checklist">
+          <label><input type="checkbox" [checked]="studioChecklist().endScreenConfigured" (change)="setChecklist('endScreenConfigured', $event)">Tela final configurada</label>
+          <label><input type="checkbox" [checked]="studioChecklist().cardsConfigured" (change)="setChecklist('cardsConfigured', $event)">Cards configurados</label>
+          <label><input type="checkbox" [checked]="studioChecklist().shortsRemixAudioOnly" (change)="setChecklist('shortsRemixAudioOnly', $event)">Remix de Shorts → somente áudio</label>
+          <label><input type="checkbox" [checked]="studioChecklist().automaticPlacesDisabled" (change)="setChecklist('automaticPlacesDisabled', $event)">Lugares automáticos → OFF</label>
+          <label><input type="checkbox" [checked]="studioChecklist().automaticConceptsDisabled" (change)="setChecklist('automaticConceptsDisabled', $event)">Conceitos automáticos → OFF</label>
+        </div>
+
+        <div class="publisher-actions">
+          <a class="studio-link" [href]="studioUrl()" target="_blank" rel="noopener noreferrer">OPEN VIDEO IN YOUTUBE STUDIO</a>
+          <button type="button" class="connect-button" [disabled]="checklistBusy()" (click)="saveStudioChecklist()">SAVE STUDIO CHECKLIST</button>
+        </div>
+      </section>
+    }
+
+    @if (message()) {
+      <p class="publisher-message" [class.error]="phase() === 'ERROR'">{{ message() }}</p>
+    }
+  }
+</section>

@@ -1,0 +1,276 @@
+:host {
+  display: block;
+}
+
+.live-panel {
+  border: 1px solid rgba(93, 255, 141, .28);
+  border-radius: 14px;
+  padding: 1.2rem;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(8, 24, 17, .98),
+      rgba(14, 18, 30, .97)
+    );
+}
+
+.live-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.live-heading h3 {
+  margin: .2rem 0 .35rem;
+  color: #fff;
+  font-size: 1.25rem;
+}
+
+.live-heading p {
+  max-width: 75ch;
+  margin: 0;
+  color: #91a7b2;
+}
+
+.live-eyebrow {
+  color: #5dff8d !important;
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+}
+
+.gate {
+  flex: 0 0 auto;
+  border: 1px solid rgba(255, 210, 122, .45);
+  border-radius: 999px;
+  padding: .42rem .65rem;
+  color: #ffd27a;
+  font-size: .68rem;
+  font-weight: 800;
+}
+
+.gate.armed {
+  border-color: rgba(93, 255, 141, .55);
+  color: #8ff1aa;
+}
+
+.live-note,
+.live-warning,
+.obs-note {
+  margin-top: 1rem;
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.live-note {
+  border: 1px dashed rgba(122, 157, 171, .34);
+  color: #9fb2bc;
+}
+
+.live-warning {
+  border: 1px solid rgba(255, 210, 122, .35);
+  color: #ffd27a;
+  background: rgba(255, 210, 122, .05);
+}
+
+.live-summary,
+.status-grid,
+.provision-grid {
+  display: grid;
+  gap: .8rem;
+  margin-top: 1rem;
+}
+
+.live-summary {
+  grid-template-columns: 2fr 1fr 1.4fr;
+}
+
+.status-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.provision-grid {
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+}
+
+.live-summary div,
+.status-grid article {
+  border: 1px solid rgba(122, 157, 171, .18);
+  border-radius: 9px;
+  padding: .8rem;
+  background: #091117;
+}
+
+.live-summary span,
+.status-grid span,
+.provision-grid label > span,
+.live-defaults > span {
+  display: block;
+  color: #6fdceb;
+  font-size: .66rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+}
+
+.live-summary strong,
+.status-grid strong {
+  display: block;
+  margin-top: .3rem;
+  color: #edf7fa;
+  overflow-wrap: anywhere;
+}
+
+.provision-grid label {
+  display: grid;
+  gap: .55rem;
+  color: #b9cbd2;
+}
+
+.provision-grid select,
+.file-box {
+  width: 100%;
+  border: 1px solid rgba(98, 222, 237, .25);
+  border-radius: 9px;
+  padding: .8rem;
+  color: #edf7fa;
+  background: #0b151c;
+}
+
+.file-box {
+  cursor: pointer;
+}
+
+.file-box input {
+  width: 100%;
+  color: #9fb2bc;
+}
+
+.provision-grid small {
+  color: #8299a4;
+}
+
+.live-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .7rem;
+  margin-top: 1rem;
+}
+
+.live-actions button,
+.live-actions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  border-radius: 8px;
+  padding: .7rem .9rem;
+  font: inherit;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.connect-button,
+.secondary-button {
+  border: 1px solid #62deed;
+  color: #62deed;
+  background: #0e2028;
+}
+
+.primary-button,
+.go-live-button {
+  border: 1px solid #5dff8d;
+  color: #04130a;
+  background: #5dff8d;
+}
+
+.end-button,
+.danger-button {
+  border: 1px solid #ff7b92;
+  color: #ffabb9;
+  background: #2a1016;
+}
+
+.youtube-link {
+  border: 1px solid #ff6b7d;
+  color: #ff9aaa;
+  background: #251115;
+}
+
+.studio-link {
+  border: 1px solid #d0a7ff;
+  color: #e3c9ff;
+  background: #21162d;
+}
+
+.live-actions button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.obs-note {
+  display: flex;
+  gap: .8rem;
+  border: 1px solid rgba(93, 255, 141, .2);
+  color: #9fb2bc;
+  background: rgba(25, 76, 42, .1);
+}
+
+.obs-note strong {
+  color: #8ff1aa;
+}
+
+.live-defaults {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .45rem;
+  margin-top: 1rem;
+  padding: .8rem;
+  border-radius: 9px;
+  background: rgba(22, 72, 42, .14);
+}
+
+.live-defaults > span {
+  width: 100%;
+  color: #5dff8d;
+}
+
+.live-defaults b {
+  border: 1px solid rgba(93, 255, 141, .18);
+  border-radius: 999px;
+  padding: .28rem .48rem;
+  color: #a6eeb9;
+  font-size: .67rem;
+}
+
+.live-message,
+.live-error {
+  margin: .8rem 0 0;
+}
+
+.live-message {
+  color: #9ee8f2;
+}
+
+.live-error {
+  color: #ff9aad;
+}
+
+@media (max-width: 900px) {
+  .status-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .live-heading {
+    flex-direction: column;
+  }
+
+  .live-summary,
+  .status-grid,
+  .provision-grid {
+    grid-template-columns: 1fr;
+  }
+}

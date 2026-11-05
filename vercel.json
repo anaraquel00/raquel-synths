@@ -1,35 +1,32 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
-
   "outputDirectory": "dist/raquel-synths/browser",
-
   "functions": {
     "api/index.js": {
       "includeFiles": "dist/raquel-synths/**"
     }
   },
-
   "headers": [
-  {
-    "source": "/admin/:path*",
-    "headers": [
-      {
-        "key": "X-Robots-Tag",
-        "value": "noindex, nofollow, noarchive"
-      }
-    ]
-  },
-  {
-    "source": "/admin",
-    "headers": [
-      {
-        "key": "X-Robots-Tag",
-        "value": "noindex, nofollow, noarchive"
-      }
-    ]
-  }
-],
+    {
+      "source": "/admin/:path*",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        }
+      ]
+    },
+    {
+      "source": "/admin",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        }
+      ]
+    }
+  ],
   "routes": [
     {
       "src": "^/$",
@@ -85,28 +82,23 @@
       "status": 308
     }
   ],
-
   "rewrites": [
     {
       "source": "/sitemap.xml",
       "destination": "/api/sitemap.js"
     },
-
     {
       "source": "/lore/:mode/:id*",
       "destination": "/api/index.js"
     },
-
     {
       "source": "/hybrid-reader/:id*",
       "destination": "/api/index.js"
     },
-
     {
       "source": "/log-reader/:id*",
       "destination": "/api/index.js"
     },
-
     {
       "source": "/((?!api(?:/|$)|.*\\.[^/]+$).*)",
       "destination": "/api/index.js"

@@ -1,0 +1,355 @@
+<section class="live-panel">
+  <div class="live-heading">
+    <div>
+      <p class="live-eyebrow">
+        PHASE 4 // LIVE OPERATIONS
+      </p>
+
+      <h3>
+        OBS → YouTube RTMPS
+      </h3>
+
+      <p>
+        O Admin controla broadcast, bind e lifecycle. O OBS continua sendo o encoder.
+        Stream key e ingest permanecem fora do browser, Firestore e logs.
+      </p>
+    </div>
+
+    <span
+      class="gate"
+      [class.armed]="config()?.enabled"
+    >
+      {{
+        config()?.enabled
+          ? 'LIVE OPERATIONS ARMED'
+          : 'OPERATIONS LOCKED'
+      }}
+    </span>
+  </div>
+
+  @if (
+    !plan ||
+    plan.kind !== expectedKind
+  ) {
+    <div class="live-note">
+      Execute Dry Run, salve o plano e selecione-o na Publishing Queue.
+    </div>
+  } @else {
+    <div class="live-summary">
+      <div>
+        <span>PLAN</span>
+        <strong>{{ plan.title }}</strong>
+      </div>
+
+      <div>
+        <span>DRY RUN</span>
+        <strong>{{ plan.dryRunStatus }}</strong>
+      </div>
+
+      <div>
+        <span>CHANNEL</span>
+        <strong>
+          {{
+            connected()
+              ? identity()
+              : 'NOT CONNECTED'
+          }}
+        </strong>
+      </div>
+    </div>
+
+    @if (!connected()) {
+      <div class="live-actions">
+        <button
+          type="button"
+          class="connect-button"
+          [disabled]="
+            !config()?.enabled ||
+            busy()
+          "
+          (click)="connect()"
+        >
+          CONNECT YOUTUBE LIVE
+        </button>
+      </div>
+    } @else {
+      <div class="live-actions">
+        <button
+          type="button"
+          class="secondary-button"
+          [disabled]="busy()"
+          (click)="disconnect()"
+        >
+          DISCONNECT
+        </button>
+
+        @if (
+          plan.youtubeBroadcastId
+        ) {
+          <button
+            type="button"
+            class="secondary-button"
+            [disabled]="busy()"
+            (click)="refreshStatus()"
+          >
+            REFRESH SIGNAL
+          </button>
+        }
+      </div>
+    }
+
+    @if (
+      connected() &&
+      !plan.youtubeBroadcastId
+    ) {
+      <div class="provision-grid">
+        <label>
+          <span>
+            REUSABLE STREAM
+          </span>
+
+          <select
+            [value]="selectedStreamId()"
+            (change)="selectStream($event)"
+          >
+            <option value="">
+              Select existing stream
+            </option>
+
+            @for (
+              stream of streams();
+              track stream.id
+            ) {
+              <option
+                [value]="stream.id"
+              >
+                {{ stream.title || stream.id }}
+                · {{ stream.streamStatus }}
+                · {{ stream.healthStatus }}
+              </option>
+            }
+          </select>
+
+          <small>
+            Somente streams reutilizáveis. A chave continua salva apenas no OBS.
+          </small>
+        </label>
+
+        <label class="file-box">
+          <span>
+            LIVE THUMBNAIL
+          </span>
+
+          <input
+            type="file"
+            accept="image/jpeg,image/png"
+            (change)="selectThumbnail($event)"
+          >
+
+          <strong>
+            {{
+              thumbnailName() ||
+              'SELECT JPG / PNG'
+            }}
+          </strong>
+        </label>
+      </div>
+
+      @if (!streams().length) {
+        <p class="live-warning">
+          Nenhum reusable stream encontrado. Configure um stream reutilizável no YouTube/OBS antes de provisionar a live.
+        </p>
+      }
+
+      <div class="live-actions">
+        <button
+          type="button"
+          class="primary-button"
+          [disabled]="
+            busy() ||
+            !selectedStreamId() ||
+            plan.dryRunStatus !== 'PASS'
+          "
+          (click)="createAndBind()"
+        >
+          CREATE & BIND YOUTUBE LIVE
+        </button>
+      </div>
+    }
+
+    @if (
+      plan.youtubeBroadcastId
+    ) {
+      <div class="status-grid">
+        <article>
+          <span>BROADCAST</span>
+          <strong>
+            {{
+              liveStatus()?.broadcastStatus ||
+              plan.youtubeBroadcastStatus ||
+              'UNKNOWN'
+            }}
+          </strong>
+        </article>
+
+        <article>
+          <span>OBS SIGNAL</span>
+          <strong>
+            {{
+              liveStatus()?.streamStatus ||
+              plan.youtubeStreamStatus ||
+              'UNKNOWN'
+            }}
+          </strong>
+        </article>
+
+        <article>
+          <span>HEALTH</span>
+          <strong>
+            {{
+              liveStatus()?.healthStatus ||
+              plan.youtubeHealthStatus ||
+              'NO DATA'
+            }}
+          </strong>
+        </article>
+
+        <article>
+          <span>YOUTUBE ID</span>
+          <strong>
+            {{ plan.youtubeBroadcastId }}
+          </strong>
+        </article>
+      </div>
+
+      <div class="obs-note">
+        <strong>OBS</strong>
+        <span>
+          Abra o perfil RQS no OBS e inicie a transmissão. Este painel nunca exibe a stream key.
+        </span>
+      </div>
+
+      <div class="live-actions">
+        @if (
+          canGoLive()
+        ) {
+          <button
+            type="button"
+            class="go-live-button"
+            [disabled]="busy()"
+            (click)="goLive()"
+          >
+            GO LIVE
+          </button>
+        }
+
+        @if (
+          (
+            liveStatus()?.broadcastStatus ||
+            plan.youtubeBroadcastStatus
+          ) === 'live'
+        ) {
+          <button
+            type="button"
+            class="end-button"
+            [disabled]="busy()"
+            (click)="endBroadcast()"
+          >
+            END BROADCAST
+          </button>
+        }
+
+        @if (
+          (
+            liveStatus()?.broadcastStatus ||
+            plan.youtubeBroadcastStatus
+          ) !== 'live' &&
+          (
+            liveStatus()?.broadcastStatus ||
+            plan.youtubeBroadcastStatus
+          ) !== 'complete' &&
+          (
+            liveStatus()?.broadcastStatus ||
+            plan.youtubeBroadcastStatus
+          ) !== 'deleted'
+        ) {
+          <button
+            type="button"
+            class="danger-button"
+            [disabled]="busy()"
+            (click)="cancelYoutubeLive()"
+          >
+            CANCEL YOUTUBE LIVE
+          </button>
+        }
+
+        @if (
+          plan.playlistId &&
+          plan.playlistStatus !== 'ADDED' &&
+          (
+            liveStatus()?.broadcastStatus ||
+            plan.youtubeBroadcastStatus
+          ) === 'complete'
+        ) {
+          <button
+            type="button"
+            class="secondary-button"
+            [disabled]="busy()"
+            (click)="syncVodPlaylist()"
+          >
+            SYNC VOD → PLAYLIST
+          </button>
+        }
+
+        <a
+          class="youtube-link"
+          [href]="youtubeUrl()"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          OPEN YOUTUBE
+        </a>
+
+        <a
+          class="studio-link"
+          [href]="studioUrl()"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          OPEN LIVE CONTROL ROOM
+        </a>
+      </div>
+    }
+
+    <div class="live-defaults">
+      <span>RQS LIVE DEFAULTS</span>
+      <b>Category: Music</b>
+      <b>Not made for kids</b>
+      <b>AI / Synthetic disclosed</b>
+      <b>DVR ON</b>
+      <b>Embedding ON</b>
+      <b>Record from start</b>
+      <b>
+        AutoStart {{ plan.autoStart ? 'ON' : 'OFF' }}
+      </b>
+      <b>
+        AutoStop {{ plan.autoStop ? 'ON' : 'OFF' }}
+      </b>
+    </div>
+
+    @if (message()) {
+      <p class="live-message">
+        {{ message() }}
+      </p>
+    }
+
+    @if (error()) {
+      <p
+        class="live-error"
+        role="alert"
+      >
+        {{ error() }}
+      </p>
+    }
+  }
+</section>

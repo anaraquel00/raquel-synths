@@ -249,11 +249,11 @@ export const routes: Routes = [
     title: 'RQS Admin'
   },
   {
-    path: 'admin/stream-importer',
+    path: 'admin/radio',
     loadComponent: () =>
-      import('./pages/soundcloud-importer/soundcloud-importer')
-        .then(m => m.SoundcloudImporterComponent),
-    title: 'RQS Admin // Importador de Streaming'
+      import('./pages/radio-admin/radio-admin')
+        .then(m => m.RadioAdminComponent),
+    title: 'RQS Admin // Media Control Plane'
   },
   {
     path: 'admin/social-publishing',
@@ -261,18 +261,6 @@ export const routes: Routes = [
       import('./pages/social-publishing-admin/social-publishing-admin')
         .then(m => m.SocialPublishingAdminComponent),
     title: 'RQS Admin // Social Publishing'
-  },
-  {
-    path: 'admin/store',
-    loadComponent: () =>
-      import('./pages/store-admin/store-admin')
-        .then(m => m.StoreAdminComponent),
-    title: 'RQS Admin // Neon Store'
-  },
-  {
-    path: 'admin/soundcloud-importer',
-    redirectTo: 'stream-importer',
-    pathMatch: 'full'
   },
   {
     path: 'admin/system-logs',
