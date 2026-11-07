@@ -56,6 +56,29 @@ test('all admin routes declare noindex nofollow noarchive', () => {
   }
 });
 
+test('legacy editorial admin routes redirect to the authenticated admin shell', () => {
+  for (const path of [
+    'admin/lore',
+    'admin/lore/broklin',
+    'admin/lore/jonah',
+    'admin/global-sagas'
+  ]) {
+    const start = routes.indexOf(`path: '${path}'`);
+    const next = routes.indexOf(
+      "\n  {\n    path:",
+      start + 1
+    );
+    const block = routes.slice(
+      start,
+      next === -1 ? routes.length : next
+    );
+
+    assert.match(block, /pathMatch:\s*'full'/);
+    assert.match(block, /redirectTo:\s*'admin'/);
+    assert.doesNotMatch(block, /loadComponent/);
+  }
+});
+
 test('vercel sends X-Robots-Tag for the admin namespace', () => {
   assert.match(
     vercel,

@@ -97,7 +97,7 @@ button {
   letter-spacing: 0.08em;
 }
 button:hover,
-.module-card:hover { border-color: #62deed; }
+.module-card:not(.archived):hover { border-color: #62deed; }
 button:focus-visible,
 input:focus-visible,
 a:focus-visible { outline: 3px solid rgba(98, 222, 237, 0.42); outline-offset: 3px; }
@@ -144,6 +144,12 @@ a:focus-visible { outline: 3px solid rgba(98, 222, 237, 0.42); outline-offset: 3
   h3 { margin: 1.25rem 0 0.35rem; color: #fff; font-size: 1.25rem; }
   p { margin: 0; color: #9db0ba; }
 }
+.module-card.archived {
+  border-style: dashed;
+  opacity: 0.72;
+
+  &:hover { transform: none; }
+}
 .module-index { color: #5c747f; font-size: 0.72rem; letter-spacing: 0.12em; }
 .module-status {
   position: absolute;
@@ -159,6 +165,7 @@ a:focus-visible { outline: 3px solid rgba(98, 222, 237, 0.42); outline-offset: 3
   &.ready { color: #71e7b2; }
   &.preview { color: #7bddeb; }
   &.hold { color: #e8b56f; }
+  &.archived { color: #aeb8bd; }
 }
 .module-action { align-self: end; margin-top: 1.2rem; color: #62deed; font-weight: 700; }
 .separation-note {

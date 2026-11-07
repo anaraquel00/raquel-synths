@@ -20,6 +20,7 @@ const MAX_DOCUMENT_BYTES = 20 * 1024 * 1024;
 const SESSION_COOKIE = '__Host-rqs_admin_session';
 const SESSION_TTL = 20 * 60 * 1000;
 const LORE_DRY_RUN_TTL = 10 * 60 * 1000;
+const EDITORIAL_MODULE_ARCHIVED = true;
 
 class LoreDriveError extends Error {
   constructor(status, code, message, details) {
@@ -1549,6 +1550,15 @@ export default async function handler(req, res) {
     const key = secret();
     const session = requireSession(req, key);
     requireCsrf(req, session);
+
+    if (EDITORIAL_MODULE_ARCHIVED) {
+      throw new LoreDriveError(
+        410,
+        'EDITORIAL_MODULE_ARCHIVED',
+        'O módulo administrativo Lore foi arquivado e não aceita novas operações.'
+      );
+    }
+
     const mode = normalizeMode(input.mode);
 
     if (input.action === 'list') {
