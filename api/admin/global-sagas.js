@@ -22,6 +22,7 @@ const DOCX_MIME = 'application/vnd.openxmlformats-officedocument.wordprocessingm
 const DOC_MIME = 'application/msword';
 const GOOGLE_DOC_MIME = 'application/vnd.google-apps.document';
 const SUPPORTED_MIME_TYPES = new Set([DOCX_MIME, GOOGLE_DOC_MIME]);
+const EDITORIAL_MODULE_ARCHIVED = true;
 let resolvedDriveFolderId = '';
 
 class GlobalSagasError extends Error {
@@ -1458,6 +1459,14 @@ export default async function handler(req, res) {
     const key = secret();
     const session = requireSession(req, key);
     requireCsrf(req, session);
+
+    if (EDITORIAL_MODULE_ARCHIVED) {
+      throw new GlobalSagasError(
+        410,
+        'EDITORIAL_MODULE_ARCHIVED',
+        'O módulo administrativo Sagas Globais foi arquivado e não aceita novas operações.'
+      );
+    }
 
     if (input.action === 'list') {
       return res.status(200).json({

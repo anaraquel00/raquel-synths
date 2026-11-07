@@ -283,49 +283,35 @@ export const routes: Routes = [
   },
   {
     path: 'admin/lore',
-    loadComponent: () =>
-      import('./pages/admin-module/admin-module')
-        .then(m => m.AdminModuleComponent),
+    pathMatch: 'full',
+    redirectTo: 'admin',
     data: {
-      adminModule: 'lore',
       robots: 'noindex, nofollow, noarchive'
-    },
-    title: 'RQS Admin // Lore'
+    }
   },
   {
     path: 'admin/lore/broklin',
-    loadComponent: () =>
-      import('./pages/admin-module/admin-module')
-        .then(m => m.AdminModuleComponent),
+    pathMatch: 'full',
+    redirectTo: 'admin',
     data: {
-      adminModule: 'lore',
-      loreSource: 'broklin',
       robots: 'noindex, nofollow, noarchive'
-    },
-    title: 'RQS Admin // Lore // Broklin'
+    }
   },
   {
     path: 'admin/lore/jonah',
-    loadComponent: () =>
-      import('./pages/admin-module/admin-module')
-        .then(m => m.AdminModuleComponent),
+    pathMatch: 'full',
+    redirectTo: 'admin',
     data: {
-      adminModule: 'lore',
-      loreSource: 'jonah',
       robots: 'noindex, nofollow, noarchive'
-    },
-    title: 'RQS Admin // Lore // Jonah'
+    }
   },
   {
     path: 'admin/global-sagas',
-    loadComponent: () =>
-      import('./pages/admin-module/admin-module')
-        .then(m => m.AdminModuleComponent),
+    pathMatch: 'full',
+    redirectTo: 'admin',
     data: {
-      adminModule: 'global-sagas',
       robots: 'noindex, nofollow, noarchive'
-    },
-    title: 'RQS Admin // Sagas Globais'
+    }
   },
   // 🛰️ ROTA DE BIO CENTRAL (O "Beacons" Próprio da RaQuel Synths)
   {
