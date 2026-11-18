@@ -318,3 +318,114 @@ describe('ContentService System Log publication gate', () => {
     expect(result?.map(log => log.id)).toEqual(['explicit', 'legacy']);
   });
 });
+
+
+describe('ContentService System Log archive SSR transport', () => {
+  const endpoint =
+    'https://firestore.googleapis.com/v1/projects/' +
+    'raquel-synths-platform/databases/(default)/documents:runQuery';
+
+  const firestoreLog = (
+    id: string,
+    date: string,
+    published?: boolean
+  ) => ({
+    document: {
+      name:
+        'projects/raquel-synths-platform/databases/(default)/documents/' +
+        `logs/${id}`,
+      fields: {
+        date: { stringValue: date },
+        ...(published === undefined
+          ? {}
+          : { published: { booleanValue: published } }),
+        pt: {
+          mapValue: {
+            fields: {
+              title: { stringValue: id },
+              description: { stringValue: 'Conteúdo editorial.' }
+            }
+          }
+        }
+      }
+    }
+  });
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        ContentService,
+        TransferState,
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: PLATFORM_ID, useValue: 'server' },
+        { provide: Firestore, useValue: {} }
+      ]
+    });
+  });
+
+  afterEach(() => {
+    TestBed.inject(HttpTestingController).verify();
+    TestBed.resetTestingModule();
+  });
+
+  it('loads all eligible archive logs through tracked SSR HTTP without a fixed limit', () => {
+    const service = TestBed.inject(ContentService);
+    (service as unknown as { SYSTEM_LOG_PREVIEW_NOW: string | null })
+      .SYSTEM_LOG_PREVIEW_NOW = '2026-11-18T12:00:00-03:00';
+    let result: Array<{ id: string }> | undefined;
+
+    service.getLogs().subscribe(logs => result = logs);
+
+    const request = TestBed.inject(HttpTestingController).expectOne(endpoint);
+
+    expect(request.request.body.structuredQuery.limit)
+      .toBeUndefined();
+    expect(request.request.body.structuredQuery.orderBy)
+      .toEqual([{
+        field: { fieldPath: 'date' },
+        direction: 'DESCENDING'
+      }]);
+
+    request.flush([
+      firestoreLog('newest', '2026-11-17', true),
+      firestoreLog('disabled', '2026-11-16', false),
+      firestoreLog('legacy', '2026-11-15')
+    ]);
+
+    expect(result?.map(log => log.id))
+      .toEqual(['newest', 'legacy']);
+  });
+
+  it('preserves a genuinely empty archive as an empty successful result', () => {
+    const service = TestBed.inject(ContentService);
+    let result: unknown[] | undefined;
+
+    service.getLogs().subscribe(logs => result = logs);
+
+    TestBed.inject(HttpTestingController)
+      .expectOne(endpoint)
+      .flush([]);
+
+    expect(result).toEqual([]);
+  });
+
+  it('propagates SSR infrastructure failure instead of converting it into an empty archive', () => {
+    const service = TestBed.inject(ContentService);
+    spyOn(console, 'error');
+    let status: number | undefined;
+
+    service.getLogs().subscribe({
+      error: err => status = err.status
+    });
+
+    TestBed.inject(HttpTestingController)
+      .expectOne(endpoint)
+      .flush(
+        { error: 'unavailable' },
+        { status: 503, statusText: 'Service Unavailable' }
+      );
+
+    expect(status).toBe(503);
+  });
+});
