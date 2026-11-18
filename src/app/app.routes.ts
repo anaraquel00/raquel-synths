@@ -44,19 +44,7 @@ export const routes: Routes = [
   // 📜 ROTA 4: O Arquivo de Logs (A "Memória Infinita")
   {
     path: 'logs-archive',
-    loadComponent: () => import('./pages/logs-archive/logs-archive').then(m => m.LogsArchiveComponent),
-    data: {
-      seo: {
-        title: {
-          pt: 'Arquivo de Logs',
-          en: 'Logs Archive'
-        },
-        description: {
-          pt: 'Os bastidores da narrativa transmídia e DevNotes da RQS.',
-          en: 'The behind-the-scenes of the transmedia narrative and RQS DevNotes.'
-        }
-      }
-    }
+    loadComponent: () => import('./pages/logs-archive/logs-archive').then(m => m.LogsArchiveComponent)
   },
 
   // ✨ NOVA ROTA 5: O Arquivo Musical (Discografia Completa)
