@@ -1,0 +1,232 @@
+name: RQS CI — Angular & SEO Validation
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  typescript-validation:
+    name: TypeScript validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate application TypeScript
+        run: npx tsc --noEmit -p tsconfig.app.json
+
+      - name: Validate test TypeScript
+        run: npx tsc --noEmit -p tsconfig.spec.json
+
+  node-seo-tests:
+    name: Node SEO tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run deterministic Node.js tests
+        run: node --test tests/*.test.*
+
+  angular-karma:
+    name: Angular Karma
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Resolve Chrome binary
+        shell: bash
+        run: |
+          set -euo pipefail
+          if command -v google-chrome >/dev/null 2>&1; then
+            echo "CHROME_BIN=$(command -v google-chrome)" >> "$GITHUB_ENV"
+          elif command -v google-chrome-stable >/dev/null 2>&1; then
+            echo "CHROME_BIN=$(command -v google-chrome-stable)" >> "$GITHUB_ENV"
+          elif command -v chromium >/dev/null 2>&1; then
+            echo "CHROME_BIN=$(command -v chromium)" >> "$GITHUB_ENV"
+          else
+            echo "No supported Chrome/Chromium binary found on the runner." >&2
+            exit 1
+          fi
+
+      - name: Run Angular Karma/Jasmine tests
+        run: npm test -- --watch=false --progress=false --browsers=ChromeHeadless
+
+  production-build:
+    name: Angular production build
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      NODE_OPTIONS: --max-old-space-size=4096
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build production bundle
+        run: npm run build
+
+  ssr-http-integration:
+    name: SSR HTTP integration
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs:
+      - production-build
+    env:
+      NODE_OPTIONS: --max-old-space-size=4096
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build SSR bundle
+        run: npm run build
+
+      - name: Start local SSR server
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module > /tmp/rqs-ssr.log 2>&1 <<'NODE' &
+          import { createServer } from 'node:http';
+          import { reqHandler } from './dist/raquel-synths/server/server.mjs';
+
+          const server = createServer(reqHandler);
+
+          server.listen(4000, '127.0.0.1', () => {
+            console.log('RQS local SSR listening on 127.0.0.1:4000');
+          });
+
+          const shutdown = () => server.close(() => process.exit(0));
+          process.on('SIGTERM', shutdown);
+          process.on('SIGINT', shutdown);
+          NODE
+          echo "$!" > /tmp/rqs-ssr.pid
+
+      - name: Validate local SSR over HTTP
+        shell: bash
+        run: |
+          set -euo pipefail
+          SSR_PID="$(cat /tmp/rqs-ssr.pid)"
+
+          cleanup() {
+            kill "$SSR_PID" 2>/dev/null || true
+            wait "$SSR_PID" 2>/dev/null || true
+          }
+          trap cleanup EXIT
+
+          status=""
+          for attempt in $(seq 1 45); do
+            if ! kill -0 "$SSR_PID" 2>/dev/null; then
+              echo "SSR server exited before becoming ready." >&2
+              cat /tmp/rqs-ssr.log >&2
+              exit 1
+            fi
+
+            status="$(curl -sS               -H 'Host: raquelsynths.com'               -o /tmp/rqs-home.html               -w '%{http_code}'               http://127.0.0.1:4000/ || true)"
+
+            if [ "$status" = "200" ]; then
+              break
+            fi
+
+            sleep 1
+          done
+
+          if [ "$status" != "200" ]; then
+            echo "Expected HTTP 200 from local SSR, got: $status" >&2
+            cat /tmp/rqs-ssr.log >&2
+            exit 1
+          fi
+
+          node --input-type=module <<'NODE'
+          import { readFileSync } from 'node:fs';
+
+          const html = readFileSync('/tmp/rqs-home.html', 'utf8');
+
+          if (!/<html(?:\s|>)/i.test(html)) {
+            throw new Error('SSR response does not contain an HTML document.');
+          }
+
+          if (!/<title>[^<]+<\/title>/i.test(html)) {
+            throw new Error('SSR response does not contain a rendered title.');
+          }
+
+          const canonical =
+            html.match(/<link[^>]*rel=["']canonical["'][^>]*href=["']([^"']+)["'][^>]*>/i) ??
+            html.match(/<link[^>]*href=["']([^"']+)["'][^>]*rel=["']canonical["'][^>]*>/i);
+
+          if (!canonical) {
+            throw new Error('SSR response does not contain a canonical link.');
+          }
+
+          if (canonical[1] !== 'https://raquelsynths.com/') {
+            throw new Error(`Unexpected home canonical: ${canonical[1]}`);
+          }
+
+          const robots =
+            html.match(/<meta[^>]*name=["']robots["'][^>]*content=["']([^"']+)["'][^>]*>/i) ??
+            html.match(/<meta[^>]*content=["']([^"']+)["'][^>]*name=["']robots["'][^>]*>/i);
+
+          if (robots?.[1].toLowerCase().includes('noindex')) {
+            throw new Error(`Home SSR unexpectedly contains noindex: ${robots[1]}`);
+          }
+          NODE
