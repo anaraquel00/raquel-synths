@@ -24,6 +24,10 @@ export class VisualNovelComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
 
   public currentMode = signal<'broklin' | 'jonah'>('broklin');
+  private seasonRouteState = signal<{
+    mode: 'broklin' | 'jonah';
+    season: number;
+  } | null>(null);
   private seasonSchemaState = signal<{
     mode: 'broklin' | 'jonah';
     season: number;
@@ -70,14 +74,21 @@ export class VisualNovelComponent implements OnInit, OnDestroy {
   this.isBrowser = isPlatformBrowser(this.platformId);
 
   effect(() => {
-    const state = this.seasonSchemaState();
+    const routeState = this.seasonRouteState();
+    const schemaState = this.seasonSchemaState();
     this.translate.isPt();
 
-    if (!state) {
-      return;
+    if (routeState) {
+      this.setSeasonSeo(routeState.mode, routeState.season);
     }
 
-    this.setSeasonJsonLd(state.mode, state.season, state.episodes);
+    if (schemaState) {
+      this.setSeasonJsonLd(
+        schemaState.mode,
+        schemaState.season,
+        schemaState.episodes
+      );
+    }
   });
 }
 
@@ -122,6 +133,7 @@ this.route.paramMap.subscribe(params => {
       }
 
       this.setTemporada(season);
+      this.seasonRouteState.set({ mode, season });
 
       this.applyModeTheme(mode);
 
@@ -130,23 +142,67 @@ this.route.paramMap.subscribe(params => {
       });
     });
 
+}
+
+private setSeasonSeo(
+  mode: 'broklin' | 'jonah',
+  season: number
+): void {
   const isPt = this.translate.isPt();
+  const canonicalUrl =
+    `https://raquelsynths.com/visual-novel/${mode}/s${season}`;
+
+  const title = mode === 'broklin'
+    ? (
+        season === 1
+          ? (isPt
+              ? 'Broklin — Temporada 1 | Ecos da RQS'
+              : 'Broklin — Season 1 | RQS Echoes')
+          : (isPt
+              ? 'Broklin — Temporada 2 | Ecos da RQS'
+              : 'Broklin — Season 2 | RQS Echoes')
+      )
+    : (
+        season === 1
+          ? (isPt
+              ? 'Jonah — Temporada 1 | Ecos da RQS'
+              : 'Jonah — Season 1 | RQS Echoes')
+          : (isPt
+              ? 'Jonah — Temporada 2 | Ecos da RQS'
+              : 'Jonah — Season 2 | RQS Echoes')
+      );
+
+  const description = mode === 'broklin'
+    ? (
+        season === 1
+          ? (isPt
+              ? 'Comece a Saga de Broklin e acompanhe a origem de sua perspectiva tecnológica no universo cyberpunk Ecos da RQS.'
+              : 'Begin Broklin’s saga and follow the origin of his technological perspective in the cyberpunk RQS Echoes universe.')
+          : (isPt
+              ? 'Continue a Saga de Broklin na segunda temporada, com novos conflitos, consequências e conexões no universo Ecos da RQS.'
+              : 'Continue Broklin’s saga in Season 2 with new conflicts, consequences, and connections across the RQS Echoes universe.')
+      )
+    : (
+        season === 1
+          ? (isPt
+              ? 'Comece a Saga de Jonah e acompanhe a origem de sua perspectiva caótica no universo cyberpunk Ecos da RQS.'
+              : 'Begin Jonah’s saga and follow the origin of his chaotic perspective in the cyberpunk RQS Echoes universe.')
+          : (isPt
+              ? 'Continue a Saga de Jonah na segunda temporada, aprofundando os conflitos e revelações do universo Ecos da RQS.'
+              : 'Continue Jonah’s saga in Season 2 as the conflicts and revelations of the RQS Echoes universe deepen.')
+      );
 
   this.document.documentElement.lang =
     isPt ? 'pt-BR' : 'en-US';
 
+  this.seoService.updateCanonical(canonicalUrl);
+
   this.seoService.updateMetaTags({
-    title: isPt
-      ? 'Sagas Interativas'
-      : 'Interactive Sagas',
-
-    description: isPt
-      ? 'Mergulhe nas Sagas Cyberpunk da RaQuel Synths. Escolha entre o código de Broklin ou o caos de Jonah e decida o futuro da rede.'
-      : 'Dive into RaQuel Synths’ Cyberpunk Sagas. Choose between Broklin’s code or Jonah’s chaos and decide the future of the network.',
-
-    type: 'website'
+    title,
+    description,
+    type: 'website',
+    url: canonicalUrl
   });
-
 }
 
 private setSeasonJsonLd(
