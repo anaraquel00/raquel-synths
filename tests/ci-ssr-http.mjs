@@ -472,7 +472,7 @@ async function validateLogsArchive() {
     assert.equal(response.status, 404, `${path}: expected HTTP 404`);
   }
 
-  const empty = await request('/logs-archive', 'empty');
+  const empty = await request('/logs-archive?ci_case=empty', 'empty');
   assert.equal(empty.status, 200, 'empty archive: expected HTTP 200');
   assert.equal(
     extractCanonical(empty.html),
@@ -480,7 +480,7 @@ async function validateLogsArchive() {
     'empty archive: unexpected canonical'
   );
 
-  const failure = await request('/logs-archive', 'fail');
+  const failure = await request('/logs-archive?ci_case=fail', 'fail');
   assert.equal(
     failure.status,
     503,
