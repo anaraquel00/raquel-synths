@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
-import { createServer } from 'node:http';
+import { createServer, request as httpRequest } from 'node:http';
 
 const HOST = '127.0.0.1';
 const PORT = 4000;
@@ -211,19 +211,45 @@ await new Promise((resolve, reject) => {
 });
 
 async function request(path, mode = 'ok') {
-  const response = await realFetch(`${BASE_URL}${path}`, {
-    redirect: 'manual',
-    headers: {
-      host: 'raquelsynths.com',
-      'x-rqs-ci-firestore-mode': mode
-    }
-  });
+  return new Promise((resolve, reject) => {
+    const req = httpRequest(
+      {
+        hostname: HOST,
+        port: PORT,
+        path,
+        method: 'GET',
+        headers: {
+          Host: 'raquelsynths.com',
+          'x-rqs-ci-firestore-mode': mode
+        }
+      },
+      res => {
+        const chunks = [];
 
-  return {
-    status: response.status,
-    headers: response.headers,
-    html: await response.text()
-  };
+        res.on('data', chunk => chunks.push(chunk));
+        res.on('end', () => {
+          const headers = new Headers();
+
+          for (const [name, value] of Object.entries(res.headers)) {
+            if (Array.isArray(value)) {
+              headers.set(name, value.join(', '));
+            } else if (value !== undefined) {
+              headers.set(name, String(value));
+            }
+          }
+
+          resolve({
+            status: res.statusCode ?? 0,
+            headers,
+            html: Buffer.concat(chunks).toString('utf8')
+          });
+        });
+      }
+    );
+
+    req.on('error', reject);
+    req.end();
+  });
 }
 
 function extractCanonical(html) {
@@ -462,18 +488,27 @@ async function validateLogsArchive() {
   );
 }
 
+let validationError = null;
+
 try {
   await validateHome();
   await validateSagaConsolidation();
   await validateLogsArchive();
-
-  console.log(
-    'CI LOCAL SSR PASS — deterministic Firestore fixtures, no Production data access'
-  );
+} catch (error) {
+  validationError = error;
+  console.error('[CI SSR] Validation failed:', error);
 } finally {
   globalThis.fetch = realFetch;
 
   await new Promise(resolve => {
     server.close(() => resolve());
   });
+}
+
+if (validationError) {
+  process.exitCode = 1;
+} else {
+  console.log(
+    'CI LOCAL SSR PASS — deterministic Firestore fixtures, no Production data access'
+  );
 }
