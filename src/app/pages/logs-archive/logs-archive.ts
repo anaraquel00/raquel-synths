@@ -71,6 +71,7 @@ export class LogsArchiveComponent {
       catchError(error => {
         console.error('[RQS Logs Archive] Falha ao carregar o arquivo:', error);
         this.loadState.set('error');
+        this.setSsrStatus(503);
         return of(null);
       })
     ),
