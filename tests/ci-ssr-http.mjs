@@ -452,6 +452,67 @@ async function validateSagaConsolidation() {
   }
 }
 
+async function validateLegacyRouteRetirement() {
+  const routesSource = await readFile(
+    new URL('../src/app/app.routes.ts', import.meta.url),
+    'utf8'
+  );
+
+  for (const legacyImport of [
+    "./pages/store/store",
+    "./app-discography/app-discography",
+    "./pages/musical-archives/musical-archives"
+  ]) {
+    assert.equal(
+      routesSource.includes(legacyImport),
+      false,
+      `legacy route still loads retired component: ${legacyImport}`
+    );
+  }
+
+  const retiredRoutes = [
+    '/store',
+    '/store?dept=legacy',
+    '/store/legacy-dept',
+    '/discografia',
+    '/musical-archives',
+    '/musical-archives?page=2'
+  ];
+
+  for (const path of retiredRoutes) {
+    const response = await request(path);
+
+    assert.equal(
+      response.status,
+      410,
+      `${path}: expected HTTP 410 Gone`
+    );
+
+    assertHtml(response, path);
+
+    const robots =
+      extractRobots(response.html)?.toLowerCase() ?? '';
+
+    for (const directive of [
+      'noindex',
+      'nofollow',
+      'noarchive'
+    ]) {
+      assert.equal(
+        robots.includes(directive),
+        true,
+        `${path}: expected ${directive} (${robots})`
+      );
+    }
+
+    assert.match(
+      response.html,
+      />410</,
+      `${path}: expected visible 410 state`
+    );
+  }
+}
+
 async function validateLogsArchive() {
   const utilsPath = new URL(
     '../src/app/pages/logs-archive/logs-archive.utils.ts',
@@ -540,6 +601,7 @@ try {
   await validateHome();
   await validateSagaConsolidation();
   await validateLogsArchive();
+  await validateLegacyRouteRetirement();
 } catch (error) {
   validationError = error;
   console.error('[CI SSR] Validation failed:', error);

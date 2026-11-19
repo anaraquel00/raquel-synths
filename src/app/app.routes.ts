@@ -47,22 +47,14 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/logs-archive/logs-archive').then(m => m.LogsArchiveComponent)
   },
 
-  // ✨ NOVA ROTA 5: O Arquivo Musical (Discografia Completa)
+  // 🪦 ROTA APOSENTADA — HTTP 410 Gone
   {
-    path:'musical-archives',
-    loadComponent: () => import('./pages/musical-archives/musical-archives').then(m => m.MusicalArchives),
+    path: 'musical-archives',
+    loadComponent: () =>
+      import('./pages/retired-page/retired-page')
+        .then(m => m.RetiredPageComponent),
     data: {
-      robots: 'noindex, follow',
-      seo: {
-        title: {
-          pt: 'Arquivo Musical',
-          en: 'Musical Archives'
-        },
-        description: {
-          pt: 'A discografia completa, com detalhes de cada faixa e processo criativo.',
-          en: 'The complete musical archive, with details of each track and creative process.'
-        }
-      }
+      robots: 'noindex, nofollow, noarchive'
     }
   },
  // 📖 ROTA 6: O Banner da Saga
@@ -154,17 +146,24 @@ export const routes: Routes = [
     }
   },
 
-  // 🛒 ROTA 11: A Loja (Neon Store)
+  // 🪦 ROTAS APOSENTADAS — HTTP 410 Gone
   {
     path: 'store',
-    loadComponent: () => import('./pages/store/store').then(m => m.StoreComponent),
-    data: { robots: 'noindex, follow' }
+    loadComponent: () =>
+      import('./pages/retired-page/retired-page')
+        .then(m => m.RetiredPageComponent),
+    data: {
+      robots: 'noindex, nofollow, noarchive'
+    }
   },
   {
     path: 'store/:dept',
-    redirectTo: ({ params }) =>
-      `/store?dept=${encodeURIComponent(params['dept'])}`,
-    pathMatch: 'full'
+    loadComponent: () =>
+      import('./pages/retired-page/retired-page')
+        .then(m => m.RetiredPageComponent),
+    data: {
+      robots: 'noindex, nofollow, noarchive'
+    }
   },
 
   // 📡 ROTA 12: O Terminal de Comunicação (Contato/Uplink)
@@ -185,23 +184,14 @@ export const routes: Routes = [
     }
   },
 
-  // 💿 ROTA 13: A Central de Áudio (Discografia)
+  // 🪦 ROTA APOSENTADA — HTTP 410 Gone
   {
     path: 'discografia',
-    loadComponent: () => import('./app-discography/app-discography').then(m => m.DiscographyComponent),
+    loadComponent: () =>
+      import('./pages/retired-page/retired-page')
+        .then(m => m.RetiredPageComponent),
     data: {
-      limiteToHome: 5, // Variável para limitar o número de faixas exibidas na home
-      robots: 'noindex, follow',
-      seo: {
-        title: {
-          pt: 'Discografia | RQS',
-          en: 'Discography | RQS'
-        },
-        description: {
-          pt: 'Acesse o banco de áudio mestre da Raquel Synths.',
-          en: 'Access the master audio bank of Raquel Synths.'
-        }
-      }
+      robots: 'noindex, nofollow, noarchive'
     }
   },
   {
