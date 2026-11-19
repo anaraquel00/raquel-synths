@@ -59,8 +59,8 @@ export class ComplianceComponent implements OnInit, OnDestroy {
         ? 'Protocolos de Sistema | Compliance'
         : 'System Protocols | Compliance',
       description: isPt
-        ? 'Diretrizes oficiais, transparência de dados e termos de uso da RaQuel Synths. Conheça as regras que regem o nosso ecossistema digital.'
-        : 'Official guidelines, data transparency, and terms of use for RaQuel Synths. Learn the rules governing our digital ecosystem.',
+        ? 'Política de privacidade, cookies, publicidade, direitos LGPD e canal de contato da RaQuel Synths.'
+        : 'Privacy, cookies, advertising, data-protection rights, and contact information for RaQuel Synths.',
       url: `https://raquelsynths.com${currentPath}`
     });
 
@@ -70,8 +70,8 @@ export class ComplianceComponent implements OnInit, OnDestroy {
       "@type": "WebPage",
       "name": isPt ? 'Transparência e Protocolos de Sistema' : 'System Protocols & Transparency',
       "description": isPt
-        ? 'Central de compliance e termos legais da banda virtual RaQuel Synths.'
-        : 'Compliance center and legal terms for the virtual band RaQuel Synths.',
+        ? 'Central de privacidade, cookies, publicidade e proteção de dados da RaQuel Synths.'
+        : 'Privacy, cookies, advertising, and data-protection center for RaQuel Synths.',
       "breadcrumb": {
         "@type": "BreadcrumbList",
         "itemListElement": [{
