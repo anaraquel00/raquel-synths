@@ -37,11 +37,6 @@ export default async function handler(req, res) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&apos;');
 
-  const parseReleaseDate = (value) =>
-    /^\d{4}-\d{2}-\d{2}$/.test(value)
-      ? new Date(`${value}T00:00:00-03:00`)
-      : new Date(value);
-
   const normalizeDate = (value) => {
     if (!value) {
       return undefined;
@@ -211,137 +206,15 @@ export default async function handler(req, res) {
   };
 
   // =====================================================
-  // 4. CARREGA BROKLIN + JONAH
+  // 4. CARREGA APENAS SYSTEM LOGS
   //
-  // Importante:
-  //
-  // lore       -> /lore/broklin/:id
-  // lore-jonah -> /lore/jonah/:id
+  // Os previews /lore/... e /hybrid-reader/... permanecem
+  // acessíveis, mas são noindex, follow e não são anunciados
+  // pelo sitemap.
   // =====================================================
 
-  const [
-    broklinDocs,
-    jonahDocs,
-    hybridDocs,
-    logsDocs
-  ] = await Promise.all([
-    fetchCollection('lore'),
-    fetchCollection('lore-jonah'),
-    fetchCollection('global-sagas'),
-    fetchCollection('logs')
-  ]);
-
-  // =====================================================
-  // 5. FILTRO DE PUBLICAÇÃO
-  // =====================================================
-
-  const isPublicEpisode = (doc) => {
-    const fields = doc?.fields ?? {};
-
-    /**
-     * Documento precisa estar explicitamente publicado.
-     */
-    const published =
-      fields?.published?.booleanValue === true;
-
-    if (!published) {
-      return false;
-    }
-
-    /**
-     * Não indexar episódios do futuro.
-     */
-    const releaseDateValue =
-      fields?.releaseDate?.stringValue ??
-      fields?.releaseDate?.timestampValue;
-
-    if (!releaseDateValue) {
-      return false;
-    }
-
-    const releaseDate = parseReleaseDate(releaseDateValue);
-
-    if (
-      Number.isNaN(releaseDate.getTime()) ||
-      releaseDate > now
-    ) {
-      return false;
-    }
-
-    return true;
-  };
-
-  // =====================================================
-  // 6. ADICIONA EPISÓDIOS
-  // =====================================================
-
-  const appendEpisodes = (
-    documents,
-    mode
-  ) => {
-    documents
-      .filter(isPublicEpisode)
-      .forEach((doc) => {
-        const id =
-          doc.name?.split('/').pop();
-
-        if (!id) {
-          return;
-        }
-
-        const releaseDate =
-          doc.fields?.releaseDate?.stringValue ??
-          doc.fields?.releaseDate?.timestampValue;
-
-        /**
-         * updateTime é ainda melhor que "hoje" para lastmod.
-         *
-         * Caso não exista, usa releaseDate.
-         */
-        const lastmod =
-          normalizeDate(
-            doc.updateTime ??
-            releaseDate
-          );
-
-        appendUrl({
-          path:
-            `/lore/${mode}/${encodeURIComponent(id)}`,
-
-          lastmod,
-          changefreq: 'monthly',
-          priority: '0.8'
-        });
-      });
-  };
-
-  appendEpisodes(
-    broklinDocs,
-    'broklin'
-  );
-
-  appendEpisodes(
-    jonahDocs,
-    'jonah'
-  );
-
-  const appendHybridEpisodes = (documents) => {
-    documents
-      .filter(isPublicEpisode)
-      .forEach((doc) => {
-        const id = doc.name?.split('/').pop();
-        if (!id) return;
-        const releaseDate = doc.fields?.releaseDate?.stringValue ?? doc.fields?.releaseDate?.timestampValue;
-        appendUrl({
-          path: "/hybrid-reader/" + encodeURIComponent(id),
-          lastmod: normalizeDate(doc.updateTime ?? releaseDate),
-          changefreq: 'monthly',
-          priority: '0.8'
-        });
-      });
-  };
-
-  appendHybridEpisodes(hybridDocs);
+  const logsDocs =
+    await fetchCollection('logs');
 
   // =====================================================
 // 7. LOGS PUBLICADOS

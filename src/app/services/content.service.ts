@@ -685,44 +685,79 @@ private isEpisodePublic(
 
   // 📜 6. LOGS (Fofocas e Bastidores)
   getLogs(): Observable<any[]> {
-    const colRef = collection(this.firestore, 'logs');
+    if (isPlatformServer(this.platformId)) {
+      return this.getLogsServer();
+    }
 
-    // ==========================================
-    // --- 🛑 INTERRUPTOR 1: DATA DOS LOGS ---
-    // ==========================================
+    const colRef = collection(this.firestore, 'logs');
     const q = query(
       colRef,
-
-      // 👇 [MODO PRODUÇÃO / VERCEL]: Deixe DESCOMENTADO para o site real (filtra logs do futuro)
       where('date', '<', this.getSystemLogQueryBoundary()),
-
-      // 👇 [MODO TESTE QA]: Para testar e agendar logs do futuro no localhost, comente a linha de cima e descomente a de baixo
-      // where('date', '<=', '2030-01-01T00:00:00.000Z'),
-
       orderBy('date', 'desc')
     );
 
-    // ==========================================
-    // --- 🛑 INTERRUPTOR 2: MODO DE BUSCA ---
-    // ==========================================
-    // 👇 [MODO PRODUÇÃO / VERCEL - SSR SEGURO]:
+    // No browser, falhas continuam chegando ao consumidor para que a UI
+    // diferencie indisponibilidade transitória de um arquivo legitimamente vazio.
     return from(getDocs(q)).pipe(
       map(snapshot => snapshot.docs
         .map(docSnap => ({ id: docSnap.id, ...docSnap.data() }))
-        .filter(log => this.isSystemLogPublic(log))),
+        .filter(log => this.isSystemLogPublic(log)))
+    );
+  }
+
+  private getLogsServer(): Observable<any[]> {
+    const url =
+      'https://firestore.googleapis.com/v1/projects/' +
+      'raquel-synths-platform/databases/(default)/documents:runQuery';
+
+    return this.http.post<FirestoreRunQueryResult[]>(url, {
+      structuredQuery: {
+        from: [{ collectionId: 'logs' }],
+        where: {
+          fieldFilter: {
+            field: { fieldPath: 'date' },
+            op: 'LESS_THAN',
+            value: { stringValue: this.getSystemLogQueryBoundary() }
+          }
+        },
+        orderBy: [
+          {
+            field: { fieldPath: 'date' },
+            direction: 'DESCENDING'
+          }
+        ]
+      }
+    }).pipe(
+      timeout(10000),
+      map(results => results
+        .flatMap(result => {
+          const restDoc = result.document;
+
+          if (!restDoc) {
+            return [];
+          }
+
+          const id = restDoc.name.split('/').pop() ?? '';
+
+          if (!id) {
+            return [];
+          }
+
+          return [this.mapFirestoreRestDocument(restDoc, id)];
+        })
+        .filter(log =>
+          this.isSystemLogPublic(log as unknown as Record<string, unknown>)
+        )
+      ),
       catchError(err => {
-        console.error('⚠️ [ContentService] Erro ao buscar logs:', err);
-        return of([]);
+        console.error(
+          '⚠️ [ContentService] Falha operacional ao buscar o arquivo de logs no SSR:',
+          err
+        );
+
+        throw err;
       })
     );
-
-    // 👇 [MODO TESTE QA / LOCALHOST REALTIME]:
-    /*
-    return (collectionData(q, { idField: 'id' }) as Observable<any[]>).pipe(
-      take(1),
-      catchError(() => of([]))
-    );
-    */
   }
 
   getLogById(id: string): Observable<any> {
