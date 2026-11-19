@@ -1,9 +1,11 @@
 <div class="compliance-page">
   <h1>{{ data().title }}</h1>
+  <p>{{ data().updatedText }}</p>
 
   <article>
     <h2>{{ data().privacyTitle }}</h2>
     <p>{{ data().privacyText }}</p>
+    <p>{{ data().retentionText }}</p>
   </article>
 
   <article>
@@ -12,28 +14,17 @@
   </article>
 
   <article>
-  <h2>{{ data().storeTitle }}</h2>
-  <div class="text-content" [innerHTML]="data()?.storeText"></div>
-</article>
-
-<article>
-  <h2>{{ data().affiliateTitle }}</h2>
-  <div class="text-content" [innerHTML]="data()?.affiliateText"></div>
-</article>
-
-   <article>
     <h2>{{ data().policyTitle }}</h2>
     <div class="text-content" [innerHTML]="data()?.policyText"></div>
   </article>
 
   <article>
     <h2>{{ data().lgpdTitle }}</h2>
-   <div class="text-content" [innerHTML]="data()?.lgpdText"></div>
+    <div class="text-content" [innerHTML]="data()?.lgpdText"></div>
   </article>
 
   <article>
     <h2>{{ data().contactTitle }}</h2>
     <div class="text-content" [innerHTML]="data()?.contactText"></div>
   </article>
-
 </div>

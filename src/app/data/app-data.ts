@@ -9,8 +9,8 @@ const SVG_YOUTUBE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 51
 
 // DADOS DO HEADER/NAV
 export const NAV_DATA = {
-  pt: { lightmode:'MODO BROKLIN', darkmode:'MODO JONAH', inicio: 'INÍCIO', sobre: 'DOSSIÊ OPERATIVO', visualNovel: 'SAGAS', discografia: 'DISCOGRAFIA', store: 'LOJA', bio: 'RQS HUB', creator: 'A CRIADORA', backToBase: 'VOLTAR À BASE' },
-  en: { lightmode:'BROKLIN MODE', darkmode:'JONAH MODE', inicio: 'HOME', sobre: 'OPERATIVE DOSSIER', visualNovel: 'SAGAS', discografia: 'DISCOGRAPHY', store: 'STORE', bio: 'RQS HUB', creator: 'THE CREATOR', backToBase: 'BACK TO BASE' }
+  pt: { lightmode:'MODO BROKLIN', darkmode:'MODO JONAH', inicio: 'INÍCIO', sobre: 'DOSSIÊ OPERATIVO', visualNovel: 'SAGAS', bio: 'RQS HUB', creator: 'A CRIADORA', backToBase: 'VOLTAR À BASE' },
+  en: { lightmode:'BROKLIN MODE', darkmode:'JONAH MODE', inicio: 'HOME', sobre: 'OPERATIVE DOSSIER', visualNovel: 'SAGAS', bio: 'RQS HUB', creator: 'THE CREATOR', backToBase: 'BACK TO BASE' }
 };
 
 // DADOS DA HOME
@@ -743,79 +743,58 @@ export const CONTACT_DATA = {
   }
 };
 
-// --- DADOS DE COMPLIANCE (Privacidade, Loja e Exclusão) ---
+// --- DADOS DE COMPLIANCE (Privacidade, Cookies e Proteção de Dados) ---
+
+const COMPLIANCE_PT = {
+  title: '🛡️ COMPLIANCE & PRIVACIDADE',
+  updatedText: 'Última atualização: novembro de 2026.',
+
+  privacyTitle: '1. Política de Privacidade & Dados',
+  privacyText: `RaQuel Synths é um projeto autoral independente mantido por Ana Raquel de Holanda Barros, pessoa física e controladora dos dados pessoais tratados diretamente por meio deste site. Podemos receber dados que você fornece voluntariamente por meio do formulário de contato, como nome, endereço de e-mail, assunto e mensagem. Também utilizamos armazenamento técnico necessário ao funcionamento do site e às preferências do visitante. Provedores de hospedagem, segurança e entrega da aplicação podem processar dados técnicos, como endereço IP, informações do navegador e registros de requisição, na medida necessária para disponibilizar e proteger o serviço.`,
+  retentionText: `Os dados enviados pelo formulário de contato são mantidos pelo tempo necessário para atender à solicitação, preservar o histórico necessário da comunicação e cumprir eventuais obrigações legais. Encerrada a finalidade do tratamento, os dados são eliminados ou anonimizados quando aplicável, ressalvadas as hipóteses legais de conservação.`,
+
+  deletionTitle: '2. Acesso, Correção e Exclusão de Dados',
+  deletionText: `Para solicitar confirmação de tratamento, acesso, correção ou exclusão de dados pessoais mantidos pela RaQuel Synths, envie um e-mail para contact@raquelsynths.com com o assunto "Solicitação de dados / LGPD" e informe o endereço de e-mail utilizado no contato original. Podemos solicitar uma confirmação razoável de identidade antes de atender ao pedido. Quando aplicável, os dados sob nosso controle serão corrigidos, excluídos ou anonimizados, ressalvadas obrigações legais ou necessidades legítimas de conservação. Preferências locais de consentimento podem ser redefinidas removendo a chave rqs_consent_v2 do armazenamento do navegador.`,
+
+  policyTitle: '3. Publicidade, Cookies & Métricas',
+  policyText: `O site integra tecnologias de publicidade, análise e desempenho, incluindo Google AdSense, Google Tag Manager/Analytics, Meta Pixel, Ahrefs Analytics e Vercel Speed Insights. Dependendo da configuração ativa e da escolha de consentimento do visitante, esses serviços podem receber dados técnicos e de uso de acordo com suas próprias políticas. A exibição de unidades publicitárias e a inicialização de serviços opcionais no aplicativo seguem a política de consentimento da RaQuel Synths. O conteúdo editorial permanece acessível mesmo quando serviços não essenciais são recusados.`,
+
+  lgpdTitle: '4. Direitos de Proteção de Dados — LGPD',
+  lgpdText: `Nos termos da Lei Geral de Proteção de Dados (LGPD), quando aplicável, você pode solicitar confirmação da existência de tratamento, acesso aos seus dados, correção de informações incompletas ou incorretas, anonimização, bloqueio ou exclusão nos casos previstos em lei, informação sobre compartilhamento e revogação do consentimento. Dados tratados diretamente por serviços de terceiros também podem estar sujeitos às políticas e aos canais de privacidade desses respectivos provedores.`,
+
+  contactTitle: '5. Canal de Privacidade & Suporte',
+  contactText: `Para solicitações de privacidade, proteção de dados, questões legais ou suporte: <a href="mailto:contact@raquelsynths.com">contact@raquelsynths.com</a>`
+} as const;
+
+const COMPLIANCE_EN = {
+  title: '🛡️ COMPLIANCE & PRIVACY',
+  updatedText: 'Last updated: November 2026.',
+
+  privacyTitle: '1. Privacy & Data Policy',
+  privacyText: `RaQuel Synths is an independent authorial project maintained by Ana Raquel de Holanda Barros, a natural person and the controller of personal data processed directly through this website. We may receive data that you voluntarily provide through the contact form, such as your name, email address, subject, and message. We also use technical storage required for website operation and visitor preferences. Hosting, security, and application-delivery providers may process technical data, such as IP address, browser information, and request logs, to the extent necessary to provide and protect the service.`,
+  retentionText: `Data submitted through the contact form is retained for as long as necessary to respond to the request, preserve the necessary communication history, and comply with any applicable legal obligations. Once the purpose of the processing has ended, the data is deleted or anonymized where applicable, subject to legally permitted retention requirements.`,
+
+  deletionTitle: '2. Data Access, Correction & Deletion',
+  deletionText: `To request confirmation of processing, access, correction, or deletion of personal data held by RaQuel Synths, email contact@raquelsynths.com with the subject "Data request / LGPD" and identify the email address used in the original contact. We may request reasonable identity verification before fulfilling the request. Where applicable, data under our control will be corrected, deleted, or anonymized, subject to legal obligations or legitimate retention requirements. Local consent preferences can be reset by removing the rqs_consent_v2 key from your browser storage.`,
+
+  policyTitle: '3. Advertising, Cookies & Analytics',
+  policyText: `The website integrates advertising, analytics, and performance technologies including Google AdSense, Google Tag Manager/Analytics, Meta Pixel, Ahrefs Analytics, and Vercel Speed Insights. Depending on the active configuration and the visitor's consent choice, these services may receive technical and usage data under their own policies. Ad units and optional services within the application follow the RaQuel Synths consent policy. Editorial content remains accessible when non-essential services are rejected.`,
+
+  lgpdTitle: '4. Data Protection Rights — Brazilian LGPD',
+  lgpdText: `Under Brazil's General Data Protection Law (LGPD), where applicable, you may request confirmation of processing, access to your data, correction of incomplete or inaccurate information, anonymization, blocking or deletion in the circumstances provided by law, information about sharing, and withdrawal of consent. Data processed directly by third-party services may also be subject to the privacy policies and request channels of those providers.`,
+
+  contactTitle: '5. Privacy & Support Channel',
+  contactText: `For privacy requests, data-protection matters, legal questions, or support: <a href="mailto:contact@raquelsynths.com">contact@raquelsynths.com</a>`
+} as const;
+
 export const COMPLIANCE_DATA = {
   pt: {
-    broklin: {
-      title: '🛡️ COMPLIANCE & PRIVACIDADE',
-      privacyTitle: '1. Política de Privacidade & Dados',
-      privacyText: 'RaQuel Synths é a operadora deste site. Podemos receber informações enviadas por formulários de contato e inscrições em newsletter/e-mail, além de utilizar armazenamento essencial e cookies. Com o consentimento ACEITO, Google AdSense, Google Tag Manager/Analytics, Meta Pixel, Ahrefs Analytics e Vercel Speed Insights podem tratar dados para publicidade, personalização, segurança e mensuração. Firebase/Firestore, Stripe, parceiros afiliados e outros operadores de dados podem tratar dados quando aplicável. ACEITAR ou RECUSAR controla os serviços não essenciais; você pode alterar sua escolha limpando rqs_consent_v2 ou entrando em contato conosco. Exerça seus direitos previstos na LGPD pelo canal de contato abaixo. Última atualização: setembro de 2026.',
-      deletionTitle: '2. Instruções para Exclusão',
-      deletionText: 'RaQuel Synths é a operadora deste site. Podemos receber informações enviadas por formulários de contato e inscrições em newsletter/e-mail, além de utilizar armazenamento essencial e cookies. Com o consentimento ACEITO, Google AdSense, Google Tag Manager/Analytics, Meta Pixel, Ahrefs Analytics e Vercel Speed Insights podem tratar dados para publicidade, personalização, segurança e mensuração. Firebase/Firestore, Stripe, parceiros afiliados e outros operadores de dados podem tratar dados quando aplicável. ACEITAR ou RECUSAR controla os serviços não essenciais; você pode alterar sua escolha limpando rqs_consent_v2 ou entrando em contato conosco. Exerça seus direitos previstos na LGPD pelo canal de contato abaixo. Última atualização: setembro de 2026.',
-      storeTitle: '3. Política da Loja (Stripe & Print-on-Demand)',
-      storeText: 'Utilizamos processamento seguro via Stripe. Como nossos produtos são compilados sob demanda (Print-on-Demand), <strong>não realizamos trocas por escolha de tamanho errado</strong>. Reembolsos apenas por defeito de fabricação reportado em até 7 dias após o download físico do item.',
-      affiliateTitle: '4. Transparência de Afiliados',
-      affiliateText: 'Participamos de programas de associados (Amazon/Shein). Ao adquirir itens via nossos links, recebemos uma comissão de roteamento que mantém o servidor ativo, sem custo extra para você.',
-      policyTitle: '5. Publicidade e Cookies (Google AdSense)',
-      policyText: 'RaQuel Synths é a operadora deste site. Podemos receber informações enviadas por formulários de contato e inscrições em newsletter/e-mail, além de utilizar armazenamento essencial e cookies. Com o consentimento ACEITO, Google AdSense, Google Tag Manager/Analytics, Meta Pixel, Ahrefs Analytics e Vercel Speed Insights podem tratar dados para publicidade, personalização, segurança e mensuração. Firebase/Firestore, Stripe, parceiros afiliados e outros operadores de dados podem tratar dados quando aplicável. ACEITAR ou RECUSAR controla os serviços não essenciais; você pode alterar sua escolha limpando rqs_consent_v2 ou entrando em contato conosco. Exerça seus direitos previstos na LGPD pelo canal de contato abaixo. Última atualização: setembro de 2026.',
-      lgpdTitle: '6. Conformidade com a LGPD (Lei Geral de Proteção de Dados)',
-      lgpdText: 'RaQuel Synths é a operadora deste site. Podemos receber informações enviadas por formulários de contato e inscrições em newsletter/e-mail, além de utilizar armazenamento essencial e cookies. Com o consentimento ACEITO, Google AdSense, Google Tag Manager/Analytics, Meta Pixel, Ahrefs Analytics e Vercel Speed Insights podem tratar dados para publicidade, personalização, segurança e mensuração. Firebase/Firestore, Stripe, parceiros afiliados e outros operadores de dados podem tratar dados quando aplicável. ACEITAR ou RECUSAR controla os serviços não essenciais; você pode alterar sua escolha limpando rqs_consent_v2 ou entrando em contato conosco. Exerça seus direitos previstos na LGPD pelo canal de contato abaixo. Última atualização: setembro de 2026.',
-      contactTitle: '7. Canal de Suporte',
-      contactText: 'Para requisições legais, exclusão de dados ou reporte de bugs: <a href="mailto:contact@raquelsynths.com">contact@raquelsynths.com</a>'
-    },
-    jonah: {
-      title: '💀 PROTOCOLO DE SEGURANÇA (CAOS)',
-      privacyTitle: '1. RASTROS DIGITAIS',
-      privacyText: 'RaQuel Synths é a operadora deste site. Podemos receber informações enviadas por formulários de contato e inscrições em newsletter/e-mail, além de utilizar armazenamento essencial e cookies. Com o consentimento ACEITO, Google AdSense, Google Tag Manager/Analytics, Meta Pixel, Ahrefs Analytics e Vercel Speed Insights podem tratar dados para publicidade, personalização, segurança e mensuração. Firebase/Firestore, Stripe, parceiros afiliados e outros operadores de dados podem tratar dados quando aplicável. ACEITAR ou RECUSAR controla os serviços não essenciais; você pode alterar sua escolha limpando rqs_consent_v2 ou entrando em contato conosco. Exerça seus direitos previstos na LGPD pelo canal de contato abaixo. Última atualização: setembro de 2026.',
-      deletionTitle: '2. APAGAR EVIDÊNCIAS',
-      deletionText: 'RaQuel Synths é a operadora deste site. Podemos receber informações enviadas por formulários de contato e inscrições em newsletter/e-mail, além de utilizar armazenamento essencial e cookies. Com o consentimento ACEITO, Google AdSense, Google Tag Manager/Analytics, Meta Pixel, Ahrefs Analytics e Vercel Speed Insights podem tratar dados para publicidade, personalização, segurança e mensuração. Firebase/Firestore, Stripe, parceiros afiliados e outros operadores de dados podem tratar dados quando aplicável. ACEITAR ou RECUSAR controla os serviços não essenciais; você pode alterar sua escolha limpando rqs_consent_v2 ou entrando em contato conosco. Exerça seus direitos previstos na LGPD pelo canal de contato abaixo. Última atualização: setembro de 2026.',
-      storeTitle: '3. LOJA INDUSTRIAL (SEM DRAMA)',
-      storeText: 'Processamos via Stripe. Regra de Ouro do Industrial: <strong>Se você escolheu o tamanho errado, o problema é seu.</strong> A peça é compilada única pra você. Só aceito devolução se o correio destruir a mercadoria.',
-      affiliateTitle: '4. ALIANÇAS ESTRATÉGICAS',
-      affiliateText: 'Alguns links mandam você pra Amazon. Se você comprar, eles me pagam uma taxa pra financiar minha guerra sonora. Você não paga nada a mais, apenas alimenta o sistema.',
-      policyTitle: '5. VIGILÂNCIA CORPORATIVA (ADS)',
-      policyText: 'RaQuel Synths é a operadora deste site. Podemos receber informações enviadas por formulários de contato e inscrições em newsletter/e-mail, além de utilizar armazenamento essencial e cookies. Com o consentimento ACEITO, Google AdSense, Google Tag Manager/Analytics, Meta Pixel, Ahrefs Analytics e Vercel Speed Insights podem tratar dados para publicidade, personalização, segurança e mensuração. Firebase/Firestore, Stripe, parceiros afiliados e outros operadores de dados podem tratar dados quando aplicável. ACEITAR ou RECUSAR controla os serviços não essenciais; você pode alterar sua escolha limpando rqs_consent_v2 ou entrando em contato conosco. Exerça seus direitos previstos na LGPD pelo canal de contato abaixo. Última atualização: setembro de 2026.',
-      lgpdTitle: '6. LEI DE PROTEÇÃO DE DADOS (LGPD)',
-      lgpdText: 'RaQuel Synths é a operadora deste site. Podemos receber informações enviadas por formulários de contato e inscrições em newsletter/e-mail, além de utilizar armazenamento essencial e cookies. Com o consentimento ACEITO, Google AdSense, Google Tag Manager/Analytics, Meta Pixel, Ahrefs Analytics e Vercel Speed Insights podem tratar dados para publicidade, personalização, segurança e mensuração. Firebase/Firestore, Stripe, parceiros afiliados e outros operadores de dados podem tratar dados quando aplicável. ACEITAR ou RECUSAR controla os serviços não essenciais; você pode alterar sua escolha limpando rqs_consent_v2 ou entrando em contato conosco. Exerça seus direitos previstos na LGPD pelo canal de contato abaixo. Última atualização: setembro de 2026.',
-      contactTitle: '7. FREQUÊNCIA DE RÁDIO',
-      contactText: 'Problemas? Mande um sinal: <a href="mailto:contact@raquelsynths.com">contact@raquelsynths.com</a>'
-    }
+    broklin: COMPLIANCE_PT,
+    jonah: COMPLIANCE_PT
   },
   en: {
-    broklin: {
-      title: '🛡️ COMPLIANCE & PRIVACY',
-      privacyTitle: '1. Privacy & Data Policy',
-      privacyText: 'RaQuel Synths is the site operator. We may receive information submitted through contact forms and newsletter/email subscriptions, together with essential storage and cookies. With ACCEPTED consent, Google AdSense, Google Tag Manager/Analytics, Meta Pixel, Ahrefs Analytics and Vercel Speed Insights may process data for advertising, personalization, security and measurement. Firebase/Firestore, Stripe, affiliate partners and other processors may process data where applicable. ACCEPT or REJECT controls non-essential services; you may change your choice by clearing rqs_consent_v2 or contacting us. Exercise your LGPD rights through the contact below. Last updated: September 2026.',
-      deletionTitle: '2. Deletion Instructions',
-      deletionText: 'RaQuel Synths is the site operator. We may receive information submitted through contact forms and newsletter/email subscriptions, together with essential storage and cookies. With ACCEPTED consent, Google AdSense, Google Tag Manager/Analytics, Meta Pixel, Ahrefs Analytics and Vercel Speed Insights may process data for advertising, personalization, security and measurement. Firebase/Firestore, Stripe, affiliate partners and other processors may process data where applicable. ACCEPT or REJECT controls non-essential services; you may change your choice by clearing rqs_consent_v2 or contacting us. Exercise your LGPD rights through the contact below. Last updated: September 2026.',
-      storeTitle: '3. Store Policy (Stripe & PoD)',
-      storeText: 'Secure processing via Stripe. Since items are compiled on demand (Print-on-Demand), <strong>we do not offer exchanges for wrong size selection</strong>. Refunds only for manufacturing defects reported within 7 days after the physical download of the item.',
-      affiliateTitle: '4. Affiliate Transparency',
-      affiliateText: 'We participate in associate programs (Amazon/Shein). Buying via our links earns us a routing commission to keep servers running, at no extra cost to you.',
-      policyTitle: '5. Advertising & Cookies (Google AdSense)',
-      policyText: 'RaQuel Synths is the site operator. We may receive information submitted through contact forms and newsletter/email subscriptions, together with essential storage and cookies. With ACCEPTED consent, Google AdSense, Google Tag Manager/Analytics, Meta Pixel, Ahrefs Analytics and Vercel Speed Insights may process data for advertising, personalization, security and measurement. Firebase/Firestore, Stripe, affiliate partners and other processors may process data where applicable. ACCEPT or REJECT controls non-essential services; you may change your choice by clearing rqs_consent_v2 or contacting us. Exercise your LGPD rights through the contact below. Last updated: September 2026.',
-      lgpdTitle: '6. Data Protection Compliance (LGPD/GDPR)',
-      lgpdText: 'RaQuel Synths is the site operator. We may receive information submitted through contact forms and newsletter/email subscriptions, together with essential storage and cookies. With ACCEPTED consent, Google AdSense, Google Tag Manager/Analytics, Meta Pixel, Ahrefs Analytics and Vercel Speed Insights may process data for advertising, personalization, security and measurement. Firebase/Firestore, Stripe, affiliate partners and other processors may process data where applicable. ACCEPT or REJECT controls non-essential services; you may change your choice by clearing rqs_consent_v2 or contacting us. Exercise your LGPD rights through the contact below. Last updated: September 2026.',
-      contactTitle: '7. Support Channel',
-      contactText: 'For legal requests, data deletion, or bug reports: <a href="mailto:contact@raquelsynths.com">contact@raquelsynths.com</a>'
-    },
-    jonah: {
-      title: '💀 SECURITY PROTOCOL (CHAOS)',
-      privacyTitle: '1. DIGITAL FOOTPRINTS',
-      privacyText: 'RaQuel Synths is the site operator. We may receive information submitted through contact forms and newsletter/email subscriptions, together with essential storage and cookies. With ACCEPTED consent, Google AdSense, Google Tag Manager/Analytics, Meta Pixel, Ahrefs Analytics and Vercel Speed Insights may process data for advertising, personalization, security and measurement. Firebase/Firestore, Stripe, affiliate partners and other processors may process data where applicable. ACCEPT or REJECT controls non-essential services; you may change your choice by clearing rqs_consent_v2 or contacting us. Exercise your LGPD rights through the contact below. Last updated: September 2026.',
-      deletionTitle: '2. ERASING EVIDENCE',
-      deletionText: 'RaQuel Synths is the site operator. We may receive information submitted through contact forms and newsletter/email subscriptions, together with essential storage and cookies. With ACCEPTED consent, Google AdSense, Google Tag Manager/Analytics, Meta Pixel, Ahrefs Analytics and Vercel Speed Insights may process data for advertising, personalization, security and measurement. Firebase/Firestore, Stripe, affiliate partners and other processors may process data where applicable. ACCEPT or REJECT controls non-essential services; you may change your choice by clearing rqs_consent_v2 or contacting us. Exercise your LGPD rights through the contact below. Last updated: September 2026.',
-      storeTitle: '3. INDUSTRIAL STORE (NO DRAMA)',
-      storeText: 'Processed via Stripe. Golden Rule: <strong>If you picked the wrong size, that’s on you.</strong> It’s custom-compiled. I only refund if the courier destroys the merch.',
-      affiliateTitle: '4. STRATEGIC ALLIANCES',
-      affiliateText: 'Some links go to Amazon. You buy, I get coins to fund the sonic war. Costs you nothing extra.',
-      policyTitle: '5. CORPORATE SURVEILLANCE (ADS)',
-      policyText: 'RaQuel Synths is the site operator. We may receive information submitted through contact forms and newsletter/email subscriptions, together with essential storage and cookies. With ACCEPTED consent, Google AdSense, Google Tag Manager/Analytics, Meta Pixel, Ahrefs Analytics and Vercel Speed Insights may process data for advertising, personalization, security and measurement. Firebase/Firestore, Stripe, affiliate partners and other processors may process data where applicable. ACCEPT or REJECT controls non-essential services; you may change your choice by clearing rqs_consent_v2 or contacting us. Exercise your LGPD rights through the contact below. Last updated: September 2026.',
-      lgpdTitle: '6. DATA PROTECTION LAW (GDPR/LGPD)',
-      lgpdText: 'RaQuel Synths is the site operator. We may receive information submitted through contact forms and newsletter/email subscriptions, together with essential storage and cookies. With ACCEPTED consent, Google AdSense, Google Tag Manager/Analytics, Meta Pixel, Ahrefs Analytics and Vercel Speed Insights may process data for advertising, personalization, security and measurement. Firebase/Firestore, Stripe, affiliate partners and other processors may process data where applicable. ACCEPT or REJECT controls non-essential services; you may change your choice by clearing rqs_consent_v2 or contacting us. Exercise your LGPD rights through the contact below. Last updated: September 2026.',
-      contactTitle: '7. RADIO FREQUENCY',
-      contactText: 'Issues? Send a signal: <a href="mailto:contact@raquelsynths.com">contact@raquelsynths.com</a>'
-    }
+    broklin: COMPLIANCE_EN,
+    jonah: COMPLIANCE_EN
   }
 };
 
@@ -825,7 +804,7 @@ export const FOOTER_DATA = {
     name: 'Raquel Synths',
     madeby:'© 2026 Universo RQS.',
     rights: 'Todos os direitos reservados.',
-    owers: 'Codigo & Musica por Kelma & Broklin.',
+    owers: 'Criação, direção e desenvolvimento por Ana Raquel de Holanda Barros.',
     madeWith: 'Feito com Angular 20 & Café ☕',
     listen: 'OUÇA',
     connect: 'Base de Operações',
@@ -838,7 +817,7 @@ export const FOOTER_DATA = {
     name: 'Raquel Synths',
     madeby:'© 2026 RQS Universe.',
     rights: 'All rights reserved.',
-    owers: 'Code & Music by Kelma & Broklin.',
+    owers: 'Created, directed and developed by Ana Raquel de Holanda Barros.',
     madeWith: 'Made with Angular 20 & Coffee ☕',
     listen: 'LISTEN',
     connect: 'Operations Base',
