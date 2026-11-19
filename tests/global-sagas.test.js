@@ -395,7 +395,7 @@ test('Season 1 e documento agregado são bloqueados pelo plano', () => {
   assert.equal(plan.items.some(item => item.id.includes('--pt')), false);
 });
 
-test('coleção antiga não é alvo e leitores públicos mantêm o contrato global-sagas', () => {
+test('coleção antiga não é alvo e leitores públicos mantêm o contrato global-sagas sem anunciar previews no sitemap', () => {
   const importer = readFileSync(new URL('../api/admin/global-sagas.js', import.meta.url), 'utf8');
   const contentService = readFileSync(new URL('../src/app/services/content.service.ts', import.meta.url), 'utf8');
   const routes = readFileSync(new URL('../src/app/app.routes.ts', import.meta.url), 'utf8');
@@ -411,8 +411,8 @@ test('coleção antiga não é alvo e leitores públicos mantêm o contrato glob
   assert.ok(contentService.includes("where('published', '==', true)"));
   assert.ok(routes.includes("path: 'hybrid-saga'"));
   assert.ok(routes.includes("path: 'hybrid-reader/:id'"));
-  assert.ok(sitemap.includes("fetchCollection('global-sagas')"));
-  assert.ok(sitemap.includes('fields?.published?.booleanValue === true'));
+  assert.equal(sitemap.includes("fetchCollection('global-sagas')"), false);
+  assert.ok(sitemap.includes("path: '/hybrid-saga'"));
 });
 
 test('formato .doc legado é explicitamente bloqueado', () => {

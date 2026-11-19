@@ -44,19 +44,7 @@ export const routes: Routes = [
   // 📜 ROTA 4: O Arquivo de Logs (A "Memória Infinita")
   {
     path: 'logs-archive',
-    loadComponent: () => import('./pages/logs-archive/logs-archive').then(m => m.LogsArchiveComponent),
-    data: {
-      seo: {
-        title: {
-          pt: 'Arquivo de Logs',
-          en: 'Logs Archive'
-        },
-        description: {
-          pt: 'Os bastidores da narrativa transmídia e DevNotes da RQS.',
-          en: 'The behind-the-scenes of the transmedia narrative and RQS DevNotes.'
-        }
-      }
-    }
+    loadComponent: () => import('./pages/logs-archive/logs-archive').then(m => m.LogsArchiveComponent)
   },
 
   // ✨ NOVA ROTA 5: O Arquivo Musical (Discografia Completa)
@@ -98,19 +86,7 @@ export const routes: Routes = [
   // ✨ NOVA ROTA 7: O Catálogo (Episódios da Saga)
   {
     path: 'visual-novel/:mode/:season',
-    loadComponent: () => import('./pages/visual-novel/visual-novel').then(m => m.VisualNovelComponent),
-    data: {
-      seo: {
-        title: {
-          pt: 'Ecos da RQS | Episódios',
-          en: 'RQS Echoes | Episodes'
-        },
-        description: {
-          pt: 'Mergulhe na saga. Broklin\'s Tech vs. Jonah\'s Chaos. O registro histórico da nossa jornada.',
-          en: 'Dive into the saga. Broklin\'s Tech vs. Jonah\'s Chaos. The historical record of our journey.'
-        }
-      }
-    }
+    loadComponent: () => import('./pages/visual-novel/visual-novel').then(m => m.VisualNovelComponent)
   },
   {
   path: 'visual-novel',
@@ -120,24 +96,15 @@ export const routes: Routes = [
 
    {
     path: 'hybrid-saga',
-    loadComponent: () => import('./pages/hybrid-saga/hybrid-saga').then(m => m.HybridSagaComponent),
-    data: {
-      seo: {
-        title: {
-          pt: 'Ecos da RQS | Episódios',
-          en: 'RQS Echoes | Episodes'
-        },
-        description: {
-          pt: 'Mergulhe na saga. Broklin\'s Tech vs. Jonah\'s Chaos. O registro histórico da nossa jornada.',
-          en: 'Dive into the saga. Broklin\'s Tech vs. Jonah\'s Chaos. The historical record of our journey.'
-        }
-      }
-    }
+    loadComponent: () => import('./pages/hybrid-saga/hybrid-saga').then(m => m.HybridSagaComponent)
   },
 
   {
   path: 'hybrid-reader/:id',
-  loadComponent: () => import('./pages/hybrid-reader/hybrid-reader').then(m => m.HybridReaderComponent)
+  loadComponent: () => import('./pages/hybrid-reader/hybrid-reader').then(m => m.HybridReaderComponent),
+  data: {
+    robots: 'noindex, follow'
+  }
 },
 
   // 📖 ROTA 8: O Leitor (Texto Puro)
@@ -145,7 +112,10 @@ export const routes: Routes = [
   path: 'lore/:mode/:id',
   loadComponent: () =>
     import('./pages/lore-reader/lore-reader')
-      .then(m => m.LoreReaderComponent)
+      .then(m => m.LoreReaderComponent),
+  data: {
+    robots: 'noindex, follow'
+  }
 },
 
   // 👩‍💻 ROTA 9: O Hub da Criadora (Blog Técnico/Portfólio)

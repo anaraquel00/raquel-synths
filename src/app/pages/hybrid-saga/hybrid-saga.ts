@@ -63,6 +63,10 @@ export class HybridSagaComponent implements OnInit, OnDestroy {
     this.document.documentElement.lang = isPt ? 'pt-BR' : 'en-US';
 
     // Motor de SEO para a Saga Híbrida
+    this.seoService.updateCanonical(
+      'https://raquelsynths.com/hybrid-saga'
+    );
+
     this.seoService.updateMetaTags({
       title: isPt ? 'Ecos da RQS: Core Híbrido' : 'RQS Echoes: Hybrid Core',
       description: isPt
