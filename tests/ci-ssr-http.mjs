@@ -13,6 +13,12 @@ const PROJECT_PATH =
 const realFetch = globalThis.fetch;
 let firestoreMode = 'ok';
 
+const firestoreArchiveHits = {
+  ok: 0,
+  empty: 0,
+  fail: 0
+};
+
 const jsonResponse = (body, status = 200) =>
   new Response(JSON.stringify(body), {
     status,
@@ -95,13 +101,6 @@ function collectionDocuments(collection) {
 }
 
 async function mockFirestoreFetch(request) {
-  if (firestoreMode === 'fail') {
-    return jsonResponse(
-      { error: { code: 503, message: 'CI simulated Firestore outage' } },
-      503
-    );
-  }
-
   const url = new URL(request.url);
 
   if (url.pathname === `${PROJECT_PATH}documents:runQuery`) {
@@ -115,6 +114,22 @@ async function mockFirestoreFetch(request) {
 
     const collection =
       payload?.structuredQuery?.from?.[0]?.collectionId ?? '';
+
+    if (collection === 'logs') {
+      firestoreArchiveHits[firestoreMode] += 1;
+
+      if (firestoreMode === 'fail') {
+        return jsonResponse(
+          {
+            error: {
+              code: 503,
+              message: 'CI simulated Firestore outage'
+            }
+          },
+          503
+        );
+      }
+    }
 
     return jsonResponse(
       collectionDocuments(collection).map(document => ({ document }))
@@ -180,7 +195,7 @@ globalThis.fetch = async (input, init) => {
 const { reqHandler } =
   await import('../dist/raquel-synths/server/server.mjs');
 
-const server = createServer(async (req, res) => {
+const server = createServer((req, res) => {
   const requestedMode =
     String(req.headers['x-rqs-ci-firestore-mode'] ?? 'ok');
 
@@ -189,9 +204,21 @@ const server = createServer(async (req, res) => {
       ? requestedMode
       : 'ok';
 
-  try {
-    await reqHandler(req, res);
-  } catch (error) {
+  let responseFinished = false;
+
+  const resetFirestoreMode = () => {
+    if (responseFinished) {
+      return;
+    }
+
+    responseFinished = true;
+    firestoreMode = 'ok';
+  };
+
+  res.once('finish', resetFirestoreMode);
+  res.once('close', resetFirestoreMode);
+
+  const handleRequestError = error => {
     console.error('[CI SSR] Unhandled request failure:', error);
 
     if (!res.headersSent) {
@@ -200,8 +227,13 @@ const server = createServer(async (req, res) => {
     } else if (!res.writableEnded) {
       res.end();
     }
-  } finally {
-    firestoreMode = 'ok';
+  };
+
+  try {
+    void Promise.resolve(reqHandler(req, res))
+      .catch(handleRequestError);
+  } catch (error) {
+    handleRequestError(error);
   }
 });
 
@@ -472,7 +504,14 @@ async function validateLogsArchive() {
     assert.equal(response.status, 404, `${path}: expected HTTP 404`);
   }
 
+  const emptyHitsBefore = firestoreArchiveHits.empty;
   const empty = await request('/logs-archive?ci_case=empty', 'empty');
+
+  assert.ok(
+    firestoreArchiveHits.empty > emptyHitsBefore,
+    'empty archive: fixture did not reach the logs REST query in empty mode'
+  );
+
   assert.equal(empty.status, 200, 'empty archive: expected HTTP 200');
   assert.equal(
     extractCanonical(empty.html),
@@ -480,7 +519,14 @@ async function validateLogsArchive() {
     'empty archive: unexpected canonical'
   );
 
+  const failureHitsBefore = firestoreArchiveHits.fail;
   const failure = await request('/logs-archive?ci_case=fail', 'fail');
+
+  assert.ok(
+    firestoreArchiveHits.fail > failureHitsBefore,
+    'Firestore outage: fixture did not reach the logs REST query in fail mode'
+  );
+
   assert.equal(
     failure.status,
     503,
