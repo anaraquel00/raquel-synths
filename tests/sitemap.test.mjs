@@ -7,15 +7,6 @@ import sitemapHandler from '../api/sitemap.js';
 const documentName = (collection, id) =>
   `projects/raquel-synths-platform/databases/(default)/documents/${collection}/${id}`;
 
-const publicEpisode = (collection, id, updateTime) => ({
-  name: documentName(collection, id),
-  updateTime,
-  fields: {
-    published: { booleanValue: true },
-    releaseDate: { stringValue: '2026-09-01' }
-  }
-});
-
 const substantiveLog = (id, updateTime, overrides = {}) => ({
   name: documentName('logs', id),
   updateTime,
@@ -35,25 +26,6 @@ const substantiveLog = (id, updateTime, overrides = {}) => ({
 });
 
 const collections = {
-  lore: [
-    publicEpisode('lore', 'broklin-publico', '2026-09-18T11:30:00Z'),
-    {
-      ...publicEpisode('lore', 'broklin-futuro', '2026-09-18T11:30:00Z'),
-      fields: { published: { booleanValue: true }, releaseDate: { stringValue: '2999-01-01' } }
-    },
-    {
-      ...publicEpisode('lore', 'broklin-nao-publicado', '2026-09-18T11:30:00Z'),
-      fields: { published: { booleanValue: false }, releaseDate: { stringValue: '2026-09-01' } }
-    }
-  ],
-  'lore-jonah': [publicEpisode('lore-jonah', 'jonah-publico', '2026-09-17T08:00:00Z')],
-  'global-sagas': [
-    publicEpisode('global-sagas', 'hybrid-publico', '2026-09-16T09:00:00Z'),
-    {
-      ...publicEpisode('global-sagas', 'hybrid-futuro', '2026-09-16T09:00:00Z'),
-      fields: { published: { booleanValue: true }, releaseDate: { stringValue: '2999-01-01' } }
-    }
-  ],
   logs: [
     substantiveLog('log-publico', '2026-09-15T10:00:00Z'),
     substantiveLog('log-legado', '2026-09-14T10:00:00Z', { published: undefined }),
@@ -68,8 +40,10 @@ const renderSitemap = async () => {
   let statusCode;
   let body;
   const headers = new Map();
+  const requestedCollections = [];
   globalThis.fetch = async (url) => {
     const collection = new URL(url).pathname.split('/').pop();
+    requestedCollections.push(collection);
     return { ok: true, json: async () => ({ documents: collections[collection] ?? [] }) };
   };
   const response = {
@@ -82,7 +56,7 @@ const renderSitemap = async () => {
   } finally {
     globalThis.fetch = originalFetch;
   }
-  return { body, headers, statusCode };
+  return { body, headers, statusCode, requestedCollections };
 };
 
 const parseEntries = (xml) => [...xml.matchAll(/<url>\s*([\s\S]*?)\s*<\/url>/g)].map((match) => {
@@ -93,8 +67,8 @@ const parseEntries = (xml) => [...xml.matchAll(/<url>\s*([\s\S]*?)\s*<\/url>/g)]
   };
 });
 
-test('gera XML válido, URLs únicas e exclui rotas/conteúdo não indexáveis', async () => {
-  const { body, headers, statusCode } = await renderSitemap();
+test('gera XML válido e concentra a indexação nas páginas editoriais', async () => {
+  const { body, headers, statusCode, requestedCollections } = await renderSitemap();
   const entries = parseEntries(body);
   const locs = entries.map(({ loc }) => loc);
   const xmlValidation = spawnSync(
@@ -102,27 +76,42 @@ test('gera XML válido, URLs únicas e exclui rotas/conteúdo não indexáveis',
     ['-c', 'import sys, xml.etree.ElementTree as ET; ET.fromstring(sys.stdin.read())'],
     { input: body, encoding: 'utf8' }
   );
+
   assert.equal(statusCode, 200);
   assert.equal(xmlValidation.status, 0, xmlValidation.stderr);
   assert.equal(new Set(locs).size, locs.length);
   assert.ok(locs.every((loc) => !new URL(loc).search && !new URL(loc).hash));
   assert.ok(locs.every((loc) => !loc.includes('/admin') && !loc.includes('/diagnostic')));
+
   for (const excludedRoute of ['/discografia', '/musical-archives', '/store', '/bio']) {
     assert.equal(locs.includes(`https://raquelsynths.com${excludedRoute}`), false);
   }
+
+  assert.ok(locs.every((loc) => !loc.includes('/lore/')));
+  assert.ok(locs.every((loc) => !loc.includes('/hybrid-reader/')));
   assert.ok(locs.every((loc) => !loc.includes('/log-reader/system-archive')));
   assert.ok(locs.every((loc) => !loc.includes('futuro') && !loc.includes('nao-publicado')));
-  assert.ok(locs.includes('https://raquelsynths.com/hybrid-reader/hybrid-publico'));
-  assert.equal(locs.includes('https://raquelsynths.com/hybrid-reader/hybrid-futuro'), false);
-  assert.equal(headers.get('cache-control'), 'public, max-age=300, s-maxage=3600, stale-while-revalidate=300');
-});
 
-test('mantém global saga futura aprovada fora do sitemap até a releaseDate', async () => {
-  const { body } = await renderSitemap();
-  const locs = parseEntries(body).map(({ loc }) => loc);
+  for (const editorialRoute of [
+    '/saga',
+    '/visual-novel/broklin/s1',
+    '/visual-novel/broklin/s2',
+    '/visual-novel/jonah/s1',
+    '/visual-novel/jonah/s2',
+    '/hybrid-saga'
+  ]) {
+    assert.ok(locs.includes(`https://raquelsynths.com${editorialRoute}`));
+  }
 
-  assert.ok(locs.includes('https://raquelsynths.com/hybrid-reader/hybrid-publico'));
-  assert.equal(locs.includes('https://raquelsynths.com/hybrid-reader/hybrid-futuro'), false);
+  assert.ok(locs.includes('https://raquelsynths.com/log-reader/log-publico'));
+  assert.ok(locs.includes('https://raquelsynths.com/log-reader/log-legado'));
+  assert.equal(locs.length, 14);
+  assert.deepEqual([...new Set(requestedCollections)], ['logs']);
+
+  assert.equal(
+    headers.get('cache-control'),
+    'public, max-age=300, s-maxage=3600, stale-while-revalidate=300'
+  );
 });
 
 test('aplica o gate editorial aos System Logs sem ocultar o legado aprovado', async () => {
@@ -141,22 +130,26 @@ test('emite lastmod estático somente para mudanças comprovadas', async () => {
   const entries = parseEntries(first.body);
   const byLoc = new Map(entries.map((entry) => [entry.loc, entry]));
   const staticLastmods = entries.filter(({ loc, lastmod }) =>
-    lastmod && !loc.includes('/lore/') && !loc.includes('/hybrid-reader/') && !loc.includes('/log-reader/')
+    lastmod && !loc.includes('/log-reader/')
   );
+
   assert.equal(first.body, second.body);
   assert.deepEqual(staticLastmods, [
     { loc: 'https://raquelsynths.com', lastmod: '2026-09-19' },
     { loc: 'https://raquelsynths.com/compliance', lastmod: '2026-09-19' }
   ]);
   assert.equal(byLoc.get('https://raquelsynths.com/discografia')?.lastmod, undefined);
-  assert.ok(entries.filter(({ lastmod }) => lastmod).every(({ lastmod }) => /^\d{4}-\d{2}-\d{2}$/.test(lastmod)));
+  assert.ok(entries.filter(({ lastmod }) => lastmod).every(({ lastmod }) =>
+    /^\d{4}-\d{2}-\d{2}$/.test(lastmod)
+  ));
 });
 
-test('mantém Firestore updateTime autoritativo nas páginas dinâmicas', async () => {
+test('mantém Firestore updateTime autoritativo nos System Logs dinâmicos', async () => {
   const { body } = await renderSitemap();
   const byLoc = new Map(parseEntries(body).map((entry) => [entry.loc, entry]));
-  assert.equal(byLoc.get('https://raquelsynths.com/lore/broklin/broklin-publico')?.lastmod, '2026-09-18');
-  assert.equal(byLoc.get('https://raquelsynths.com/lore/jonah/jonah-publico')?.lastmod, '2026-09-17');
-  assert.equal(byLoc.get('https://raquelsynths.com/hybrid-reader/hybrid-publico')?.lastmod, '2026-09-16');
-  assert.equal(byLoc.get('https://raquelsynths.com/log-reader/log-publico')?.lastmod, '2026-09-15');
+
+  assert.equal(
+    byLoc.get('https://raquelsynths.com/log-reader/log-publico')?.lastmod,
+    '2026-09-15'
+  );
 });

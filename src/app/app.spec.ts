@@ -19,9 +19,11 @@ describe('App consent bootstrap boundary', () => {
   let adSense: jasmine.SpyObj<AdSenseService>;
   let optionalServices: jasmine.SpyObj<OptionalServicesService>;
   let seoService: jasmine.SpyObj<SeoService>;
+  let routeDataValue: Record<string, unknown>;
 
   beforeEach(async () => {
     routerEvents = new Subject<unknown>();
+    routeDataValue = {};
     consentState = signal<ConsentState>('UNKNOWN');
     consent = jasmine.createSpyObj<ConsentService>('ConsentService', ['accept', 'reject'], {
       state: consentState
@@ -70,7 +72,13 @@ describe('App consent bootstrap boundary', () => {
         },
         {
           provide: ActivatedRoute,
-          useValue: { firstChild: null, outlet: 'primary', data: of({}) }
+          useValue: {
+            firstChild: null,
+            outlet: 'primary',
+            get data() {
+              return of(routeDataValue);
+            }
+          }
         }
       ]
     })
@@ -104,6 +112,30 @@ describe('App consent bootstrap boundary', () => {
     expect(adSense.enableAdServing).toHaveBeenCalledOnceWith('ca-pub-5619990751602183');
     expect(consentState()).toBe('UNKNOWN');
     expect(seoService.updateRobots).toHaveBeenCalledOnceWith(null);
+  }));
+
+  it('clears preview noindex when SPA navigation reaches an indexable route', fakeAsync(() => {
+    fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+    tick();
+
+    routeDataValue = { robots: 'noindex, follow' };
+    routerEvents.next(new NavigationEnd(
+      1,
+      '/lore/broklin/s1-e1',
+      '/lore/broklin/s1-e1'
+    ));
+
+    routeDataValue = {};
+    routerEvents.next(new NavigationEnd(
+      2,
+      '/saga',
+      '/saga'
+    ));
+
+    const calls = seoService.updateRobots.calls.allArgs();
+    expect(calls.at(-2)).toEqual(['noindex, follow']);
+    expect(calls.at(-1)).toEqual([null]);
   }));
 
   it('accepts only local RQS consent before requesting manual ad serving', fakeAsync(() => {
