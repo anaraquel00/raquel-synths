@@ -128,3 +128,20 @@ describe('NAV_DATA public navigation containment', () => {
     expect((NAV_DATA.en as Record<string, string>)['discografia']).toBeUndefined();
   });
 });
+
+describe('FOOTER_DATA real authorship', () => {
+  it('credits the real creator instead of fictional RQS characters', async () => {
+    const { FOOTER_DATA } = await import('./app-data');
+
+    expect(FOOTER_DATA.pt.owers)
+      .toBe('Criação, direção e desenvolvimento por Ana Raquel de Holanda Barros.');
+
+    expect(FOOTER_DATA.en.owers)
+      .toBe('Created, directed and developed by Ana Raquel de Holanda Barros.');
+
+    for (const credit of [FOOTER_DATA.pt.owers, FOOTER_DATA.en.owers]) {
+      expect(credit).not.toContain('Kelma');
+      expect(credit).not.toContain('Broklin');
+    }
+  });
+});
