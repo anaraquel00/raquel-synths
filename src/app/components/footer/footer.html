@@ -10,6 +10,16 @@
       <p>{{ t.madeWith }}</p>
       <p>
         <a
+          class="tech-link"
+          href="https://studio.raquelsynths.com/" target="_blank" rel="noopener noreferrer" [attr.aria-label]="translate.isPt() ? 'RQS Studio (abre em uma nova aba)' : 'RQS Studio (opens in a new tab)'"
+        >RQS Studio</a>
+        —
+        {{ translate.isPt()
+          ? 'desenvolvido pela RaQuel Synths'
+          : 'developed by RaQuel Synths' }}
+      </p>
+      <p>
+        <a
           routerLink="/creator"
           class="tech-link"
           [attr.aria-label]="translate.isPt() ? 'Perfil da criadora' : 'Creator profile'"
