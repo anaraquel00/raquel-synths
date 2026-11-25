@@ -242,7 +242,7 @@ await new Promise((resolve, reject) => {
   server.listen(PORT, HOST, resolve);
 });
 
-async function request(path, mode = 'ok') {
+async function request(path, mode = 'ok', language) {
   return new Promise((resolve, reject) => {
     const req = httpRequest(
       {
@@ -252,7 +252,8 @@ async function request(path, mode = 'ok') {
         method: 'GET',
         headers: {
           Host: 'raquelsynths.com',
-          'x-rqs-ci-firestore-mode': mode
+          'x-rqs-ci-firestore-mode': mode,
+          ...(language ? { 'Accept-Language': language } : {})
         }
       },
       res => {
@@ -355,6 +356,146 @@ async function validateHome() {
     'home: unexpected canonical'
   );
   assertIndexable(home, 'home');
+}
+
+
+async function validateStudioInstitutionalVisibility() {
+  const studioLink =
+    /<a\b[^>]*href=["']https:\/\/studio\.raquelsynths\.com\/["'][^>]*>/i;
+
+
+  function assertSafeStudioLinks(html, label) {
+    const links = [...html.matchAll(
+      /<a\b[^>]*href=["']https:\/\/studio\.raquelsynths\.com\/["'][^>]*>/gi
+    )];
+
+    assert.ok(links.length > 0, `${label}: missing links`);
+
+    for (const [link] of links) {
+      assert.match(
+        link,
+        /\btarget=["']_blank["']/i,
+        `${label}: expected new tab`
+      );
+
+      const rel = link.match(
+        /\brel=["']([^"']+)["']/i
+      )?.[1]?.split(/\s+/) ?? [];
+
+      assert.ok(
+        rel.includes('noopener'),
+        `${label}: missing noopener`
+      );
+
+      assert.ok(
+        rel.includes('noreferrer'),
+        `${label}: missing noreferrer`
+      );
+    }
+  }
+
+  const cases = [
+    {
+      language: 'pt-BR',
+      description: 'RQS Studio é uma plataforma de produção musical na web',
+      cta: 'EXPLORAR RQS STUDIO',
+      attribution: 'desenvolvido pela RaQuel Synths'
+    },
+    {
+      language: 'en-US',
+      description: 'RQS Studio is a web-based music production platform',
+      cta: 'EXPLORE RQS STUDIO',
+      attribution: 'developed by RaQuel Synths'
+    }
+  ];
+
+  for (const testCase of cases) {
+    const label = `Studio institutional SSR ${testCase.language}`;
+    const home = await request('/', 'ok', testCase.language);
+
+    assert.equal(home.status, 200, `${label}: HTTP status`);
+    assertHtml(home, label);
+    assertIndexable(home, label);
+
+    assert.equal(
+      extractCanonical(home.html),
+      'https://raquelsynths.com/',
+      `${label}: canonical regression`
+    );
+
+    assert.ok(
+      new RegExp(
+        `<html\\b[^>]*\\blang=["']${testCase.language}["']`,
+        'i'
+      ).test(home.html),
+      `${label}: incorrect document language`
+    );
+
+    const section = home.html.match(
+      /<section\b[^>]*\bid=["']rqs-studio["'][^>]*>[\s\S]*?<\/section>/i
+    )?.[0];
+
+    assert.ok(section, `${label}: Studio section missing`);
+
+    for (const text of [
+      'RQS ECOSYSTEM // CREATIVE TECHNOLOGY',
+      'RQS STUDIO',
+      'Music Production Software',
+      'MASTER',
+      'Audio Mastering',
+      'PITCH',
+      'Music Analysis',
+      'BUILD',
+      'Setlist Builder',
+      'UPLINK',
+      'Smart Music Links',
+      testCase.description,
+      testCase.cta
+    ]) {
+      assert.ok(
+        section.includes(text),
+        `${label}: missing content ${text}`
+      );
+    }
+
+    assert.match(section, studioLink, `${label}: CTA missing`);
+    assertSafeStudioLinks(section, label);
+
+    assert.doesNotMatch(
+      home.html,
+      /\bid=["']home-transmitter-email["']/i,
+      `${label}: obsolete homepage newsletter field`
+    );
+
+    assert.doesNotMatch(
+      home.html,
+      /\bid=["']transmitter["']/i,
+      `${label}: obsolete homepage newsletter section`
+    );
+
+    const header = home.html.match(
+      /<mat-toolbar\b[^>]*>[\s\S]*?<\/mat-toolbar>/i
+    )?.[0];
+
+    assert.ok(header, `${label}: header missing`);
+    assert.match(header, studioLink, `${label}: header link missing`);
+    assertSafeStudioLinks(header, label);
+
+    const footer = home.html.match(
+      /<footer\b[^>]*>[\s\S]*?<\/footer>/i
+    )?.[0];
+
+    assert.ok(footer, `${label}: footer missing`);
+    assert.match(footer, studioLink, `${label}: footer link missing`);
+    assertSafeStudioLinks(footer, label);
+
+    assert.ok(
+      footer.includes(testCase.attribution),
+      `${label}: institutional attribution missing`
+    );
+
+    console.log(`${label}: PASS`);
+  }
 }
 
 async function validateSagaConsolidation() {
@@ -599,6 +740,7 @@ let validationError = null;
 
 try {
   await validateHome();
+  await validateStudioInstitutionalVisibility();
   await validateSagaConsolidation();
   await validateLogsArchive();
   await validateLegacyRouteRetirement();

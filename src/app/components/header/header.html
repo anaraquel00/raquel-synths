@@ -32,6 +32,9 @@
     <button mat-button type="button" (click)="scrollTo('latest-signal')">
       {{ translate.isPt() ? 'ÚLTIMO SINAL' : 'LATEST SIGNAL' }}
     </button>
+    <a mat-button href="https://studio.raquelsynths.com/" target="_blank" rel="noopener noreferrer" [attr.aria-label]="translate.isPt() ? 'RQS Studio (abre em uma nova aba)' : 'RQS Studio (opens in a new tab)'">
+      RQS STUDIO
+    </a>
     <a mat-button routerLink="/creator" class="btn-creator">{{ navText.creator }}</a>
   </div>
 
@@ -71,6 +74,9 @@
     <button mat-menu-item type="button" (click)="scrollTo('latest-signal')">
       <span>{{ translate.isPt() ? 'ÚLTIMO SINAL' : 'LATEST SIGNAL' }}</span>
     </button>
+    <a mat-menu-item href="https://studio.raquelsynths.com/" target="_blank" rel="noopener noreferrer" [attr.aria-label]="translate.isPt() ? 'RQS Studio (abre em uma nova aba)' : 'RQS Studio (opens in a new tab)'">
+      <span>RQS STUDIO</span>
+    </a>
     <a mat-menu-item routerLink="/creator"><span>{{ navText.creator }}</span></a>
   </mat-menu>
 </mat-toolbar>

@@ -106,7 +106,7 @@
 
 .signal-card,
 .creator-card,
-.transmitter-card {
+.studio-card {
   width: min(1040px, calc(100% - 2.5rem));
 }
 
@@ -198,11 +198,11 @@
   padding-top: clamp(4rem, 8vw, 7rem);
 }
 
-.transmitter-section {
+.studio-section {
   background: #060b13;
 }
 
-.transmitter-card {
+.studio-card {
   border: 1px solid rgba(var(--primary-rgb), 0.32);
   padding-inline: clamp(1.25rem, 5vw, 4rem);
   box-sizing: border-box;
@@ -330,7 +330,7 @@
     background-color: #02060d;
   }
 
-  .transmitter-section {
+  .studio-section {
     background-color: #050d18;
   }
 
@@ -354,7 +354,7 @@
 
   .universe-section,
   .support-section,
-  .transmitter-section {
+  .studio-section {
     background-color: #100605;
   }
 
@@ -371,7 +371,7 @@
   }
 
   .journey-card,
-  .transmitter-card {
+  .studio-card {
     border-color: rgba(255, 90, 31, 0.42);
     background: linear-gradient(145deg, rgba(255, 61, 0, 0.1), rgba(12, 4, 3, 0.95));
   }
@@ -416,7 +416,7 @@
   .section-shell,
   .signal-card,
   .creator-card,
-  .transmitter-card,
+  .studio-card,
   .support-grid {
     width: min(100% - 2rem, 1120px);
   }
@@ -516,4 +516,58 @@
     min-height: 0;
     aspect-ratio: 16 / 10;
   }
+}
+
+/* RQS Studio — institutional discovery */
+
+.studio-card {
+  padding-block: clamp(2rem, 5vw, 3.5rem);
+}
+
+.studio-subtitle {
+  margin: 0 0 1.25rem;
+  color: #c7ced9;
+  font-family: var(--font-heading);
+  font-size: clamp(1.15rem, 2.4vw, 1.6rem);
+  line-height: 1.4;
+}
+
+.studio-modules {
+  display: grid;
+  grid-template-columns:
+    repeat(auto-fit, minmax(min(100%, 8.5rem), 1fr));
+  gap: 0.75rem;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.75rem;
+  max-width: 820px;
+
+  li {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    padding: 1rem;
+    border: 1px solid rgba(var(--primary-rgb), 0.35);
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  strong {
+    color: #ffffff;
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    letter-spacing: 0.06em;
+  }
+
+  span {
+    color: #c7ced9;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+}
+
+:host-context(body.mode-jonah) .studio-modules li {
+  border-color: rgba(255, 90, 31, 0.42);
 }

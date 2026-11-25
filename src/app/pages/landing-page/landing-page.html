@@ -116,85 +116,55 @@
   <app-storytelling [logs]="systemLogs()"></app-storytelling>
 </section>
 
-<section id="transmitter" class="journey-section transmitter-section" aria-labelledby="transmitter-title">
-  <div class="section-shell transmitter-card">
-    <p class="section-kicker">{{ translate.isPt() ? 'TRANSMISSOR RQS' : 'RQS TRANSMITTER' }}</p>
-    <h2 id="transmitter-title">
-      {{ translate.isPt() ? 'Receba o próximo sinal.' : 'Receive the next signal.' }}
-    </h2>
-    <p class="section-summary">
-      {{ translate.isPt()
-        ? 'Sintonize sua frequência para receber os próximos lançamentos, capítulos e transmissões importantes da RaQuel Synths. Sem depender apenas dos algoritmos das plataformas.'
-        : 'Tune your frequency to receive upcoming releases, chapters and important transmissions from RaQuel Synths, without depending only on platform algorithms.' }}
+<section id="rqs-studio" class="journey-section studio-section" aria-labelledby="rqs-studio-title">
+  <div class="section-shell studio-card">
+    <p class="section-kicker" lang="en">
+      RQS ECOSYSTEM // CREATIVE TECHNOLOGY
     </p>
 
-    @if (transmitterStatus() !== 'success') {
-      <form class="transmitter-form" (ngSubmit)="subscribeNewsletter()" novalidate>
-        <label for="home-transmitter-email">
-          {{ translate.isPt() ? 'Seu e-mail' : 'Your email' }}
-        </label>
-        <div class="transmitter-input-row">
-          <input
-            id="home-transmitter-email"
-            name="email"
-            type="email"
-            inputmode="email"
-            autocomplete="email"
-            required
-            [placeholder]="translate.isPt() ? 'seu@email.com' : 'your@email.com'"
-            [(ngModel)]="emailInputValue"
-            [attr.aria-describedby]="'transmitter-consent transmitter-status'"
-          />
-          <button type="submit" [disabled]="transmitterStatus() === 'submitting'">
-            {{ transmitterStatus() === 'submitting'
-              ? (translate.isPt() ? 'SINTONIZANDO...' : 'TUNING...')
-              : (translate.isPt() ? 'SINTONIZAR' : 'TUNE IN') }}
-          </button>
-        </div>
+    <h2 id="rqs-studio-title">RQS STUDIO</h2>
 
-        <label id="transmitter-consent" class="consent-control">
-          <input
-            name="consent"
-            type="checkbox"
-            [(ngModel)]="transmitterConsent"
-          />
-          <span>
-            {{ translate.isPt()
-              ? 'Concordo em receber transmissões da RaQuel Synths e li a'
-              : 'I agree to receive RaQuel Synths transmissions and have read the' }}
-            <a routerLink="/compliance">
-              {{ translate.isPt() ? 'Política de Privacidade' : 'Privacy Policy' }}
-            </a>.
-          </span>
-        </label>
-      </form>
-    }
+    <p class="studio-subtitle" lang="en">
+      Music Production Software
+    </p>
 
-    <div id="transmitter-status" class="form-status" aria-live="polite">
-      @switch (transmitterStatus()) {
-        @case ('empty') {
-          <p>{{ translate.isPt() ? 'Digite seu e-mail para sintonizar.' : 'Enter your email to tune in.' }}</p>
-        }
-        @case ('invalid') {
-          <p>{{ translate.isPt() ? 'Digite um e-mail válido.' : 'Enter a valid email address.' }}</p>
-        }
-        @case ('consent') {
-          <p>{{ translate.isPt() ? 'Confirme o consentimento para continuar.' : 'Confirm your consent to continue.' }}</p>
-        }
-        @case ('error') {
-          <p>{{ translate.isPt()
-            ? 'Não foi possível registrar o sinal agora. Tente novamente.'
-            : 'We could not register the signal right now. Please try again.' }}</p>
-        }
-        @case ('success') {
-          <p class="success-message">
-            {{ translate.isPt()
-              ? 'Sinal registrado. A próxima transmissão chegará ao seu e-mail.'
-              : 'Signal registered. The next transmission will reach your inbox.' }}
-          </p>
-        }
-      }
-    </div>
+    <p class="section-summary">
+      {{ translate.isPt()
+        ? 'RQS Studio é uma plataforma de produção musical na web desenvolvida pela RaQuel Synths. Reúne ferramentas para masterização de áudio, análise musical, criação de setlists e links inteligentes para artistas e produtores.'
+        : 'RQS Studio is a web-based music production platform developed by RaQuel Synths. It brings together tools for audio mastering, music analysis, setlist creation and smart music links for artists and producers.' }}
+    </p>
+
+    <ul
+      class="studio-modules"
+      [attr.aria-label]="translate.isPt() ? 'Módulos do RQS Studio' : 'RQS Studio modules'"
+    >
+      <li lang="en">
+        <strong>MASTER</strong>
+        <span>Audio Mastering</span>
+      </li>
+
+      <li lang="en">
+        <strong>PITCH</strong>
+        <span>Music Analysis</span>
+      </li>
+
+      <li lang="en">
+        <strong>BUILD</strong>
+        <span>Setlist Builder</span>
+      </li>
+
+      <li lang="en">
+        <strong>UPLINK</strong>
+        <span>Smart Music Links</span>
+      </li>
+    </ul>
+
+    <a
+      class="journey-cta"
+      href="https://studio.raquelsynths.com/" target="_blank" rel="noopener noreferrer" [attr.aria-label]="translate.isPt() ? 'EXPLORAR RQS STUDIO (abre em uma nova aba)' : 'EXPLORE RQS STUDIO (opens in a new tab)'"
+    >
+      {{ translate.isPt() ? 'EXPLORAR RQS STUDIO' : 'EXPLORE RQS STUDIO' }}
+    </a>
   </div>
 </section>
 
