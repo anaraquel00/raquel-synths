@@ -185,10 +185,10 @@ export const CREATOR_DATA = {
       back: 'VOLTAR À BASE'
     },
     profile: {
-      name: 'Ana Raquel de Holanda',
-      role: 'Software Engineer • Angular Architect • AI Automation 🚀',
+      name: "Ana Raquel de Holanda Barros",
+      role: "AI Evaluation & Software QA • Desenvolvedora de Software • Fundadora do RQS Studio",
       // 👇 AQUI ESTÁ O MANIFESTO REFATORADO E PROFISSIONAL
-      bio: "Tech Lead e Engenheira de Software especializada em Angular 20+, Arquitetura Front-End, Automação Inteligente e IA Generativa. Desenvolvo aplicações escaláveis, fluxos automatizados e produtos digitais orientados à performance, SEO e experiência do usuário.",
+      bio: "Desenvolvo produtos digitais que conectam engenharia de software, inteligência artificial e tecnologia musical. Minha atuação envolve desenvolvimento assistido por IA, revisão de código, testes funcionais, investigação de falhas e validação de software baseada em evidências.",
       social: {
         linkedin: 'LinkedIn',
         github: 'GitHub'
@@ -216,11 +216,8 @@ export const CREATOR_DATA = {
 
     manifesto: [
       {
-        title: '// FILOSOFIA DE ENGENHARIA',
-        content: `Acredito que software não deve apenas funcionar;
-       Ele deve ser escalável, legível, rápido e simples de evoluir.
-       Por isso utilizo arquitetura orientada a componentes, automações inteligentes e
-       IA como aceleradora de engenharia, sempre mantendo o controle das decisões técnicas.`
+        title: "// FILOSOFIA DE ENGENHARIA",
+        content: "Engenharia conduzida por pessoas, implementação assistida por IA e validação baseada em evidências. A inteligência artificial acelera o desenvolvimento, mas os requisitos, as decisões técnicas e a aprovação das mudanças permanecem sob controle humano."
       }
     ],
 
@@ -360,13 +357,13 @@ export const CREATOR_DATA = {
       ]
     },
     business: {
-      title: 'Vamos construir algo grandioso.',
-      status: 'CANAL CORPORATIVO | STATUS: DISPONÍVEL PARA ESCALAR O SEU PROJETO 🚀',
-      statusJonah: 'CANAL SUBTERRÂNEO | STATUS: DISPONÍVEL PARA ESCALAR O SEU PROJETO 🚀',
-      desc: 'Estou disponível para colaborar em projetos de Front-End Engineering, Arquitetura Angular, Automação Inteligente e IA aplicada ao desenvolvimento de produtos digitais. Gosto de transformar requisitos complexos em soluções escaláveis, performáticas e fáceis de evoluir, sempre equilibrando qualidade técnica e valor para o negócio.',
-      descJonah:'Estou disponível para colaborar em projetos de Front-End Engineering, Arquitetura Angular, Automação Inteligente e IA aplicada ao desenvolvimento de produtos digitais. Gosto de transformar requisitos complexos em soluções escaláveis, performáticas e fáceis de evoluir, sempre equilibrando qualidade técnica e valor para o negócio.',
-      actionEmail: 'Agende um Diagnóstico',
-      actionLinkedin: 'Linkedin'
+      title: "Vamos construir soluções com qualidade e propósito.",
+      status: "CANAL PROFISSIONAL | ABERTA A OPORTUNIDADES",
+      statusJonah: "CANAL SUBTERRÂNEO | ABERTA A OPORTUNIDADES",
+      desc: "Disponível para oportunidades remotas, projetos freelance e colaborações em avaliação de IA, qualidade de software, desenvolvimento assistido por IA e engenharia de produtos digitais.",
+      descJonah:"Disponível para oportunidades remotas, projetos freelance e colaborações em avaliação de IA, qualidade de software, desenvolvimento assistido por IA e engenharia de produtos digitais.",
+      actionEmail: "Entre em contato",
+      actionLinkedin: "LinkedIn"
     }
   },
 
@@ -374,9 +371,9 @@ export const CREATOR_DATA = {
   en: {
     nav: { back: 'BACK TO BASE' },
     profile: {
-      name: 'Ana Raquel de Holanda',
-      role: 'Software Engineer • Angular Architect • AI Automation 🚀',
-      bio: "Tech Lead and Software Engineer specializing in Angular 20+, Front-End Architecture, Intelligent Automation, and Generative AI. I develop scalable applications, automated workflows, and digital products driven by performance, SEO, and user experience.",
+      name: "Ana Raquel de Holanda Barros",
+      role: "AI Evaluation & Software QA • Software Developer • RQS Studio Founder",
+      bio: "I develop digital products connecting software engineering, artificial intelligence and music technology. My work involves AI-assisted software development, code review, functional testing, bug investigation and evidence-based software validation.",
       social: { linkedin: 'LinkedIn', github: 'GitHub' }
     },
 
@@ -401,11 +398,8 @@ export const CREATOR_DATA = {
 
     manifesto: [
       {
-        title: '// ENGINEERING PHILOSOPHY',
-        content: `I believe software shouldn't just work;
-       it should be scalable, readable, fast, and simple to evolve.
-       That is why I use component-based architecture, intelligent automation, and
-       AI to accelerate engineering, while always retaining control over technical decisions.`
+        title: "// ENGINEERING PHILOSOPHY",
+        content: "Human-led engineering, AI-assisted implementation and evidence-based validation. Artificial intelligence accelerates development, while requirements, technical decisions and approval remain under human control."
       }
     ],
 
@@ -545,13 +539,13 @@ export const CREATOR_DATA = {
       ]
     },
     business: {
-      title: 'BUSINESS CHANNEL',
-      status: 'CORPORATE CHANNEL | STATUS: AVAILABLE TO SCALE YOUR PROJECT 🚀',
-      statusJonah: 'UNDERGROUND CHANNEL | STATUS: AVAILABLE TO SCALE YOUR PROJECT 🚀' ,
-      desc: 'Do you need solid technical leadership in Front-End, Angular architecture, and intelligent automation? I work on the front lines: transforming complex business rules and sophisticated designs into clean, responsive, and high-performance ecosystems. Sustainable code that passes audits and generates real market value.',
-      descJonah: 'Do you need solid technical leadership in Front-End, Angular architecture, and intelligent automation? I work on the front lines: transforming complex business rules and sophisticated designs into clean, responsive, and high-performance ecosystems. Sustainable code that passes audits and generates real market value.',
-      actionEmail: 'Schedule a Diagnosis',
-      actionLinkedin: 'Download Resume'
+      title: "Let's build solutions with quality and purpose.",
+      status: "PROFESSIONAL CHANNEL | OPEN TO OPPORTUNITIES",
+      statusJonah: "UNDERGROUND CHANNEL | OPEN TO OPPORTUNITIES",
+      desc: "Open to remote opportunities, freelance projects and collaborations in AI evaluation, software quality assurance, AI-assisted development and digital product engineering.",
+      descJonah: "Open to remote opportunities, freelance projects and collaborations in AI evaluation, software quality assurance, AI-assisted development and digital product engineering.",
+      actionEmail: "Get in touch",
+      actionLinkedin: "LinkedIn"
     }
   }
 };
