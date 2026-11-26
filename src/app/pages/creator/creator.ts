@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, signal, afterNextRender, inject, DOCUMENT, effect, NgZone } from '@angular/core';
 import { TranslationService } from '../../services/translation.service';
 import { CREATOR_DATA, NAV_DATA } from '../../data/app-data';
+import { CREATOR_STUDIO_DATA } from './creator-studio.data';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
@@ -183,6 +184,11 @@ this.seoService.setJsonLd({
   private checkTheme() {
     const isJonah = this.document.body.classList.contains('mode-jonah');
     this.currentTheme.set(isJonah ? 'jonah' : 'broklin');
+  }
+
+
+  get studio() {
+    return CREATOR_STUDIO_DATA[this.currentLang()];
   }
 
   // Atalho para pegar os textos

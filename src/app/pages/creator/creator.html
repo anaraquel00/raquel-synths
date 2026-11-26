@@ -34,6 +34,93 @@
     </div>
   </header>
 
+  <!-- RQS STUDIO — FLAGSHIP PROJECT -->
+  <section
+    id="rqs-studio"
+    class="studio-showcase"
+    aria-labelledby="studio-heading">
+
+    <div class="studio-meta">
+      <span class="studio-eyebrow">
+        {{ studio.eyebrow }}
+      </span>
+
+      <span class="studio-status">
+        {{ studio.status }}
+      </span>
+    </div>
+
+    <h2 id="studio-heading">
+      {{ studio.title }}
+    </h2>
+
+    <p class="studio-subtitle">
+      {{ studio.subtitle }}
+    </p>
+
+    <p class="studio-description">
+      {{ studio.description }}
+    </p>
+
+    <div class="studio-modules">
+
+      @for (module of studio.modules; track module.id) {
+
+        <article
+          class="studio-module"
+          [attr.data-module]="module.id">
+
+          <mat-icon aria-hidden="true">
+            {{ module.icon }}
+          </mat-icon>
+
+          <h3>{{ module.name }}</h3>
+
+          <p class="module-subtitle">
+            {{ module.subtitle }}
+          </p>
+
+          <p class="module-description">
+            {{ module.description }}
+          </p>
+
+        </article>
+
+      }
+
+    </div>
+
+    <div class="studio-stack">
+      <p>{{ studio.stackLabel }}</p>
+
+      <div class="chips">
+        @for (tech of studio.stack; track tech) {
+          <span class="tech-chip">{{ tech }}</span>
+        }
+      </div>
+    </div>
+
+    <a
+      class="studio-action"
+      [href]="studio.url"
+      target="_blank"
+      rel="noopener noreferrer">
+
+      {{ studio.action }}
+
+      <mat-icon aria-hidden="true">
+        open_in_new
+      </mat-icon>
+
+    </a>
+
+    <p class="studio-ownership">
+      {{ studio.ownership }}
+    </p>
+
+  </section>
+
+
  <section class="manifesto-section">
     @for (block of text.manifesto; track block.title) {
       <div class="manifesto-block">
