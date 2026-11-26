@@ -1,334 +1,248 @@
-/* 1. BARRA DE NAVEGAÇÃO (Mantemos escura para contraste com o topo) */
+/* RQS CREATOR PORTFOLIO V2 */
+
+:host {
+  display: block;
+  color: #f1f3f8;
+
+  --creator-bg: #090c14;
+  --creator-surface: #151821;
+  --creator-card: #1c202c;
+  --creator-border: #303747;
+  --creator-text: #f1f3f8;
+  --creator-muted: #b9c3d4;
+  --creator-accent: #39ff14;
+  --creator-secondary: #b9a0ff;
+}
+
+:host-context(.mode-jonah) {
+  --creator-accent: #ff8759;
+  --creator-secondary: #ffb38a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 .nav-bar {
-  padding: 15px 20px;
-  background: rgba(0, 0, 0, 0.6); /* Mais escuro para ler o botão */
-  backdrop-filter: blur(5px);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 20px clamp(16px, 4vw, 40px);
+  background: var(--creator-bg);
 }
 
 .back-btn {
-  color: var(--accent-color);
-  font-weight: bold;
-  letter-spacing: 1px;
+  color: var(--creator-accent);
+  font-weight: 600;
 }
 
-/* 2. O CONTAINER "FOLHA DE PAPEL" (A Mágica da Leitura) */
 .creator-container {
-  max-width: 1200px;
-  margin: 1px auto 40px; /* Margem ajustada */
-  padding: 30px;
-
-  /* 👇 FUNDO BRANCO TRANSLÚCIDO */
-  background: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(15px);
-  border-radius: 16px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-
-  /* 👇 TEXTO ESCURO PADRÃO */
-  color: #000000;
+  width: min(1280px, calc(100% - 32px));
+  margin: 0 auto 48px;
+  padding: clamp(20px, 4vw, 48px);
+  color: var(--creator-text);
+  background:
+    radial-gradient(
+      ellipse at top right,
+      rgba(126, 87, 194, 0.10),
+      transparent 45%
+    ),
+    var(--creator-bg);
+  border: 1px solid var(--creator-border);
+  border-radius: 20px;
 }
 
-.glitch-title {
-  font-size: 2.5rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  position: relative;
-  color: #00ffcc; /* O nosso verde neon RQS */
-  text-shadow: 0.05em 0 0 rgba(255, 0, 85, 0.75),
-              -0.025em -0.05em 0 rgba(0, 255, 204, 0.75),
-              0.025em 0.05em 0 rgba(255, 255, 0, 0.75);
-  animation: glitch-anim 500ms infinite;
+.creator-jonah {
+  --creator-accent: #ff8759;
+  --creator-secondary: #ffb38a;
 
-  &::before, &::after {
-    content: attr(data-text);
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #0a0a0a; /* Cor do fundo da nossa UI */
-  }
-
-  &::before {
-    left: 2px;
-    text-shadow: -2px 0 #ff0055;
-    clip-path: polygon(0 20%, 100% 20%, 100% 21%, 0 21%);
-    animation: glitch-anim-2 3s infinite linear alternate-reverse;
-  }
-
-  &::after {
-    left: -2px;
-    text-shadow: -2px 0 #00ffcc;
-    clip-path: polygon(0 60%, 100% 60%, 100% 61%, 0 61%);
-    animation: glitch-anim-1 2s infinite linear alternate-reverse;
-  }
+  background:
+    radial-gradient(
+      ellipse at top right,
+      rgba(255, 87, 34, 0.08),
+      transparent 45%
+    ),
+    var(--creator-bg);
 }
 
-/* Keyframes para a tremedeira Cyberpunk */
-@keyframes glitch-anim {
-  0% { text-shadow: 0.05em 0 0 rgba(255, 0, 85, 0.75), -0.05em -0.025em 0 rgba(0, 255, 204, 0.75), -0.025em 0.05em 0 rgba(255, 255, 0, 0.75); }
-  14% { text-shadow: 0.05em 0 0 rgba(255, 0, 85, 0.75), -0.05em -0.025em 0 rgba(0, 255, 204, 0.75), -0.025em 0.05em 0 rgba(255, 255, 0, 0.75); }
-  15% { text-shadow: -0.05em -0.025em 0 rgba(255, 0, 85, 0.75), 0.025em 0.025em 0 rgba(0, 255, 204, 0.75), -0.05em -0.05em 0 rgba(255, 255, 0, 0.75); }
-  49% { text-shadow: -0.05em -0.025em 0 rgba(255, 0, 85, 0.75), 0.025em 0.025em 0 rgba(0, 255, 204, 0.75), -0.05em -0.05em 0 rgba(255, 255, 0, 0.75); }
-  50% { text-shadow: 0.025em 0.05em 0 rgba(255, 0, 85, 0.75), 0.05em 0 0 rgba(0, 255, 204, 0.75), 0 -0.05em 0 rgba(255, 255, 0, 0.75); }
-  99% { text-shadow: 0.025em 0.05em 0 rgba(255, 0, 85, 0.75), 0.05em 0 0 rgba(0, 255, 204, 0.75), 0 -0.05em 0 rgba(255, 255, 0, 0.75); }
-  100% { text-shadow: -0.025em 0 0 rgba(255, 0, 85, 0.75), -0.025em -0.025em 0 rgba(0, 255, 204, 0.75), -0.025em -0.05em 0 rgba(255, 255, 0, 0.75); }
+/* PROFILE HERO */
+
+.profile-header {
+  padding: clamp(24px, 4vw, 44px);
+  background: var(--creator-surface);
+  border: 1px solid var(--creator-border);
+  border-radius: 18px;
 }
 
-/* --- HERO SECTION --- */
 .profile-grid {
-  display: flex;
-  gap: 40px;
-  align-items: flex-start;
-  margin-top: 30px;
-  flex-wrap: wrap;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(24px, 4vw, 44px);
 }
 
 .profile-photo-container {
-  position: relative;
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  border: 4px solid var(--accent-color);
+  width: 180px;
+  aspect-ratio: 1;
   overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* Sombra mais suave */
-  flex-shrink: 0;
-
-  img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: opacity 0.4s ease;
-  }
+  border: 2px solid var(--creator-accent);
+  border-radius: 50%;
 }
 
-.fade-in { animation: fadeIn 0.4s ease-in; }
-
-/* MANIFESTO (A História) */
-.manifesto-section {
-  max-width: 1100px;
-  margin: 40px auto;
-  padding: 0 10px;
-}
-
-.manifesto-block {
-  margin-bottom: 30px;
-
-  h4 {
-    font-family: 'Courier New', monospace; /* Fonte monoespaçada estilo código */
-    color: #161150; /* Usa a cor do tema (Rosa ou Laranja) */
-    font-size: 1.3rem;
-    font-weight: bolder;
-    margin-bottom: 10px;
-    letter-spacing: -0.5px;
-  }
-
-  p {
-    font-size: 1.05rem;
-    line-height: 1.7; /* Bom para leitura */
-    color: #000000; /* Cinza escuro para ler bem no fundo claro */
-    text-align: justify;
-    font-weight: 600;
-    margin-bottom: 20px;
-  }
-}
-
-    :host-context(.mode-jonah){
-     .profile-bio {
-  flex: 1;
-  /* Título Preto Forte */
-  .dev-name {
-    font-size: 2.5rem;
-    margin: 0;
-    color: #ff5722; /* Preto quase total */
-    font-family: 'Oswald', sans-serif;
-    text-transform: uppercase;
-  }
-
-  /* Cargo com cor de destaque mas legível */
-  .dev-role {
-    color: #ff5722; /* Azul/Roxo vibrante para ler no branco */
-    margin-bottom: 15px;
-    font-weight: 600;
-  }
-
-  /* Texto Cinza Escuro */
-  .bio-text {
-    line-height: 1.6;
-    font-size: 1.1rem;
-    color: #fa7e11;
-    font-weight: 500;
-  }
-}
-
- .creator-container {
-  max-width: 1200px;
-  margin: 1px auto 40px; /* Margem ajustada */
-  padding: 30px;
-
-  /* 👇 FUNDO BRANCO TRANSLÚCIDO */
-  background: rgba(0, 0, 0, 0.603);
-  backdrop-filter: blur(15px);
-  border-radius: 16px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-
-  /* 👇 TEXTO ESCURO PADRÃO */
-  color: #ff5722;
-}
-h3 {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: #ff5722; /* Títulos das seções em preto */
-  font-size: 1.5rem;
-  margin-bottom: 25px;
-  font-weight: bold;
-
-  mat-icon { color: var(--accent-color); } /* Só o ícone colorido */
-}
-.business-section {
-  margin-top: 40px;
-  margin-bottom: 60px;
-
-  h3 {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: #ff655a;; /* Verde Matrix */
-    margin-bottom: 20px;
-    //font-family: 'Courier New', monospace;
-    font-weight: bold;
-  }
-}
-    }
-
-
-
-:host-context(.mode-jonah) .manifesto-block h4 {
-  color: #ff5722; /* Laranja Industrial */
-  font-weight: bolder;
-}
-/* Ajuste para o modo escuro/Jonah se necessário */
-:host-context(.mode-jonah) .manifesto-block p {
-  color: #ff9729; /* Texto claro no fundo escuro */
-}
-
-/* Efeito Hover (Modo Jonah) */
-:host-context(.mode-jonah) .profile-photo-container {
-  border-color: #ff5722;
-  box-shadow: 0 0 25px #ff56228b;
-  img { filter: contrast(1.2); }
+.profile-photo-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .profile-bio {
-  flex: 1;
-  /* Título Preto Forte */
-  .dev-name {
-    font-size: 2.5rem;
-    margin: 0;
-    color: #111; /* Preto quase total */
-    font-family: 'Oswald', sans-serif;
-    text-transform: uppercase;
-  }
-
-  /* Cargo com cor de destaque mas legível */
-  .dev-role {
-    color: #161150; /* Azul/Roxo vibrante para ler no branco */
-    margin-bottom: 15px;
-    font-weight: 600;
-  }
-
-  /* Texto Cinza Escuro */
-  .bio-text {
-    line-height: 1.6;
-    font-size: 1.1rem;
-    color: #000000;
-    font-weight: 500;
-  }
+  min-width: 0;
 }
 
-.social-links {
-  margin-top: 20px;
+.dev-name {
+  margin: 0 0 16px;
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.035em;
+  color: var(--creator-text);
+  overflow-wrap: anywhere;
+}
+
+.dev-role {
+  margin: 0 0 16px;
+  color: var(--creator-secondary);
+  font-size: clamp(1.05rem, 2vw, 1.4rem);
+  line-height: 1.5;
+  font-weight: 600;
+}
+
+.bio-text {
+  margin: 0;
+  max-width: 75ch;
+  color: var(--creator-muted);
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.social-links,
+.biz-actions {
   display: flex;
-  gap: 15px;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
 
-  @media (max-width: 768px) { justify-content: center; }
+/* SHARED ACTIONS */
 
-  .social-btn {
-    padding: 8px 16px;
-    border-radius: 4px;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 0.9rem;
-    transition: transform 0.2s;
+.social-btn,
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 20px;
+  color: var(--creator-text);
+  background: var(--creator-card);
+  border: 1px solid var(--creator-border);
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: border-color 160ms ease,
+              background-color 160ms ease;
+}
 
-    &.linkedin { background: #0077b5; color: white; }
-    &.github { background: #222; color: white; }
+.social-btn:hover,
+.action-btn:hover {
+  border-color: var(--creator-accent);
+  background: var(--creator-surface);
+}
 
-    &:hover { transform: translateY(-3px); }
-  }
+.social-btn.linkedin,
+.action-btn.email {
+  background: var(--creator-accent);
+  border-color: var(--creator-accent);
+  color: #090c14;
+}
+
+.social-btn.linkedin:hover,
+.action-btn.email:hover {
+  background: var(--creator-secondary);
+  border-color: var(--creator-secondary);
+}
+
+/* SECTIONS */
+
+.creator-container section {
+  margin-top: clamp(36px, 6vw, 64px);
+}
+
+.creator-container section h2 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 24px;
+  color: var(--creator-text);
+  font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+  line-height: 1.35;
+}
+
+.creator-container section h2 mat-icon {
+  color: var(--creator-accent);
+  flex-shrink: 0;
+}
+
+.manifesto-block {
+  background: var(--creator-surface);
+  border: 1px solid var(--creator-border);
+  border-left: 3px solid var(--creator-accent);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.manifesto-block h2 {
+  color: var(--creator-secondary) !important;
+  font-size: 1.15rem !important;
+}
+
+.manifesto-block p {
+  margin: 0;
+  color: var(--creator-muted);
+  line-height: 1.8;
 }
 
 .cyber-divider {
-  margin: 50px 0;
   border: 0;
   height: 1px;
-  /* Gradiente cinza para combinar com o fundo claro */
-  background: linear-gradient(90deg, transparent, #ccc, transparent);
+  margin: 48px 0;
+  background: var(--creator-border);
 }
 
-/* --- SEÇÕES (Títulos) --- */
-h3 {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: #000000; /* Títulos das seções em preto */
-  font-size: 1.5rem;
-  margin-bottom: 25px;
-  font-weight: bold;
+/* CORE EXPERTISE */
 
-  mat-icon { color: var(--accent-color); } /* Só o ícone colorido */
-}
-
-/* --- SKILLS --- */
 .skills-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
+  grid-template-columns:
+    repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+  gap: 16px;
 }
 
 .skill-category {
-  /* Fundo cinza claro */
-  background: #f4f4f4;
-  padding: 15px;
-  border-radius: 8px;
-  border: 1px solid #ddd; /* Borda cinza */
-
-  &:hover {
-    background: #fff;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-  }
+  min-width: 0;
+  padding: 24px;
+  background: var(--creator-surface);
+  border: 1px solid var(--creator-border);
+  border-radius: 14px;
 }
 
 .category-label {
   display: block;
-  font-size: 0.8rem;
-  color: #000000; /* Label cinza médio */
-  margin-bottom: 10px;
-  letter-spacing: 1px;
-  font-weight: bold;
+  margin-bottom: 18px;
+  color: var(--creator-secondary);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
 .chips {
@@ -338,409 +252,203 @@ h3 {
 }
 
 .tech-chip {
-  background: #fff;
-  padding: 5px 10px;
-  border-radius: 15px;
-  font-size: 0.9rem;
-  border: 1px solid #ccc;
-  color: #333;
-  font-weight: 500;
-
-  /* Cores específicas mantidas */
-  &.java { border-color: #f89820; color: #d67b09; background: #fff8e1; }
-  &.angular { border-color: #dd0031; color: #b50027; background: #ffe6ea; }
-  &.spring { border-color: #6db33f; color: #4e852a; background: #f0f9eb; }
+  padding: 6px 10px;
+  background: var(--creator-card);
+  color: var(--creator-muted);
+  border: 1px solid var(--creator-border);
+  border-radius: 6px;
+  font-size: 0.82rem;
+  overflow-wrap: anywhere;
 }
 
-/* --- PROJETOS --- */
+/* ENGINEERING PROJECTS */
+
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns:
+    repeat(auto-fit, minmax(min(100%, 290px), 1fr));
   gap: 20px;
 }
 
 .project-card {
-  background: #f4f4f4; /* Card claro */
-  padding: 20px;
-  border-radius: 10px;
-  border-left: 4px solid #888;
-  transition: all 0.3s;
-  color: #333;
-
-  &:hover {
-    background: #fff;
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-  }
-
-  &.featured { border-left-color: var(--accent-color); }
-
-  .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-  h4 { margin: 0; font-size: 1.1rem; font-weight: bold; color: #000; }
-
-  .badge {
-    background: var(--accent-color);
-    color: #000;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 0.7rem;
-    font-weight: bold;
-  }
-  .badge.secondary { background: #ddd; color: #000000; }
-
-  p { font-size: 0.95rem; color: #000000; }
-
-  .card-techs { margin-top: 15px; display: flex; flex-wrap: wrap; gap: 6px; opacity: 1; color: #000000; font-size: 0.85rem; }
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 24px;
+  background: var(--creator-surface);
+  border: 1px solid var(--creator-border);
+  border-radius: 14px;
+  transition: border-color 160ms ease;
 }
 
-/* --- TIMELINE (Formação) --- */
-/* creator.component.scss - A Timeline Legível */
-.timeline {
-  list-style: none;
-  padding: 0;
-  margin-top: 20px;
+.project-card:hover {
+  border-color: var(--creator-accent);
+}
 
-  li {
-    display: flex;
-    gap: 25px; /* Mais espaço entre ano e texto */
-    margin-bottom: 30px; /* Mais espaço entre os itens */
-    align-items: flex-start; /* Alinha no topo */
+.project-card.featured,
+.project-card.featured-ops {
+  border-top: 2px solid var(--creator-accent);
+}
 
-    @media (max-width: 600px) {
-      flex-direction: column; /* No celular fica um embaixo do outro */
-      gap: 5px;
-    }
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
 
-    .year {
-      min-width: 130px; /* Mais largo para caber "2025 - Atual" */
-      font-size: 1.2rem; /* AUMENTADO (era pequeno) */
-      font-weight: 800; /* Extra Negrito */
-      color: #2A2F4F; /* Azul Escuro Profundo (Legibilidade Máxima) */
-      text-align: right;
-      letter-spacing: -0.5px;
-      padding-top: 5px; /* Ajuste fino de alinhamento */
+.card-header h3 {
+  flex: 1 1 180px;
+  margin: 0;
+  color: var(--creator-text);
+  font-size: 1.15rem;
+  line-height: 1.45;
+}
 
-      @media (max-width: 600px) {
-        text-align: left;
-        color: var(--accent-color); /* No mobile pode ser colorido */
-        font-size: 1rem;
-      }
-    }
+.badge {
+  padding: 5px 8px;
+  color: var(--creator-secondary);
+  background: var(--creator-card);
+  border: 1px solid var(--creator-border);
+  border-radius: 5px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
 
-    .content {
-      flex: 1;
-      border-left: 3px solid #ddd; /* Linha mais grossa e visível */
-      padding-left: 25px;
-      transition: border-left-color 0.3s;
+.project-card p {
+  margin: 0 0 20px;
+  color: var(--creator-muted);
+  line-height: 1.7;
+}
 
-      /* Efeito visual: quando passa o mouse, a linha acende */
-      &:hover {
-        border-left-color: var(--accent-color);
-      }
+.card-techs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 20px;
+}
 
-      h4 {
-        margin: 0 0 5px 0;
-        color: #000;
-        font-size: 1.2rem; /* Título maior */
-        font-weight: bold;
-      }
-
-      p {
-        margin: 0;
-        color: #333;
-        font-size: 1rem; /* Texto base maior */
-        font-weight: 600;
-      }
-
-      small {
-        display: block;
-        margin-top: 8px;
-        color: #666;
-        font-size: 0.9rem;
-        line-height: 1.4;
-        font-style: italic;
-      }
-    }
-  }
+.card-techs small {
+  padding: 4px 8px;
+  color: var(--creator-muted);
+  background: var(--creator-card);
+  border-radius: 5px;
+  font-size: 0.75rem;
 }
 
 .project-link {
-  display: inline-block;
-  margin-top: 15px;
-  font-size: 0.85rem;
-  color: var(--accent-color);
-  text-decoration: none;
-  font-weight: bold;
-  border-bottom: 1px solid transparent;
-
-  &:hover {
-    border-bottom-color: var(--accent-color);
-  }
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  min-height: 44px;
+  margin-top: auto;
+  color: var(--creator-accent);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
-/* Seção de Negócios */
-.business-section {
-  margin-top: 40px;
-  margin-bottom: 60px;
-
-  h3 {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: #000000; /* Verde Matrix */
-    margin-bottom: 20px;
-    //font-family: 'Courier New', monospace;
-    font-weight: bold;
-  }
-}
+/* PROFESSIONAL CONTACT */
 
 .business-terminal {
-  background: rgba(10, 20, 15, 0.8);
-  border: 1px solid #06fd12;
-  border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 0 15px rgba(0, 230, 118, 0.1);
-
-  .terminal-head {
-    background: rgba(0, 230, 118, 0.1);
-    padding: 10px 20px;
-    border-bottom: 1px solid #06fd12;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-
-    .status-led {
-      width: 10px;
-      height: 10px;
-      background-color: #06fd12;
-      border-radius: 50%;
-      box-shadow: 0 0 8px #06fd12;
-      animation: blink 2s infinite;
-    }
-
-    .status-text {
-      color: #06fd12;;
-      font-size: 1rem;
-      font-weight: bold;
-      letter-spacing: 1px;
-    }
-  }
-
-  .terminal-body {
-    padding: 30px;
-    text-align: center;
-
-    p {
-      color: #e0e0e0;
-      font-size: 1.1rem;
-      line-height: 1.6;
-      margin-bottom: 30px;
-      max-width: 800px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-  }
+  background: var(--creator-surface);
+  border: 1px solid var(--creator-border);
+  border-radius: 16px;
 }
 
-.biz-actions {
+.terminal-head {
   display: flex;
-  justify-content: center;
-  gap: 20px;
-  flex-wrap: wrap;
-
-  .action-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 24px;
-    border-radius: 4px;
-    text-decoration: none;
-    font-weight: bold;
-    transition: all 0.3s ease;
-    text-transform: uppercase;
-    font-size: 0.9rem;
-
-    &.email {
-      background-color: #06fd12;
-      color: #000;
-      border: 1px solid #06fd12;
-      &:hover {
-        background-color: #06fd12;
-        transform: translateY(-2px);
-      }
-    }
-
-    &.linkedin {
-      background-color: transparent;
-      color: #06fd12;
-      border: 1px solid #06fd12;
-      &:hover {
-        background-color: rgba(0, 230, 118, 0.1);
-        transform: translateY(-2px);
-      }
-    }
-  }
+  align-items: center;
+  gap: 12px;
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--creator-border);
+  background: var(--creator-card);
 }
 
-@keyframes blink {
-  0% { opacity: 1; }
-  50% { opacity: 0.4; }
-  100% { opacity: 1; }
-}
-/* --- NOVAS CLASSES DE AUTOMAÇÃO --- */
-
-/* Chip do n8n (Estilo Gradiente ou Laranja Forte) */
-.tech-chip.n8n {
-  border-color: #ff655a;
-  color: #ea4b3f;
-  background: #fff0ef;
-  font-weight: 700; /* Mais destaque */
+.status-led {
+  width: 9px;
+  height: 9px;
+  flex-shrink: 0;
+  background: var(--creator-accent);
+  border-radius: 50%;
 }
 
-/* Badge especial para o card do projeto RQS Uplink */
-.badge.n8n-badge {
-  background: linear-gradient(135deg, #ff6d5a, #ea4b3f);
-  color: white;
+.status-text {
+  color: var(--creator-accent);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
 }
 
-/* Card do projeto com borda destaque de Ops */
-.project-card.featured-ops {
-  border-left-color: #ea4b3f; /* Cor do n8n */
-  background: #fffcfc; /* Levemente avermelhado para diferenciar */
-
-  &:hover {
-    box-shadow: 0 10px 20px rgba(234, 75, 63, 0.15); /* Glow laranja suave */
-  }
+.terminal-body {
+  padding: clamp(20px, 4vw, 40px);
 }
-/* --- JONAH THEME OVERRIDE (Modo Industrial) --- */
-/* O :host-context verifica se algum pai tem a classe .jonah-mode */
-:host-context(body.mode-jonah) {
 
-  .business-section h3 {
-    color:#ff3d00; /* Laranja Industrial */
-  }
-
-  .business-terminal {
-    background: rgba(20, 10, 5, 0.9); /* Fundo avermelhado escuro */
-    border-color: #ff5722;
-    box-shadow: 0 0 15px rgba(255, 87, 34, 0.2);
-
-    .terminal-head {
-      border-bottom-color: #ff5722;
-      background: rgba(255, 87, 34, 0.1);
-
-      .status-led {
-        background-color: #ff5722;
-        box-shadow: 0 0 8px #ff5722;
-      }
-
-      .status-text {
-        color: #ff5722;
-        /* Texto muda para algo mais agressivo no Jonah? Opcional */
-      }
-    }
-  }
-
-  .biz-actions .action-btn {
-    &.email {
-      background-color: #ff5722;
-      color: #fff; /* Contraste melhor */
-      border-color: #ff5722;
-      &:hover { background-color: #e64a19; }
-    }
-
-    &.linkedin {
-      color: #ff5722;
-      border-color: #ff5722;
-      &:hover { background-color: rgba(255, 87, 34, 0.1); }
-    }
-  }
+.terminal-body p {
+  max-width: 75ch;
+  margin: 0;
+  color: var(--creator-muted);
+  font-size: 1rem;
+  line-height: 1.8;
 }
-/* ========================================== */
-/* ☢️ MODO JONAH: BLACKOUT PROTOCOL           */
-/* ========================================== */
-:host-context(.mode-jonah) {
 
-  /* 1. O CONTAINER PRINCIPAL (A Folha de Papel vira Vidro Fumê) */
+/* KEYBOARD ACCESSIBILITY */
+
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--creator-secondary);
+  outline-offset: 4px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
   .creator-container {
-    background: rgba(10, 5, 0, 0.85); /* Quase preto */
-    border: 1px solid #ff9900;
-    box-shadow: 0 0 50px rgba(255, 60, 0, 0.3); /* Glow vermelho/laranja */
+    width: calc(100% - 24px);
+    padding: 16px;
   }
 
-  /* Ajuste dos textos principais */
-  .profile-bio {
-    .dev-name { color: #ff9900; text-shadow: 0 0 10px rgba(255, 153, 0, 0.5); }
-    .dev-role { color: #ccc; }
-    .bio-text { color: #bbb; }
+  .profile-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  /* 2. OS CARDS (Skills & Projetos) */
-  .skill-category, .project-card {
-    background: rgba(0, 0, 0, 0.6); /* Fundo escuro */
-    border: 1px dashed #ff5500; /* Borda tracejada agressiva */
-    color: #ddd; /* Texto claro */
-    transition: all 0.3s ease;
-
-    /* Títulos dentro dos cards */
-    h4, .category-label {
-      color: #ff9900 !important;
-      font-family: 'Courier New', monospace;
-    }
-
-    p, small { color: #aaa !important; }
-
-    &:hover {
-      background: rgba(20, 10, 0, 0.9);
-      border-style: solid;
-      border-color: #ff9900;
-      box-shadow: 0 0 20px rgba(255, 153, 0, 0.2);
-      transform: scale(1.02) rotate(1deg); /* Levemente instável */
-    }
+  .profile-photo-container {
+    width: 136px;
   }
 
-  /* 3. CHIPS E BADGES (As etiquetas) */
-  .tech-chip, .badge {
-    background: transparent !important;
-    border: 1px solid #ff9900 !important;
-    color: #ff9900 !important;
-    font-family: 'Courier New', monospace;
+  .profile-header {
+    padding: 20px;
   }
 
-  /* Exceção para o badge de destaque (Automação) */
-  .badge.n8n-badge {
-    background: #ff3300 !important;
-    color: #000 !important;
-    border: none !important;
-  }
-
-  /* 4. TÍTULOS DAS SEÇÕES */
-  h3 {
-    color: #ff9900;
-    mat-icon { color: #ff3300; animation: blink 2s infinite; }
-  }
-
-  /* 5. DIVISOR */
-  .cyber-divider {
-    background: linear-gradient(90deg, transparent, #ff3300, transparent);
+  .skill-category,
+  .project-card,
+  .manifesto-block {
+    padding: 18px;
   }
 }
 
-/* 2. Estado Caos (Quando o corpo tem .mode-jonah) */
-:host-context(.mode-jonah) {
+@media (max-width: 420px) {
+  .social-links,
+  .biz-actions {
+    flex-direction: column;
+  }
 
-  .msg-jonah {
-    display: inline; /* MOSTRA O MALVADÃO */
-    color: #ff5722;   /* Garante que fique laranja */
-    animation: glitchText 0.5s infinite; /* Opcional: Efeito glitch */
+  .social-btn,
+  .action-btn {
+    width: 100%;
   }
 }
 
-/* Opcional: Animação de Glitch no texto */
-@keyframes glitchText {
-  0% { opacity: 1; }
-  50% { opacity: 0.8; }
-  52% { opacity: 0.2; }
-  54% { opacity: 0.8; }
-  100% { opacity: 1; }
+/* REDUCED MOTION */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
 }

@@ -5,28 +5,28 @@
   </button>
 </div>
 
-<div class="creator-container">
+<div class="creator-container" [class.creator-jonah]="currentTheme() === 'jonah'">
 
   <header class="profile-header">
     <div class="profile-grid">
       <div class="profile-photo-container">
         @if (currentTheme() === 'broklin') {
-          <img src="images/foto_perfil.webp" alt="Ana Raquel Dev" class="photo-broklin fade-in">
+          <img src="images/foto_perfil.webp" alt="Ana Raquel Dev" class="photo-broklin">
         } @else {
-          <img src="images/general_perfil.webp" alt="General Kelma" class="photo-jonah fade-in">
+          <img src="images/general_perfil.webp" alt="General Kelma" class="photo-jonah">
         }
       </div>
 
       <div class="profile-bio">
-        <h2 class="dev-name">{{ text.profile.name }}</h2>
-        <h3 class="dev-role glitch-title" [attr.data-text]="text.profile.role">{{ text.profile.role }}</h3>
+        <h1 class="dev-name">{{ text.profile.name }}</h1>
+        <p class="dev-role">{{ text.profile.role }}</p>
         <p class="bio-text">{{ text.profile.bio }}</p>
 
         <div class="social-links">
-          <a href="https://www.linkedin.com/in/ana-raquel-de-holanda" target="_blank" class="social-btn linkedin">
+          <a href="https://www.linkedin.com/in/ana-raquel-de-holanda" target="_blank" rel="noopener noreferrer" class="social-btn linkedin">
             {{ text.profile.social.linkedin }}
           </a>
-          <a href="https://github.com/anaraquel00" target="_blank" class="social-btn github">
+          <a href="https://github.com/anaraquel00" target="_blank" rel="noopener noreferrer" class="social-btn github">
             {{ text.profile.social.github }}
           </a>
         </div>
@@ -34,10 +34,10 @@
     </div>
   </header>
 
- <section class="manifesto-section fade-in-up">
+ <section class="manifesto-section">
     @for (block of text.manifesto; track block.title) {
       <div class="manifesto-block">
-        <h4>{{ block.title }}</h4>
+        <h2>{{ block.title }}</h2>
         <p>{{ block.content }}</p>
       </div>
     }
@@ -46,7 +46,7 @@
   <hr class="cyber-divider">
 
   <section class="skills-section">
-    <h3><mat-icon>memory</mat-icon> {{ text.skills.title }}</h3>
+    <h2><mat-icon>memory</mat-icon> {{ text.skills.title }}</h2>
 
     <div class="skills-grid">
       @for (category of text.skills.categories; track category.label) {
@@ -65,20 +65,20 @@
   </section>
 
   <section class="projects-section">
-    <h3><mat-icon>code</mat-icon> {{ text.projects.title }}</h3>
+    <h2><mat-icon>code</mat-icon> {{ text.projects.title }}</h2>
 
     <div class="projects-grid">
       @for (project of text.projects.list; track project.title) {
         <div class="project-card" [class]="project.cardClass">
           <div class="card-header">
-            <h4>{{ project.title }}</h4>
+            <h3>{{ project.title }}</h3>
             <span class="badge" [class]="project.badgeClass">{{ project.badge }}</span>
           </div>
           <p>{{ project.desc }}</p>
           <div class="card-techs">
             @for (t of project.techs; track t) { <small>{{ t }}</small> }
           </div>
-          <a [href]="project.link" target="_blank" class="project-link">{{ project.linkText }}</a>
+          <a [href]="project.link" target="_blank" rel="noopener noreferrer" class="project-link">{{ project.linkText }}</a>
         </div>
       }
     </div>
@@ -87,10 +87,10 @@
   <hr class="cyber-divider">
 
   <section class="business-section">
-    <h3>
+    <h2>
       <mat-icon>business_center</mat-icon>
       {{ text.business.title }}
-    </h3>
+    </h2>
 
     <div class="business-terminal">
      <div class="terminal-head">
@@ -120,7 +120,7 @@
             {{ text.business.actionEmail }}
           </a>
 
-          <a href="https://www.linkedin.com/in/ana-raquel-de-holanda" target="_blank" class="action-btn linkedin">
+          <a href="https://www.linkedin.com/in/ana-raquel-de-holanda" target="_blank" rel="noopener noreferrer" class="action-btn linkedin">
             <mat-icon>work</mat-icon>
             {{ text.business.actionLinkedin }}
           </a>
