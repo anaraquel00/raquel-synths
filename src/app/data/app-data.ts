@@ -222,124 +222,247 @@ export const CREATOR_DATA = {
     ],
 
     skills: {
-      title: 'CORE EXPERTISE',
-      categories: [
+      "title": "CORE EXPERTISE",
+      "categories": [
         {
-  label: 'FRONT-END ENGINEERING',
-  chips: [
-    { name: 'Angular 20+', class: 'angular' },
-    { name: 'TypeScript', class: '' },
-    { name: 'Signals', class: '' },
-    { name: 'RxJS', class: '' },
-    { name: 'HTML5', class: '' },
-    { name: 'SCSS', class: '' },
-    { name: 'Responsive Design', class: '' },
-    { name: 'Technical SEO', class: '' }
-  ]
-},
-         {
-  label: 'BACK-END & CLOUD',
-  chips: [
-    { name: 'Java', class: 'java' },
-    { name: 'Python', class: 'python' },
-    { name: 'Spring Boot', class: 'spring' },
-    { name: 'Firebase', class: '' },
-    { name: 'Serverless', class: '' },
-    { name: 'CI/CD', class: '' },
-    { name: 'AWS Lightsail', class: '' },
-    { name: 'REST APIs', class: '' }
-  ]
-},
+          "label": "AI EVALUATION",
+          "chips": [
+            {
+              "name": "AI Code Review",
+              "class": ""
+            },
+            {
+              "name": "Prompt Engineering",
+              "class": ""
+            },
+            {
+              "name": "Instruction Following",
+              "class": ""
+            },
+            {
+              "name": "Human Oversight",
+              "class": ""
+            },
+            {
+              "name": "Structured Feedback",
+              "class": ""
+            }
+          ]
+        },
         {
-  label: 'AUTOMATION & AI',
-  chips: [
-    { name: 'n8n', class: 'n8n' },
-    { name: 'Webhooks', class: '' },
-    { name: 'OAuth2', class: '' },
-    { name: 'GitHub Actions', class: '' },
-    { name: 'GenAI', class: 'genai' },
-    { name: 'Prompt Engineering', class: 'genai' },
-    { name: 'AI Workflows', class: '' }
-  ]
-},
-{
-  label: 'PRODUCT & GROWTH',
-  chips: [
-    { name: 'Google Analytics 4', class: '' },
-    { name: 'Meta Ads', class: '' },
-    { name: 'SEO', class: '' },
-    { name: 'Deep Links', class: '' },
-    { name: 'Performance', class: '' },
-    { name: 'UX/UI', class: '' }
-  ]
-},
+          "label": "SOFTWARE QUALITY ASSURANCE",
+          "chips": [
+            {
+              "name": "Functional Testing",
+              "class": ""
+            },
+            {
+              "name": "Regression Testing",
+              "class": ""
+            },
+            {
+              "name": "Smoke Testing",
+              "class": ""
+            },
+            {
+              "name": "Root Cause Analysis",
+              "class": ""
+            },
+            {
+              "name": "Acceptance Criteria",
+              "class": ""
+            }
+          ]
+        },
+        {
+          "label": "FRONTEND ENGINEERING",
+          "chips": [
+            {
+              "name": "Angular 20+",
+              "class": ""
+            },
+            {
+              "name": "TypeScript",
+              "class": ""
+            },
+            {
+              "name": "Signals",
+              "class": ""
+            },
+            {
+              "name": "RxJS",
+              "class": ""
+            },
+            {
+              "name": "SSR / Prerender",
+              "class": ""
+            },
+            {
+              "name": "Responsive Design",
+              "class": ""
+            }
+          ]
+        },
+        {
+          "label": "BACKEND & CLOUD",
+          "chips": [
+            {
+              "name": "Python",
+              "class": ""
+            },
+            {
+              "name": "Node.js",
+              "class": ""
+            },
+            {
+              "name": "REST APIs",
+              "class": ""
+            },
+            {
+              "name": "Supabase",
+              "class": ""
+            },
+            {
+              "name": "PostgreSQL",
+              "class": ""
+            },
+            {
+              "name": "Firebase",
+              "class": ""
+            },
+            {
+              "name": "AWS Lambda",
+              "class": ""
+            },
+            {
+              "name": "AWS S3",
+              "class": ""
+            }
+          ]
+        },
+        {
+          "label": "AUDIO SOFTWARE ENGINEERING",
+          "chips": [
+            {
+              "name": "Web Audio API",
+              "class": ""
+            },
+            {
+              "name": "DSP",
+              "class": ""
+            },
+            {
+              "name": "FFmpeg",
+              "class": ""
+            },
+            {
+              "name": "LUFS",
+              "class": ""
+            },
+            {
+              "name": "Audio Workflows",
+              "class": ""
+            }
+          ]
+        },
+        {
+          "label": "DEVOPS & SECURITY",
+          "chips": [
+            {
+              "name": "Git",
+              "class": ""
+            },
+            {
+              "name": "GitHub Actions",
+              "class": ""
+            },
+            {
+              "name": "Docker",
+              "class": ""
+            },
+            {
+              "name": "AWS ECR",
+              "class": ""
+            },
+            {
+              "name": "Gitleaks",
+              "class": ""
+            },
+            {
+              "name": "CI/CD",
+              "class": ""
+            },
+            {
+              "name": "Staging",
+              "class": ""
+            },
+            {
+              "name": "Controlled Releases",
+              "class": ""
+            }
+          ]
+        }
       ]
     },
+
     projects: {
-      title: '🚀 Featured Engineering Projects',
-      list: [
+      "title": "Portfólio Open Source & Engenharia",
+      "list": [
         {
-          title: '1️⃣ RQS Uplink // Smart Deep Link Infrastructure ⭐',
-          badge: 'GROWTH ENGINEERING',
-          badgeClass: 'n8n-badge',
-          cardClass: 'featured-ops',
-          desc: 'Desenvolvi uma infraestrutura própria de Smart Deep Links para eliminar a dependência de plataformas SaaS, centralizar campanhas do Meta Ads e controlar o roteamento do tráfego dentro do ecossistema RaQuel Synths.',
-          techs: ['Angular 20+', 'Router', 'Firebase', 'Meta Ads', 'GA4', 'SEO'  ],
-          link: 'https://raquelsynths.com/play/rqs-mainframe?service=spotify',
-          linkText: 'Ver Arquitetura'
+          "title": "AI Coding Evaluation Lab",
+          "badge": "FUNDAÇÃO CONCLUÍDA",
+          "badgeClass": "secondary",
+          "cardClass": "",
+          "desc": "Laboratório em desenvolvimento voltado à avaliação de agentes de programação, critérios de aceitação e evidências reproduzíveis.",
+          "techs": [
+            "Apache-2.0",
+            "MVP planejado"
+          ],
+          "link": "https://github.com/anaraquel00/ai-coding-evaluation-lab",
+          "linkText": "Ver repositório"
         },
         {
-          title: '2️⃣ RQS BioLink',
-          badge: 'PRODUCT ENGINEERING',
-          badgeClass: '',
-          cardClass: 'featured',
-          desc: 'Criação de um BioLink totalmente customizado inspirado em plataformas como Feature.fm, desenvolvido para distribuição musical, captura de leads e integração com campanhas de marketing.',
-          techs: ['Angular 20+', 'Signals', 'Responsive', 'SEO', 'Analytics'],
-          link: 'https://raquelsynths.com/bio',
-          linkText: 'Ver Arquitetura'
+          "title": "Angular QA Playground",
+          "badge": "FUNDAÇÃO CONCLUÍDA",
+          "badgeClass": "secondary",
+          "cardClass": "",
+          "desc": "Projeto experimental voltado a testes funcionais, automação de testes e prevenção de regressões em aplicações Angular.",
+          "techs": [
+            "MIT",
+            "MVP planejado"
+          ],
+          "link": "https://github.com/anaraquel00/angular-qa-playground",
+          "linkText": "Ver repositório"
         },
         {
-          title: '3️⃣ RQS Automation Protocol',
-          badge: 'AI AUTOMATION',
-          badgeClass: 'secondary',
-          cardClass: '',
-          desc: 'Ecossistema de automação que conecta GitHub, Make, Google Cloud Firestore, Soundcloud, Spotify e Bluesky para publicação automatizada, notificações e sincronização de conteúdo.',
-          techs: ['Make', 'Json', 'OAuth2'],
-          link: 'https://www.make.com/en/register?pc=anaraquel',
-          linkText: 'Conhecer o Make'
+          "title": "Web Audio Playground",
+          "badge": "FUNDAÇÃO CONCLUÍDA",
+          "badgeClass": "secondary",
+          "cardClass": "",
+          "desc": "Projeto destinado a experimentos independentes de processamento digital de áudio no navegador.",
+          "techs": [
+            "MIT",
+            "MVP planejado"
+          ],
+          "link": "https://github.com/anaraquel00/web-audio-playground",
+          "linkText": "Ver repositório"
         },
         {
-          title: '4️⃣ RQS Mainframe',
-          badge: 'AI AUTOMATION',
-          badgeClass: 'secondary',
-          cardClass: '',
-          desc: 'Arquitetura SPA responsável por unificar streaming, artigos técnicos, lore, marketing e distribuição musical em uma única aplicação Angular.',
-          techs: ['Angular 20+', 'Signals', 'Firebase', 'Lazyloading', 'Technical SEO'],
-          link: 'https://raquelsynths.com/play/rqs-mainframe?service=spotify',
-          linkText: 'Ver Código'
-        },
-        {
-          title: '5️⃣ AI Music Production Pipeline',
-          badge: 'GEN AI',
-          badgeClass: 'secondary',
-          cardClass: '',
-          desc: 'Pipeline de produção utilizando IA Generativa para criação de músicas, identidade visual, vídeos, campanhas de marketing e distribuição em plataformas digitais.',
-          techs: ['LLMs', 'GenAI', 'Prompt Engineering', 'Suno5.5', 'ChatGPT', 'DALL·E', 'Automation'],
-          link: 'https://suno.com/@raquel_holanda',
-          linkText: 'Acessar o Suno'
-        },
-        {
-          title: '6️⃣ AWS Broadcast Server',
-          badge: 'CLOUD',
-          badgeClass: 'secondary',
-          cardClass: '',
-          desc: 'Servidor de transmissão contínua configurado em VPS Linux, automatizando o processamento de áudio via FFmpeg e broadcasting via protocolo RTMP, garantindo estabilidade de streaming para o ecossistema RQS',
-          techs: ['AWS Lightsail', 'Linux', 'Ubuntu 24.04', 'RTMP', 'Nginx', 'FFmpeg'],
-          link: RQS_EXTERNAL_CHANNELS.radio,
-          linkText: 'Acessar Rádio'
-        },
+          "title": "Engineering Case Studies",
+          "badge": "FUNDAÇÃO CONCLUÍDA",
+          "badgeClass": "secondary",
+          "cardClass": "",
+          "desc": "Repositório destinado à documentação de decisões arquiteturais, investigações técnicas e práticas de engenharia.",
+          "techs": [
+            "CC BY 4.0",
+            "MVP planejado"
+          ],
+          "link": "https://github.com/anaraquel00/engineering-case-studies",
+          "linkText": "Ver repositório"
+        }
       ]
     },
+
     business: {
       title: "Vamos construir soluções com qualidade e propósito.",
       status: "CANAL PROFISSIONAL | ABERTA A OPORTUNIDADES",
@@ -387,125 +510,248 @@ export const CREATOR_DATA = {
       }
     ],
 
-      skills: {
-      title: 'CORE EXPERTISE',
-      categories: [
+    skills: {
+      "title": "CORE EXPERTISE",
+      "categories": [
         {
-  label: 'FRONT-END ENGINEERING',
-  chips: [
-    { name: 'Angular 20+', class: 'angular' },
-    { name: 'TypeScript', class: '' },
-    { name: 'Signals', class: '' },
-    { name: 'RxJS', class: '' },
-    { name: 'HTML5', class: '' },
-    { name: 'SCSS', class: '' },
-    { name: 'Responsive Design', class: '' },
-    { name: 'Technical SEO', class: '' }
-  ]
-},
-         {
-  label: 'BACK-END & CLOUD',
-  chips: [
-    { name: 'Java', class: 'java' },
-    { name: 'Python', class: 'python' },
-    { name: 'Spring Boot', class: 'spring' },
-    { name: 'Firebase', class: '' },
-    { name: 'Serverless', class: '' },
-    { name: 'CI/CD', class: '' },
-    { name: 'AWS Lightsail', class: '' },
-    { name: 'REST APIs', class: '' }
-  ]
-},
+          "label": "AI EVALUATION",
+          "chips": [
+            {
+              "name": "AI Code Review",
+              "class": ""
+            },
+            {
+              "name": "Prompt Engineering",
+              "class": ""
+            },
+            {
+              "name": "Instruction Following",
+              "class": ""
+            },
+            {
+              "name": "Human Oversight",
+              "class": ""
+            },
+            {
+              "name": "Structured Feedback",
+              "class": ""
+            }
+          ]
+        },
         {
-  label: 'AUTOMATION & AI',
-  chips: [
-    { name: 'Make', class: 'make' },
-    { name: 'Webhooks', class: '' },
-    { name: 'OAuth2', class: '' },
-    { name: 'GitHub Actions', class: '' },
-    { name: 'GenAI', class: 'genai' },
-    { name: 'Prompt Engineering', class: 'genai' },
-    { name: 'AI Workflows', class: '' }
-  ]
-},
-{
-  label: 'PRODUCT & GROWTH',
-  chips: [
-    { name: 'Google Analytics 4', class: '' },
-    { name: 'Meta Ads', class: '' },
-    { name: 'SEO', class: '' },
-    { name: 'Deep Links', class: '' },
-    { name: 'Performance', class: '' },
-    { name: 'UX/UI', class: '' }
-  ]
-},
+          "label": "SOFTWARE QUALITY ASSURANCE",
+          "chips": [
+            {
+              "name": "Functional Testing",
+              "class": ""
+            },
+            {
+              "name": "Regression Testing",
+              "class": ""
+            },
+            {
+              "name": "Smoke Testing",
+              "class": ""
+            },
+            {
+              "name": "Root Cause Analysis",
+              "class": ""
+            },
+            {
+              "name": "Acceptance Criteria",
+              "class": ""
+            }
+          ]
+        },
+        {
+          "label": "FRONTEND ENGINEERING",
+          "chips": [
+            {
+              "name": "Angular 20+",
+              "class": ""
+            },
+            {
+              "name": "TypeScript",
+              "class": ""
+            },
+            {
+              "name": "Signals",
+              "class": ""
+            },
+            {
+              "name": "RxJS",
+              "class": ""
+            },
+            {
+              "name": "SSR / Prerender",
+              "class": ""
+            },
+            {
+              "name": "Responsive Design",
+              "class": ""
+            }
+          ]
+        },
+        {
+          "label": "BACKEND & CLOUD",
+          "chips": [
+            {
+              "name": "Python",
+              "class": ""
+            },
+            {
+              "name": "Node.js",
+              "class": ""
+            },
+            {
+              "name": "REST APIs",
+              "class": ""
+            },
+            {
+              "name": "Supabase",
+              "class": ""
+            },
+            {
+              "name": "PostgreSQL",
+              "class": ""
+            },
+            {
+              "name": "Firebase",
+              "class": ""
+            },
+            {
+              "name": "AWS Lambda",
+              "class": ""
+            },
+            {
+              "name": "AWS S3",
+              "class": ""
+            }
+          ]
+        },
+        {
+          "label": "AUDIO SOFTWARE ENGINEERING",
+          "chips": [
+            {
+              "name": "Web Audio API",
+              "class": ""
+            },
+            {
+              "name": "DSP",
+              "class": ""
+            },
+            {
+              "name": "FFmpeg",
+              "class": ""
+            },
+            {
+              "name": "LUFS",
+              "class": ""
+            },
+            {
+              "name": "Audio Workflows",
+              "class": ""
+            }
+          ]
+        },
+        {
+          "label": "DEVOPS & SECURITY",
+          "chips": [
+            {
+              "name": "Git",
+              "class": ""
+            },
+            {
+              "name": "GitHub Actions",
+              "class": ""
+            },
+            {
+              "name": "Docker",
+              "class": ""
+            },
+            {
+              "name": "AWS ECR",
+              "class": ""
+            },
+            {
+              "name": "Gitleaks",
+              "class": ""
+            },
+            {
+              "name": "CI/CD",
+              "class": ""
+            },
+            {
+              "name": "Staging",
+              "class": ""
+            },
+            {
+              "name": "Controlled Releases",
+              "class": ""
+            }
+          ]
+        }
       ]
     },
-  projects: {
-      title: '🚀 Featured Engineering Projects',
-      list: [
+
+    projects: {
+      "title": "Open Source & Engineering Portfolio",
+      "list": [
         {
-          title: '1️⃣ RQS Uplink // Smart Deep Link Infrastructure ⭐',
-          badge: 'GROWTH ENGINEERING',
-          badgeClass: 'make-badge',
-          cardClass: 'featured-ops',
-          desc: 'I developed a custom Smart Deep Link infrastructure to eliminate dependency on SaaS platforms, centralize Meta Ads campaigns, and control traffic routing within the RaQuel Synths ecosystem.',
-          techs: ['Angular 20+', 'Router', 'Firebase', 'Meta Ads', 'GA4', 'SEO'  ],
-          link: 'https://raquelsynths.com/play/rqs-mainframe?service=spotify',
-          linkText: 'See Architecture'
+          "title": "AI Coding Evaluation Lab",
+          "badge": "FOUNDATION COMPLETE",
+          "badgeClass": "secondary",
+          "cardClass": "",
+          "desc": "Laboratory under development focused on coding agent evaluation, acceptance criteria and reproducible evidence.",
+          "techs": [
+            "Apache-2.0",
+            "MVP planned"
+          ],
+          "link": "https://github.com/anaraquel00/ai-coding-evaluation-lab",
+          "linkText": "View repository"
         },
         {
-          title: '2️⃣ RQS BioLink',
-          badge: 'PRODUCT ENGINEERING',
-          badgeClass: '',
-          cardClass: 'featured',
-          desc: 'Creation of a fully customized BioLink inspired by platforms like Feature.fm, developed for music distribution, lead capture, and integration with marketing campaigns.',
-          techs: ['Angular 20+', 'Signals', 'Responsive', 'SEO', 'Analytics'],
-          link: 'https://raquelsynths.com/bio',
-          linkText: 'See Architecture'
+          "title": "Angular QA Playground",
+          "badge": "FOUNDATION COMPLETE",
+          "badgeClass": "secondary",
+          "cardClass": "",
+          "desc": "Experimental project focused on functional testing, test automation and regression prevention in Angular applications.",
+          "techs": [
+            "MIT",
+            "MVP planned"
+          ],
+          "link": "https://github.com/anaraquel00/angular-qa-playground",
+          "linkText": "View repository"
         },
         {
-          title: '3️⃣ RQS Automation Protocol',
-          badge: 'AI AUTOMATION',
-          badgeClass: 'secondary',
-          cardClass: '',
-          desc: 'Automation ecosystem connecting GitHub, Make, Google Cloud Firestore, SoundCloud, Spotify, and Bluesky for automated publishing, notifications, and content synchronization.',
-          techs: ['Make', 'Json', 'OAuth2'],
-          link: 'https://www.make.com/en/register?pc=anaraquel',
-          linkText: 'See Code'
+          "title": "Web Audio Playground",
+          "badge": "FOUNDATION COMPLETE",
+          "badgeClass": "secondary",
+          "cardClass": "",
+          "desc": "Project intended for independent browser-based digital audio processing experiments.",
+          "techs": [
+            "MIT",
+            "MVP planned"
+          ],
+          "link": "https://github.com/anaraquel00/web-audio-playground",
+          "linkText": "View repository"
         },
         {
-          title: '4️⃣ RQS Mainframe',
-          badge: 'AI AUTOMATION',
-          badgeClass: 'secondary',
-          cardClass: '',
-          desc: 'SPA architecture responsible for unifying streaming, technical articles, lore, marketing, and music distribution into a single Angular application.',
-          techs: ['Angular 20+', 'Signals', 'Firebase', 'Lazyloading', 'Technical SEO'],
-          link: 'https://raquelsynths.com/play/rqs-mainframe?service=spotify',
-          linkText: 'See Code'
-        },
-        {
-          title: '5️⃣ AI Music Production Pipeline',
-          badge: 'GEN AI',
-          badgeClass: 'secondary',
-          cardClass: '',
-          desc: 'Production pipeline using generative AI to create music, visual identity, videos, and marketing campaigns, as well as for distribution on digital platforms.',
-          techs: ['LLMs', 'GenAI', 'Prompt Engineering', 'Suno5.5', 'ChatGPT', 'DALL·E', 'Automation'],
-          link: 'https://suno.com/@raquel_holanda',
-          linkText: 'Access Suno'
-        },
-        {
-          title: '6️⃣ AWS Broadcast Server',
-          badge: 'CLOUD',
-          badgeClass: 'secondary',
-          cardClass: '',
-          desc: 'Streaming server configured on a Linux VPS, automating audio processing via FFmpeg and broadcasting via the RTMP protocol, ensuring streaming stability for the RQS ecosystem.',
-          techs: ['AWS Lightsail', 'Linux', 'Ubuntu 24.04', 'RTMP', 'Nginx', 'FFmpeg'],
-          link: 'https://youtube.com/live/P4INjOJfnn8?feature=share',
-          linkText: 'Access Radio'
-        },
+          "title": "Engineering Case Studies",
+          "badge": "FOUNDATION COMPLETE",
+          "badgeClass": "secondary",
+          "cardClass": "",
+          "desc": "Repository intended to document architectural decisions, technical investigations and engineering practices.",
+          "techs": [
+            "CC BY 4.0",
+            "MVP planned"
+          ],
+          "link": "https://github.com/anaraquel00/engineering-case-studies",
+          "linkText": "View repository"
+        }
       ]
     },
+
     business: {
       title: "Let's build solutions with quality and purpose.",
       status: "PROFESSIONAL CHANNEL | OPEN TO OPPORTUNITIES",

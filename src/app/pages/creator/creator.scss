@@ -621,3 +621,49 @@ button:focus-visible {
     width: 100%;
   }
 }
+
+/* GATE 04 — PORTFOLIO GRID */
+
+.skills-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.projects-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.skill-category .category-label {
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.projects-section .card-header {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.projects-section .card-header h3 {
+  flex: none;
+  overflow-wrap: anywhere;
+}
+
+.projects-section .project-card {
+  min-height: 250px;
+}
+
+@media (max-width: 1000px) {
+  .skills-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .skills-grid,
+  .projects-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .projects-section .project-card {
+    min-height: 0;
+  }
+}
