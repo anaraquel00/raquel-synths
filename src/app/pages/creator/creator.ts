@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, signal, afterNextRender, inject, DOCUMENT
 import { TranslationService } from '../../services/translation.service';
 import { CREATOR_DATA, NAV_DATA } from '../../data/app-data';
 import { CREATOR_STUDIO_DATA } from './creator-studio.data';
+import { CREATOR_EXPERIENCE_DATA } from './creator-experience.data';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
@@ -186,6 +187,10 @@ this.seoService.setJsonLd({
     this.currentTheme.set(isJonah ? 'jonah' : 'broklin');
   }
 
+
+  get experience() {
+    return CREATOR_EXPERIENCE_DATA[this.currentLang()];
+  }
 
   get studio() {
     return CREATOR_STUDIO_DATA[this.currentLang()];

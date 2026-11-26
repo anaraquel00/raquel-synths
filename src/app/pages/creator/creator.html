@@ -151,25 +151,144 @@
     </div>
   </section>
 
-  <section class="projects-section">
-    <h2><mat-icon>code</mat-icon> {{ text.projects.title }}</h2>
+
+  <section class="projects-section" aria-labelledby="opensource-heading">
+    <h2 id="opensource-heading">
+      <mat-icon aria-hidden="true">code</mat-icon>
+      {{ text.projects.title }}
+    </h2>
 
     <div class="projects-grid">
-      @for (project of text.projects.list; track project.title) {
-        <div class="project-card" [class]="project.cardClass">
-          <div class="card-header">
-            <h3>{{ project.title }}</h3>
-            <span class="badge" [class]="project.badgeClass">{{ project.badge }}</span>
+      @for (project of text.projects.list; track project.id) {
+        <article class="project-card" [attr.data-project]="project.id">
+
+          <mat-icon class="portfolio-icon" aria-hidden="true">
+            {{ project.icon }}
+          </mat-icon>
+
+          <h3>{{ project.title }}</h3>
+          <p class="portfolio-license">{{ project.license }}</p>
+          <p class="portfolio-description">{{ project.desc }}</p>
+          <p class="portfolio-status">{{ project.status }}</p>
+
+          <div class="portfolio-footer">
+            <a [href]="project.link"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="repository-action">
+              <svg aria-hidden="true" width="20" height="20"
+                   viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3
+                  3.44 9.8 8.21 11.39.6.11.82-.26.82-.58
+                  0-.29-.01-1.04-.02-2.04-3.34.73-4.04-1.61
+                  -4.04-1.61-.55-1.39-1.33-1.76-1.33-1.76
+                  -1.09-.74.08-.73.08-.73 1.2.08 1.84
+                  1.23 1.84 1.23 1.07 1.83 2.81 1.3 3.49
+                  .99.11-.78.42-1.3.76-1.6-2.67-.3
+                  -5.47-1.33-5.47-5.93 0-1.31.47-2.38
+                  1.23-3.22-.12-.3-.53-1.52.12-3.17
+                  0 0 1.01-.32 3.3 1.23.96-.27 1.98
+                  -.4 3-.4s2.04.13 3 .4c2.29-1.55
+                  3.3-1.23 3.3-1.23.65 1.65.24 2.87
+                  .12 3.17.77.84 1.23 1.91 1.23 3.22
+                  0 4.61-2.81 5.63-5.49 5.92.43.37
+                  .82 1.1.82 2.22 0 1.6-.01 2.89-.01
+                  3.28 0 .32.22.69.83.57C20.57
+                  21.8 24 17.3 24 12 24 5.37 18.63 0 12 0Z"/>
+              </svg>
+              {{ project.linkText }}
+            </a>
           </div>
-          <p>{{ project.desc }}</p>
-          <div class="card-techs">
-            @for (t of project.techs; track t) { <small>{{ t }}</small> }
-          </div>
-          <a [href]="project.link" target="_blank" rel="noopener noreferrer" class="project-link">{{ project.linkText }}</a>
-        </div>
+        </article>
       }
     </div>
   </section>
+
+  <section class="methodology-section" aria-labelledby="methodology-heading">
+    <p class="experience-eyebrow">{{ experience.methodology.eyebrow }}</p>
+    <h2 id="methodology-heading">{{ experience.methodology.title }}</h2>
+    <p class="experience-intro">{{ experience.methodology.description }}</p>
+
+    <div class="methodology-grid">
+      @for (step of experience.methodology.steps; track step.title; let i = $index) {
+        <article class="experience-card">
+          <div class="experience-card-top">
+            <mat-icon aria-hidden="true">{{ step.icon }}</mat-icon>
+            <span class="step-number">0{{ i + 1 }}</span>
+          </div>
+          <h3>{{ step.title }}</h3>
+          <p>{{ step.description }}</p>
+        </article>
+      }
+    </div>
+  </section>
+
+  <section class="case-studies-section" aria-labelledby="cases-heading">
+    <h2 id="cases-heading">
+      <mat-icon aria-hidden="true">fact_check</mat-icon>
+      {{ experience.cases.title }}
+    </h2>
+    <p class="experience-intro">{{ experience.cases.description }}</p>
+
+    <div class="case-studies-grid">
+      @for (study of experience.cases.items; track study.title; let i = $index) {
+        <article class="experience-card case-card">
+          <span class="experience-eyebrow">CASE 0{{ i + 1 }}</span>
+          <h3>{{ study.title }}</h3>
+          <p>{{ study.description }}</p>
+          <span class="case-stack">{{ study.stack }}</span>
+        </article>
+      }
+    </div>
+    <p class="experience-note">{{ experience.cases.note }}</p>
+  </section>
+
+  <section class="creative-section" aria-labelledby="creative-heading">
+    <h2 id="creative-heading">
+      <mat-icon aria-hidden="true">auto_awesome</mat-icon>
+      {{ experience.creative.title }}
+    </h2>
+
+    <div class="creative-grid">
+      @for (item of experience.creative.items; track item.title) {
+        <article class="experience-card creative-card">
+          <mat-icon aria-hidden="true">{{ item.icon }}</mat-icon>
+          <div>
+            <h3>{{ item.title }}</h3>
+            <p>{{ item.description }}</p>
+          </div>
+        </article>
+      }
+    </div>
+  </section>
+
+  <div class="credentials-grid">
+    <section class="credentials-card" aria-labelledby="education-heading">
+      <h2 id="education-heading">
+        <mat-icon aria-hidden="true">school</mat-icon>
+        {{ experience.education.title }}
+      </h2>
+      @for (item of experience.education.items; track item.title) {
+        <article class="education-item">
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.description }}</p>
+        </article>
+      }
+    </section>
+
+    <section class="credentials-card" aria-labelledby="languages-heading">
+      <h2 id="languages-heading">
+        <mat-icon aria-hidden="true">language</mat-icon>
+        {{ experience.languages.title }}
+      </h2>
+      @for (language of experience.languages.items; track language.name) {
+        <div class="language-item">
+          <span>{{ language.name }}</span>
+          <strong>{{ language.level }}</strong>
+        </div>
+      }
+    </section>
+  </div>
 
   <hr class="cyber-divider">
 

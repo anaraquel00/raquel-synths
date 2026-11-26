@@ -410,55 +410,43 @@ export const CREATOR_DATA = {
       "list": [
         {
           "title": "AI Coding Evaluation Lab",
-          "badge": "FUNDAÇÃO CONCLUÍDA",
-          "badgeClass": "secondary",
-          "cardClass": "",
           "desc": "Laboratório em desenvolvimento voltado à avaliação de agentes de programação, critérios de aceitação e evidências reproduzíveis.",
-          "techs": [
-            "Apache-2.0",
-            "MVP planejado"
-          ],
           "link": "https://github.com/anaraquel00/ai-coding-evaluation-lab",
-          "linkText": "Ver repositório"
+          "linkText": "Ver repositório",
+          "id": "ai-evaluation",
+          "icon": "smart_toy",
+          "license": "Apache-2.0",
+          "status": "Fundação concluída · MVP planejado"
         },
         {
           "title": "Angular QA Playground",
-          "badge": "FUNDAÇÃO CONCLUÍDA",
-          "badgeClass": "secondary",
-          "cardClass": "",
           "desc": "Projeto experimental voltado a testes funcionais, automação de testes e prevenção de regressões em aplicações Angular.",
-          "techs": [
-            "MIT",
-            "MVP planejado"
-          ],
           "link": "https://github.com/anaraquel00/angular-qa-playground",
-          "linkText": "Ver repositório"
+          "linkText": "Ver repositório",
+          "id": "angular-qa",
+          "icon": "fact_check",
+          "license": "MIT",
+          "status": "Fundação concluída · MVP planejado"
         },
         {
           "title": "Web Audio Playground",
-          "badge": "FUNDAÇÃO CONCLUÍDA",
-          "badgeClass": "secondary",
-          "cardClass": "",
           "desc": "Projeto destinado a experimentos independentes de processamento digital de áudio no navegador.",
-          "techs": [
-            "MIT",
-            "MVP planejado"
-          ],
           "link": "https://github.com/anaraquel00/web-audio-playground",
-          "linkText": "Ver repositório"
+          "linkText": "Ver repositório",
+          "id": "web-audio",
+          "icon": "graphic_eq",
+          "license": "MIT",
+          "status": "Fundação concluída · MVP planejado"
         },
         {
           "title": "Engineering Case Studies",
-          "badge": "FUNDAÇÃO CONCLUÍDA",
-          "badgeClass": "secondary",
-          "cardClass": "",
           "desc": "Repositório destinado à documentação de decisões arquiteturais, investigações técnicas e práticas de engenharia.",
-          "techs": [
-            "CC BY 4.0",
-            "MVP planejado"
-          ],
           "link": "https://github.com/anaraquel00/engineering-case-studies",
-          "linkText": "Ver repositório"
+          "linkText": "Ver repositório",
+          "id": "case-studies",
+          "icon": "menu_book",
+          "license": "CC BY 4.0",
+          "status": "Fundação concluída · Publicações planejadas"
         }
       ]
     },
@@ -699,55 +687,43 @@ export const CREATOR_DATA = {
       "list": [
         {
           "title": "AI Coding Evaluation Lab",
-          "badge": "FOUNDATION COMPLETE",
-          "badgeClass": "secondary",
-          "cardClass": "",
           "desc": "Laboratory under development focused on coding agent evaluation, acceptance criteria and reproducible evidence.",
-          "techs": [
-            "Apache-2.0",
-            "MVP planned"
-          ],
           "link": "https://github.com/anaraquel00/ai-coding-evaluation-lab",
-          "linkText": "View repository"
+          "linkText": "View repository",
+          "id": "ai-evaluation",
+          "icon": "smart_toy",
+          "license": "Apache-2.0",
+          "status": "Foundation complete · MVP planned"
         },
         {
           "title": "Angular QA Playground",
-          "badge": "FOUNDATION COMPLETE",
-          "badgeClass": "secondary",
-          "cardClass": "",
           "desc": "Experimental project focused on functional testing, test automation and regression prevention in Angular applications.",
-          "techs": [
-            "MIT",
-            "MVP planned"
-          ],
           "link": "https://github.com/anaraquel00/angular-qa-playground",
-          "linkText": "View repository"
+          "linkText": "View repository",
+          "id": "angular-qa",
+          "icon": "fact_check",
+          "license": "MIT",
+          "status": "Foundation complete · MVP planned"
         },
         {
           "title": "Web Audio Playground",
-          "badge": "FOUNDATION COMPLETE",
-          "badgeClass": "secondary",
-          "cardClass": "",
           "desc": "Project intended for independent browser-based digital audio processing experiments.",
-          "techs": [
-            "MIT",
-            "MVP planned"
-          ],
           "link": "https://github.com/anaraquel00/web-audio-playground",
-          "linkText": "View repository"
+          "linkText": "View repository",
+          "id": "web-audio",
+          "icon": "graphic_eq",
+          "license": "MIT",
+          "status": "Foundation complete · MVP planned"
         },
         {
           "title": "Engineering Case Studies",
-          "badge": "FOUNDATION COMPLETE",
-          "badgeClass": "secondary",
-          "cardClass": "",
           "desc": "Repository intended to document architectural decisions, technical investigations and engineering practices.",
-          "techs": [
-            "CC BY 4.0",
-            "MVP planned"
-          ],
           "link": "https://github.com/anaraquel00/engineering-case-studies",
-          "linkText": "View repository"
+          "linkText": "View repository",
+          "id": "case-studies",
+          "icon": "menu_book",
+          "license": "CC BY 4.0",
+          "status": "Foundation complete · Publications planned"
         }
       ]
     },
