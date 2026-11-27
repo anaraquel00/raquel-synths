@@ -11,9 +11,11 @@
     <div class="profile-grid">
       <div class="profile-photo-container">
         @if (currentTheme() === 'broklin') {
-          <img src="images/foto_perfil.webp" alt="Ana Raquel Dev" class="photo-broklin">
+          <img src="images/foto_perfil.webp" alt="Ana Raquel de Holanda Barros" class="photo-broklin">
         } @else {
-          <img src="images/general_perfil.webp" alt="General Kelma" class="photo-jonah">
+          <img src="images/general_perfil.webp" [alt]="currentLang() === 'pt'
+          ? 'General Kelma, personagem do universo RaQuel Synths'
+          : 'General Kelma, character from the RaQuel Synths universe'" class="photo-jonah">
         }
       </div>
 
