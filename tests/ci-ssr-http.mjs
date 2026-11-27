@@ -736,10 +736,95 @@ async function validateLogsArchive() {
   );
 }
 
+
+async function validateCreatorPortfolio() {
+  const canonical = 'https://raquelsynths.com/creator';
+
+  const response = await request('/creator');
+
+  assert.equal(response.status, 200);
+  assertHtml(response, 'Creator portfolio');
+  assertIndexable(response, 'Creator portfolio');
+
+  assert.equal(
+    extractCanonical(response.html),
+    canonical,
+    'Creator: canonical regression'
+  );
+
+  const canonicalTags = response.html.match(
+    /<link\b[^>]*\brel=["']canonical["'][^>]*>/gi
+  ) ?? [];
+
+  assert.equal(canonicalTags.length, 1);
+
+  const scripts = [...response.html.matchAll(
+    /<script\b([^>]*)>([\s\S]*?)<\/script>/gi
+  )];
+
+  const profileScripts = scripts.filter(
+    match => /data-rqs-seo=["']structured-data["']/i.test(match[1])
+  );
+
+  assert.equal(profileScripts.length, 1);
+
+  const profile = JSON.parse(profileScripts[0][2]);
+
+  assert.equal(profile['@type'], 'ProfilePage');
+  assert.equal(profile.url, canonical);
+  assert.equal(profile.mainEntity['@type'], 'Person');
+
+  assert.equal(
+    profile.mainEntity.name,
+    'Ana Raquel de Holanda Barros'
+  );
+
+  const documentLanguage = response.html.match(
+    /<html\b[^>]*\blang=["']([^"']+)["']/i
+  )?.[1];
+
+  assert.equal(profile.inLanguage, documentLanguage);
+
+  const modules = [...response.html.matchAll(
+    /<article\b[^>]*\bdata-module=["']([^"']+)["']/gi
+  )].map(match => match[1]);
+
+  assert.deepEqual(
+    modules,
+    ['master', 'pitch', 'build', 'uplink']
+  );
+
+  const projects = [...response.html.matchAll(
+    /<article\b[^>]*\bdata-project=["']([^"']+)["']/gi
+  )].map(match => match[1]);
+
+  assert.deepEqual(
+    projects,
+    ['ai-evaluation', 'angular-qa', 'web-audio', 'case-studies']
+  );
+
+  const home = await request('/');
+
+  assert.equal(home.status, 200);
+
+  assert.equal(
+    extractCanonical(home.html),
+    'https://raquelsynths.com/'
+  );
+
+  assert.ok(
+    !home.html.includes('https://raquelsynths.com/creator#profile'),
+    'Creator structured data leaked into Home'
+  );
+
+  console.log('CREATOR PORTFOLIO HTTP CONTRACT: PASS');
+}
+
 let validationError = null;
 
 try {
   await validateHome();
+  await validateCreatorPortfolio();
   await validateStudioInstitutionalVisibility();
   await validateSagaConsolidation();
   await validateLogsArchive();
