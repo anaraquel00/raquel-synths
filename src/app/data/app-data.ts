@@ -185,10 +185,10 @@ export const CREATOR_DATA = {
       back: 'VOLTAR À BASE'
     },
     profile: {
-      name: 'Ana Raquel de Holanda',
-      role: 'Software Engineer • Angular Architect • AI Automation 🚀',
+      name: "Ana Raquel de Holanda Barros",
+      role: "AI Evaluation & Software QA • Desenvolvedora de Software • Fundadora do RQS Studio",
       // 👇 AQUI ESTÁ O MANIFESTO REFATORADO E PROFISSIONAL
-      bio: "Tech Lead e Engenheira de Software especializada em Angular 20+, Arquitetura Front-End, Automação Inteligente e IA Generativa. Desenvolvo aplicações escaláveis, fluxos automatizados e produtos digitais orientados à performance, SEO e experiência do usuário.",
+      bio: "Desenvolvo produtos digitais que conectam engenharia de software, inteligência artificial e tecnologia musical. Minha atuação envolve desenvolvimento assistido por IA, revisão de código, testes funcionais, investigação de falhas e validação de software baseada em evidências.",
       social: {
         linkedin: 'LinkedIn',
         github: 'GitHub'
@@ -216,157 +216,249 @@ export const CREATOR_DATA = {
 
     manifesto: [
       {
-        title: '// FILOSOFIA DE ENGENHARIA',
-        content: `Acredito que software não deve apenas funcionar;
-       Ele deve ser escalável, legível, rápido e simples de evoluir.
-       Por isso utilizo arquitetura orientada a componentes, automações inteligentes e
-       IA como aceleradora de engenharia, sempre mantendo o controle das decisões técnicas.`
+        title: "// FILOSOFIA DE ENGENHARIA",
+        content: "Engenharia conduzida por pessoas, implementação assistida por IA e validação baseada em evidências. A inteligência artificial acelera o desenvolvimento, mas os requisitos, as decisões técnicas e a aprovação das mudanças permanecem sob controle humano."
       }
     ],
 
     skills: {
-      title: 'CORE EXPERTISE',
-      categories: [
+      "title": "CORE EXPERTISE",
+      "categories": [
         {
-  label: 'FRONT-END ENGINEERING',
-  chips: [
-    { name: 'Angular 20+', class: 'angular' },
-    { name: 'TypeScript', class: '' },
-    { name: 'Signals', class: '' },
-    { name: 'RxJS', class: '' },
-    { name: 'HTML5', class: '' },
-    { name: 'SCSS', class: '' },
-    { name: 'Responsive Design', class: '' },
-    { name: 'Technical SEO', class: '' }
-  ]
-},
-         {
-  label: 'BACK-END & CLOUD',
-  chips: [
-    { name: 'Java', class: 'java' },
-    { name: 'Python', class: 'python' },
-    { name: 'Spring Boot', class: 'spring' },
-    { name: 'Firebase', class: '' },
-    { name: 'Serverless', class: '' },
-    { name: 'CI/CD', class: '' },
-    { name: 'AWS Lightsail', class: '' },
-    { name: 'REST APIs', class: '' }
-  ]
-},
-        {
-  label: 'AUTOMATION & AI',
-  chips: [
-    { name: 'n8n', class: 'n8n' },
-    { name: 'Webhooks', class: '' },
-    { name: 'OAuth2', class: '' },
-    { name: 'GitHub Actions', class: '' },
-    { name: 'GenAI', class: 'genai' },
-    { name: 'Prompt Engineering', class: 'genai' },
-    { name: 'AI Workflows', class: '' }
-  ]
-},
-{
-  label: 'PRODUCT & GROWTH',
-  chips: [
-    { name: 'Google Analytics 4', class: '' },
-    { name: 'Meta Ads', class: '' },
-    { name: 'SEO', class: '' },
-    { name: 'Deep Links', class: '' },
-    { name: 'Performance', class: '' },
-    { name: 'UX/UI', class: '' }
-  ]
-},
-      ]
-    },
-    projects: {
-      title: '🚀 Featured Engineering Projects',
-      list: [
-        {
-          title: '1️⃣ RQS Uplink // Smart Deep Link Infrastructure ⭐',
-          badge: 'GROWTH ENGINEERING',
-          badgeClass: 'n8n-badge',
-          cardClass: 'featured-ops',
-          desc: 'Desenvolvi uma infraestrutura própria de Smart Deep Links para eliminar a dependência de plataformas SaaS, centralizar campanhas do Meta Ads e controlar o roteamento do tráfego dentro do ecossistema RaQuel Synths.',
-          techs: ['Angular 20+', 'Router', 'Firebase', 'Meta Ads', 'GA4', 'SEO'  ],
-          link: 'https://raquelsynths.com/play/rqs-mainframe?service=spotify',
-          linkText: 'Ver Arquitetura'
+          "label": "AI EVALUATION",
+          "chips": [
+            {
+              "name": "AI Code Review",
+              "class": ""
+            },
+            {
+              "name": "Prompt Engineering",
+              "class": ""
+            },
+            {
+              "name": "Instruction Following",
+              "class": ""
+            },
+            {
+              "name": "Human Oversight",
+              "class": ""
+            },
+            {
+              "name": "Structured Feedback",
+              "class": ""
+            }
+          ]
         },
         {
-          title: '2️⃣ RQS BioLink',
-          badge: 'PRODUCT ENGINEERING',
-          badgeClass: '',
-          cardClass: 'featured',
-          desc: 'Criação de um BioLink totalmente customizado inspirado em plataformas como Feature.fm, desenvolvido para distribuição musical, captura de leads e integração com campanhas de marketing.',
-          techs: ['Angular 20+', 'Signals', 'Responsive', 'SEO', 'Analytics'],
-          link: 'https://raquelsynths.com/bio',
-          linkText: 'Ver Arquitetura'
+          "label": "SOFTWARE QUALITY ASSURANCE",
+          "chips": [
+            {
+              "name": "Functional Testing",
+              "class": ""
+            },
+            {
+              "name": "Regression Testing",
+              "class": ""
+            },
+            {
+              "name": "Smoke Testing",
+              "class": ""
+            },
+            {
+              "name": "Root Cause Analysis",
+              "class": ""
+            },
+            {
+              "name": "Acceptance Criteria",
+              "class": ""
+            }
+          ]
         },
         {
-          title: '3️⃣ RQS Automation Protocol',
-          badge: 'AI AUTOMATION',
-          badgeClass: 'secondary',
-          cardClass: '',
-          desc: 'Ecossistema de automação que conecta GitHub, Make, Google Cloud Firestore, Soundcloud, Spotify e Bluesky para publicação automatizada, notificações e sincronização de conteúdo.',
-          techs: ['Make', 'Json', 'OAuth2'],
-          link: 'https://www.make.com/en/register?pc=anaraquel',
-          linkText: 'Conhecer o Make'
+          "label": "FRONTEND ENGINEERING",
+          "chips": [
+            {
+              "name": "Angular 20+",
+              "class": ""
+            },
+            {
+              "name": "TypeScript",
+              "class": ""
+            },
+            {
+              "name": "Signals",
+              "class": ""
+            },
+            {
+              "name": "RxJS",
+              "class": ""
+            },
+            {
+              "name": "SSR / Prerender",
+              "class": ""
+            },
+            {
+              "name": "Responsive Design",
+              "class": ""
+            }
+          ]
         },
         {
-          title: '4️⃣ RQS Mainframe',
-          badge: 'AI AUTOMATION',
-          badgeClass: 'secondary',
-          cardClass: '',
-          desc: 'Arquitetura SPA responsável por unificar streaming, artigos técnicos, lore, marketing e distribuição musical em uma única aplicação Angular.',
-          techs: ['Angular 20+', 'Signals', 'Firebase', 'Lazyloading', 'Technical SEO'],
-          link: 'https://raquelsynths.com/play/rqs-mainframe?service=spotify',
-          linkText: 'Ver Código'
+          "label": "BACKEND & CLOUD",
+          "chips": [
+            {
+              "name": "Python",
+              "class": ""
+            },
+            {
+              "name": "Node.js",
+              "class": ""
+            },
+            {
+              "name": "REST APIs",
+              "class": ""
+            },
+            {
+              "name": "Supabase",
+              "class": ""
+            },
+            {
+              "name": "PostgreSQL",
+              "class": ""
+            },
+            {
+              "name": "Firebase",
+              "class": ""
+            },
+            {
+              "name": "AWS Lambda",
+              "class": ""
+            },
+            {
+              "name": "AWS S3",
+              "class": ""
+            }
+          ]
         },
         {
-          title: '5️⃣ AI Music Production Pipeline',
-          badge: 'GEN AI',
-          badgeClass: 'secondary',
-          cardClass: '',
-          desc: 'Pipeline de produção utilizando IA Generativa para criação de músicas, identidade visual, vídeos, campanhas de marketing e distribuição em plataformas digitais.',
-          techs: ['LLMs', 'GenAI', 'Prompt Engineering', 'Suno5.5', 'ChatGPT', 'DALL·E', 'Automation'],
-          link: 'https://suno.com/@raquel_holanda',
-          linkText: 'Acessar o Suno'
+          "label": "AUDIO SOFTWARE ENGINEERING",
+          "chips": [
+            {
+              "name": "Web Audio API",
+              "class": ""
+            },
+            {
+              "name": "DSP",
+              "class": ""
+            },
+            {
+              "name": "FFmpeg",
+              "class": ""
+            },
+            {
+              "name": "LUFS",
+              "class": ""
+            },
+            {
+              "name": "Audio Workflows",
+              "class": ""
+            }
+          ]
         },
         {
-          title: '6️⃣ AWS Broadcast Server',
-          badge: 'CLOUD',
-          badgeClass: 'secondary',
-          cardClass: '',
-          desc: 'Servidor de transmissão contínua configurado em VPS Linux, automatizando o processamento de áudio via FFmpeg e broadcasting via protocolo RTMP, garantindo estabilidade de streaming para o ecossistema RQS',
-          techs: ['AWS Lightsail', 'Linux', 'Ubuntu 24.04', 'RTMP', 'Nginx', 'FFmpeg'],
-          link: RQS_EXTERNAL_CHANNELS.radio,
-          linkText: 'Acessar Rádio'
-        },
-        {
-          title: '7️⃣ RQS DSP Studio',
-          badge: 'AUDIO ENGINEERING',
-          badgeClass: 'secondary',
-          cardClass: 'featured',
-          desc: 'Plataforma de engenharia de áudio baseada em navegador, desenvolvida para o fluxo de produção da RaQuel Synths. Realiza preparação para masterização, controle de qualidade, organização de playlists e gerenciamento de fluxo de trabalho de DSP para músicas geradas por IA.',
-          techs: [
-            'Angular 20+',
-            'Web Audio API',
-            'DSP',
-            'Audio Workflow',
-            'PWA'
-          ],
-          link: 'https://studio.raquelsynths.com',
-          linkText: 'Open Studio (Modo Beta)'
+          "label": "DEVOPS & SECURITY",
+          "chips": [
+            {
+              "name": "Git",
+              "class": ""
+            },
+            {
+              "name": "GitHub Actions",
+              "class": ""
+            },
+            {
+              "name": "Docker",
+              "class": ""
+            },
+            {
+              "name": "AWS ECR",
+              "class": ""
+            },
+            {
+              "name": "Gitleaks",
+              "class": ""
+            },
+            {
+              "name": "CI/CD",
+              "class": ""
+            },
+            {
+              "name": "Staging",
+              "class": ""
+            },
+            {
+              "name": "Controlled Releases",
+              "class": ""
+            }
+          ]
         }
       ]
     },
+
+    projects: {
+      "title": "Portfólio Open Source & Engenharia",
+      "list": [
+        {
+          "title": "AI Coding Evaluation Lab",
+          "desc": "Laboratório em desenvolvimento voltado à avaliação de agentes de programação, critérios de aceitação e evidências reproduzíveis.",
+          "link": "https://github.com/anaraquel00/ai-coding-evaluation-lab",
+          "linkText": "Ver repositório",
+          "id": "ai-evaluation",
+          "icon": "smart_toy",
+          "license": "Apache-2.0",
+          "status": "Fundação concluída · MVP planejado"
+        },
+        {
+          "title": "Angular QA Playground",
+          "desc": "Projeto experimental voltado a testes funcionais, automação de testes e prevenção de regressões em aplicações Angular.",
+          "link": "https://github.com/anaraquel00/angular-qa-playground",
+          "linkText": "Ver repositório",
+          "id": "angular-qa",
+          "icon": "fact_check",
+          "license": "MIT",
+          "status": "Fundação concluída · MVP planejado"
+        },
+        {
+          "title": "Web Audio Playground",
+          "desc": "Projeto destinado a experimentos independentes de processamento digital de áudio no navegador.",
+          "link": "https://github.com/anaraquel00/web-audio-playground",
+          "linkText": "Ver repositório",
+          "id": "web-audio",
+          "icon": "graphic_eq",
+          "license": "MIT",
+          "status": "Fundação concluída · MVP planejado"
+        },
+        {
+          "title": "Engineering Case Studies",
+          "desc": "Repositório destinado à documentação de decisões arquiteturais, investigações técnicas e práticas de engenharia.",
+          "link": "https://github.com/anaraquel00/engineering-case-studies",
+          "linkText": "Ver repositório",
+          "id": "case-studies",
+          "icon": "menu_book",
+          "license": "CC BY 4.0",
+          "status": "Fundação concluída · Publicações planejadas"
+        }
+      ]
+    },
+
     business: {
-      title: 'Vamos construir algo grandioso.',
-      status: 'CANAL CORPORATIVO | STATUS: DISPONÍVEL PARA ESCALAR O SEU PROJETO 🚀',
-      statusJonah: 'CANAL SUBTERRÂNEO | STATUS: DISPONÍVEL PARA ESCALAR O SEU PROJETO 🚀',
-      desc: 'Estou disponível para colaborar em projetos de Front-End Engineering, Arquitetura Angular, Automação Inteligente e IA aplicada ao desenvolvimento de produtos digitais. Gosto de transformar requisitos complexos em soluções escaláveis, performáticas e fáceis de evoluir, sempre equilibrando qualidade técnica e valor para o negócio.',
-      descJonah:'Estou disponível para colaborar em projetos de Front-End Engineering, Arquitetura Angular, Automação Inteligente e IA aplicada ao desenvolvimento de produtos digitais. Gosto de transformar requisitos complexos em soluções escaláveis, performáticas e fáceis de evoluir, sempre equilibrando qualidade técnica e valor para o negócio.',
-      actionEmail: 'Agende um Diagnóstico',
-      actionLinkedin: 'Linkedin'
+      title: "Vamos construir soluções com qualidade e propósito.",
+      status: "CANAL PROFISSIONAL | ABERTA A OPORTUNIDADES",
+      statusJonah: "CANAL SUBTERRÂNEO | ABERTA A OPORTUNIDADES",
+      desc: "Disponível para oportunidades remotas, projetos freelance e colaborações em avaliação de IA, qualidade de software, desenvolvimento assistido por IA e engenharia de produtos digitais.",
+      descJonah:"Disponível para oportunidades remotas, projetos freelance e colaborações em avaliação de IA, qualidade de software, desenvolvimento assistido por IA e engenharia de produtos digitais.",
+      actionEmail: "Entre em contato",
+      actionLinkedin: "LinkedIn"
     }
   },
 
@@ -374,9 +466,9 @@ export const CREATOR_DATA = {
   en: {
     nav: { back: 'BACK TO BASE' },
     profile: {
-      name: 'Ana Raquel de Holanda',
-      role: 'Software Engineer • Angular Architect • AI Automation 🚀',
-      bio: "Tech Lead and Software Engineer specializing in Angular 20+, Front-End Architecture, Intelligent Automation, and Generative AI. I develop scalable applications, automated workflows, and digital products driven by performance, SEO, and user experience.",
+      name: "Ana Raquel de Holanda Barros",
+      role: "AI Evaluation & Software QA • Software Developer • RQS Studio Founder",
+      bio: "I develop digital products connecting software engineering, artificial intelligence and music technology. My work involves AI-assisted software development, code review, functional testing, bug investigation and evidence-based software validation.",
       social: { linkedin: 'LinkedIn', github: 'GitHub' }
     },
 
@@ -401,157 +493,249 @@ export const CREATOR_DATA = {
 
     manifesto: [
       {
-        title: '// ENGINEERING PHILOSOPHY',
-        content: `I believe software shouldn't just work;
-       it should be scalable, readable, fast, and simple to evolve.
-       That is why I use component-based architecture, intelligent automation, and
-       AI to accelerate engineering, while always retaining control over technical decisions.`
+        title: "// ENGINEERING PHILOSOPHY",
+        content: "Human-led engineering, AI-assisted implementation and evidence-based validation. Artificial intelligence accelerates development, while requirements, technical decisions and approval remain under human control."
       }
     ],
 
-      skills: {
-      title: 'CORE EXPERTISE',
-      categories: [
+    skills: {
+      "title": "CORE EXPERTISE",
+      "categories": [
         {
-  label: 'FRONT-END ENGINEERING',
-  chips: [
-    { name: 'Angular 20+', class: 'angular' },
-    { name: 'TypeScript', class: '' },
-    { name: 'Signals', class: '' },
-    { name: 'RxJS', class: '' },
-    { name: 'HTML5', class: '' },
-    { name: 'SCSS', class: '' },
-    { name: 'Responsive Design', class: '' },
-    { name: 'Technical SEO', class: '' }
-  ]
-},
-         {
-  label: 'BACK-END & CLOUD',
-  chips: [
-    { name: 'Java', class: 'java' },
-    { name: 'Python', class: 'python' },
-    { name: 'Spring Boot', class: 'spring' },
-    { name: 'Firebase', class: '' },
-    { name: 'Serverless', class: '' },
-    { name: 'CI/CD', class: '' },
-    { name: 'AWS Lightsail', class: '' },
-    { name: 'REST APIs', class: '' }
-  ]
-},
+          "label": "AI EVALUATION",
+          "chips": [
+            {
+              "name": "AI Code Review",
+              "class": ""
+            },
+            {
+              "name": "Prompt Engineering",
+              "class": ""
+            },
+            {
+              "name": "Instruction Following",
+              "class": ""
+            },
+            {
+              "name": "Human Oversight",
+              "class": ""
+            },
+            {
+              "name": "Structured Feedback",
+              "class": ""
+            }
+          ]
+        },
         {
-  label: 'AUTOMATION & AI',
-  chips: [
-    { name: 'Make', class: 'make' },
-    { name: 'Webhooks', class: '' },
-    { name: 'OAuth2', class: '' },
-    { name: 'GitHub Actions', class: '' },
-    { name: 'GenAI', class: 'genai' },
-    { name: 'Prompt Engineering', class: 'genai' },
-    { name: 'AI Workflows', class: '' }
-  ]
-},
-{
-  label: 'PRODUCT & GROWTH',
-  chips: [
-    { name: 'Google Analytics 4', class: '' },
-    { name: 'Meta Ads', class: '' },
-    { name: 'SEO', class: '' },
-    { name: 'Deep Links', class: '' },
-    { name: 'Performance', class: '' },
-    { name: 'UX/UI', class: '' }
-  ]
-},
+          "label": "SOFTWARE QUALITY ASSURANCE",
+          "chips": [
+            {
+              "name": "Functional Testing",
+              "class": ""
+            },
+            {
+              "name": "Regression Testing",
+              "class": ""
+            },
+            {
+              "name": "Smoke Testing",
+              "class": ""
+            },
+            {
+              "name": "Root Cause Analysis",
+              "class": ""
+            },
+            {
+              "name": "Acceptance Criteria",
+              "class": ""
+            }
+          ]
+        },
+        {
+          "label": "FRONTEND ENGINEERING",
+          "chips": [
+            {
+              "name": "Angular 20+",
+              "class": ""
+            },
+            {
+              "name": "TypeScript",
+              "class": ""
+            },
+            {
+              "name": "Signals",
+              "class": ""
+            },
+            {
+              "name": "RxJS",
+              "class": ""
+            },
+            {
+              "name": "SSR / Prerender",
+              "class": ""
+            },
+            {
+              "name": "Responsive Design",
+              "class": ""
+            }
+          ]
+        },
+        {
+          "label": "BACKEND & CLOUD",
+          "chips": [
+            {
+              "name": "Python",
+              "class": ""
+            },
+            {
+              "name": "Node.js",
+              "class": ""
+            },
+            {
+              "name": "REST APIs",
+              "class": ""
+            },
+            {
+              "name": "Supabase",
+              "class": ""
+            },
+            {
+              "name": "PostgreSQL",
+              "class": ""
+            },
+            {
+              "name": "Firebase",
+              "class": ""
+            },
+            {
+              "name": "AWS Lambda",
+              "class": ""
+            },
+            {
+              "name": "AWS S3",
+              "class": ""
+            }
+          ]
+        },
+        {
+          "label": "AUDIO SOFTWARE ENGINEERING",
+          "chips": [
+            {
+              "name": "Web Audio API",
+              "class": ""
+            },
+            {
+              "name": "DSP",
+              "class": ""
+            },
+            {
+              "name": "FFmpeg",
+              "class": ""
+            },
+            {
+              "name": "LUFS",
+              "class": ""
+            },
+            {
+              "name": "Audio Workflows",
+              "class": ""
+            }
+          ]
+        },
+        {
+          "label": "DEVOPS & SECURITY",
+          "chips": [
+            {
+              "name": "Git",
+              "class": ""
+            },
+            {
+              "name": "GitHub Actions",
+              "class": ""
+            },
+            {
+              "name": "Docker",
+              "class": ""
+            },
+            {
+              "name": "AWS ECR",
+              "class": ""
+            },
+            {
+              "name": "Gitleaks",
+              "class": ""
+            },
+            {
+              "name": "CI/CD",
+              "class": ""
+            },
+            {
+              "name": "Staging",
+              "class": ""
+            },
+            {
+              "name": "Controlled Releases",
+              "class": ""
+            }
+          ]
+        }
       ]
     },
-  projects: {
-      title: '🚀 Featured Engineering Projects',
-      list: [
+
+    projects: {
+      "title": "Open Source & Engineering Portfolio",
+      "list": [
         {
-          title: '1️⃣ RQS Uplink // Smart Deep Link Infrastructure ⭐',
-          badge: 'GROWTH ENGINEERING',
-          badgeClass: 'make-badge',
-          cardClass: 'featured-ops',
-          desc: 'I developed a custom Smart Deep Link infrastructure to eliminate dependency on SaaS platforms, centralize Meta Ads campaigns, and control traffic routing within the RaQuel Synths ecosystem.',
-          techs: ['Angular 20+', 'Router', 'Firebase', 'Meta Ads', 'GA4', 'SEO'  ],
-          link: 'https://raquelsynths.com/play/rqs-mainframe?service=spotify',
-          linkText: 'See Architecture'
+          "title": "AI Coding Evaluation Lab",
+          "desc": "Laboratory under development focused on coding agent evaluation, acceptance criteria and reproducible evidence.",
+          "link": "https://github.com/anaraquel00/ai-coding-evaluation-lab",
+          "linkText": "View repository",
+          "id": "ai-evaluation",
+          "icon": "smart_toy",
+          "license": "Apache-2.0",
+          "status": "Foundation complete · MVP planned"
         },
         {
-          title: '2️⃣ RQS BioLink',
-          badge: 'PRODUCT ENGINEERING',
-          badgeClass: '',
-          cardClass: 'featured',
-          desc: 'Creation of a fully customized BioLink inspired by platforms like Feature.fm, developed for music distribution, lead capture, and integration with marketing campaigns.',
-          techs: ['Angular 20+', 'Signals', 'Responsive', 'SEO', 'Analytics'],
-          link: 'https://raquelsynths.com/bio',
-          linkText: 'See Architecture'
+          "title": "Angular QA Playground",
+          "desc": "Experimental project focused on functional testing, test automation and regression prevention in Angular applications.",
+          "link": "https://github.com/anaraquel00/angular-qa-playground",
+          "linkText": "View repository",
+          "id": "angular-qa",
+          "icon": "fact_check",
+          "license": "MIT",
+          "status": "Foundation complete · MVP planned"
         },
         {
-          title: '3️⃣ RQS Automation Protocol',
-          badge: 'AI AUTOMATION',
-          badgeClass: 'secondary',
-          cardClass: '',
-          desc: 'Automation ecosystem connecting GitHub, Make, Google Cloud Firestore, SoundCloud, Spotify, and Bluesky for automated publishing, notifications, and content synchronization.',
-          techs: ['Make', 'Json', 'OAuth2'],
-          link: 'https://www.make.com/en/register?pc=anaraquel',
-          linkText: 'See Code'
+          "title": "Web Audio Playground",
+          "desc": "Project intended for independent browser-based digital audio processing experiments.",
+          "link": "https://github.com/anaraquel00/web-audio-playground",
+          "linkText": "View repository",
+          "id": "web-audio",
+          "icon": "graphic_eq",
+          "license": "MIT",
+          "status": "Foundation complete · MVP planned"
         },
         {
-          title: '4️⃣ RQS Mainframe',
-          badge: 'AI AUTOMATION',
-          badgeClass: 'secondary',
-          cardClass: '',
-          desc: 'SPA architecture responsible for unifying streaming, technical articles, lore, marketing, and music distribution into a single Angular application.',
-          techs: ['Angular 20+', 'Signals', 'Firebase', 'Lazyloading', 'Technical SEO'],
-          link: 'https://raquelsynths.com/play/rqs-mainframe?service=spotify',
-          linkText: 'See Code'
-        },
-        {
-          title: '5️⃣ AI Music Production Pipeline',
-          badge: 'GEN AI',
-          badgeClass: 'secondary',
-          cardClass: '',
-          desc: 'Production pipeline using generative AI to create music, visual identity, videos, and marketing campaigns, as well as for distribution on digital platforms.',
-          techs: ['LLMs', 'GenAI', 'Prompt Engineering', 'Suno5.5', 'ChatGPT', 'DALL·E', 'Automation'],
-          link: 'https://suno.com/@raquel_holanda',
-          linkText: 'Access Suno'
-        },
-        {
-          title: '6️⃣ AWS Broadcast Server',
-          badge: 'CLOUD',
-          badgeClass: 'secondary',
-          cardClass: '',
-          desc: 'Streaming server configured on a Linux VPS, automating audio processing via FFmpeg and broadcasting via the RTMP protocol, ensuring streaming stability for the RQS ecosystem.',
-          techs: ['AWS Lightsail', 'Linux', 'Ubuntu 24.04', 'RTMP', 'Nginx', 'FFmpeg'],
-          link: 'https://youtube.com/live/P4INjOJfnn8?feature=share',
-          linkText: 'Access Radio'
-        },
-                {
-  title: '7️⃣ RQS DSP Studio',
-  badge: 'AUDIO ENGINEERING',
-  badgeClass: 'secondary',
-  cardClass: 'featured',
-  desc: 'Browser-based audio engineering platform developed for the RaQuel Synths production pipeline. Performs mastering preparation, quality control, playlist organization and DSP workflow management for AI-generated music.',
-  techs: [
-    'Angular 20',
-    'Web Audio API',
-    'DSP',
-    'Audio Workflow',
-    'PWA'
-  ],
-  link: 'https://studio.raquelsynths.com',
-  linkText: 'Open Studio (Beta mode)'
-}
+          "title": "Engineering Case Studies",
+          "desc": "Repository intended to document architectural decisions, technical investigations and engineering practices.",
+          "link": "https://github.com/anaraquel00/engineering-case-studies",
+          "linkText": "View repository",
+          "id": "case-studies",
+          "icon": "menu_book",
+          "license": "CC BY 4.0",
+          "status": "Foundation complete · Publications planned"
+        }
       ]
     },
+
     business: {
-      title: 'BUSINESS CHANNEL',
-      status: 'CORPORATE CHANNEL | STATUS: AVAILABLE TO SCALE YOUR PROJECT 🚀',
-      statusJonah: 'UNDERGROUND CHANNEL | STATUS: AVAILABLE TO SCALE YOUR PROJECT 🚀' ,
-      desc: 'Do you need solid technical leadership in Front-End, Angular architecture, and intelligent automation? I work on the front lines: transforming complex business rules and sophisticated designs into clean, responsive, and high-performance ecosystems. Sustainable code that passes audits and generates real market value.',
-      descJonah: 'Do you need solid technical leadership in Front-End, Angular architecture, and intelligent automation? I work on the front lines: transforming complex business rules and sophisticated designs into clean, responsive, and high-performance ecosystems. Sustainable code that passes audits and generates real market value.',
-      actionEmail: 'Schedule a Diagnosis',
-      actionLinkedin: 'Download Resume'
+      title: "Let's build solutions with quality and purpose.",
+      status: "PROFESSIONAL CHANNEL | OPEN TO OPPORTUNITIES",
+      statusJonah: "UNDERGROUND CHANNEL | OPEN TO OPPORTUNITIES",
+      desc: "Open to remote opportunities, freelance projects and collaborations in AI evaluation, software quality assurance, AI-assisted development and digital product engineering.",
+      descJonah: "Open to remote opportunities, freelance projects and collaborations in AI evaluation, software quality assurance, AI-assisted development and digital product engineering.",
+      actionEmail: "Get in touch",
+      actionLinkedin: "LinkedIn"
     }
   }
 };

@@ -113,19 +113,8 @@ export const routes: Routes = [
   // 👩‍💻 ROTA 9: O Hub da Criadora (Blog Técnico/Portfólio)
   {
     path: 'creator',
-    loadComponent: () => import('./pages/creator/creator').then(m => m.Creator),
-    data: {
-      seo: {
-        title: {
-          pt: 'A Criadora',
-          en: 'The Creator'
-        },
-        description: {
-          pt: 'A mente por trás do código. Engenharia Musical fundindo Angular, IA e a alma humana.',
-          en: 'The mind behind the code. Musical Engineering fusing Angular, AI, and the human soul.'
-        }
-      }
-    }
+    // Creator owns its bilingual metadata and structured data.
+    loadComponent: () => import('./pages/creator/creator').then(m => m.Creator)
   },
 
   // 🛡️ ROTA 10: Compliance
